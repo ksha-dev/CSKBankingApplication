@@ -106,7 +106,9 @@ public class EmployeeOperations {
 		}
 		ValidatorUtil.validateObject(value);
 		getCustomerRecord(customerId);
-		return api.updateProfileDetails(customerId, field, value);
+		boolean status = api.updateProfileDetails(customerId, field, value);
+		CachePool.getUserRecordCache().refreshData(customerId);
+		return status;
 	}
 
 	public boolean updatePassword(int customerId, String oldPassword, String newPassword) throws AppException {

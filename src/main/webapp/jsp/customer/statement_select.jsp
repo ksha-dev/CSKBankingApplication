@@ -41,14 +41,9 @@
 
 	<section id="content-area">
 		<div class="nav-bar">
-			<div class="search">
-				<i class="material-icons">search</i> <input type="text"
-					placeholder="Search">
-			</div>
-
 			<div class="profile">
-				<a href="profile.html"> <img src="images/profile.jpg"
-					alt="Profile">
+				<a href="app?route=customer_profile"> <img
+					src="images/profile.jpg" alt="Profile">
 				</a>
 			</div>
 		</div>
@@ -56,8 +51,8 @@
 
 		<div class="content-board">
 			<h3 class="content-title">Statement</h3>
-			<form action="app" method="post" class="container"
-				style="width: 50%;" id="statement_form">
+			<form action="app" method="get" class="container" style="width: 50%;"
+				id="statement_form">
 
 				<div class="dual-element-row">
 					<label for="account_number">Account</label> <select

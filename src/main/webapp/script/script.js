@@ -21,26 +21,26 @@
 
 
 function logout() {
-    var confirmation = confirm("Press OK to confirm logout.\nPress Cancel or escape to cancel");
-    if (confirmation) {
-        location.href = "index.jsp";
-    }
+	var confirmation = confirm("Press OK to confirm logout.\nPress Cancel or escape to cancel");
+	if (confirmation) {
+		location.href = "app?route=logout";
+	}
 }
 
 function transferDialog() {
-    var confirmation = confirm("Do not close or press back from the next screen. Confirm Trasfer");
-    if (confirmation) {
-        // console.log("Trasaction Initiated");
-        location.href = "../../html/authorization.html"
-    }
+	var confirmation = confirm("Do not close or press back from the next screen. Confirm Trasfer");
+	if (confirmation) {
+		// console.log("Trasaction Initiated");
+		location.href = "../../html/authorization.html"
+	}
 }
 
 function confirmUpdate() {
-    var confirmation = confirm("Click ok to confirm update");
-    if (confirmation) {
-        // console.log("Trasaction Initiated");
-        location.href = "../../html/profile.html"
-    }
+	var confirmation = confirm("Click ok to confirm update");
+	if (confirmation) {
+		// console.log("Trasaction Initiated");
+		location.href = "../../html/profile.html"
+	}
 }
 
 // const selectField = document.getElementById('selectField');

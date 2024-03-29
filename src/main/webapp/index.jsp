@@ -1,3 +1,4 @@
+<%@page import="java.util.Objects"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -25,13 +26,27 @@
 					title="Must start with a letter, contain at least one number, uppercase, lowercase letter, special character and at least 8 or more characters"
 					required> <input class="login-element" type="submit"
 					value="Login" style="margin-top: 20px;"> <input
-					type="hidden" name="route" value="login"> <span
-					id="passwordError" style="color: red;"></span>
+					type="hidden" name="route" value="login">
+
+
+
 			</form>
 		</div>
 	</div>
 </body>
+<%
+String alertMessage = (String) request.getAttribute("alert");
+if (!Objects.isNull(alertMessage)) {
+%>
 
-
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+	alert("<%=alertMessage%>");
+    }, 10); // Delay in milliseconds (adjust as needed)
+});
+</script>
+<%
+}
+%>
 </html>

@@ -38,7 +38,7 @@ public class CustomerOperations {
 		}
 		return account;
 	}
-	
+
 	public Branch getBranchDetailsOfAccount(int branchId) throws AppException {
 		ValidatorUtil.validateId(branchId);
 		return CachePool.getBranchCache().get(branchId);
@@ -68,7 +68,6 @@ public class CustomerOperations {
 		}
 	}
 
-	
 	public boolean updateUserDetails(int userId, ModifiableField field, Object value, String pin) throws AppException {
 		ValidatorUtil.validateId(userId);
 		ValidatorUtil.validateObject(field);
@@ -79,7 +78,10 @@ public class CustomerOperations {
 
 		ValidatorUtil.validatePIN(pin);
 		if (api.userConfimration(userId, pin)) {
-			return api.updateProfileDetails(userId, field, value);
+			boolean status = api.updateProfileDetails(userId, field, value);
+			System.out.println("Refresh Data before call");
+			CachePool.getUserRecordCache().refreshData(userId);
+			return status;
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}

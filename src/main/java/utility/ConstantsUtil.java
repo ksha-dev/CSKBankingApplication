@@ -19,7 +19,7 @@ public class ConstantsUtil {
 
 	static {
 		List<ModifiableField> tempList = new ArrayList<>();
-		tempList.addAll(List.of(ModifiableField.ADDRESS, ModifiableField.PHONE, ModifiableField.EMAIL));
+		tempList.addAll(List.of(ModifiableField.ADDRESS, ModifiableField.EMAIL));
 		USER_MODIFIABLE_FIELDS = List.copyOf(tempList);
 
 		tempList.addAll(List.of(ModifiableField.FIRST_NAME, ModifiableField.LAST_NAME, ModifiableField.GENDER,

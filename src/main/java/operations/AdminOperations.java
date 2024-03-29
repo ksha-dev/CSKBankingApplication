@@ -37,7 +37,9 @@ public class AdminOperations {
 		ValidatorUtil.validateObject(value);
 		ValidatorUtil.validateObject(field);
 
-		return api.updateEmployeeDetails(employeeId, field, value);
+		boolean status = api.updateEmployeeDetails(employeeId, field, value);
+		CachePool.getUserRecordCache().refreshData(employeeId);
+		return status;
 	}
 
 	public Branch createBranch(Branch branch) throws AppException {
@@ -54,7 +56,9 @@ public class AdminOperations {
 		}
 		ValidatorUtil.validateObject(value);
 
-		return api.updateBranchDetails(branchId, field, value);
+		boolean status = api.updateBranchDetails(branchId, field, value);
+		CachePool.getBranchCache().refreshData(branchId);
+		return status;
 	}
 
 	public Map<Long, Account> viewAccountsInBank(int pageNumber) throws AppException {

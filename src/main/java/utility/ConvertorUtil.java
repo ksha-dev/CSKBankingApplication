@@ -62,4 +62,38 @@ public class ConvertorUtil {
 		ValidatorUtil.validateId(pageNumber);
 		return (pageNumber - 1) * ConstantsUtil.LIST_LIMIT;
 	}
+
+	public static String hiddenDate(long dateTime) {
+		StringBuffer date = new StringBuffer(
+				convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+		int[] hideIndex = { 1, 3, 4, 8, 9 };
+		for (int i : hideIndex) {
+			date.replace(i, i + 1, "*");
+		}
+		return date.toString();
+	}
+
+	public static String hiddenEmail(String email) {
+		StringBuffer hiddenEmail = new StringBuffer(email);
+		hiddenEmail.replace(1, email.indexOf('@'), "*".repeat(10));
+		return hiddenEmail.toString();
+	}
+
+	public static String hiddenAadhar(long aadhar) {
+		StringBuffer hiddenAadhar = new StringBuffer(aadhar + "");
+		hiddenAadhar.replace(0, 8, "*".repeat(8));
+		return hiddenAadhar.toString();
+	}
+
+	public static String hiddenPAN(String pan) {
+		StringBuffer hiddenPAN = new StringBuffer(pan);
+		hiddenPAN.replace(2, 8, "*".repeat(8));
+		return hiddenPAN.toString();
+	}
+
+	public static String hiddenPhone(long phone) {
+		StringBuffer hiddenPhone = new StringBuffer(phone + "");
+		hiddenPhone.replace(0, 7, "*".repeat(6));
+		return hiddenPhone.toString();
+	}
 }

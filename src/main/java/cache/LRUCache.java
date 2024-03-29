@@ -38,12 +38,18 @@ public abstract class LRUCache<K, V> extends Cache<K, V> {
 	}
 
 	protected final void put(K key, V val) {
+		System.out.println("Putting Data");
+		if (cacheKeyOrder.contains(key)) {
+			cacheKeyOrder.remove(key);
+		}
 		if (cacheKeyOrder.size() >= capacity) {
 			K keyRemoved = cacheKeyOrder.removeLast();
 			cacheData.remove(keyRemoved);
 		}
 		cacheKeyOrder.addFirst(key);
 		cacheData.put(key, val);
+		System.out.println(cacheData);
+		System.out.println(cacheKeyOrder);
 	}
 
 	public final void clear() {

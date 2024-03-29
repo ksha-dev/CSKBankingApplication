@@ -44,14 +44,9 @@ List<Transaction> transactions = (List<Transaction>) request.getAttribute("trans
 
 	<section id="content-area">
 		<div class="nav-bar">
-			<div class="search">
-				<i class="material-icons">search</i> <input type="text"
-					placeholder="Search">
-			</div>
-
 			<div class="profile">
-				<a href="profile.html"> <img src="images/profile.jpg"
-					alt="Profile">
+				<a href="app?route=customer_profile"> <img
+					src="images/profile.jpg" alt="Profile">
 				</a>
 			</div>
 		</div>
