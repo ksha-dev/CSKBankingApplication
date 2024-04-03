@@ -1,14 +1,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="../../static/css/styles.css">
 <link rel="stylesheet"
 	href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-<script src="./script/script.js"></script>
+<script src="../../static/script/script.js"></script>
+
+<script>
+	function logout() {
+		var confirmation = confirm("Press OK to confirm logout.\nPress Cancel or escape to cancel");
+		if (confirmation) {
+			location.href = "logout";
+		}
+	}
+</script>
 
 
-	
+
 <!-- <a href="app?route=account">
 	<li><i class="material-icons">account_balance</i>Account</li>
 </a><a href="app?route=statement_select">

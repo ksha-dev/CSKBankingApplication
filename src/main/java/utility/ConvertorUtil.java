@@ -3,7 +3,10 @@ package utility;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -42,6 +45,10 @@ public class ConvertorUtil {
 		return dateTime.toInstant().toEpochMilli();
 	}
 
+	public static String formatToDate(long dateTime) {
+		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+	}
+
 	public static String passwordGenerator(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 		return passwordHasher(user.getFirstName().substring(0, 4) + "@"
@@ -64,8 +71,7 @@ public class ConvertorUtil {
 	}
 
 	public static String hiddenDate(long dateTime) {
-		StringBuffer date = new StringBuffer(
-				convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+		StringBuffer date = new StringBuffer(formatToDate(dateTime));
 		int[] hideIndex = { 1, 3, 4, 8, 9 };
 		for (int i : hideIndex) {
 			date.replace(i, i + 1, "*");
@@ -95,5 +101,17 @@ public class ConvertorUtil {
 		StringBuffer hiddenPhone = new StringBuffer(phone + "");
 		hiddenPhone.replace(0, 7, "*".repeat(6));
 		return hiddenPhone.toString();
+	}
+
+	public static long dateStringToMillis(String date) throws AppException {
+		ValidatorUtil.validateObject(date);
+		return LocalDate.parse(date).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	public static long dateStringToMillisWithCurrentTime(String date) throws AppException {
+		ValidatorUtil.validateObject(date);
+		return ZonedDateTime.of(LocalDate.parse(date), LocalTime.now(), ZoneId.systemDefault()).toInstant()
+				.toEpochMilli();
+
 	}
 }

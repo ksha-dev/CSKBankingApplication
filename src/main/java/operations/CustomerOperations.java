@@ -61,6 +61,10 @@ public class CustomerOperations {
 		ValidatorUtil.validateObject(pin);
 		ValidatorUtil.validateObject(helperTransaction);
 
+		if (helperTransaction.getViewerAccountNumber() == helperTransaction.getTransactedAccountNumber()) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_TRANSFER_TO_SAME_ACCOUNT);
+		}
+
 		if (api.userConfimration(helperTransaction.getUserId(), pin)) {
 			return api.transferAmount(helperTransaction, isTransferOutsideBank);
 		} else {
@@ -79,7 +83,6 @@ public class CustomerOperations {
 		ValidatorUtil.validatePIN(pin);
 		if (api.userConfimration(userId, pin)) {
 			boolean status = api.updateProfileDetails(userId, field, value);
-			System.out.println("Refresh Data before call");
 			CachePool.getUserRecordCache().refreshData(userId);
 			return status;
 		} else {

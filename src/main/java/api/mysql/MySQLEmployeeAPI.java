@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import utility.ConstantsUtil;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.Status;
+import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.TransactionType;
 
 public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
@@ -274,6 +276,42 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			}
 		} catch (SQLException e) {
 			throw new AppException(e);
+		}
+	}
+
+	public List<Transaction> getCustomListOfTransactions(long accountNumber, int pageNumber, long startDate,
+			long endDate) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateId(pageNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectColumn(Column.ALL);
+		queryBuilder.fromSchema(Schemas.TRANSACTIONS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
+		queryBuilder.and();
+		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
+		queryBuilder.sortField(Column.TRANSACTION_ID, true);
+		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
+		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
+		queryBuilder.end();
+
+		System.out.println(queryBuilder.getQuery());
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			statement.setLong(2, startDate);
+			statement.setLong(3, endDate);
+			try (ResultSet transactionRS = statement.executeQuery()) {
+				List<Transaction> transactions = new ArrayList<Transaction>();
+				while (transactionRS.next()) {
+					transactions.add(MySQLConversionUtil.convertToTransaction(transactionRS));
+				}
+				return transactions;
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
 		}
 	}
 }

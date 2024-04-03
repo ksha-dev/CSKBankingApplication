@@ -1,11 +1,13 @@
 package api;
 
+import java.util.List;
 import java.util.Map;
 
 import exceptions.AppException;
 import modules.Account;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
+import modules.Transaction;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.Status;
 
@@ -22,5 +24,7 @@ public interface EmployeeAPI extends UserAPI {
 	public long depositAmount(long accoutNumber, double amount, EmployeeRecord employee) throws AppException;
 
 	public long withdrawAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException;
-		
+
+	public List<Transaction> getCustomListOfTransactions(long accountNumber, int pageNumber, long startDate,
+			long endDate) throws AppException;
 }

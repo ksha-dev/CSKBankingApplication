@@ -51,7 +51,7 @@ public class EmployeeOperations {
 
 	public Map<Long, Account> getListOfAccountsInBranch(int employeeId, int pageNumber) throws AppException {
 		ValidatorUtil.validateId(pageNumber);
-		return api.viewAccountsInBranch(employeeId, pageNumber);
+		return api.viewAccountsInBranch(getEmployeeRecord(employeeId).getBranchId(), pageNumber);
 	}
 
 	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
@@ -70,7 +70,7 @@ public class EmployeeOperations {
 		ValidatorUtil.validateObject(accountType);
 		ValidatorUtil.validatePositiveNumber((long) depositAmount);
 
-		if (accountType == AccountType.SAVINGS && depositAmount < ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT) {
+		if (depositAmount < ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT) {
 			throw new AppException(ActivityExceptionMessages.MINIMUM_DEPOSIT_REQUIRED);
 		}
 		long accountNumber = api.createAccount(customerId, accountType, getEmployeeRecord(employeeId).getBranchId());
@@ -84,6 +84,24 @@ public class EmployeeOperations {
 		ValidatorUtil.validatePositiveNumber(pageNumber);
 		ValidatorUtil.validateObject(limit);
 		return api.getTransactionsOfAccount(accountNumber, pageNumber, limit);
+	}
+
+	public List<Transaction> getListOfTransactions(long accountNumber, int pageNumber, long startDate, long endDate)
+			throws AppException {
+		ValidatorUtil.validatePositiveNumber(accountNumber);
+		ValidatorUtil.validatePositiveNumber(pageNumber);
+
+		if (startDate > endDate) {
+			throw new AppException(ActivityExceptionMessages.INVALID_START_DATE);
+		}
+		if (startDate == endDate) {
+			throw new AppException(ActivityExceptionMessages.EQUAL_START_END_DATE);
+		}
+		if (endDate > System.currentTimeMillis()) {
+			throw new AppException(ActivityExceptionMessages.INVALID_END_DATE);
+		}
+
+		return api.getCustomListOfTransactions(accountNumber, pageNumber, startDate, endDate);
 	}
 
 	public long depositAmount(int employeeId, long accountNumber, double amount) throws AppException {

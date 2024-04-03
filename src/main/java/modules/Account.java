@@ -44,7 +44,7 @@ public class Account {
 
 	public void setLastTransactedAt(long lastTransactionDateTime) throws AppException {
 		ValidatorUtil.validatePositiveNumber(lastTransactionDateTime);
-		this.openingDate = lastTransactionDateTime;
+		this.lastTransactionAt = lastTransactionDateTime;
 	}
 
 	public void setStatus(int statusId) throws AppException {

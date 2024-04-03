@@ -20,12 +20,7 @@
 // });
 
 
-function logout() {
-	var confirmation = confirm("Press OK to confirm logout.\nPress Cancel or escape to cancel");
-	if (confirmation) {
-		location.href = "app?route=logout";
-	}
-}
+
 
 function transferDialog() {
 	var confirmation = confirm("Do not close or press back from the next screen. Confirm Trasfer");

@@ -15,7 +15,6 @@ public class UserRecordCache extends LRUCache<Integer, UserRecord> {
 
 	@Override
 	protected UserRecord fetchData(Integer key) throws AppException {
-		System.out.println("User Data fetch");
 		return userAPIObject.getUserDetails(key);
 	}
 }

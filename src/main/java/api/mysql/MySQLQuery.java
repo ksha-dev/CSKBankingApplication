@@ -59,6 +59,10 @@ class MySQLQuery {
 		query.append(field);
 	}
 
+	void columnBetweenTwoValues(Column field) {
+		query.append(" " + field + " between ? and ?");
+	}
+
 	void where() {
 		query.append(" where");
 	}
@@ -147,7 +151,6 @@ class MySQLQuery {
 	}
 
 	String getQuery() {
-		System.out.println(query.toString());
 		return query.toString();
 	}
 }

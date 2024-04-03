@@ -19,26 +19,19 @@ public abstract class LRUCache<K, V> extends Cache<K, V> {
 	}
 
 	public final V get(K key) throws AppException {
-		try {
-			System.out.println(cacheData);
-			System.out.println(cacheKeyOrder);
-			if (cacheData.containsKey(key)) {
-				cacheKeyOrder.remove(key);
-				cacheKeyOrder.addFirst(key);
-				return cacheData.get(key);
-			} else {
-				V value = fetchData(key);
-				put(key, value);
-				return value;
-			}
-		} finally {
-			System.out.println(cacheData);
-			System.out.println(cacheKeyOrder);
+
+		if (cacheData.containsKey(key)) {
+			cacheKeyOrder.remove(key);
+			cacheKeyOrder.addFirst(key);
+			return cacheData.get(key);
+		} else {
+			V value = fetchData(key);
+			put(key, value);
+			return value;
 		}
 	}
 
 	protected final void put(K key, V val) {
-		System.out.println("Putting Data");
 		if (cacheKeyOrder.contains(key)) {
 			cacheKeyOrder.remove(key);
 		}
@@ -48,8 +41,6 @@ public abstract class LRUCache<K, V> extends Cache<K, V> {
 		}
 		cacheKeyOrder.addFirst(key);
 		cacheData.put(key, val);
-		System.out.println(cacheData);
-		System.out.println(cacheKeyOrder);
 	}
 
 	public final void clear() {
