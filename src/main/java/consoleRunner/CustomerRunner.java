@@ -12,6 +12,7 @@ import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
 import modules.Transaction;
+import operations.AppOperations;
 import operations.CustomerOperations;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil;
@@ -27,6 +28,7 @@ class CustomerRunner {
 		boolean isProgramActive = true;
 		int runnerOperations = 9;
 		CustomerOperations operations = new CustomerOperations();
+		AppOperations appOperation = new AppOperations();
 
 		while (isProgramActive) {
 
@@ -107,7 +109,7 @@ class CustomerRunner {
 							throw new IllegalArgumentException("Invalid Transaction history Limit");
 						}
 						while (!isTransactionListObtained) {
-							List<Transaction> transactions = (operations.getTransactionsOfAccount(accountNumber,
+							List<Transaction> transactions = (appOperation.getTransactionsOfAccount(accountNumber,
 									pageNumber, limit));
 							LoggingUtil.logTransactionsList(transactions);
 							if (transactions.size() == ConstantsUtil.LIST_LIMIT) {
@@ -238,7 +240,8 @@ class CustomerRunner {
 					log.info("Enter your 4 digit PIN to confirm : ");
 					String pin = InputUtil.getPIN();
 					if (newPassword.equals(newPasswordConfirm)) {
-						if (operations.updatePassword(customer.getUserId(), currentPassword, newPasswordConfirm, pin)) {
+						if (appOperation.updatePassword(customer.getUserId(), currentPassword, newPasswordConfirm,
+								pin)) {
 							log.info("Your password has been changed.");
 							log.info("Logging out.");
 							isProgramActive = false;
@@ -258,7 +261,7 @@ class CustomerRunner {
 						accountNumber = InputUtil.getPositiveLong();
 					}
 					if (accounts.containsKey(accountNumber)) {
-						List<Transaction> transactions = (operations.getTransactionsOfAccount(accountNumber, 1,
+						List<Transaction> transactions = (appOperation.getTransactionsOfAccount(accountNumber, 1,
 								TransactionHistoryLimit.RECENT));
 						LoggingUtil.logTransactionsList(transactions);
 

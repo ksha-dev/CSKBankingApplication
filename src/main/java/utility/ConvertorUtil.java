@@ -1,6 +1,8 @@
 package utility;
 
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import exceptions.AppException;
 import modules.UserRecord;
@@ -46,7 +49,7 @@ public class ConvertorUtil {
 	}
 
 	public static String formatToDate(long dateTime) {
-		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 
 	public static String passwordGenerator(UserRecord user) throws AppException {
@@ -110,8 +113,27 @@ public class ConvertorUtil {
 
 	public static long dateStringToMillisWithCurrentTime(String date) throws AppException {
 		ValidatorUtil.validateObject(date);
-		return ZonedDateTime.of(LocalDate.parse(date), LocalTime.now(), ZoneId.systemDefault()).toInstant()
-				.toEpochMilli();
+		LocalDate convertedDate = LocalDate.parse(date);
+		if (convertedDate.isBefore(LocalDate.now(ZoneId.systemDefault()))) {
+			return convertedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() + 86400000L - 1;
+		} else {
+			return ZonedDateTime.of(LocalDate.parse(date), LocalTime.now(), ZoneId.systemDefault()).toInstant()
+					.toEpochMilli();
+		}
+	}
 
+	public static double convertToTwoDecimals(double decimalNumber) {
+		DecimalFormat formatter = new DecimalFormat("#.##");
+		return Double.parseDouble(formatter.format(decimalNumber));
+	}
+
+	public static String displayTwoDecimals(double decimalNumber) {
+		return String.format("%.2f", decimalNumber);
+	}
+
+	public static String amountToCurrencyFormat(double amount) {
+		Locale localeIndia = new Locale("en", "IN");
+		NumberFormat currencyFormatterIndia = NumberFormat.getCurrencyInstance(localeIndia);
+		return currencyFormatterIndia.format(amount);
 	}
 }

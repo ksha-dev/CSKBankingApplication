@@ -10,6 +10,7 @@ import modules.EmployeeRecord;
 import modules.Transaction;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.Status;
+import utility.ConstantsUtil.TransactionHistoryLimit;
 
 public interface EmployeeAPI extends UserAPI {
 
@@ -25,6 +26,4 @@ public interface EmployeeAPI extends UserAPI {
 
 	public long withdrawAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException;
 
-	public List<Transaction> getCustomListOfTransactions(long accountNumber, int pageNumber, long startDate,
-			long endDate) throws AppException;
 }

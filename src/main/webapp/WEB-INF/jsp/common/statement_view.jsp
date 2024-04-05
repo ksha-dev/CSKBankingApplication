@@ -1,3 +1,4 @@
+<%@page import="utility.ConstantsUtil"%>
 <%@page import="utility.ConstantsUtil.TransactionHistoryLimit"%>
 <%@page import="utility.ConstantsUtil.TransactionType"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -54,7 +55,15 @@ String limitString = (String) request.getAttribute("limit");
 		: "-"%></td>
 					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(transaction.getClosingBalance())%></td>
 				</tr>
-				<%}%>
+				<%
+				}
+				if (currentPage == pageCount) {
+				int remainingCount = ConstantsUtil.LIST_LIMIT - transactions.size();
+				for (int t = 0; t < remainingCount; t++) {
+					out.println("<tr><td>&nbsp;</td></tr>");
+				}
+				}
+				%>
 			</tbody>
 		</table>
 	</div>
@@ -75,7 +84,8 @@ String limitString = (String) request.getAttribute("limit");
 		<%
 		for (int i = 1; i <= pageCount; i++) {
 		%>
-		<button type="submit" name="currentPage" value="<%=i%>"
+		<button type="<%=currentPage == i ? "reset" : "submit"%>"
+			name="currentPage" value="<%=i%>"
 			<%if (currentPage == i)
 	out.println("class=\"active\"");%>><%=i%></button>
 		<%

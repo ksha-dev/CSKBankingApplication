@@ -13,7 +13,7 @@
 CustomerRecord customer = (CustomerRecord) request.getSession().getAttribute("user");
 %>
 <body>
-	<%@include file="layout_header.jsp"%>
+	<%@include file="../include/layout_header.jsp"%>
 	<script>
 		document.getElementById('profile').href = "#";
 	</script>

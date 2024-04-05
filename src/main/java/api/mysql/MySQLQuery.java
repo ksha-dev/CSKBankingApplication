@@ -38,6 +38,11 @@ class MySQLQuery {
 		query.append("select " + (field == Column.ALL ? "*" : field));
 	}
 
+	void selectCount(Schemas schema) throws AppException {
+		ValidatorUtil.validateObject(schema);
+		query.append("select count(*) from " + schema);
+	}
+
 	void fromSchema(Schemas schema) throws AppException {
 		ValidatorUtil.validateObject(schema);
 		query.append(" from " + schema);

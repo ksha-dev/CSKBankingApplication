@@ -20,6 +20,7 @@ import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
+import utility.ConvertorUtil;
 
 public class EmployeeOperations {
 	private EmployeeAPI api = new MySQLEmployeeAPI();
@@ -55,68 +56,52 @@ public class EmployeeOperations {
 	}
 
 	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
-			int employeeId) throws AppException {
+			int employeeId, String pin) throws AppException {
 		customer.setType(UserType.CUSTOMER.getUserTypeId());
 		ValidatorUtil.validateObject(customer);
-
-		CustomerRecord createdCustomer = getCustomerRecord(api.createCustomer(customer));
-		return createAccountForExistingCustomer(createdCustomer.getUserId(), accountType, depositAmount, employeeId);
+		return createAccountForExistingCustomer(api.createCustomer(customer), accountType, depositAmount, employeeId,
+				pin);
 	}
 
 	public Account createAccountForExistingCustomer(int customerId, AccountType accountType, double depositAmount,
-			int employeeId) throws AppException {
+			int employeeId, String pin) throws AppException {
 		ValidatorUtil.validateId(customerId);
 		ValidatorUtil.validateId(employeeId);
 		ValidatorUtil.validateObject(accountType);
 		ValidatorUtil.validatePositiveNumber((long) depositAmount);
 
+		getCustomerRecord(customerId);
 		if (depositAmount < ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT) {
 			throw new AppException(ActivityExceptionMessages.MINIMUM_DEPOSIT_REQUIRED);
 		}
 		long accountNumber = api.createAccount(customerId, accountType, getEmployeeRecord(employeeId).getBranchId());
-		depositAmount(employeeId, accountNumber, depositAmount);
+		depositAmount(employeeId, accountNumber, depositAmount, pin);
 		return CachePool.getAccountCache().get(accountNumber);
 	}
 
-	public List<Transaction> getListOfTransactions(long accountNumber, int pageNumber, TransactionHistoryLimit limit)
-			throws AppException {
-		ValidatorUtil.validatePositiveNumber(accountNumber);
-		ValidatorUtil.validatePositiveNumber(pageNumber);
-		ValidatorUtil.validateObject(limit);
-		return api.getTransactionsOfAccount(accountNumber, pageNumber, limit);
-	}
-
-	public List<Transaction> getListOfTransactions(long accountNumber, int pageNumber, long startDate, long endDate)
-			throws AppException {
-		ValidatorUtil.validatePositiveNumber(accountNumber);
-		ValidatorUtil.validatePositiveNumber(pageNumber);
-
-		if (startDate > endDate) {
-			throw new AppException(ActivityExceptionMessages.INVALID_START_DATE);
-		}
-		if (startDate == endDate) {
-			throw new AppException(ActivityExceptionMessages.EQUAL_START_END_DATE);
-		}
-		if (endDate > System.currentTimeMillis()) {
-			throw new AppException(ActivityExceptionMessages.INVALID_END_DATE);
-		}
-
-		return api.getCustomListOfTransactions(accountNumber, pageNumber, startDate, endDate);
-	}
-
-	public long depositAmount(int employeeId, long accountNumber, double amount) throws AppException {
+	public long depositAmount(int employeeId, long accountNumber, double amount, String pin) throws AppException {
 		ValidatorUtil.validateId(accountNumber);
 		ValidatorUtil.validatePositiveNumber((long) amount);
-		return api.depositAmount(accountNumber, amount, getEmployeeRecord(employeeId));
+		System.out.println(ConvertorUtil.convertToTwoDecimals(amount));
+		if (api.userConfimration(employeeId, pin)) {
+			return api.depositAmount(accountNumber, amount, getEmployeeRecord(employeeId));
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
-	public long withdrawAmount(int employeeId, long accountNumber, double amount) throws AppException {
+	public long withdrawAmount(int employeeId, long accountNumber, double amount, String pin) throws AppException {
 		ValidatorUtil.validateId(accountNumber);
 		ValidatorUtil.validatePositiveNumber((long) amount);
-		return api.withdrawAmount(accountNumber, amount, getEmployeeRecord(employeeId));
+		if (api.userConfimration(employeeId, pin)) {
+			return api.withdrawAmount(accountNumber, amount, getEmployeeRecord(employeeId));
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
-	public boolean updateCustomerDetails(int customerId, ModifiableField field, Object value) throws AppException {
+	public boolean updateCustomerDetails(int employeeId, int customerId, ModifiableField field, Object value,
+			String pin) throws AppException {
 		ValidatorUtil.validatePositiveNumber(customerId);
 		ValidatorUtil.validateObject(field);
 		if (!ConstantsUtil.EMPLOYEE_MODIFIABLE_FIELDS.contains(field)) {
@@ -124,9 +109,13 @@ public class EmployeeOperations {
 		}
 		ValidatorUtil.validateObject(value);
 		getCustomerRecord(customerId);
-		boolean status = api.updateProfileDetails(customerId, field, value);
-		CachePool.getUserRecordCache().refreshData(customerId);
-		return status;
+		if (api.userConfimration(employeeId, pin)) {
+			boolean status = api.updateProfileDetails(customerId, field, value);
+			CachePool.getUserRecordCache().refreshData(customerId);
+			return status;
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
 	public boolean updatePassword(int customerId, String oldPassword, String newPassword) throws AppException {

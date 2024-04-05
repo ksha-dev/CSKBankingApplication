@@ -19,6 +19,15 @@ body {
 	display: flex;
 }
 
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
 input[type="date"], input[type="password"], input[type="number"], input[type="text"],
 	input[type="email"] {
 	/* background-color: #c4e3fd; */
@@ -81,6 +90,17 @@ table {
 
 tr td {
 	padding: 20px 15px;
+	text-align: center;
+}
+
+.pr {
+	text-align: right;
+	padding-right: 40px;
+}
+
+.pl {
+	text-align: left;
+	padding-left: 40px;
 }
 
 thead td {
@@ -92,6 +112,7 @@ thead td {
 	padding: 15px;
 	padding-top: 20px;
 	padding-bottom: 20px;
+	text-align: center;
 }
 
 .welcome {
@@ -348,4 +369,28 @@ button {
 	user-select: none;
 	-webkit-user-select: none;
 	touch-action: manipulation;
+}
+
+.pagination {
+	display: flex;
+	margin-right: 50px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.pagination button {
+	color: #c4e3fd;
+	float: left;
+	padding: 8px 16px;
+	text-decoration: none;
+	border-radius: 5px;
+	border: 1px thin #c4e3fd;
+	margin: 0 4px;
+}
+
+.pagination button.active {
+	background-color: #152238;
+	color: white;
+	border-radius: 5px;
 }

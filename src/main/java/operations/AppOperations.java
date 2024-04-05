@@ -1,10 +1,16 @@
 package operations;
 
+import java.util.List;
+
 import api.UserAPI;
 import api.mysql.MySQLUserAPI;
 import cache.CachePool;
 import exceptions.AppException;
+import exceptions.messages.ActivityExceptionMessages;
+import modules.Transaction;
 import modules.UserRecord;
+import utility.ValidatorUtil;
+import utility.ConstantsUtil.TransactionHistoryLimit;
 
 public class AppOperations {
 
@@ -20,4 +26,59 @@ public class AppOperations {
 		}
 		return null;
 	}
+
+	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, TransactionHistoryLimit limit)
+			throws AppException {
+		ValidatorUtil.validatePositiveNumber(accountNumber);
+		ValidatorUtil.validatePositiveNumber(pageNumber);
+		ValidatorUtil.validateObject(limit);
+
+		api.getAccountDetails(accountNumber);
+		return api.getTransactionsOfAccount(accountNumber, pageNumber, limit);
+	}
+
+	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, long startDate, long endDate)
+			throws AppException {
+		ValidatorUtil.validatePositiveNumber(accountNumber);
+		ValidatorUtil.validatePositiveNumber(pageNumber);
+
+		if (startDate > endDate) {
+			throw new AppException(ActivityExceptionMessages.INVALID_START_DATE);
+		}
+		if (startDate == endDate) {
+			throw new AppException(ActivityExceptionMessages.EQUAL_START_END_DATE);
+		}
+		if (endDate > System.currentTimeMillis()) {
+			throw new AppException(ActivityExceptionMessages.INVALID_END_DATE);
+		}
+
+		api.getAccountDetails(accountNumber);
+		return api.getTransactionsOfAccount(accountNumber, pageNumber, startDate, endDate);
+	}
+
+	public int getPageCountOfTransactions(long accountNumber, TransactionHistoryLimit limit) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateObject(limit);
+		return api.numberOfTransactionPages(accountNumber, limit);
+	}
+
+	public int getPageCountOfTransactions(long accountNumber, long startDate, long endDate) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		return api.numberOfTransactionPages(accountNumber, startDate, endDate);
+	}
+
+	public boolean updatePassword(int customerId, String oldPassword, String newPassword, String pin)
+			throws AppException {
+		ValidatorUtil.validateId(customerId);
+		ValidatorUtil.validatePassword(oldPassword);
+		ValidatorUtil.validatePassword(newPassword);
+		ValidatorUtil.validatePIN(pin);
+
+		if (api.userConfimration(customerId, pin)) {
+			return api.updatePassword(customerId, oldPassword, newPassword);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
+	}
+
 }

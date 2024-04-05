@@ -11,10 +11,10 @@
 </head>
 
 <body>
-	<%@include file="layout_header.jsp"%>
-	<h3 class="content-title">Open Account</h3>
-	<form action="open_account" id="open-account-form" style="width: auto;"
-		method="post">
+	<%@include file="../include/layout_header.jsp"%>
+	<h3 class="content-title">Open New Account</h3>
+	<form action="authorization" id="open-account-form"
+		style="width: auto;" method="post">
 		<div class="container" style="flex-direction: row;">
 			<div style="width: 50%; padding-right: 50px;">
 				<div class="dual-element-row">
@@ -128,9 +128,10 @@
 			</div>
 		</div>
 
-
-		<button id="submit-button" style="display: none;" type="submit"
-			onclick="validateDropDowns()">Finish</button>
+		<input type="hidden" value="authorize_open_account" name="operation">
+		<button id="submit-button"
+			style="display: none; margin-left: auto; margin-right: 50px;"
+			type="submit" onclick="validateDropDowns()">Finish</button>
 	</form>
 
 	</div>

@@ -9,7 +9,6 @@
 	pageEncoding="UTF-8"%>
 <%
 Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
-UserRecord user = (UserRecord) session.getAttribute("user");
 %>
 
 <!DOCTYPE html>
@@ -20,7 +19,7 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 </head>
 
 <body>
-	<%@include file="layout_header.jsp"%>
+	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Accounts</h3>
 	<%
 	if (accounts.isEmpty()) {

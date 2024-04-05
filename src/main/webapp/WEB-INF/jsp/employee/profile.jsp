@@ -9,11 +9,11 @@
 <%@include file="../include/head.jsp"%>
 </head>
 
-<%
-CustomerRecord customer = (CustomerRecord) request.getSession().getAttribute("user");
-%>
 <body>
-	<%@include file="layout_header.jsp"%>
+	<%@include file="../include/layout_header.jsp"%>
+	<%
+	CustomerRecord customer = (CustomerRecord) user;
+	%>
 	<script>
 		document.getElementById('profile').href = "#";
 	</script>

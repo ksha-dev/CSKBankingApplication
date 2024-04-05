@@ -8,7 +8,6 @@
 	pageEncoding="UTF-8"%>
 <%
 Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
-UserRecord user = (UserRecord) session.getAttribute("user");
 Branch branch = (Branch) request.getAttribute("branch");
 %>
 
@@ -20,12 +19,19 @@ Branch branch = (Branch) request.getAttribute("branch");
 </head>
 
 <body>
-	<%@include file="layout_header.jsp"%>
-	<h3 class="content-title">
-		Accounts in
-		<%=branch.getAddress()%>
-		Branch
-	</h3>
+	<%@include file="../include/layout_header.jsp"%>
+	<div style="display: flex; justify-content: space-between;">
+		<h3 class="content-title">
+			Accounts in
+			<%=branch.getAddress()%>
+			Branch
+		</h3>
+		<form action="account_details">
+			<input type="number" name="account_number"
+				placeholder="Search account number" style="margin-right: 50px"
+				required="required">
+		</form>
+	</div>
 	<%
 	if (accounts.isEmpty()) {
 	%>
@@ -43,7 +49,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 					<td>Account Type</td>
 					<td>Available Balance</td>
 					<td>Opening Date</td>
-					<td>Trasaction Date</td>
+					<td>Last TXN Date</td>
 					<td>Status</td>
 					<td></td>
 				</tr>
@@ -56,7 +62,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 					<td><%=account.getAccountNumber()%></td>
 					<td><%=account.getUserId()%></td>
 					<td><%=account.getAccountType()%></td>
-					<td>Rs. <%=account.getBalance()%></td>
+					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
 					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
@@ -73,8 +79,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 	<%
 	}
 	%>
-	</div>
-	</section>
+	<%@include file="../include/layout_footer.jsp"%>
 </body>
 
 </html>

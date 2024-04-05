@@ -169,7 +169,7 @@ public class MySQLUserAPI implements UserAPI {
 		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
 		if (!(timeLimit == TransactionHistoryLimit.RECENT)) {
 			queryBuilder.and();
-			queryBuilder.columnGreaterThan(Column.TIME_STAMP);
+			queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
 		}
 		queryBuilder.sortField(Column.TRANSACTION_ID, true);
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
@@ -181,7 +181,47 @@ public class MySQLUserAPI implements UserAPI {
 			statement.setLong(1, accountNumber);
 			if (!(timeLimit == TransactionHistoryLimit.RECENT)) {
 				statement.setLong(2, timeLimit.getDuration());
+				statement.setLong(3, System.currentTimeMillis());
 			}
+
+			System.out.println(statement);
+			try (ResultSet transactionRS = statement.executeQuery()) {
+				List<Transaction> transactions = new ArrayList<Transaction>();
+				while (transactionRS.next()) {
+					transactions.add(MySQLConversionUtil.convertToTransaction(transactionRS));
+				}
+				return transactions;
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, long startDate, long endDate)
+			throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateId(pageNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectColumn(Column.ALL);
+		queryBuilder.fromSchema(Schemas.TRANSACTIONS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
+		queryBuilder.and();
+		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
+		queryBuilder.sortField(Column.TRANSACTION_ID, true);
+		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
+		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
+		queryBuilder.end();
+
+		System.out.println(queryBuilder.getQuery());
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			statement.setLong(2, startDate);
+			statement.setLong(3, endDate);
 			try (ResultSet transactionRS = statement.executeQuery()) {
 				List<Transaction> transactions = new ArrayList<Transaction>();
 				while (transactionRS.next()) {
@@ -237,26 +277,28 @@ public class MySQLUserAPI implements UserAPI {
 			if (payeeAccount.getBalance() < transaction.getTransactedAmount()) {
 				throw new AppException(APIExceptionMessage.INSUFFICIENT_BALANCE);
 			}
-			transaction.setClosingBalance(payeeAccount.getBalance() - transaction.getTransactedAmount());
+			transaction.setClosingBalance(
+					ConvertorUtil.convertToTwoDecimals(payeeAccount.getBalance() - transaction.getTransactedAmount()));
 			if (!MySQLAPIUtil.updateBalanceInAccount(transaction.getViewerAccountNumber(),
 					transaction.getClosingBalance())) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
 			transaction.setTransactionType(TransactionType.DEBIT.getTransactionTypeId());
-			MySQLAPIUtil.createSenderTransactionRecord(transaction);
 			long transactionId = transaction.getTransactionId();
-
+			String remarks = transaction.getRemarks();
+			transaction.setRemarks("DB-TRANSFER-ACC-" + transaction.getTransactedAccountNumber() + "-" + remarks);
+			MySQLAPIUtil.createSenderTransactionRecord(transaction);
 			if (isTransferWithinBank) {
-
-				// get the account details of receiver
 				Account recepientAccount = getAccountDetails(transaction.getTransactedAccountNumber());
 
 				// update the balance in receiver account
+				double recepientNewBalance = ConvertorUtil
+						.convertToTwoDecimals(recepientAccount.getBalance() + transaction.getTransactedAmount());
 				if (!MySQLAPIUtil.updateBalanceInAccount(transaction.getTransactedAccountNumber(),
-						recepientAccount.getBalance() + transaction.getTransactedAmount())) {
+						recepientNewBalance)) {
 					throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 				}
-				recepientAccount.setBalance(recepientAccount.getBalance() + transaction.getTransactedAmount());
+				recepientAccount.setBalance(recepientNewBalance);
 
 				// create receiver transaction
 				Transaction reverseTransactionRecord = new Transaction();
@@ -266,7 +308,8 @@ public class MySQLUserAPI implements UserAPI {
 				reverseTransactionRecord.setTransactedAccountNumber(transaction.getViewerAccountNumber());
 				reverseTransactionRecord.setTransactedAmount(transaction.getTransactedAmount());
 				reverseTransactionRecord.setTransactionType(TransactionType.CREDIT.getTransactionTypeId());
-				reverseTransactionRecord.setRemarks(transaction.getRemarks());
+				reverseTransactionRecord
+						.setRemarks("CR-TRANSFER-ACC-" + transaction.getViewerAccountNumber() + "-" + remarks);
 				reverseTransactionRecord.setClosingBalance(recepientAccount.getBalance());
 				MySQLAPIUtil.createReceiverTransactionRecord(reverseTransactionRecord);
 			}
@@ -371,6 +414,72 @@ public class MySQLUserAPI implements UserAPI {
 			}
 		} catch (SQLException e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS);
+		}
+	}
+
+	@Override
+	public int numberOfTransactionPages(long accountNumber, TransactionHistoryLimit timeLimit) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateObject(timeLimit);
+
+		if (timeLimit == TransactionHistoryLimit.RECENT) {
+			return 1;
+		}
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.TRANSACTIONS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
+		queryBuilder.and();
+		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			statement.setLong(2, timeLimit.getDuration());
+			statement.setLong(3, System.currentTimeMillis());
+
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					return countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int numberOfTransactionPages(long accountNumber, long startDate, long endDate) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.TRANSACTIONS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
+		queryBuilder.and();
+		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			statement.setLong(2, startDate);
+			statement.setLong(3, endDate);
+
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount < 10 ? pageCount : 10;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
 		}
 	}
 }

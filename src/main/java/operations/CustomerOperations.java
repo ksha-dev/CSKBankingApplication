@@ -48,14 +48,6 @@ public class CustomerOperations {
 		return api.getAccountsOfUser(customerId);
 	}
 
-	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, TransactionHistoryLimit limit)
-			throws AppException {
-		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateId(pageNumber);
-		ValidatorUtil.validateObject(limit);
-		return api.getTransactionsOfAccount(accountNumber, pageNumber, limit);
-	}
-
 	public long tranferMoney(Transaction helperTransaction, boolean isTransferOutsideBank, String pin)
 			throws AppException {
 		ValidatorUtil.validateObject(pin);
@@ -85,20 +77,6 @@ public class CustomerOperations {
 			boolean status = api.updateProfileDetails(userId, field, value);
 			CachePool.getUserRecordCache().refreshData(userId);
 			return status;
-		} else {
-			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
-		}
-	}
-
-	public boolean updatePassword(int customerId, String oldPassword, String newPassword, String pin)
-			throws AppException {
-		ValidatorUtil.validateId(customerId);
-		ValidatorUtil.validatePassword(oldPassword);
-		ValidatorUtil.validatePassword(newPassword);
-		ValidatorUtil.validatePIN(pin);
-
-		if (api.userConfimration(customerId, pin)) {
-			return api.updatePassword(customerId, oldPassword, newPassword);
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}

@@ -1,3 +1,13 @@
+
+<%@page import="java.util.Objects"%>
+<%
+response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+response.setHeader("pragma", "no-cache");
+response.setHeader("Expires", "0");
+String error = (String) request.getSession(false).getAttribute("error");
+System.out.println(error);
+%>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,6 +18,16 @@
 <script src="../../static/script/script.js"></script>
 
 <script>
+	
+<%if (!Objects.isNull(error)) {
+	request.getSession(false).removeAttribute("error");%>
+	setTimeout(function() {
+		alert("<%=error%>
+	");
+	}, 100);
+<%
+}
+%>
 	function logout() {
 		var confirmation = confirm("Press OK to confirm logout.\nPress Cancel or escape to cancel");
 		if (confirmation) {

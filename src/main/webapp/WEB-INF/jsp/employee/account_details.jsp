@@ -19,7 +19,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 <%@include file="../include/head.jsp"%>
 </head>
 <body style="width: 100%;">
-	<%@include file="layout_header.jsp"%>
+	<%@include file="../include/layout_header.jsp"%>
 	<script>
 		document.getElementById('li-branch_accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
 		document.getElementById('a-branch_accounts').href = '#';
@@ -36,7 +36,6 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 			style="display: flex; justify-content: space-between; width: 100%;">
 
 			<div style="width: 100%;">
-
 				<div class="dual-element-row">
 					<p class="profile-element">Account Number</p>
 					<h4 class="profile-element"><%=account.getAccountNumber()%></h4>
@@ -51,16 +50,9 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">Opening Date</p>
 					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></h4>
 				</div>
-				<div class="dual-element-row">
-					<button>View Statement</button>
-					<button>Change Account Status</button>
-					<button>Close Account</button>
-				</div>
-
 			</div>
 
 			<div style="width: 100%;">
-
 				<div class="dual-element-row">
 					<p class="profile-element">Available Balance</p>
 					<h4 class="profile-element">
@@ -76,6 +68,17 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
 				</div>
 			</div>
+		</div>
+		<br>
+		<div style="display: flex;">
+			<form action="statement">
+				<input type="hidden" value="<%=account.getAccountNumber()%>"
+					name="accountNumber">
+				<button>View Statement</button>
+			</form>
+			<form action="#" style="padding-left: 30px">
+				<button>Close Account</button>
+			</form>
 		</div>
 	</div>
 

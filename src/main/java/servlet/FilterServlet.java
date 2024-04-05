@@ -44,15 +44,14 @@ public class FilterServlet implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		String path = req.getPathInfo();
 		String servletPath = req.getServletPath();
-		System.out.println(servletPath);
+		System.out.println(req.getRequestURI());
 		if (servletPath.startsWith("/static") || servletPath.equals("/index.html")) {
 			chain.doFilter(req, res);
-		} else if (servletPath.startsWith("/app") && path.startsWith("/login")) {
+		} else if (servletPath.startsWith("/app") && path.equals("/login")) {
 			RequestDispatcher dispatcher = req.getRequestDispatcher(servletPath + (Objects.isNull(path) ? "" : path));
 			dispatcher.forward(req, res);
 		} else if (servletPath.startsWith("/app")) {
 			HttpSession session = req.getSession(false);
-			System.out.println(session);
 			if (Objects.isNull(session) || Objects.isNull(session.getAttribute("user"))) {
 				res.sendRedirect(req.getContextPath() + "/app/login");
 			} else {

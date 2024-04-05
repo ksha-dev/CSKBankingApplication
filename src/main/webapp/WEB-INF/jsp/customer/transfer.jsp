@@ -13,7 +13,7 @@
 
 
 <body>
-	<%@include file="layout_header.jsp"%>
+	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Transfer</h3>
 	<form action="authorization" id="transferForm" class="container"
 		style="width: 50%;" method="post">

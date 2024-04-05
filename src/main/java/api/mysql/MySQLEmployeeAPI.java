@@ -180,19 +180,19 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		try {
 			ServerConnection.startTransaction();
 			Account customerAccount = getAccountDetails(accountNumber);
-
-			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, customerAccount.getBalance() + amount)) {
+			double newBalance = ConvertorUtil.convertToTwoDecimals(customerAccount.getBalance() + amount);
+			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, newBalance)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
 
+			customerAccount.setBalance(newBalance);
 			Transaction depositTransaction = new Transaction();
 			depositTransaction.setUserId(customerAccount.getUserId());
 			depositTransaction.setViewerAccountNumber(accountNumber);
 			depositTransaction.setTransactedAmount(amount);
 			depositTransaction.setTransactionType(TransactionType.CREDIT.getTransactionTypeId());
-			depositTransaction.setClosingBalance(customerAccount.getBalance() + amount);
-			depositTransaction.setRemarks(
-					"Bank-Deposit/BranchId-" + employee.getBranchId() + "/EmployeeId-" + employee.getUserId());
+			depositTransaction.setClosingBalance(newBalance);
+			depositTransaction.setRemarks("CR-DEPOSIT-BID-" + employee.getBranchId() + "-EID-" + employee.getUserId());
 
 			MySQLAPIUtil.createSenderTransactionRecord(depositTransaction);
 			ServerConnection.endTransaction();
@@ -210,24 +210,23 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		ValidatorUtil.validateObject(employee);
 		try {
 			ServerConnection.startTransaction();
-
 			Account customerAccount = getAccountDetails(accountNumber);
 			if (customerAccount.getBalance() < amount) {
 				throw new AppException(APIExceptionMessage.INSUFFICIENT_BALANCE);
 			}
-
-			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, customerAccount.getBalance() - amount)) {
+			double newBalance = ConvertorUtil.convertToTwoDecimals(customerAccount.getBalance() - amount);
+			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, newBalance)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
-
+			customerAccount.setBalance(newBalance);
 			Transaction withdrawTransaction = new Transaction();
 			withdrawTransaction.setUserId(customerAccount.getUserId());
 			withdrawTransaction.setViewerAccountNumber(accountNumber);
 			withdrawTransaction.setTransactedAmount(amount);
 			withdrawTransaction.setTransactionType(TransactionType.DEBIT.getTransactionTypeId());
-			withdrawTransaction.setClosingBalance(customerAccount.getBalance() - amount);
-			withdrawTransaction.setRemarks(
-					"Bank-Withdrawal/BranchId-" + employee.getBranchId() + "/EmployeeId-" + employee.getUserId());
+			withdrawTransaction.setClosingBalance(newBalance);
+			withdrawTransaction
+					.setRemarks("DB-WITHDRAW-BID-" + employee.getBranchId() + "-EID-" + employee.getUserId());
 			MySQLAPIUtil.createSenderTransactionRecord(withdrawTransaction);
 			ServerConnection.endTransaction();
 			return withdrawTransaction.getTransactionId();
@@ -276,42 +275,6 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			}
 		} catch (SQLException e) {
 			throw new AppException(e);
-		}
-	}
-
-	public List<Transaction> getCustomListOfTransactions(long accountNumber, int pageNumber, long startDate,
-			long endDate) throws AppException {
-		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateId(pageNumber);
-
-		MySQLQuery queryBuilder = new MySQLQuery();
-		queryBuilder.selectColumn(Column.ALL);
-		queryBuilder.fromSchema(Schemas.TRANSACTIONS);
-		queryBuilder.where();
-		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
-		queryBuilder.and();
-		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
-		queryBuilder.sortField(Column.TRANSACTION_ID, true);
-		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
-		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
-		queryBuilder.end();
-
-		System.out.println(queryBuilder.getQuery());
-
-		try (PreparedStatement statement = ServerConnection.getServerConnection()
-				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setLong(1, accountNumber);
-			statement.setLong(2, startDate);
-			statement.setLong(3, endDate);
-			try (ResultSet transactionRS = statement.executeQuery()) {
-				List<Transaction> transactions = new ArrayList<Transaction>();
-				while (transactionRS.next()) {
-					transactions.add(MySQLConversionUtil.convertToTransaction(transactionRS));
-				}
-				return transactions;
-			}
-		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
 		}
 	}
 }

@@ -13,6 +13,7 @@ import modules.Branch;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.Transaction;
+import operations.AppOperations;
 import operations.EmployeeOperations;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.AccountType;
@@ -29,6 +30,7 @@ class EmployeeRunner {
 		boolean isProgramActive = true;
 		int runnerOperations = 12;
 		EmployeeOperations operations = new EmployeeOperations();
+		AppOperations appOperations = new AppOperations();
 
 		while (isProgramActive) {
 
@@ -135,8 +137,8 @@ class EmployeeRunner {
 							throw new AppException("Invalid Transaction history Limit");
 						}
 						while (!isListObtained) {
-							List<Transaction> transactions = operations.getListOfTransactions(accountNumber, pageNumber,
-									limit);
+							List<Transaction> transactions = appOperations.getTransactionsOfAccount(accountNumber,
+									pageNumber, limit);
 							LoggingUtil.logTransactionsList(transactions);
 							if (transactions.size() == ConstantsUtil.LIST_LIMIT) {
 								log.info("Enter 1 to go to next page (or) 0 to exit : ");
@@ -169,7 +171,8 @@ class EmployeeRunner {
 					int typeSelection = InputUtil.getInteger();
 					if (typeSelection > 0 && typeSelection <= (i + 1)) {
 						Account account = operations.createAccountForExistingCustomer(customer.getUserId(),
-								AccountType.values()[typeSelection - 1], amount, employee.getUserId());
+								AccountType.values()[typeSelection - 1], amount, employee.getUserId(),
+								InputUtil.getPIN());
 						log.info("-".repeat(40));
 						log.info("ACCOUNT HAS BEEN CREATED SUCCESSFULLY");
 						LoggingUtil.logAccount(account);
@@ -193,7 +196,8 @@ class EmployeeRunner {
 					log.info("Enter deposit amount : ");
 					double amount = InputUtil.getPositiveDouble();
 
-					long transactionId = operations.depositAmount(employee.getUserId(), accountNumber, amount);
+					long transactionId = operations.depositAmount(employee.getUserId(), accountNumber, amount,
+							InputUtil.getPIN());
 
 					log.info("Deposit Successful!.\nTransaction Id : " + transactionId);
 				}
@@ -204,7 +208,8 @@ class EmployeeRunner {
 					long accountNumber = InputUtil.getPositiveLong();
 					log.info("Enter amount to withdraw : ");
 					double amount = InputUtil.getPositiveDouble();
-					long transactionId = operations.withdrawAmount(employee.getUserId(), accountNumber, amount);
+					long transactionId = operations.withdrawAmount(employee.getUserId(), accountNumber, amount,
+							InputUtil.getPIN());
 					log.info("Withdrawal Successful!.\nTransaction Id : " + transactionId);
 				}
 					break;
@@ -248,7 +253,8 @@ class EmployeeRunner {
 								value = InputUtil.getString();
 							}
 
-							if (operations.updateCustomerDetails(customerId, field, value)) {
+							if (operations.updateCustomerDetails(employee.getUserId(), customerId, field, value,
+									InputUtil.getPIN())) {
 								log.info("Update Successful");
 							}
 						}
@@ -339,7 +345,7 @@ class EmployeeRunner {
 			int typeSelection = InputUtil.getInteger();
 			if (typeSelection > 0 && typeSelection <= (i + 1)) {
 				Account account = activity.createNewCustomerAndAccount(customer,
-						AccountType.values()[typeSelection - 1], amount, employeeId);
+						AccountType.values()[typeSelection - 1], amount, employeeId, InputUtil.getPIN());
 				log.info("-".repeat(40));
 				log.info("CUSTOMER AND ACCOUNT HAS BEEN CREATED SUCCESSFULLY");
 				activity.getCustomerRecord(account.getUserId());

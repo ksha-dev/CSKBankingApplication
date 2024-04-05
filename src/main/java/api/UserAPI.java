@@ -36,4 +36,11 @@ public interface UserAPI {
 
 	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber,
 			TransactionHistoryLimit timeLimit) throws AppException;
+
+	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, long startDate, long endDate)
+			throws AppException;
+
+	public int numberOfTransactionPages(long accountNumber, TransactionHistoryLimit timeLimit) throws AppException;
+
+	public int numberOfTransactionPages(long accountNumber, long startDate, long endDate) throws AppException;
 }

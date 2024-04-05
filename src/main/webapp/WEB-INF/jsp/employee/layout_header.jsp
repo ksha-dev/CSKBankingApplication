@@ -24,14 +24,11 @@ String currentMenu = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf(
 				Account</li>
 		</a><a id="a-statement" href="statement">
 			<li id="li-statement"><i class="material-icons">receipt_long</i>Statement</li>
-		</a> <a href="transfer">
-			<li><i class="material-icons">payments</i>Transfer</li>
-		</a><a href="deposit">
-			<li><i class="material-icons">add_card</i>Deposit</li>
-		</a> </a><a href="withdraw">
-			<li><i class="material-icons">currency_rupee</i>Withdraw</li>
-		</a> </a> <a href="schange_password">
-			<li><i class="material-icons">lock_reset</i>Change Password</li>
+		</a> <a id="a-transaction" href="transaction">
+			<li id="li-transaction"><i class="material-icons">payments</i>Transaction</li>
+		</a> </a> <a id="a-change_password" href="change_password">
+			<li id="li-change_password"><i class="material-icons">lock_reset</i>Change
+				Password</li>
 		</a> <a href="#" onclick="logout()">
 			<li><i class="material-icons">logout</i>Logout</li>
 		</a>
