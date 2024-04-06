@@ -1,3 +1,4 @@
+<%@page import="utility.ConstantsUtil"%>
 <%@page import="modules.Branch"%>
 <%@page import="modules.UserRecord"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -9,6 +10,8 @@
 <%
 Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
 Branch branch = (Branch) request.getAttribute("branch");
+int pageCount = (int) request.getAttribute("pageCount");
+int currentPage = (int) request.getAttribute("currentPage");
 %>
 
 <!DOCTYPE html>
@@ -69,17 +72,50 @@ Branch branch = (Branch) request.getAttribute("branch");
 					<td><a
 						href="account_details?account_number=<%=account.getAccountNumber()%>"><i
 							class="material-icons">keyboard_arrow_right</i></a></td>
+
 				</tr>
 				<%
+				}
+
+				if (currentPage == pageCount) {
+				int remainingCount = ConstantsUtil.LIST_LIMIT - accounts.size();
+				for (int t = 0; t < remainingCount; t++) {
+					//out.println(
+					//"<tr><td>-</td><td>-</td><td>-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td><td>-</td></tr>");
+					out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+				}
 				}
 				%>
 			</tbody>
 		</table>
 	</div>
-	<%
-	}
-	%>
+
+	<form action="<%=pageCount == 1 ? "#" : "branch_accounts"%>"
+		class="pagination" method="post">
+		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
+			name="currentPage" value="<%=currentPage - 1%>"
+			style="margin-right: 20px;">&laquo;</button>
+		<%
+		for (int i = 1; i <= pageCount; i++) {
+		%>
+		<button type="<%=currentPage == i ? "reset" : "submit"%>"
+			name="currentPage" value="<%=i%>"
+			<%if (currentPage == i)
+	out.println("class=\"active\"");%>><%=i%></button>
+		<%
+		}
+		%>
+		<br>
+		<button type="<%=currentPage == pageCount ? "reset" : "submit"%>"
+			name="currentPage" value="<%=currentPage + 1%>"
+			style="margin-left: 20px;">&raquo;</button>
+		<input type="hidden" name="pageCount" value="<%=pageCount%>">
+		<input type="hidden" name="account_number"
+			value="<%=branch.getBranchId()%>">
+		<%
+		}
+		%>
+	</form>
 	<%@include file="../include/layout_footer.jsp"%>
 </body>
-
 </html>

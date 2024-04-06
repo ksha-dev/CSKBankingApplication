@@ -20,6 +20,8 @@ public interface EmployeeAPI extends UserAPI {
 
 	public boolean changeAccountStatus(long accountNumber, Status status, int branchId, String pin) throws AppException;
 
+	public int getNumberOfPagesOfAccounts(int branchId) throws AppException;
+
 	public Map<Long, Account> viewAccountsInBranch(int branchID, int pageNumber) throws AppException;
 
 	public long depositAmount(long accoutNumber, double amount, EmployeeRecord employee) throws AppException;

@@ -14,19 +14,48 @@
 </head>
 
 <body>
-	<%
-	Long accountNumber = (Long) request.getAttribute("accountNumber");
-	%>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Statement</h3>
 	<form action="statement" method="post" class="container"
 		style="width: 50%;" id="statement_form">
+		<%
+		String accountNumber = request.getParameter("accountNumber");
+		long selectedAccount = 0;
+		if (!Objects.isNull(accountNumber)) {
+			selectedAccount = Long.parseLong(accountNumber);
+		}
+		if (user.getType() == UserType.CUSTOMER) {
+		%>
+		<div class="dual-element-row">
+			<label for="account_number">Account</label> <select
+				id="account_number" name="account_number" required>
+				<option style="display: none" value="null">Select Account</option>
+				<%
+				Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
+				for (Account account : accounts.values()) {
+				%>
+				<option value="<%=account.getAccountNumber()%>"
+					<%=(selectedAccount == account.getAccountNumber()) ? "selected" : ""%>>
+					<%=account.getAccountNumber()%> -
+					<%=account.getAccountType()%>
+				</option>
+				<%
+				}
+				%>
+			</select>
+		</div>
+		<%
+		} else {
+		%>
 		<div class="dual-element-row">
 			<label for="account_number">Account</label> <input type="number"
 				placeholder="Enter Account Number" id="account_number"
-				<%=(Objects.isNull(accountNumber) ? "" : "value=\"" + accountNumber + "\"")%>
+				<%=(selectedAccount > 0 ? "value=\"" + selectedAccount + "\"" : "")%>
 				name="account_number" required>
 		</div>
+		<%
+		}
+		%>
 		<div class="dual-element-row">
 			<label for="transaction_limit">Duration</label> <select
 				name="transaction_limit" id="transaction_limit" required>

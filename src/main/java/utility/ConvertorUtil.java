@@ -52,6 +52,10 @@ public class ConvertorUtil {
 		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 
+	public static String formatToUTCDate(long dateTime) {
+		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	}
+
 	public static String passwordGenerator(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 		return passwordHasher(user.getFirstName().substring(0, 4) + "@"

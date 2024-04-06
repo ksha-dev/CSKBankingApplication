@@ -129,6 +129,8 @@ public class MySQLUserAPI implements UserAPI {
 		}
 	}
 
+
+
 	@Override
 	public Map<Long, Account> getAccountsOfUser(int userId) throws AppException {
 		ValidatorUtil.validateId(userId);
@@ -139,11 +141,16 @@ public class MySQLUserAPI implements UserAPI {
 		queryBuilder.fromSchema(Schemas.ACCOUNTS);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.USER_ID);
+		queryBuilder.and();
+		queryBuilder.not();
+		queryBuilder.columnEquals(Column.STATUS);
+		queryBuilder.sortField(Column.ACCOUNT_NUMBER, true);
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setInt(1, userId);
+			statement.setString(2, Status.CLOSED.getStatusId() + "");
 			try (ResultSet accountRS = statement.executeQuery()) {
 				while (accountRS.next()) {
 					accounts.put(accountRS.getLong(1), MySQLConversionUtil.convertToAccount(accountRS));

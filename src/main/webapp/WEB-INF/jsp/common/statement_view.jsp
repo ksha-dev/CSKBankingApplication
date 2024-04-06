@@ -60,7 +60,9 @@ String limitString = (String) request.getAttribute("limit");
 				if (currentPage == pageCount) {
 				int remainingCount = ConstantsUtil.LIST_LIMIT - transactions.size();
 				for (int t = 0; t < remainingCount; t++) {
-					out.println("<tr><td>&nbsp;</td></tr>");
+					//out.println(
+					//"<tr><td>-</td><td>-</td><td class=\"pl\">-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td></tr>");
+						out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 				}
 				}
 				%>
@@ -73,14 +75,9 @@ String limitString = (String) request.getAttribute("limit");
 	%>
 	<form action="<%=pageCount == 1 ? "#" : "statement"%>"
 		class="pagination" method="post">
-		<%
-		if (currentPage != 1) {
-		%>
-		<button type="submit" name="currentPage" value="<%=currentPage - 1%>"
+		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
+			name="currentPage" value="<%=currentPage - 1%>"
 			style="margin-right: 20px;">&laquo;</button>
-		<%
-		}
-		%>
 		<%
 		for (int i = 1; i <= pageCount; i++) {
 		%>
@@ -91,13 +88,10 @@ String limitString = (String) request.getAttribute("limit");
 		<%
 		}
 		%>
-		<%
-		if (currentPage != pageCount) {
-		%>
 		<br>
-		<button type="submit" name="currentPage" value="<%=currentPage + 1%>"
+		<button type="<%=currentPage == pageCount ? "reset" : "submit"%>"
+			name="currentPage" value="<%=currentPage + 1%>"
 			style="margin-left: 20px;">&raquo;</button>
-		<%}%>
 		<input type="hidden" name="pageCount" value="<%=pageCount%>">
 		<input type="hidden" name="account_number" value="<%=accountNumber%>">
 		<%

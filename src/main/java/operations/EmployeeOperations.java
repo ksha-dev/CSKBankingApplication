@@ -18,6 +18,7 @@ import utility.ValidatorUtil;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
 import utility.ConvertorUtil;
@@ -48,6 +49,10 @@ public class EmployeeOperations {
 
 	public Branch getBrachDetails(int branchId) throws AppException {
 		return CachePool.getBranchCache().get(branchId);
+	}
+
+	public int getBranchAccountsPageCount(int branchId) throws AppException {
+		return api.getNumberOfPagesOfAccounts(branchId);
 	}
 
 	public Map<Long, Account> getListOfAccountsInBranch(int employeeId, int pageNumber) throws AppException {
@@ -95,6 +100,34 @@ public class EmployeeOperations {
 		ValidatorUtil.validatePositiveNumber((long) amount);
 		if (api.userConfimration(employeeId, pin)) {
 			return api.withdrawAmount(accountNumber, amount, getEmployeeRecord(employeeId));
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
+	}
+
+	public boolean changeAccountStatus(long accountNumber, Status status, int employeeId, String pin)
+			throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateId(employeeId);
+		ValidatorUtil.validateObject(status);
+		ValidatorUtil.validatePIN(pin);
+
+		if (api.userConfimration(employeeId, pin)) {
+			return api.changeAccountStatus(accountNumber, status, employeeId, pin);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
+	}
+
+	public boolean closeAccount(long accountNumber, int employeeId, String pin) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+		ValidatorUtil.validateId(employeeId);
+		ValidatorUtil.validatePIN(pin);
+		if (getAccountDetails(accountNumber).getBalance() > 0) {
+			throw new AppException(ActivityExceptionMessages.CLEAR_BALANCE_TO_CLOSE_ACCOUNT);
+		}
+		if (api.userConfimration(employeeId, pin)) {
+			return api.changeAccountStatus(accountNumber, Status.CLOSED, employeeId, pin);
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}

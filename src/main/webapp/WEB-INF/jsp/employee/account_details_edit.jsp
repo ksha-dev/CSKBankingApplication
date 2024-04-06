@@ -1,3 +1,4 @@
+<%@page import="utility.ConstantsUtil.Gender"%>
 <%@page import="modules.CustomerRecord"%>
 <%@page import="modules.Branch"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -15,7 +16,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 <!DOCTYPE html>
 <html>
 <head>
-<title>Account Details</title>
+<title>Insert title here</title>
 <%@include file="../include/head.jsp"%>
 </head>
 <body style="width: 100%;">
@@ -24,16 +25,13 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 		document.getElementById('li-branch_accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
 		document.getElementById('a-branch_accounts').href = '#';
 	</script>
-	<div
-		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
-		<button style="z-index: 0;" type="button"
-			onclick="location.href = 'branch_accounts';">
-			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
-		</button>
-	</div>
+
+	<button style="z-index: 0;" type="button"
+		onclick="location.href = 'branch_accounts';">
+		<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
+	</button>
 	<div class="container">
 		<h3 class="profile-element">Account Details</h3>
-
 		<div class="divider"></div>
 
 		<div
@@ -73,20 +71,6 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				</div>
 			</div>
 		</div>
-		<br>
-		<div style="display: flex;">
-			<form action="statement">
-				<input type="hidden" value="<%=account.getAccountNumber()%>"
-					name="accountNumber">
-				<button type="submit">View Statement</button>
-			</form>
-			<form action="authorization" style="padding-left: 30px" method="post">
-				<input type="hidden" name="operation"
-					value="authorize_close_account"> <input type="hidden"
-					name="accountNumber" value="<%=account.getAccountNumber()%>">
-				<button type="submit">Close Account</button>
-			</form>
-		</div>
 	</div>
 
 	<div class="container">
@@ -96,28 +80,42 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 		<div
 			style="display: flex; justify-content: space-between; width: 100%;">
 
-			<div style="width: 100%;">
+			<div style="width: 100%; padding-right: 50px">
 				<div class="dual-element-row">
 					<p class="profile-element">Customer ID</p>
-					<h4 class="profile-element"><%=customer.getUserId()%></h4>
+					<h4 class="profile-element" style="padding-left: 15px;"><%=customer.getUserId()%></h4>
 				</div>
 				<div class="dual-element-row">
-					<p class="profile-element">Customer Name</p>
-					<h4 class="profile-element"><%=customer.getFirstName()%>
-						<%=customer.getLastName()%></h4>
+					<label for="firstName">First Name</label> <input type="text"
+						name="firstName" id="firstName"
+						value="<%=customer.getFirstName()%>">
 				</div>
 				<div class="dual-element-row">
-					<p class="profile-element">Gender</p>
-					<h4 class="profile-element"><%=customer.getGender()%></h4>
+					<p class="profile-element">Last Name</p>
+					<input type="text" name="lasttName" id="lastName"
+						value="<%=customer.getLastName()%>">
+				</div>
+				<div class="dual-element-row">
+					<label for="gender">Gender</label> <select name="gender"
+						id="gender" required>
+						<option value=null style="display: none;">Select</option>
+						<%
+						for (Gender gender : Gender.values()) {
+						%>
+						<option value="<%=gender.getGenderId()%>"
+							<%=customer.getGender() == gender ? "selected" : ""%>><%=gender%></option>
+						<%
+						}
+						%>
+					</select>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Date of Birth</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
+					<input type="date" name="dateOfBirth"
+						value="<%=ConvertorUtil.formatToUTCDate(customer.getDateOfBirth())%>"
+						max="<%=ConvertorUtil.formatToUTCDate(System.currentTimeMillis())%>">
 				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">PAN</p>
-					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
-				</div>
+
 				<div class="dual-element-row">
 					<form action="account_details_edit" method="get">
 						<input type="hidden" value="<%=account.getAccountNumber()%>"
@@ -131,19 +129,25 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 			<div style="width: 100%;">
 				<div class="dual-element-row">
 					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=customer.getPhone()%></h4>
+					<input type="number" name="phone" value="<%=customer.getPhone()%>">
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Email</p>
-					<h4 class="profile-element"><%=customer.getEmail()%></h4>
+					<input type="email" name="email" value="<%=customer.getEmail()%>">
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Address</p>
-					<h4 class="profile-element"><%=customer.getAddress()%></h4>
+					<input type="text" name="address"
+						value="<%=customer.getAddress()%>">
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Aadhar</p>
-					<h4 class="profile-element"><%=customer.getAadhaarNumber()%></h4>
+					<input type="number" name="aadhaar"
+						value="<%=customer.getAadhaarNumber()%>">
+				</div>
+				<div class="dual-element-row">
+					<p class="profile-element">PAN</p>
+					<input type="text" name="pan" value="<%=customer.getPanNumber()%>">
 				</div>
 			</div>
 		</div>

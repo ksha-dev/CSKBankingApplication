@@ -13,9 +13,8 @@ public class ConstantsUtil {
 	public static final List<ModifiableField> USER_MODIFIABLE_FIELDS;
 	public static final List<ModifiableField> EMPLOYEE_MODIFIABLE_FIELDS;
 	public static final List<ModifiableField> ADMIN_MODIFIABLE_FIELDS;
-	
-	public static final int CACHE_SIZE = 30;
 
+	public static final int CACHE_SIZE = 30;
 
 	static {
 		List<ModifiableField> tempList = new ArrayList<>();
@@ -23,10 +22,11 @@ public class ConstantsUtil {
 		USER_MODIFIABLE_FIELDS = List.copyOf(tempList);
 
 		tempList.addAll(List.of(ModifiableField.FIRST_NAME, ModifiableField.LAST_NAME, ModifiableField.GENDER,
-				ModifiableField.DATE_OF_BIRTH, ModifiableField.AADHAAR_NUMBER, ModifiableField.PAN_NUMBER));
+				ModifiableField.PHONE, ModifiableField.DATE_OF_BIRTH, ModifiableField.AADHAAR_NUMBER,
+				ModifiableField.PAN_NUMBER));
 		EMPLOYEE_MODIFIABLE_FIELDS = List.copyOf(tempList);
 
-		tempList.addAll(List.of(ModifiableField.BRANCH_ID));
+		tempList.addAll(List.of(ModifiableField.BRANCH_ID, ModifiableField.TYPE));
 		ADMIN_MODIFIABLE_FIELDS = List.copyOf(tempList);
 	}
 

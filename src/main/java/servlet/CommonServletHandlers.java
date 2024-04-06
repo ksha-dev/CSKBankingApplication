@@ -157,11 +157,12 @@ public class CommonServletHandlers {
 			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_view.jsp");
 		} catch (AppException e) {
 			e.printStackTrace();
-			request.setAttribute("status", false);
-			request.setAttribute("message", e.getMessage());
-			request.setAttribute("operation", "statement");
-			request.setAttribute("redirect", "statement");
-			dispatchRequest(request, response, "/WEB-INF/jsp/common/transaction_status.jsp");
+//			request.setAttribute("status", false);
+//			request.setAttribute("message", e.getMessage());
+//			request.setAttribute("operation", "statement");
+//			request.setAttribute("redirect", "statement");
+			session(request).setAttribute("error", e.getMessage());
+			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_select.jsp");
 		}
 	}
 

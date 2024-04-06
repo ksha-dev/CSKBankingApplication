@@ -13,6 +13,8 @@ public enum ActivityExceptionMessages {
 	MINIMUM_DEPOSIT_REQUIRED(
 			"The deposit amount must meet the minimum required amount. The minimum deposit amount is Rs. "
 					+ ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT),
+	CLEAR_BALANCE_TO_CLOSE_ACCOUNT(
+			"The balance in the account needs to be withdrawn or transferred to another account before it can be closed"),
 	INVALID_START_DATE("Start Date of range cannot be greater than the end date"),
 	EQUAL_START_END_DATE("Start Date and End Date cannot be the same"),
 	INVALID_END_DATE("End date cannot be greater than the current date");

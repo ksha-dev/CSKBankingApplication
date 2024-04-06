@@ -17,15 +17,15 @@ public enum APIExceptionMessage {
 	ACCOUNT_CREATION_FAILED("Failed to create a new Account. Please try again later."),
 	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment. Pleasy try again later"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
-	
-	
+
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),
 	CANNOT_MODIFY_STATUS("The status of a closed account cannot be changed"),
 	STATUS_ALREADY_SET("The account is already in the required state"),
 	ACCOUNT_RESTRICTED("This account has been restricted for transactions."),
-	
+	ACCOUNT_FROZEN(
+			"This account has been frozen due to prolonged inactivity. Please deposit an amount at the nearest bank to reactive it."),
 
-	UPDATE_FAILED("Cannot update the details. Please try again"), 
+	UPDATE_FAILED("Cannot update the details. Please try again"),
 	IFSC_CODE_UPDATE_FAILED("The IFSC Code of the bank could not be set. Record will not be created"),
 	STATUS_UPDATE_FAILED("Cannot change the account status."),
 	BALANCE_ACQUISITION_FAILED("The balance amount for the given account could not be obtained."),

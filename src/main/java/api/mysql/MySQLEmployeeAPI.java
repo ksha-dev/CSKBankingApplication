@@ -174,6 +174,33 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
+	public int getNumberOfPagesOfAccounts(int branchId) throws AppException {
+		ValidatorUtil.validateId(branchId);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.ACCOUNTS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.BRANCH_ID);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setInt(1, branchId);
+
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount < 10 ? pageCount : 10;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
 	public long depositAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException {
 		ValidatorUtil.validateAmount(amount);
 		ValidatorUtil.validateObject(employee);
@@ -211,6 +238,9 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		try {
 			ServerConnection.startTransaction();
 			Account customerAccount = getAccountDetails(accountNumber);
+			if (customerAccount.getStatus() == Status.FROZEN) {
+				throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
+			}
 			if (customerAccount.getBalance() < amount) {
 				throw new AppException(APIExceptionMessage.INSUFFICIENT_BALANCE);
 			}

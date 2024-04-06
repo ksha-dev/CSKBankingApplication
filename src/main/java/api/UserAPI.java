@@ -28,12 +28,15 @@ public interface UserAPI {
 	public Branch getBrachDetails(int branchID) throws AppException;
 
 	// Accounts
+//	public int getNumberOfPagesOfAccounts(int userId, int pageNumber) throws AppException;
+
 	public Map<Long, Account> getAccountsOfUser(int userID) throws AppException;
 
 	public Account getAccountDetails(long accountNumber) throws AppException;
 
 	public long transferAmount(Transaction transaction, boolean isTransferOutsideBank) throws AppException;
 
+	// Transaction
 	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber,
 			TransactionHistoryLimit timeLimit) throws AppException;
 

@@ -27,6 +27,7 @@ import operations.CustomerOperations;
 import operations.EmployeeOperations;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.TransactionType;
 import utility.ConstantsUtil.UserType;
@@ -176,6 +177,7 @@ public class AppServlet extends HttpServlet {
 		switch (path) {
 		case "/customer/home":
 		case "/customer/account": {
+
 			request.setAttribute("accounts", customerOperation.getAssociatedAccounts(customer.getUserId()));
 			dispatchRequest(request, response, "/WEB-INF/jsp/customer/accounts.jsp");
 		}
@@ -184,11 +186,8 @@ public class AppServlet extends HttpServlet {
 		case "/customer/account_details": {
 			Long accountNumber = getLongFromParameter(request, "account_number");
 			Account account = customerOperation.getAccountDetails(accountNumber, customer.getUserId());
-//			List<Transaction> transactions = commonServletHandler .getTransactionsOfAccount(accountNumber, 1,
-//					TransactionHistoryLimit.RECENT);
 			Branch branch = customerOperation.getBranchDetailsOfAccount(account.getBranchId());
 			request.setAttribute("account", account);
-//			request.setAttribute("transactions", transactions);
 			request.setAttribute("branch", branch);
 			dispatchRequest(request, response, "/WEB-INF/jsp/customer/account_details.jsp");
 		}
@@ -198,7 +197,7 @@ public class AppServlet extends HttpServlet {
 			Map<Long, Account> accounts = (Map<Long, Account>) customerOperation
 					.getAssociatedAccounts(customer.getUserId());
 			request.setAttribute("accounts", accounts);
-			dispatchRequest(request, response, "/WEB-INF/jsp/customer/statement_select.jsp");
+			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_select.jsp");
 		}
 			break;
 
@@ -385,7 +384,12 @@ public class AppServlet extends HttpServlet {
 		switch (path) {
 		case "/employee/home":
 		case "/employee/branch_accounts": {
+
+			int pageCount = employeeOperation.getBranchAccountsPageCount(employee.getBranchId());
+			System.out.println(pageCount);
 			request.setAttribute("accounts", employeeOperation.getListOfAccountsInBranch(employee.getUserId(), 1));
+			request.setAttribute("currentPage", 1);
+			request.setAttribute("pageCount", pageCount);
 			request.setAttribute("branch", employeeOperation.getBrachDetails(employee.getBranchId()));
 			dispatchRequest(request, response, "/WEB-INF/jsp/employee/branch_accounts.jsp");
 		}
@@ -401,6 +405,16 @@ public class AppServlet extends HttpServlet {
 		}
 			break;
 
+		case "/employee/account_details_edit": {
+			Long accountNumber = getLongFromParameter(request, "account_number");
+			Account account = employeeOperation.getAccountDetails(accountNumber);
+			CustomerRecord customer = employeeOperation.getCustomerRecord(account.getUserId());
+			request.setAttribute("account", account);
+			request.setAttribute("customer", customer);
+			dispatchRequest(request, response, "/WEB-INF/jsp/employee/account_details_edit.jsp");
+		}
+			break;
+
 		case "/employee/open_account": {
 			dispatchRequest(request, response, "/WEB-INF/jsp/employee/open_account.jsp");
 		}
@@ -411,7 +425,7 @@ public class AppServlet extends HttpServlet {
 				long accountNumber = getLongFromParameter(request, "accountNumber");
 				request.setAttribute("accountNumber", accountNumber);
 			}
-			dispatchRequest(request, response, "/WEB-INF/jsp/employee/statement_select.jsp");
+			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_select.jsp");
 		}
 			break;
 
@@ -448,6 +462,26 @@ public class AppServlet extends HttpServlet {
 			return;
 		}
 		switch (path) {
+		case "/employee/branch_accounts": {
+			Map<String, String[]> parameters = request.getParameterMap();
+			if (parameters.containsKey("pageCount") && parameters.containsKey("currentPage")) {
+				int pageCount = getIntFromParameter(request, "pageCount");
+				int currentPage = getIntFromParameter(request, "currentPage");
+				request.setAttribute("accounts",
+						employeeOperation.getListOfAccountsInBranch(employee.getUserId(), currentPage));
+				request.setAttribute("currentPage", currentPage);
+				request.setAttribute("pageCount", pageCount);
+			} else {
+				int pageCount = employeeOperation.getBranchAccountsPageCount(employee.getBranchId());
+				request.setAttribute("accounts", employeeOperation.getListOfAccountsInBranch(employee.getUserId(), 1));
+				request.setAttribute("currentPage", 1);
+				request.setAttribute("pageCount", pageCount);
+			}
+			request.setAttribute("branch", employeeOperation.getBrachDetails(employee.getBranchId()));
+			dispatchRequest(request, response, "/WEB-INF/jsp/employee/branch_accounts.jsp");
+		}
+			break;
+
 		case "/employee/statement": {
 			commonServletHandler.statementPostRequest(request, response);
 		}
@@ -521,6 +555,7 @@ public class AppServlet extends HttpServlet {
 						session(request).setAttribute("newCustomer", newCustomer);
 					} else if (customerType.equals("existing")) {
 						int customerId = getIntFromParameter(request, "userId");
+						employeeOperation.getCustomerRecord(customerId);
 						session(request).setAttribute("customerId", customerId);
 					}
 					session(request).setAttribute("accountType", accountType);
@@ -529,13 +564,8 @@ public class AppServlet extends HttpServlet {
 					dispatchRequest(request, response,
 							"/WEB-INF/jsp/customer/authorization.jsp?redirect=process_open_account");
 				} catch (AppException e) {
-					request.setAttribute("status", false);
-					request.setAttribute("message", e.getMessage());
-					request.setAttribute("operation", "open_account");
-					request.setAttribute("redirect", "open_account");
-					RequestDispatcher dispatcher = request
-							.getRequestDispatcher("/WEB-INF/jsp/customer/transaction_status.jsp");
-					dispatcher.forward(request, response);
+					session(request).setAttribute("error", e.getMessage());
+					dispatchRequest(request, response, "/WEB-INF/jsp/employee/open_account.jsp");
 				}
 			}
 				break;
@@ -579,13 +609,47 @@ public class AppServlet extends HttpServlet {
 				commonServletHandler.passwordChangeProcessPostRequest(request, response);
 				break;
 
+			case "authorize_close_account": {
+				long accountNumber = getLongFromParameter(request, "accountNumber");
+				try {
+					employeeOperation.getAccountDetails(accountNumber);
+					session(request).setAttribute("accountNumber", accountNumber);
+					dispatchRequest(request, response,
+							"/WEB-INF/jsp/common/authorization.jsp?redirect=process_close_account");
+				} catch (AppException e) {
+					request.setAttribute("status", false);
+					request.setAttribute("message", e.getMessage());
+					request.setAttribute("operation", "close_account");
+					request.setAttribute("redirect", "branch_accounts");
+					dispatchRequest(request, response, "/WEB-INF/jsp/common/transaction_status.jsp");
+				}
+			}
+				break;
+
+			case "process_close_account": {
+				String pin = getStringFromParameter(request, "pin");
+				long accountNumber = (long) session(request).getAttribute("accountNumber");
+				try {
+					employeeOperation.closeAccount(accountNumber, employee.getUserId(), pin);
+					request.setAttribute("status", true);
+					request.setAttribute("message",
+							"Account (Acc/No : " + accountNumber + ") has been successfully closed");
+				} catch (AppException e) {
+					request.setAttribute("status", false);
+					request.setAttribute("message", e.getMessage());
+				}
+				request.setAttribute("redirect", "branch_accounts");
+				request.setAttribute("operation", "close_account");
+				dispatchRequest(request, response, "/WEB-INF/jsp/customer/transaction_status.jsp");
+			}
+				break;
+
 			default:
 				dispatchRequest(request, response, "/static/html/page_not_found.html");
 				break;
 			}
-		}
 			break;
-
+		}
 		default:
 			dispatchRequest(request, response, "/static/html/page_not_found.html");
 			break;

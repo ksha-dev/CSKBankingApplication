@@ -22,8 +22,7 @@ System.out.println(error);
 <%if (!Objects.isNull(error)) {
 	request.getSession(false).removeAttribute("error");%>
 	setTimeout(function() {
-		alert("<%=error%>
-	");
+		alert("<%=error%>");
 	}, 100);
 <%
 }
