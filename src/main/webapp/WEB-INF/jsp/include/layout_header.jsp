@@ -35,13 +35,14 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 		break;
 		case ADMIN : {
 		%>
-		<!-- <a id="a-branch_accounts" href="branch_accounts">
-			<li id='li-branch_accounts'><i class="material-icons">account_balance</i>Branch
-				Accounts</li>
-		</a> -->
+		<a id="a-employees" href="employees">
+			<li id='li-employees'><i class="material-icons">account_balance</i>Employees</li>
+		</a> <a id="a-branches" href="branches">
+			<li id='li-branches'><i class="material-icons">account_balance</i>Branches</li>
+		</a>
 		<%
 		}
-				case EMPLOYEE: {
+		case EMPLOYEE : {
 		%>
 		<a id="a-branch_accounts" href="branch_accounts">
 			<li id='li-branch_accounts'><i class="material-icons">account_balance</i>Branch

@@ -13,7 +13,7 @@
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<%
-	EmployeeRecord customer = (EmployeeRecord) user;
+	EmployeeRecord employee = (EmployeeRecord) user;
 	%>
 	<script>
 		document.getElementById('profile').href = "#";
@@ -29,19 +29,19 @@
 				<h3 class="profile-element">Employee Details</h3>
 				<div class="divider"></div>
 				<div class="dual-element-row">
-					<p class="profile-element">Customer ID</p>
-					<h4 class="profile-element"><%=customer.getUserId()%></h4>
+					<p class="profile-element">Employee ID</p>
+					<h4 class="profile-element"><%=employee.getUserId()%></h4>
 				</div>
 
 				<div class="dual-element-row">
-					<p class="profile-element">Customer Name</p>
-					<h4 class="profile-element"><%=customer.getFirstName()%>
-						<%=customer.getLastName()%></h4>
+					<p class="profile-element">Employee Name</p>
+					<h4 class="profile-element"><%=employee.getFirstName()%>
+						<%=employee.getLastName()%></h4>
 				</div>
 
 				<div class="dual-element-row">
 					<p class="profile-element">Date of Birth</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(employee.getDateOfBirth())%></h4>
 				</div>
 			</div>
 
@@ -50,12 +50,12 @@
 				<div class="divider"></div>
 				<div class="dual-element-row">
 					<p class="profile-element">Role</p>
-					<h4 class="profile-element"><%=customer.getType()%></h4>
+					<h4 class="profile-element"><%=employee.getType()%></h4>
 				</div>
 
 				<div class="dual-element-row">
 					<p class="profile-element">Branch ID</p>
-					<h4 class="profile-element"><%=customer.getBranchId()%></h4>
+					<h4 class="profile-element"><%=employee.getBranchId()%></h4>
 				</div>
 			</div>
 		</div>
@@ -66,17 +66,17 @@
 				<div class="divider"></div>
 				<div class="dual-element-row">
 					<p class="profile-element">Address</p>
-					<h4 class="profile-element"><%=customer.getAddress()%></h4>
+					<h4 class="profile-element"><%=employee.getAddress()%></h4>
 				</div>
 
 				<div class="dual-element-row">
 					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=customer.getPhone()%></h4>
+					<h4 class="profile-element"><%=employee.getPhone()%></h4>
 				</div>
 
 				<div class="dual-element-row">
 					<p class="profile-element">Email ID</p>
-					<h4 class="profile-element"><%=customer.getEmail()%></h4>
+					<h4 class="profile-element"><%=employee.getEmail()%></h4>
 				</div>
 			</div>
 		</div>

@@ -30,26 +30,26 @@ public class CommonServletHandlers {
 		operation = new AppOperations();
 	}
 
-	private void dispatchRequest(HttpServletRequest request, HttpServletResponse response, String url)
+	public void dispatchRequest(HttpServletRequest request, HttpServletResponse response, String url)
 			throws ServletException, IOException {
 		RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 		dispatcher.forward(request, response);
 	}
 
-	private HttpSession session(HttpServletRequest request) throws ServletException, IOException {
+	public HttpSession session(HttpServletRequest request) throws ServletException, IOException {
 		return request.getSession(false);
 	}
 
-	private String nextURL(HttpServletRequest request, String url) {
+	public String nextURL(HttpServletRequest request, String url) {
 		return request.getContextPath() + request.getServletPath() + url;
 	}
 
-	private UserRecord getUser(HttpServletRequest request) throws AppException, ServletException, IOException {
+	public UserRecord getUser(HttpServletRequest request) throws AppException, ServletException, IOException {
 		HttpSession currentSession = session(request);
 		return (UserRecord) currentSession.getAttribute("user");
 	}
 
-	private static String getStringFromParameter(HttpServletRequest request, String parameter) throws AppException {
+	public String getStringFromParameter(HttpServletRequest request, String parameter) throws AppException {
 		ValidatorUtil.validateObject(parameter);
 		ValidatorUtil.validateObject(request);
 		String parameterValue = request.getParameter(parameter);
@@ -59,7 +59,7 @@ public class CommonServletHandlers {
 		return parameterValue;
 	}
 
-	private static int getIntFromParameter(HttpServletRequest request, String parameter) throws AppException {
+	public int getIntFromParameter(HttpServletRequest request, String parameter) throws AppException {
 		ValidatorUtil.validateObject(parameter);
 		ValidatorUtil.validateObject(request);
 		String parameterValue = request.getParameter(parameter);
@@ -70,7 +70,7 @@ public class CommonServletHandlers {
 		}
 	}
 
-	private static long getLongFromParameter(HttpServletRequest request, String parameter) throws AppException {
+	public long getLongFromParameter(HttpServletRequest request, String parameter) throws AppException {
 		ValidatorUtil.validateObject(parameter);
 		ValidatorUtil.validateObject(request);
 		String parameterValue = request.getParameter(parameter);
@@ -81,7 +81,7 @@ public class CommonServletHandlers {
 		}
 	}
 
-	private static double getDoubleFromParameter(HttpServletRequest request, String parameter) throws AppException {
+	public double getDoubleFromParameter(HttpServletRequest request, String parameter) throws AppException {
 		ValidatorUtil.validateObject(parameter);
 		ValidatorUtil.validateObject(request);
 		String parameterValue = request.getParameter(parameter);
@@ -156,11 +156,6 @@ public class CommonServletHandlers {
 			request.setAttribute("transactions", transactions);
 			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_view.jsp");
 		} catch (AppException e) {
-			e.printStackTrace();
-//			request.setAttribute("status", false);
-//			request.setAttribute("message", e.getMessage());
-//			request.setAttribute("operation", "statement");
-//			request.setAttribute("redirect", "statement");
 			session(request).setAttribute("error", e.getMessage());
 			dispatchRequest(request, response, "/WEB-INF/jsp/common/statement_select.jsp");
 		}
