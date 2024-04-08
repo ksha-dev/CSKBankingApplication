@@ -25,7 +25,7 @@ public interface UserAPI {
 	public boolean updatePassword(int customerID, String oldPassword, String newPassword) throws AppException;
 
 	// Branch
-	public Branch getBrachDetails(int branchID) throws AppException;
+	public Branch getBranchDetails(int branchID) throws AppException;
 
 	// Accounts
 //	public int getNumberOfPagesOfAccounts(int userId, int pageNumber) throws AppException;

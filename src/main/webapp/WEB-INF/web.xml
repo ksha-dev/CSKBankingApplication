@@ -20,7 +20,7 @@
 
 	<filter>
 		<filter-name>servletFilter</filter-name>
-		<filter-class>servlet.FilterServlet</filter-class>
+		<filter-class>servlet.RequestFilter</filter-class>
 	</filter>
 
 	<filter-mapping>

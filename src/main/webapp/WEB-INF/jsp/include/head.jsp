@@ -5,7 +5,6 @@ response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
 response.setHeader("pragma", "no-cache");
 response.setHeader("Expires", "0");
 String error = (String) request.getSession(false).getAttribute("error");
-System.out.println(error);
 %>
 
 <meta charset="UTF-8">

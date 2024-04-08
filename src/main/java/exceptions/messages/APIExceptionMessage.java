@@ -24,6 +24,9 @@ public enum APIExceptionMessage {
 	ACCOUNT_RESTRICTED("This account has been restricted for transactions."),
 	ACCOUNT_FROZEN(
 			"This account has been frozen due to prolonged inactivity. Please deposit an amount at the nearest bank to reactive it."),
+	ACCOUNT_CLOSED("The account has been closed."),
+
+	DB_COMMUNICATION_FAILED("The data could not be fetched from the server"),
 
 	UPDATE_FAILED("Cannot update the details. Please try again"),
 	IFSC_CODE_UPDATE_FAILED("The IFSC Code of the bank could not be set. Record will not be created"),

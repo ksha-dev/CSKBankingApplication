@@ -62,7 +62,7 @@ String limitString = (String) request.getAttribute("limit");
 				for (int t = 0; t < remainingCount; t++) {
 					//out.println(
 					//"<tr><td>-</td><td>-</td><td class=\"pl\">-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td></tr>");
-						out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+					out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 				}
 				}
 				%>

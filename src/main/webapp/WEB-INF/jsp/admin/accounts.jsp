@@ -9,7 +9,6 @@
 	pageEncoding="UTF-8"%>
 <%
 Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
-Branch branch = (Branch) request.getAttribute("branch");
 int pageCount = (int) request.getAttribute("pageCount");
 int currentPage = (int) request.getAttribute("currentPage");
 %>
@@ -23,12 +22,13 @@ int currentPage = (int) request.getAttribute("currentPage");
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
-	<div style="display: flex; justify-content: space-between;">
-		<h3 class="content-title">
-			Accounts in
-			<%=branch.getAddress()%>
-			Branch
-		</h3>
+	<div
+		style="display: flex; justify-content: space-between; align-items: center;">
+		<h3 class="content-title">List of Accounts</h3>
+		<a href="open_account" style="color: white; padding-left: 10px"> <i
+			class="material-icons">add_circle</i>
+		</a>
+		<div style="margin: auto"></div>
 		<form action="account_details">
 			<input type="number" name="account_number"
 				placeholder="Search account number" style="margin-right: 50px"
@@ -38,8 +38,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 	<%
 	if (accounts.isEmpty()) {
 	%>
-	<div class="container">Customers are yet to open accounts in this
-		branch</div>
+	<div class="container">Customers are yet to open accounts</div>
 	<%
 	} else {
 	%>
@@ -49,6 +48,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 				<tr>
 					<td>Account Number</td>
 					<td>Customer ID</td>
+					<td>Branch ID</td>
 					<td>Account Type</td>
 					<td>Available Balance</td>
 					<td>Opening Date</td>
@@ -64,6 +64,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 				<tr>
 					<td><%=account.getAccountNumber()%></td>
 					<td><%=account.getUserId()%></td>
+					<td><%=account.getBranchId()%></td>
 					<td><%=account.getAccountType()%></td>
 					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
@@ -90,7 +91,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</table>
 	</div>
 
-	<form action="<%=pageCount == 1 ? "#" : "branch_accounts"%>"
+	<form action="<%=pageCount == 1 ? "#" : "accounts"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"

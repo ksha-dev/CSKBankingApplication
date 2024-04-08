@@ -4,8 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ import utility.ConstantsUtil;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.Status;
-import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.TransactionType;
 
 public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
@@ -147,7 +145,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	public Map<Long, Account> viewAccountsInBranch(int branchId, int pageNumber) throws AppException {
 		ValidatorUtil.validateId(branchId);
 		ValidatorUtil.validateId(pageNumber);
-		Map<Long, Account> accounts = new HashMap<Long, Account>();
+		Map<Long, Account> accounts = new LinkedHashMap<Long, Account>();
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.selectColumn(Column.ALL);

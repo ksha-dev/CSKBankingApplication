@@ -12,6 +12,16 @@
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
+	<%
+	if (user.getType() == UserType.ADMIN) {
+	%>
+	<script>
+		document.getElementById('li-accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
+		document.getElementById('a-accounts').href = '#';
+	</script>
+	<%
+	}
+	%>
 	<h3 class="content-title">Open New Account</h3>
 	<form action="authorization" id="open-account-form"
 		style="width: auto;" method="post">

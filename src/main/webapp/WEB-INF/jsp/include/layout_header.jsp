@@ -6,12 +6,8 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
 <%
-String path = request.getServletPath();
-String currentMenu = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 UserRecord user = (UserRecord) session.getAttribute("user");
 %>
-
-
 <section id="menu">
 	<div class="logo">
 		<img src="../../static/images/logo.png" alt="CSK Bank Logo">
@@ -36,13 +32,16 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 		case ADMIN : {
 		%>
 		<a id="a-employees" href="employees">
-			<li id='li-employees'><i class="material-icons">account_balance</i>Employees</li>
+			<li id='li-employees'><i class="material-icons">groups</i>Employees</li>
 		</a> <a id="a-branches" href="branches">
-			<li id='li-branches'><i class="material-icons">account_balance</i>Branches</li>
+			<li id='li-branches'><i class="material-icons">location_city</i>Branches</li>
+		</a> <a id="a-accounts" href="accounts">
+			<li id='li-accounts'><i class="material-icons">account_balance</i>Accounts</li>
 		</a>
 		<%
 		}
 		case EMPLOYEE : {
+		if (user.getType() != UserType.ADMIN) {
 		%>
 		<a id="a-branch_accounts" href="branch_accounts">
 			<li id='li-branch_accounts'><i class="material-icons">account_balance</i>Branch
@@ -50,6 +49,11 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 		</a> <a id="a-open_account" href="open_account">
 			<li id="li-open_account"><i class="material-icons">library_add</i>Open
 				Account</li>
+		</a>
+		<%
+		}
+		%><a id="a-search" href="search">
+			<li id="li-search"><i class="material-icons">search</i>Search</li>
 		</a><a id="a-statement" href="statement">
 			<li id="li-statement"><i class="material-icons">receipt_long</i>Statement</li>
 		</a> <a id="a-transaction" href="transaction">

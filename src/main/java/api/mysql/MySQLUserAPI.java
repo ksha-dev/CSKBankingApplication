@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -129,12 +130,10 @@ public class MySQLUserAPI implements UserAPI {
 		}
 	}
 
-
-
 	@Override
 	public Map<Long, Account> getAccountsOfUser(int userId) throws AppException {
 		ValidatorUtil.validateId(userId);
-		Map<Long, Account> accounts = new HashMap<Long, Account>();
+		Map<Long, Account> accounts = new LinkedHashMap<Long, Account>();
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.selectColumn(Column.ALL);
@@ -217,7 +216,7 @@ public class MySQLUserAPI implements UserAPI {
 		queryBuilder.columnEquals(Column.VIEWER_ACCOUNT_NUMBER);
 		queryBuilder.and();
 		queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
-		queryBuilder.sortField(Column.TRANSACTION_ID, true);
+		queryBuilder.sortField(Column.TRANSACTION_ID, false);
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
 		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
 		queryBuilder.end();
@@ -250,18 +249,19 @@ public class MySQLUserAPI implements UserAPI {
 		queryBuilder.fromSchema(Schemas.ACCOUNTS);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.ACCOUNT_NUMBER);
-		queryBuilder.and();
-		queryBuilder.not();
-		queryBuilder.columnEquals(Column.STATUS);
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setLong(1, accountNumber);
-			statement.setString(2, Status.CLOSED.getStatusId() + "");
 			try (ResultSet result = statement.executeQuery()) {
 				if (result.next()) {
-					return MySQLConversionUtil.convertToAccount(result);
+
+					Account account = MySQLConversionUtil.convertToAccount(result);
+					if (account.getStatus() == Status.CLOSED) {
+						throw new AppException(APIExceptionMessage.ACCOUNT_CLOSED);
+					}
+					return account;
 				} else {
 					throw new AppException(APIExceptionMessage.ACCOUNT_RECORD_NOT_FOUND);
 				}
@@ -329,7 +329,7 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public Branch getBrachDetails(int branchId) throws AppException {
+	public Branch getBranchDetails(int branchId) throws AppException {
 		ValidatorUtil.validatePositiveNumber(branchId);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
@@ -344,13 +344,7 @@ public class MySQLUserAPI implements UserAPI {
 			statement.setInt(1, branchId);
 			try (ResultSet result = statement.executeQuery()) {
 				if (result.next()) {
-					Branch branch = new Branch();
-					branch.setBrachId(result.getInt(1));
-					branch.setAddress(result.getString(2));
-					branch.setPhone(result.getLong(3));
-					branch.setEmail(result.getString(4));
-					branch.setIfscCode(result.getString(5));
-					return branch;
+					return MySQLConversionUtil.convertToBranch(result);
 				} else {
 					throw new AppException(APIExceptionMessage.BRANCH_DETAILS_NOT_FOUND);
 				}

@@ -116,9 +116,10 @@ class MySQLQuery {
 	void sortField(Column field, boolean isDescending) throws AppException {
 		ValidatorUtil.validateObject(field);
 		query.append(" order by " + field);
-		if (isDescending) {
-			query.append(" desc");
-		}
+		System.out.println(isDescending);
+//		if (!isDescending) {
+//			query.append(" desc");
+//		}
 	}
 
 	void limit(int limit) throws AppException {

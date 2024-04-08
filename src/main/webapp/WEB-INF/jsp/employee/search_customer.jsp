@@ -1,3 +1,4 @@
+<%@page import="modules.EmployeeRecord"%>
 <%@page import="modules.CustomerRecord"%>
 <%@page import="modules.Branch"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -9,83 +10,22 @@
 	pageEncoding="UTF-8"%>
 
 <%
-Account account = (Account) request.getAttribute("account");
+Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
 CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Account Details</title>
+<title>Search | Account</title>
 <%@include file="../include/head.jsp"%>
 </head>
 <body style="width: 100%;">
 	<%@include file="../include/layout_header.jsp"%>
-	<script>
-		document.getElementById('li-branch_accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
-		document.getElementById('a-branch_accounts').href = '#';
-	</script>
 	<div
 		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
 		<button style="z-index: 0;" type="button" onclick="history.back()">
 			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
 		</button>
-	</div>
-	<div class="container">
-		<h3 class="profile-element">Account Details</h3>
-
-		<div class="divider"></div>
-
-		<div
-			style="display: flex; justify-content: space-between; width: 100%;">
-
-			<div style="width: 100%;">
-				<div class="dual-element-row">
-					<p class="profile-element">Account Number</p>
-					<h4 class="profile-element"><%=account.getAccountNumber()%></h4>
-				</div>
-
-				<div class="dual-element-row">
-					<p class="profile-element">Accont Type</p>
-					<h4 class="profile-element"><%=account.getAccountType()%></h4>
-				</div>
-
-				<div class="dual-element-row">
-					<p class="profile-element">Opening Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></h4>
-				</div>
-			</div>
-
-			<div style="width: 100%;">
-				<div class="dual-element-row">
-					<p class="profile-element">Available Balance</p>
-					<h4 class="profile-element">
-						Rs.
-						<%=account.getBalance()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Account Status</p>
-					<h4 class="profile-element"><%=account.getStatus()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Last Transaction Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
-				</div>
-			</div>
-		</div>
-		<br>
-		<div style="display: flex;">
-			<form action="statement">
-				<input type="hidden" value="<%=account.getAccountNumber()%>"
-					name="accountNumber">
-				<button type="submit">View Statement</button>
-			</form>
-			<form action="authorization" style="padding-left: 30px" method="post">
-				<input type="hidden" name="operation"
-					value="authorize_close_account"> <input type="hidden"
-					name="accountNumber" value="<%=account.getAccountNumber()%>">
-				<button type="submit">Close Account</button>
-			</form>
-		</div>
 	</div>
 
 	<div class="container">
@@ -146,6 +86,51 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				</div>
 			</div>
 		</div>
+	</div>
+	<br>
+
+	<h1>Linked Accounts</h1>
+	<div id="accountsTable" class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<td>Account Number</td>
+					<td>Account Type</td>
+					<td>Available Balance</td>
+					<td>Opening Date</td>
+					<td>Trasaction Date</td>
+					<td>Status</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<%
+				for (Account account : accounts.values()) {
+				%>
+				<tr>
+					<td><%=account.getAccountNumber()%></td>
+					<td><%=account.getAccountType()%></td>
+					<td>Rs. <%=account.getBalance()%></td>
+					<td><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate()).format(DateTimeFormatter.ISO_DATE)%></td>
+					<td><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></td>
+					<td><%=account.getStatus()%></td>
+					<td>
+						<form action="search" method="post">
+							<input type="hidden" name="search_by" value="accountNumber">
+							<input type="hidden" name="id"
+								value="<%=account.getAccountNumber()%>">
+							<button type="submit"
+								style="background: none; border: none; padding: 0;">
+								<i class="material-icons">keyboard_arrow_right</i>
+							</button>
+						</form>
+					</td>
+				</tr>
+				<%
+				}
+				%>
+			</tbody>
+		</table>
 	</div>
 
 	</div>

@@ -21,8 +21,8 @@ Branch branch = (Branch) request.getAttribute("branch");
 <body style="width: 100%;">
 	<%@include file="../include/layout_header.jsp"%>
 	<script>
-		document.getElementById('li-account').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
-		document.getElementById('a-account').href = '#';
+		document.getElementById('li-search').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
+		document.getElementById('a-search').href = '#';
 	</script>
 	<button style="z-index: 0;" type="button" onclick="history.back()">
 		<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
@@ -43,7 +43,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Opening Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate()).format(DateTimeFormatter.ISO_DATE)%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Branch</p>
@@ -55,8 +55,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 				<div class="dual-element-row">
 					<p class="profile-element">Available Balance</p>
 					<h4 class="profile-element">
-						Rs.
-						<%=account.getBalance()%></h4>
+						<%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Account Status</p>
@@ -64,7 +63,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Last Transaction Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">IFSC</p>

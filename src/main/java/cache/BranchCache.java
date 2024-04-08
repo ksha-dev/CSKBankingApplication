@@ -16,6 +16,6 @@ public class BranchCache extends LRUCache<Integer, Branch> {
 
 	@Override
 	protected Branch fetchData(Integer key) throws AppException {
-		return userAPIObject.getBrachDetails(key);
+		return userAPIObject.getBranchDetails(key);
 	}
 }

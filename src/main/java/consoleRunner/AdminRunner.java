@@ -62,8 +62,7 @@ class AdminRunner {
 					int pageNumber = 1;
 					boolean isListFull = false;
 					do {
-						Map<Integer, EmployeeRecord> employees = operations.getEmployeesInBrach(admin.getBranchId(),
-								pageNumber);
+						Map<Integer, EmployeeRecord> employees = operations.getEmployees(pageNumber);
 						LoggingUtil.logEmployeeRecordList(employees);
 						isListFull = employees.size() == ConstantsUtil.LIST_LIMIT;
 						if (isListFull) {
@@ -84,7 +83,7 @@ class AdminRunner {
 					int pageNumber = 1;
 					boolean isListFull = false;
 					do {
-						Map<Integer, EmployeeRecord> employees = operations.getEmployeesInBrach(branchId, pageNumber);
+						Map<Integer, EmployeeRecord> employees = operations.getEmployees(pageNumber);
 						LoggingUtil.logEmployeeRecordList(employees);
 						isListFull = employees.size() == ConstantsUtil.LIST_LIMIT;
 						if (isListFull) {
@@ -125,7 +124,7 @@ class AdminRunner {
 					log.info("Enter Brach ID : ");
 					newEmployeeRecord.setBranchId(InputUtil.getPositiveInteger());
 
-					if (operations.createEmployee(newEmployeeRecord)) {
+					if (operations.createEmployee(newEmployeeRecord, admin.getUserId(), InputUtil.getPIN())) {
 						log.info("Employee Created");
 						LoggingUtil.logEmployeeRecord(newEmployeeRecord);
 					} else {

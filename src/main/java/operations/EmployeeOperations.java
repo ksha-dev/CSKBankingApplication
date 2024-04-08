@@ -60,6 +60,11 @@ public class EmployeeOperations {
 		return api.viewAccountsInBranch(getEmployeeRecord(employeeId).getBranchId(), pageNumber);
 	}
 
+	public Map<Long, Account> getAssociatedAccountsOfCustomer(int customerId) throws AppException {
+		getCustomerRecord(customerId);
+		return api.getAccountsOfUser(customerId);
+	}
+
 	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
 			int employeeId, String pin) throws AppException {
 		customer.setType(UserType.CUSTOMER.getUserTypeId());

@@ -1,3 +1,4 @@
+<%@page import="modules.EmployeeRecord"%>
 <%@page import="modules.CustomerRecord"%>
 <%@page import="modules.Branch"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -15,18 +16,15 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 <!DOCTYPE html>
 <html>
 <head>
-<title>Account Details</title>
+<title>Search | Account</title>
 <%@include file="../include/head.jsp"%>
 </head>
 <body style="width: 100%;">
 	<%@include file="../include/layout_header.jsp"%>
-	<script>
-		document.getElementById('li-branch_accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
-		document.getElementById('a-branch_accounts').href = '#';
-	</script>
 	<div
 		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
-		<button style="z-index: 0;" type="button" onclick="history.back()">
+		<button style="z-index: 0;" type="button"
+			onclick="location.href = 'search'">
 			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
 		</button>
 	</div>
@@ -79,12 +77,18 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					name="accountNumber">
 				<button type="submit">View Statement</button>
 			</form>
+			<%
+			if (((EmployeeRecord) user).getBranchId() == account.getAccountNumber()) {
+			%>
 			<form action="authorization" style="padding-left: 30px" method="post">
 				<input type="hidden" name="operation"
 					value="authorize_close_account"> <input type="hidden"
 					name="accountNumber" value="<%=account.getAccountNumber()%>">
 				<button type="submit">Close Account</button>
 			</form>
+			<%
+			}
+			%>
 		</div>
 	</div>
 

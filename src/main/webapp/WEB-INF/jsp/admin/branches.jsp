@@ -1,15 +1,12 @@
 <%@page import="utility.ConstantsUtil"%>
-<%@page import="modules.Branch"%>
-<%@page import="modules.UserRecord"%>
-<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="utility.ConvertorUtil"%>
-<%@page import="java.util.Map"%>
-<%@page import="modules.Account"%>
+<%@page import="modules.EmployeeRecord"%>
+<%@page import="modules.Branch"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <%
-Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
-Branch branch = (Branch) request.getAttribute("branch");
+Map<Integer, Branch> branches = (Map) request.getAttribute("branches");
 int pageCount = (int) request.getAttribute("pageCount");
 int currentPage = (int) request.getAttribute("currentPage");
 %>
@@ -17,29 +14,24 @@ int currentPage = (int) request.getAttribute("currentPage");
 <!DOCTYPE html>
 <html>
 <head>
-<title>Accounts</title>
+<title>Branches</title>
 <%@include file="../include/head.jsp"%>
 </head>
-
 <body>
 	<%@include file="../include/layout_header.jsp"%>
-	<div style="display: flex; justify-content: space-between;">
-		<h3 class="content-title">
-			Accounts in
-			<%=branch.getAddress()%>
-			Branch
-		</h3>
-		<form action="account_details">
-			<input type="number" name="account_number"
-				placeholder="Search account number" style="margin-right: 50px"
-				required="required">
-		</form>
+	<div
+		style="display: flex; justify-content: space-between; align-items: center">
+		<h3 class="content-title">List of Branches</h3>
+		<a href="add_branch" style="color: white; padding-left: 10px"> <i
+			class="material-icons">add_circle</i>
+		</a>
+		<div style="margin: auto"></div>
 	</div>
+
 	<%
-	if (accounts.isEmpty()) {
+	if (branches.isEmpty()) {
 	%>
-	<div class="container">Customers are yet to open accounts in this
-		branch</div>
+	<div class="container">No branch has been opened yet</div>
 	<%
 	} else {
 	%>
@@ -47,38 +39,30 @@ int currentPage = (int) request.getAttribute("currentPage");
 		<table width="100%">
 			<thead>
 				<tr>
-					<td>Account Number</td>
-					<td>Customer ID</td>
-					<td>Account Type</td>
-					<td>Available Balance</td>
-					<td>Opening Date</td>
-					<td>Last TXN Date</td>
-					<td>Status</td>
+					<td>Branch ID</td>
+					<td>Branch Address</td>
+					<td>Phone</td>
+					<td>Email</td>
+					<td>IFSC</td>
 					<td></td>
 				</tr>
 			</thead>
 			<tbody>
 				<%
-				for (Account account : accounts.values()) {
+				for (Branch branch : branches.values()) {
 				%>
 				<tr>
-					<td><%=account.getAccountNumber()%></td>
-					<td><%=account.getUserId()%></td>
-					<td><%=account.getAccountType()%></td>
-					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
-					<td><%=account.getStatus()%></td>
-					<td><a
-						href="account_details?account_number=<%=account.getAccountNumber()%>"><i
-							class="material-icons">keyboard_arrow_right</i></a></td>
-
+					<td><%=branch.getBranchId()%></td>
+					<td><%=branch.getAddress()%></td>
+					<td><%=branch.getPhone()%>
+					<td><%=branch.getEmail()%></td>
+					<td><%=branch.getIfscCode()%></td>
 				</tr>
 				<%
 				}
 
 				if (currentPage == pageCount) {
-				int remainingCount = ConstantsUtil.LIST_LIMIT - accounts.size();
+				int remainingCount = ConstantsUtil.LIST_LIMIT - branches.size();
 				for (int t = 0; t < remainingCount; t++) {
 					//out.println(
 					//"<tr><td>-</td><td>-</td><td>-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td><td>-</td></tr>");
@@ -90,7 +74,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</table>
 	</div>
 
-	<form action="<%=pageCount == 1 ? "#" : "branch_accounts"%>"
+	<form action="<%=pageCount == 1 ? "#" : "employees"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"
@@ -115,5 +99,6 @@ int currentPage = (int) request.getAttribute("currentPage");
 		%>
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
+</body>
 </body>
 </html>

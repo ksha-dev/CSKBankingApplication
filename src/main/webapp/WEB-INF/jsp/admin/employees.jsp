@@ -1,15 +1,13 @@
 <%@page import="utility.ConstantsUtil"%>
-<%@page import="modules.Branch"%>
-<%@page import="modules.UserRecord"%>
-<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="utility.ConvertorUtil"%>
-<%@page import="java.util.Map"%>
-<%@page import="modules.Account"%>
+<%@page import="modules.EmployeeRecord"%>
+<%@page import="modules.Branch"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <%
-Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
 Branch branch = (Branch) request.getAttribute("branch");
+Map<Integer, EmployeeRecord> employees = (Map) request.getAttribute("employees");
 int pageCount = (int) request.getAttribute("pageCount");
 int currentPage = (int) request.getAttribute("currentPage");
 %>
@@ -17,29 +15,32 @@ int currentPage = (int) request.getAttribute("currentPage");
 <!DOCTYPE html>
 <html>
 <head>
-<title>Accounts</title>
+<title>Employees</title>
 <%@include file="../include/head.jsp"%>
 </head>
-
 <body>
 	<%@include file="../include/layout_header.jsp"%>
-	<div style="display: flex; justify-content: space-between;">
-		<h3 class="content-title">
-			Accounts in
+	<div
+		style="display: flex; justify-content: space-between; align-items: center">
+		<h3 class="content-title" style="padding-right: 10px">
+			Employees in
 			<%=branch.getAddress()%>
 			Branch
 		</h3>
-		<form action="account_details">
-			<input type="number" name="account_number"
-				placeholder="Search account number" style="margin-right: 50px"
-				required="required">
+		<a href="add_employee" style="color: white;"> <i
+			class="material-icons">add_circle</i>
+		</a>
+		<div style="margin: auto"></div>
+		<form action="employee_details" method="post">
+			<input type="number" name="id" placeholder="Search Employee"
+				style="margin-right: 50px" required="required">
 		</form>
 	</div>
 	<%
-	if (accounts.isEmpty()) {
+	if (employees.isEmpty()) {
 	%>
-	<div class="container">Customers are yet to open accounts in this
-		branch</div>
+	<div class="container">No employees have been assign to this
+		branch yet</div>
 	<%
 	} else {
 	%>
@@ -47,38 +48,42 @@ int currentPage = (int) request.getAttribute("currentPage");
 		<table width="100%">
 			<thead>
 				<tr>
-					<td>Account Number</td>
-					<td>Customer ID</td>
-					<td>Account Type</td>
-					<td>Available Balance</td>
-					<td>Opening Date</td>
-					<td>Last TXN Date</td>
-					<td>Status</td>
+					<td>Employee ID</td>
+					<td>Employee Name</td>
+					<td>Date of Birth</td>
+					<td>Phone</td>
+					<td>Email</td>
+					<td>Role</td>
 					<td></td>
 				</tr>
 			</thead>
 			<tbody>
 				<%
-				for (Account account : accounts.values()) {
+				for (EmployeeRecord employee : employees.values()) {
 				%>
 				<tr>
-					<td><%=account.getAccountNumber()%></td>
-					<td><%=account.getUserId()%></td>
-					<td><%=account.getAccountType()%></td>
-					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
-					<td><%=account.getStatus()%></td>
-					<td><a
-						href="account_details?account_number=<%=account.getAccountNumber()%>"><i
-							class="material-icons">keyboard_arrow_right</i></a></td>
+					<td><%=employee.getUserId()%></td>
+					<td><%=employee.getFirstName()%> <%=employee.getLastName()%></td>
+					<td><%=ConvertorUtil.formatToDate(employee.getDateOfBirth())%></td>
+					<td><%=employee.getPhone()%></td>
+					<td><%=employee.getEmail()%></td>
+					<td><%=employee.getType()%></td>
+					<td>
+						<form action="employee_details" method="post">
+							<input type="hidden" name="id" value="<%=employee.getUserId()%>">
+							<button type="submit"
+								style="background: none; border: none; padding: 0;">
+								<i class="material-icons">keyboard_arrow_right</i>
+							</button>
+						</form>
+					</td>
 
 				</tr>
 				<%
 				}
 
 				if (currentPage == pageCount) {
-				int remainingCount = ConstantsUtil.LIST_LIMIT - accounts.size();
+				int remainingCount = ConstantsUtil.LIST_LIMIT - employees.size();
 				for (int t = 0; t < remainingCount; t++) {
 					//out.println(
 					//"<tr><td>-</td><td>-</td><td>-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td><td>-</td></tr>");
@@ -90,7 +95,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</table>
 	</div>
 
-	<form action="<%=pageCount == 1 ? "#" : "branch_accounts"%>"
+	<form action="<%=pageCount == 1 ? "#" : "employees"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"
@@ -115,5 +120,6 @@ int currentPage = (int) request.getAttribute("currentPage");
 		%>
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
+</body>
 </body>
 </html>

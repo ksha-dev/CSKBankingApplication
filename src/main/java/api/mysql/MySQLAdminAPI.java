@@ -4,8 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -170,6 +169,53 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
+	public Map<Integer, Branch> getBranchesInBank(int pageNumber) throws AppException {
+		ValidatorUtil.validateId(pageNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectColumn(Column.ALL);
+		queryBuilder.fromSchema(Schemas.BRANCH);
+		queryBuilder.sortField(Column.BRANCH_ID, false);
+		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
+		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet branchRS = statement.executeQuery()) {
+				Map<Integer, Branch> branch = new LinkedHashMap<Integer, Branch>();
+				while (branchRS.next()) {
+					branch.put(branchRS.getInt(1), MySQLConversionUtil.convertToBranch(branchRS));
+				}
+				return branch;
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int getPageCountOfBranches() throws AppException {
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.BRANCH);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
 	public Map<Long, Account> viewAccountsInBank(int pageNumber) throws AppException {
 
 		MySQLQuery queryBuilder = new MySQLQuery();
@@ -183,7 +229,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			try (ResultSet accountRS = statement.executeQuery()) {
-				Map<Long, Account> accounts = new HashMap<Long, Account>();
+				Map<Long, Account> accounts = new LinkedHashMap<Long, Account>();
 				while (accountRS.next()) {
 					accounts.put(accountRS.getLong(1), MySQLConversionUtil.convertToAccount(accountRS));
 				}
@@ -195,22 +241,19 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
-	public Map<Integer, EmployeeRecord> getEmployeesInBranch(int branchID, int pageNumber) throws AppException {
-		Map<Integer, EmployeeRecord> employees = new HashMap<Integer, EmployeeRecord>();
-		ValidatorUtil.validateId(branchID);
+	public Map<Integer, EmployeeRecord> getEmployees(int pageNumber) throws AppException {
+		Map<Integer, EmployeeRecord> employees = new LinkedHashMap<Integer, EmployeeRecord>();
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.selectColumn(Column.ALL);
 		queryBuilder.fromSchema(Schemas.EMPLOYEES);
-		queryBuilder.where();
-		queryBuilder.columnEquals(Column.BRANCH_ID);
+		queryBuilder.sortField(Column.USER_ID, false);
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
 		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setInt(1, branchID);
 			try (ResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					EmployeeRecord employee = MySQLConversionUtil.convertToEmployeeRecord(result);
@@ -221,6 +264,48 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 			}
 		} catch (Exception e) {
 			throw new AppException();
+		}
+	}
+
+	@Override
+	public int getPageCountOfEmployees() throws AppException {
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.EMPLOYEES);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet result = statement.executeQuery()) {
+				while (result.next()) {
+					int pageCount = result.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount > 10 ? 10 : pageCount;
+				}
+			}
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.DB_COMMUNICATION_FAILED);
+		}
+	}
+
+	@Override
+	public int getPageCountOfAccountsInBank() throws AppException {
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.ACCOUNTS);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
 		}
 	}
 }

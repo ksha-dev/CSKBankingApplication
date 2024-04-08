@@ -15,17 +15,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import exceptions.AppException;
+
 /**
  * Servlet Filter implementation class FilterServlet
  */
 @WebFilter("/FilterServlet")
-public class FilterServlet implements Filter {
+public class RequestFilter implements Filter {
 
 	/**
 	 * Default constructor.
+	 * 
+	 * @throws AppException
 	 */
-	public FilterServlet() {
-		// TODO Auto-generated constructor stub
+	public RequestFilter() {
+
 	}
 
 	/**
@@ -42,26 +46,23 @@ public class FilterServlet implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
+
 		String path = req.getPathInfo();
 		String servletPath = req.getServletPath();
-		System.out.println(req.getRequestURI());
+
 		if (servletPath.startsWith("/static") || servletPath.equals("/index.html")) {
 			chain.doFilter(req, res);
-		} else if (servletPath.startsWith("/app") && path.equals("/login")) {
-			RequestDispatcher dispatcher = req.getRequestDispatcher(servletPath + (Objects.isNull(path) ? "" : path));
-			dispatcher.forward(req, res);
-		} else if (servletPath.startsWith("/app")) {
-			HttpSession session = req.getSession(false);
+		} else if (servletPath.equals("/app") && path.equals("/login")) {
+			ServletUtil.dispatchRequest(req, res, servletPath + (Objects.isNull(path) ? "" : path));
+		} else if (servletPath.equals("/app")) {
+			HttpSession session = ServletUtil.session(req);
 			if (Objects.isNull(session) || Objects.isNull(session.getAttribute("user"))) {
 				res.sendRedirect(req.getContextPath() + "/app/login");
 			} else {
-				RequestDispatcher dispatcher = req
-						.getRequestDispatcher(servletPath + (Objects.isNull(path) ? "" : path));
-				dispatcher.forward(req, res);
+				ServletUtil.dispatchRequest(req, res, servletPath + (Objects.isNull(path) ? "" : path));
 			}
 		} else {
-			RequestDispatcher dispatcher = req.getRequestDispatcher("/static/html/page_not_found.html");
-			dispatcher.forward(req, res);
+			ServletUtil.dispatchRequest(req, res, "/static/html/page_not_found.html");
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import exceptions.AppException;
 import modules.Account;
+import modules.Branch;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.Transaction;
@@ -90,4 +91,17 @@ class MySQLConversionUtil {
 		return transaction;
 	}
 
+	static Branch convertToBranch(ResultSet branchRS) throws AppException {
+		ValidatorUtil.validateObject(branchRS);
+		Branch branch = new Branch();
+		try {
+			branch.setBrachId(branchRS.getInt(1));
+			branch.setAddress(branchRS.getString(2));
+			branch.setPhone(branchRS.getLong(3));
+			branch.setEmail(branchRS.getString(4));
+			branch.setIfscCode(branchRS.getString(5));
+		} catch (SQLException e) {
+		}
+		return branch;
+	}
 }
