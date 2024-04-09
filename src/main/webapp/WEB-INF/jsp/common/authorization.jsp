@@ -1,3 +1,4 @@
+<%@page import="filters.Parameters"%>
 <%@page import="modules.Transaction"%>
 <%@page import="utility.ValidatorUtil"%>
 <%@page import="exceptions.AppException"%>
@@ -17,10 +18,11 @@
 		<br>
 		<p style="text-align: justify;">The four digit iPIN is required to
 			complete the transaction. Please enter your iPIN below</p>
-		<br> <input type="password" name="pin" placeholder="iPIN"
+		<br> <input type="password"
+			name="<%=Parameters.PIN.parameterName()%>" placeholder="iPIN"
 			inputmode="numeric" pattern="[0-9]{4}"
 			title="PIN must contain 4 digits exactly" required> <input
-			type="hidden" name="operation"
+			type="hidden" name="<%=Parameters.OPERATION.parameterName()%>"
 			value="<%=request.getParameter("redirect")%>"> <br>
 		<button class="button-85" type="submit">Submit</button>
 	</form>

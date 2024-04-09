@@ -18,11 +18,11 @@
 	<form action="search" id="transferForm" class="container"
 		style="width: 50%;" method="post">
 		<div class="dual-element-row">
-			<label for="search_by">Search By</label><select name="search_by"
+			<label for="search_by">Search By</label><select name="searchBy"
 				id="search_by" required>
 				<option style="display: none" value="null">Select Search By</option>
 				<option value="accountNumber">Account Number</option>
-				<option value="userId">Customer ID</option>
+				<option value="customerId">Customer ID</option>
 				<%
 				if (user.getType() == UserType.ADMIN) {
 				%>
@@ -35,7 +35,7 @@
 		</div>
 		<div class="dual-element-row">
 			<label for="id">Search Value</label> <input id="id" type="number"
-				name="id" placeholder="Enter Search Value" required>
+				name="searchValue" placeholder="Enter Search Value" required>
 		</div>
 		<span id="error-message" style="color: red;"></span> <input
 			type="submit" value="Search" class="dual-element-row"

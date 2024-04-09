@@ -57,8 +57,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				<div class="dual-element-row">
 					<p class="profile-element">Available Balance</p>
 					<h4 class="profile-element">
-						Rs.
-						<%=account.getBalance()%></h4>
+						<%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Account Status</p>
@@ -121,15 +120,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">PAN</p>
 					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
 				</div>
-				<%-- <div class="dual-element-row">
-					<form action="account_details_edit" method="get">
-						<input type="hidden" value="<%=account.getAccountNumber()%>"
-							name="account_number">
-						<button type="submit">Edit Customer Details</button>
-					</form>
-				</div> --%>
-
-			</div>
+					</div>
 
 			<div style="width: 100%;">
 				<div class="dual-element-row">

@@ -42,7 +42,7 @@
 				</div>
 				<div class="dual-element-row" id="select-customer">
 					<label for="select-customer">Select Customer Type</label> <select
-						name="customer" id="customer-select" required>
+						name="customerType" id="customer-select" required>
 						<option value=null style="display: none;">Customer Type</option>
 						<option value="new">New Customer</option>
 						<option value="existing">Existing Customer</option>
@@ -74,7 +74,7 @@
 							name="lastName" placeholder="Enter Last Name" required>
 					</div>
 					<div class="dual-element-row">
-						<label for="dob">Date of Birth</label required> <input type="date"
+						<label >Date of Birth</label required> <input type="date"
 							name="dateOfBirth" required>
 					</div>
 
@@ -99,8 +99,8 @@
 
 				<div style="width: 50%;">
 					<div class="dual-element-row">
-						<label for="mobile">Mobile</label> <input type="number"
-							name="mobile" placeholder="Enter Mobile Number"
+						<label for="phone">Mobile</label> <input type="number"
+							name="phone" placeholder="Enter Mobile Number"
 							pattern="[7-8]\\d{9}" required>
 					</div>
 					<div class="dual-element-row">
@@ -108,7 +108,7 @@
 							name="email" placeholder="Enter Email ID" required>
 					</div>
 					<div class="dual-element-row">
-						<label for="aadhar">Aadhaar Number</label> <input type="text"
+						<label for="aadhaar">Aadhaar Number</label> <input type="text"
 							name="aadhar" placeholder="Enter Aadhaar Number" required>
 					</div>
 					<div class="dual-element-row">

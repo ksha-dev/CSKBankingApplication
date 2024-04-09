@@ -53,7 +53,7 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 					<td><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></td>
 					<td><%=account.getStatus()%></td>
 					<td><a
-						href="account_details?account_number=<%=account.getAccountNumber()%>"><i
+						href="account_details?accountNumber=<%=account.getAccountNumber()%>"><i
 							class="material-icons">keyboard_arrow_right</i></a></td>
 				</tr>
 				<%

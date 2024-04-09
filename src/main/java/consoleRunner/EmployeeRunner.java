@@ -273,7 +273,7 @@ class EmployeeRunner {
 					ValidatorUtil.validatePassword(currentPassword);
 					ValidatorUtil.validatePassword(newPasswordConfirm);
 					if (newPassword.equals(newPasswordConfirm)) {
-						if (operations.updatePassword(employee.getUserId(), currentPassword, newPasswordConfirm)) {
+						if (operations.updatePassword(employee.getUserId(), currentPassword, newPasswordConfirm, InputUtil.getPIN())) {
 							log.info("Your password has been changed.");
 							log.info("Logging out.");
 							isProgramActive = false;

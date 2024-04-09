@@ -71,7 +71,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
 					<td><a
-						href="account_details?account_number=<%=account.getAccountNumber()%>"><i
+						href="account_details?accountNumber=<%=account.getAccountNumber()%>"><i
 							class="material-icons">keyboard_arrow_right</i></a></td>
 
 				</tr>
@@ -81,8 +81,6 @@ int currentPage = (int) request.getAttribute("currentPage");
 				if (currentPage == pageCount) {
 				int remainingCount = ConstantsUtil.LIST_LIMIT - accounts.size();
 				for (int t = 0; t < remainingCount; t++) {
-					//out.println(
-					//"<tr><td>-</td><td>-</td><td>-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td><td>-</td></tr>");
 					out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 				}
 				}

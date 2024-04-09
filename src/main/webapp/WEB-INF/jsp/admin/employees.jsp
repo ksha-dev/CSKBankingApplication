@@ -70,7 +70,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td><%=employee.getType()%></td>
 					<td>
 						<form action="employee_details" method="post">
-							<input type="hidden" name="id" value="<%=employee.getUserId()%>">
+							<input type="hidden" name="userId" value="<%=employee.getUserId()%>">
 							<button type="submit"
 								style="background: none; border: none; padding: 0;">
 								<i class="material-icons">keyboard_arrow_right</i>

@@ -12,6 +12,7 @@ public enum InvalidInputMessage {
 	INVALID_GENDER("Invalid Gender. Please enter one of the following gender : MALE, FEMALE, OTHER"),
 	INVALID_INTEGER_INPUT("A number is expected. Please enter a valid integer."),
 	INVALID_DATE_INPUT("The date of birth entered is incorrect. Please ensure that the order is correct"),
+	INVALID_DATE_STRING("Invalid Date Obtained"),
 	INVALID_PASSWORD("The password must contain a minimum of 8 characters with both "
 			+ "upper and lower case, start with a letter, have a special character and a number"),
 	INVALID_AMOUNT("The minimum amount for transaction cannot be less than Rs. 1"),

@@ -57,14 +57,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">PAN</p>
 					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
 				</div>
-				<%-- <div class="dual-element-row">
-					<form action="account_details_edit" method="get">
-						<input type="hidden" value="<%=account.getAccountNumber()%>"
-							name="account_number">
-						<button type="submit">Edit Customer Details</button>
-					</form>
-				</div> --%>
-
+			
 			</div>
 
 			<div style="width: 100%;">
@@ -116,8 +109,8 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<td><%=account.getStatus()%></td>
 					<td>
 						<form action="search" method="post">
-							<input type="hidden" name="search_by" value="accountNumber">
-							<input type="hidden" name="id"
+							<input type="hidden" name="searchBy" value="accountNumber">
+							<input type="hidden" name="searchValue"
 								value="<%=account.getAccountNumber()%>">
 							<button type="submit"
 								style="background: none; border: none; padding: 0;">

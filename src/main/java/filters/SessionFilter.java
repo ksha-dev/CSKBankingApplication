@@ -1,12 +1,9 @@
-package servlet;
+package filters;
 
 import java.io.IOException;
-import java.util.Objects;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -15,21 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import exceptions.AppException;
+import utility.ServletUtil;
 
 /**
- * Servlet Filter implementation class FilterServlet
+ * Servlet Filter implementation class SessionFilter
  */
-@WebFilter("/FilterServlet")
-public class RequestFilter implements Filter {
+@WebFilter("/SessionFilter")
+public class SessionFilter implements Filter {
 
 	/**
 	 * Default constructor.
-	 * 
-	 * @throws AppException
 	 */
-	public RequestFilter() {
-
+	public SessionFilter() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -47,22 +42,30 @@ public class RequestFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
-		String path = req.getPathInfo();
-		String servletPath = req.getServletPath();
+		HttpSession session = req.getSession(false);
+		if (req.getPathInfo().endsWith("/logout")) {
 
-		if (servletPath.startsWith("/static") || servletPath.equals("/index.html")) {
+			session.invalidate();
+			req.getSession(true).setAttribute("error", "User has been logged out");
+			res.sendRedirect(req.getContextPath() + "/login");
+
+		} else if (req.getServletPath().equals("/app") && req.getPathInfo().equals("/login")) {
+
 			chain.doFilter(req, res);
-		} else if (servletPath.equals("/app") && path.equals("/login")) {
-			ServletUtil.dispatchRequest(req, res, servletPath + (Objects.isNull(path) ? "" : path));
-		} else if (servletPath.equals("/app")) {
-			HttpSession session = ServletUtil.session(req);
-			if (Objects.isNull(session) || Objects.isNull(session.getAttribute("user"))) {
-				res.sendRedirect(req.getContextPath() + "/app/login");
-			} else {
-				ServletUtil.dispatchRequest(req, res, servletPath + (Objects.isNull(path) ? "" : path));
-			}
+
+		} else if (session == null) {
+
+			req.getSession(true).setAttribute("error", "The Session has expired. Login again to access the bank");
+			res.sendRedirect(req.getContextPath() + "/login");
+
+		} else if (session.getAttribute("user") == null) {
+
+			session.invalidate();
+			req.getSession(true).setAttribute("error", "User has been logged out");
+			res.sendRedirect(req.getContextPath() + "/login");
+
 		} else {
-			ServletUtil.dispatchRequest(req, res, "/static/html/page_not_found.html");
+			chain.doFilter(req, res);
 		}
 	}
 

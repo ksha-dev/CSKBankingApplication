@@ -11,7 +11,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import exceptions.AppException;
 import modules.UserRecord;
@@ -111,12 +113,12 @@ public class ConvertorUtil {
 	}
 
 	public static long dateStringToMillis(String date) throws AppException {
-		ValidatorUtil.validateObject(date);
+		ValidatorUtil.validateDateString(date);
 		return LocalDate.parse(date).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
 
 	public static long dateStringToMillisWithCurrentTime(String date) throws AppException {
-		ValidatorUtil.validateObject(date);
+		ValidatorUtil.validateDateString(date);
 		LocalDate convertedDate = LocalDate.parse(date);
 		if (convertedDate.isBefore(LocalDate.now(ZoneId.systemDefault()))) {
 			return convertedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() + 86400000L - 1;
@@ -139,5 +141,27 @@ public class ConvertorUtil {
 		Locale localeIndia = new Locale("en", "IN");
 		NumberFormat currencyFormatterIndia = NumberFormat.getCurrencyInstance(localeIndia);
 		return currencyFormatterIndia.format(amount);
+	}
+
+	// Parse Values
+	public static Integer convertStringToInteger(String value) throws AppException {
+		if (!Pattern.matches("^\\d+$", value)) {
+			throw new AppException("Invalid input obtained. Expected value is a number");
+		}
+		return Integer.parseInt(value);
+	}
+
+	public static Long convertStringToLong(String value) throws AppException {
+		if (!Pattern.matches("^\\d+$", value)) {
+			throw new AppException("Invalid input obtained. Expected value is a number");
+		}
+		return Long.parseLong(value);
+	}
+
+	public static Double convertStringToDouble(String value) throws AppException {
+		if (!Pattern.matches("^\\d+.\\d+$", value) && !Pattern.matches("^\\d+$", value)) {
+			throw new AppException("Invalid input obtained. Expected value is a decimal value");
+		}
+		return Double.parseDouble(value);
 	}
 }

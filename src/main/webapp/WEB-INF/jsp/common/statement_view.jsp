@@ -60,8 +60,6 @@ String limitString = (String) request.getAttribute("limit");
 				if (currentPage == pageCount) {
 				int remainingCount = ConstantsUtil.LIST_LIMIT - transactions.size();
 				for (int t = 0; t < remainingCount; t++) {
-					//out.println(
-					//"<tr><td>-</td><td>-</td><td class=\"pl\">-</td><td class=\"pr\">-</td><td class=\"pr\">-</td><td>-</td></tr>");
 					out.println("<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
 				}
 				}
@@ -73,7 +71,7 @@ String limitString = (String) request.getAttribute("limit");
 	if (!(!limitString.equals("custom")
 			&& TransactionHistoryLimit.valueOf(limitString) == TransactionHistoryLimit.RECENT)) {
 	%>
-	<form action="<%=pageCount == 1 ? "#" : "statement"%>"
+	<form action="<%=pageCount <= 1 ? "#" : "statement"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"
@@ -93,7 +91,7 @@ String limitString = (String) request.getAttribute("limit");
 			name="currentPage" value="<%=currentPage + 1%>"
 			style="margin-left: 20px;">&raquo;</button>
 		<input type="hidden" name="pageCount" value="<%=pageCount%>">
-		<input type="hidden" name="account_number" value="<%=accountNumber%>">
+		<input type="hidden" name="accountNumber" value="<%=accountNumber%>">
 		<%
 		if (limitString.equals("custom")) {
 		%>
@@ -101,12 +99,12 @@ String limitString = (String) request.getAttribute("limit");
 			value="<%=request.getAttribute("startDate")%>"> <input
 			type="hidden" name="endDate"
 			value="<%=request.getAttribute("endDate")%>"> <input
-			type="hidden" name="transaction_limit" value="<%=limitString%>">
+			type="hidden" name="transactionLimit" value="<%=limitString%>">
 		<%
 		} else {
 		TransactionHistoryLimit limit = TransactionHistoryLimit.valueOf(limitString);
 		%>
-		<input type="hidden" name="transaction_limit" value="<%=limit%>">
+		<input type="hidden" name="transactionLimit" value="<%=limit%>">
 		<%
 		}
 		}

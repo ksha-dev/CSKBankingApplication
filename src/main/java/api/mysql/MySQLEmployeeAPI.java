@@ -266,11 +266,10 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public boolean changeAccountStatus(long accountNumber, Status status, int branchId, String pin)
+	public boolean changeAccountStatus(long accountNumber, Status status, int branchId)
 			throws AppException {
 		ValidatorUtil.validateId(branchId);
 		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateObject(pin);
 		ValidatorUtil.validateObject(status);
 
 		Status currentStatus = getAccountDetails(accountNumber).getStatus();
@@ -295,6 +294,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setLong(2, accountNumber);
 			statement.setInt(3, branchId);
 
+			System.out.println(statement);
 			int response = statement.executeUpdate();
 			if (response == 1) {
 				return true;

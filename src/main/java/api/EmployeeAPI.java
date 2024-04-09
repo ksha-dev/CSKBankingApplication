@@ -18,7 +18,7 @@ public interface EmployeeAPI extends UserAPI {
 
 	public long createAccount(int customerID, AccountType type, int branchID) throws AppException;
 
-	public boolean changeAccountStatus(long accountNumber, Status status, int branchId, String pin) throws AppException;
+	public boolean changeAccountStatus(long accountNumber, Status status, int branchId) throws AppException;
 
 	public int getNumberOfPagesOfAccounts(int branchId) throws AppException;
 

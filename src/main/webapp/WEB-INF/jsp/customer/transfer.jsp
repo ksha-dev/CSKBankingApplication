@@ -21,12 +21,12 @@
 			<label for="transferWithinBank">Transfer Within Bank</label>
 			<div style="justify-content: start; width: 45%;">
 				<input id="transferWithinBank" type="checkbox"
-					name="transferWithinBank" onclick="ifscDisplay();">
+					name="transferWithinBank">
 			</div>
 		</div>
 		<div class="dual-element-row">
 			<label for="from-account">Select Account</label> <select
-				name="from-account" id="from-account" required>
+				name="fromAccount" id="from-account" required>
 				<option style="display: none" value="null">Select Account</option>
 
 				<%
@@ -44,16 +44,16 @@
 		</div>
 		<div class="dual-element-row">
 			<label for="to-account">Receipent Account Number</label> <input
-				id="to-account" type="number" name="to-account"
+				id="to-account" type="number" name="toAccount"
 				placeholder="Enter Account Number" required>
 		</div>
 
 
 
-		<div class="dual-element-row" id="ifsc">
+		<!-- <div class="dual-element-row" id="ifsc">
 			<label for="ifsc">Receipent IFSC Code</label> <input type="text"
 				id="ifscCode" name="ifsc" placeholder="Enter IFSC Code">
-		</div>
+		</div> -->
 
 		<div class="dual-element-row">
 			<label for="amount">Amount to Transfer</label> <input type="number"
@@ -76,7 +76,7 @@
 			const fromAccount = document.getElementById("from-account");
 			const transferWithinBank = document
 					.getElementById("transferWithinBank");
-			const ifscField = document.getElementById("ifscCode");
+			// const ifscField = document.getElementById("ifscCode");
 			const error = document.getElementById("error-message");
 			error.textContent = "";
 			if (fromAccount.value === "null") {
@@ -84,24 +84,24 @@
 				event.preventDefault();
 			}
 
-			if (!transferWithinBank.checked) {
-				if (ifscField.value === "") {
-					error.textContent = "Please Enter IFSC Code";
-					event.preventDefault();
-				}
-			}
+// 			if (!transferWithinBank.checked) {
+// 				if (ifscField.value === "") {
+// 					error.textContent = "Please Enter IFSC Code";
+// 					event.preventDefault();
+// 				}
+// 			}
 		}
 
-		function ifscDisplay() {
-			const transferWithinBank = document
-					.getElementById("transferWithinBank");
-			const ifscField = document.getElementById("ifsc");
-			ifscField.style.display = 'none';
+// 		function ifscDisplay() {
+// 			const transferWithinBank = document
+// 					.getElementById("transferWithinBank");
+// 			const ifscField = document.getElementById("ifsc");
+// 			ifscField.style.display = 'none';
 
-			if (!transferWithinBank.checked) {
-				ifscField.style.display = 'flex';
-			}
-		}
+// 			if (!transferWithinBank.checked) {
+// 				ifscField.style.display = 'flex';
+// 			}
+// 		}
 		// document
 		// 	.getElementById("transferForm")
 		// 	.addEventListener(

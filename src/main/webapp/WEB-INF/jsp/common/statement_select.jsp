@@ -1,3 +1,4 @@
+<%@page import="filters.Parameters"%>
 <%@page import="java.util.Objects"%>
 <%@page import="modules.Account"%>
 <%@page import="java.util.Map"%>
@@ -28,7 +29,7 @@
 		%>
 		<div class="dual-element-row">
 			<label for="account_number">Account</label> <select
-				id="account_number" name="account_number" required>
+				id="account_number" name="accountNumber" required>
 				<option style="display: none" value="null">Select Account</option>
 				<%
 				Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
@@ -51,14 +52,14 @@
 			<label for="account_number">Account</label> <input type="number"
 				placeholder="Enter Account Number" id="account_number"
 				<%=(selectedAccount > 0 ? "value=\"" + selectedAccount + "\"" : "")%>
-				name="account_number" required>
+				name="accountNumber" required>
 		</div>
 		<%
 		}
 		%>
 		<div class="dual-element-row">
 			<label for="transaction_limit">Duration</label> <select
-				name="transaction_limit" id="transaction_limit" required>
+				name="transactionLimit" id="transaction_limit" required>
 				<option style="display: none" value="null">Statement
 					Duration</option>
 				<option value="<%=TransactionHistoryLimit.RECENT%>">Last 10
@@ -83,10 +84,10 @@
 			</div>
 		</div>
 		<span id="error" style="color: red;"></span> <input type="hidden"
-			name="pageCount" value="-1"> <input type="hidden"
-			name="currentPage" value="1"> <input class="dual-element-row"
-			type="submit" onclick="validateStatementSelection()"
-			value="View Statement">
+			name="<%=Parameters.PAGECOUNT.parameterName()%>" value="0"> <input
+			type="hidden" name="<%=Parameters.CURRENTPAGE.parameterName()%>"
+			value="1"> <input class="dual-element-row" type="submit"
+			onclick="validateStatementSelection()" value="View Statement">
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
 </body>

@@ -51,8 +51,8 @@ public class EmployeeOperations {
 		return CachePool.getBranchCache().get(branchId);
 	}
 
-	public int getBranchAccountsPageCount(int branchId) throws AppException {
-		return api.getNumberOfPagesOfAccounts(branchId);
+	public int getBranchAccountsPageCount(int employeeId) throws AppException {
+		return api.getNumberOfPagesOfAccounts(getEmployeeRecord(employeeId).getBranchId());
 	}
 
 	public Map<Long, Account> getListOfAccountsInBranch(int employeeId, int pageNumber) throws AppException {
@@ -69,8 +69,12 @@ public class EmployeeOperations {
 			int employeeId, String pin) throws AppException {
 		customer.setType(UserType.CUSTOMER.getUserTypeId());
 		ValidatorUtil.validateObject(customer);
-		return createAccountForExistingCustomer(api.createCustomer(customer), accountType, depositAmount, employeeId,
-				pin);
+		if (api.userConfimration(employeeId, pin)) {
+			return createAccountForExistingCustomer(api.createCustomer(customer), accountType, depositAmount,
+					employeeId, pin);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
 	public Account createAccountForExistingCustomer(int customerId, AccountType accountType, double depositAmount,
@@ -84,9 +88,14 @@ public class EmployeeOperations {
 		if (depositAmount < ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT) {
 			throw new AppException(ActivityExceptionMessages.MINIMUM_DEPOSIT_REQUIRED);
 		}
-		long accountNumber = api.createAccount(customerId, accountType, getEmployeeRecord(employeeId).getBranchId());
-		depositAmount(employeeId, accountNumber, depositAmount, pin);
-		return CachePool.getAccountCache().get(accountNumber);
+		if (api.userConfimration(employeeId, pin)) {
+			long accountNumber = api.createAccount(customerId, accountType,
+					getEmployeeRecord(employeeId).getBranchId());
+			depositAmount(employeeId, accountNumber, depositAmount, pin);
+			return CachePool.getAccountCache().get(accountNumber);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
 	public long depositAmount(int employeeId, long accountNumber, double amount, String pin) throws AppException {
@@ -118,7 +127,7 @@ public class EmployeeOperations {
 		ValidatorUtil.validatePIN(pin);
 
 		if (api.userConfimration(employeeId, pin)) {
-			return api.changeAccountStatus(accountNumber, status, employeeId, pin);
+			return api.changeAccountStatus(accountNumber, status, getEmployeeRecord(employeeId).getBranchId());
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
@@ -126,16 +135,10 @@ public class EmployeeOperations {
 
 	public boolean closeAccount(long accountNumber, int employeeId, String pin) throws AppException {
 		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateId(employeeId);
-		ValidatorUtil.validatePIN(pin);
 		if (getAccountDetails(accountNumber).getBalance() > 0) {
 			throw new AppException(ActivityExceptionMessages.CLEAR_BALANCE_TO_CLOSE_ACCOUNT);
 		}
-		if (api.userConfimration(employeeId, pin)) {
-			return api.changeAccountStatus(accountNumber, Status.CLOSED, employeeId, pin);
-		} else {
-			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
-		}
+		return changeAccountStatus(accountNumber, Status.CLOSED, employeeId, pin);
 	}
 
 	public boolean updateCustomerDetails(int employeeId, int customerId, ModifiableField field, Object value,
@@ -156,11 +159,15 @@ public class EmployeeOperations {
 		}
 	}
 
-	public boolean updatePassword(int customerId, String oldPassword, String newPassword) throws AppException {
-		ValidatorUtil.validateId(customerId);
+	public boolean updatePassword(int employeeId, String oldPassword, String newPassword, String pin)
+			throws AppException {
+		ValidatorUtil.validateId(employeeId);
 		ValidatorUtil.validatePassword(oldPassword);
 		ValidatorUtil.validatePassword(newPassword);
-
-		return api.updatePassword(customerId, oldPassword, newPassword);
+		if (api.userConfimration(employeeId, pin)) {
+			return api.updatePassword(employeeId, oldPassword, newPassword);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 }

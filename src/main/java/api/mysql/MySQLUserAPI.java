@@ -177,7 +177,7 @@ public class MySQLUserAPI implements UserAPI {
 			queryBuilder.and();
 			queryBuilder.columnBetweenTwoValues(Column.TIME_STAMP);
 		}
-		queryBuilder.sortField(Column.TRANSACTION_ID, true);
+		queryBuilder.sortField(Column.TRANSACTION_ID, timeLimit == TransactionHistoryLimit.RECENT);
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
 		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
 		queryBuilder.end();

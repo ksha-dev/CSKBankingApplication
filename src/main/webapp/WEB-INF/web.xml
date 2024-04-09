@@ -7,6 +7,35 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	<filter>
+		<filter-name>requestFilter</filter-name>
+		<filter-class>filters.RequestFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>requestFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>sessionFilter</filter-name>
+		<filter-class>filters.SessionFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>sessionFilter</filter-name>
+		<url-pattern>/app/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>validationFilter</filter-name>
+		<filter-class>filters.ValidationFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>validationFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
@@ -17,16 +46,5 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
-
-	<filter>
-		<filter-name>servletFilter</filter-name>
-		<filter-class>servlet.RequestFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>servletFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
 
 </web-app>

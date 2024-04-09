@@ -1,5 +1,6 @@
 package utility;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
@@ -120,6 +121,15 @@ public class ValidatorUtil {
 			Gender.valueOf(gender.toUpperCase());
 		} catch (Exception e) {
 			throw new AppException(InvalidInputMessage.INVALID_GENDER);
+		}
+	}
+
+	public static void validateDateString(String date) throws AppException {
+		ValidatorUtil.validateObject(date);
+		try {
+			LocalDate.parse(date);
+		} catch (Exception e) {
+			throw new AppException(InvalidInputMessage.INVALID_DATE_STRING);
 		}
 	}
 }
