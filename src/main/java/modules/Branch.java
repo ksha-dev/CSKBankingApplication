@@ -10,6 +10,9 @@ public class Branch {
 	private long phone;
 	private String email;
 	private String ifscCode;
+	private int modifiedBy;
+	private long createdAt;
+	private long modifiedAt;
 
 	public Branch() {
 	}
@@ -41,6 +44,19 @@ public class Branch {
 		this.ifscCode = ifscCode;
 	}
 
+	public void setCreatedAt(long dateTime) {
+		this.createdAt = dateTime;
+	}
+
+	public void setModifiedBy(int userId) throws AppException {
+		ValidatorUtil.validateId(userId);
+		this.modifiedBy = userId;
+	}
+
+	public void setModifiedAt(long dateTime) {
+		this.modifiedAt = dateTime;
+	}
+
 	// getters
 
 	public int getBranchId() {
@@ -61,5 +77,17 @@ public class Branch {
 
 	public String getIfscCode() {
 		return this.ifscCode;
+	}
+
+	public int getModifiedBy() {
+		return this.modifiedBy;
+	}
+
+	public long getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public long getModifiedAt() {
+		return this.modifiedAt;
 	}
 }

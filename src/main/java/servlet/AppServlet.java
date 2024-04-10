@@ -30,12 +30,13 @@ public class AppServlet extends HttpServlet {
 				if (!adminPostController(request, response, path)) {
 					employeePostController(request, response, path);
 				}
+			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
+				homeRedirect(response, ServletUtil.getUser(request).getType());
 			} else if (path.equals("/login")) {
 				new CommonControllerMethods().loginPostRequest(request, response);
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
-			System.out.println(path);
 		} catch (AppException e) {
 			e.printStackTrace();
 			request.setAttribute("status", false);
@@ -65,10 +66,11 @@ public class AppServlet extends HttpServlet {
 				if (!adminGetController(request, response, path)) {
 					employeeGetController(request, response, path);
 				}
+			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
+				homeRedirect(response, ServletUtil.getUser(request).getType());
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
-			System.out.println(path);
 
 		} catch (AppException e) {
 			e.printStackTrace();
@@ -354,7 +356,11 @@ public class AppServlet extends HttpServlet {
 			break;
 
 		case "search":
-			adminMethods.searchPostRequest(request, response);
+			boolean check = adminMethods.searchPostRequest(request, response);
+			System.out.println(check);
+			if (!check) {
+				return check;
+			}
 			break;
 
 		case "authorization": {

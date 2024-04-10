@@ -51,6 +51,9 @@ class MySQLConversionUtil {
 			user.setPhone(record.getLong(7));
 			user.setEmail(record.getString(8));
 			user.setType(Integer.parseInt(record.getString(9)));
+			user.setCreatedAt(record.getLong(10));
+			user.setModifiedBy(record.getInt(11));
+			user.setModifiedAt(record.getLong(12));
 		} catch (SQLException e) {
 		}
 	}
@@ -67,6 +70,9 @@ class MySQLConversionUtil {
 			account.setLastTransactedAt(accountRS.getLong(6));
 			account.setBalance(accountRS.getDouble(7));
 			account.setStatus(Integer.parseInt(accountRS.getString(8)));
+			account.setCreatedAt(accountRS.getLong(9));
+			account.setModifiedBy(accountRS.getInt(10));
+			account.setModifiedAt(accountRS.getLong(11));
 		} catch (SQLException e) {
 		}
 		return account;
@@ -86,6 +92,9 @@ class MySQLConversionUtil {
 			transaction.setClosingBalance(transactionRS.getDouble(7));
 			transaction.setTimeStamp(transactionRS.getLong(8));
 			transaction.setRemarks(transactionRS.getString(9));
+			transaction.setCreatedAt(transactionRS.getLong(10));
+			transaction.setModifiedBy(transactionRS.getInt(11));
+			transaction.setModifiedAt(transactionRS.getLong(12));
 		} catch (SQLException e) {
 		}
 		return transaction;
@@ -100,6 +109,9 @@ class MySQLConversionUtil {
 			branch.setPhone(branchRS.getLong(3));
 			branch.setEmail(branchRS.getString(4));
 			branch.setIfscCode(branchRS.getString(5));
+			branch.setCreatedAt(branchRS.getLong(6));
+			branch.setModifiedBy(branchRS.getInt(7));
+			branch.setModifiedAt(branchRS.getLong(8));
 		} catch (SQLException e) {
 		}
 		return branch;

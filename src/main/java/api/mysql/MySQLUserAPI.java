@@ -21,7 +21,9 @@ import modules.Transaction;
 import modules.UserRecord;
 import utility.ConvertorUtil;
 import utility.ConstantsUtil;
+import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.OperationStatus;
 import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.TransactionType;
@@ -272,56 +274,54 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public long transferAmount(Transaction transaction, boolean isTransferWithinBank) throws AppException {
+	public Transaction transferAmount(Transaction transaction, boolean transferWithinBank) throws AppException {
 		ValidatorUtil.validateObject(transaction);
 		try {
 			ServerConnection.startTransaction();
+
 			Account payeeAccount = getAccountDetails(transaction.getViewerAccountNumber());
-			LoggingUtil.logAccount(payeeAccount);
-			if (payeeAccount.getStatus() == Status.FROZEN) {
-				throw new AppException(APIExceptionMessage.ACCOUNT_RESTRICTED);
-			}
-			if (payeeAccount.getBalance() < transaction.getTransactedAmount()) {
-				throw new AppException(APIExceptionMessage.INSUFFICIENT_BALANCE);
-			}
-			transaction.setClosingBalance(
-					ConvertorUtil.convertToTwoDecimals(payeeAccount.getBalance() - transaction.getTransactedAmount()));
-			if (!MySQLAPIUtil.updateBalanceInAccount(transaction.getViewerAccountNumber(),
-					transaction.getClosingBalance())) {
+			payeeAccount.setModifiedBy(transaction.getModifiedBy());
+			payeeAccount.setModifiedAt(transaction.getCreatedAt());
+			payeeAccount.setBalance(transaction.getClosingBalance());
+			payeeAccount.setLastTransactedAt(transaction.getCreatedAt());
+			if (!MySQLAPIUtil.updateBalanceInAccount(payeeAccount)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
-			transaction.setTransactionType(TransactionType.DEBIT.getTransactionTypeId());
-			long transactionId = transaction.getTransactionId();
+
 			String remarks = transaction.getRemarks();
 			transaction.setRemarks("DB-TRANSFER-ACC-" + transaction.getTransactedAccountNumber() + "-" + remarks);
 			MySQLAPIUtil.createSenderTransactionRecord(transaction);
-			if (isTransferWithinBank) {
-				Account recepientAccount = getAccountDetails(transaction.getTransactedAccountNumber());
 
-				// update the balance in receiver account
-				double recepientNewBalance = ConvertorUtil
-						.convertToTwoDecimals(recepientAccount.getBalance() + transaction.getTransactedAmount());
-				if (!MySQLAPIUtil.updateBalanceInAccount(transaction.getTransactedAccountNumber(),
-						recepientNewBalance)) {
+			if (transferWithinBank) {
+				Account recepientAccount = getAccountDetails(transaction.getTransactedAccountNumber());
+				recepientAccount.setModifiedBy(payeeAccount.getModifiedBy());
+				recepientAccount.setModifiedAt(payeeAccount.getModifiedAt());
+				recepientAccount.setBalance(ConvertorUtil
+						.convertToTwoDecimals(recepientAccount.getBalance() + transaction.getTransactedAmount()));
+
+				if (!MySQLAPIUtil.updateBalanceInAccount(recepientAccount)) {
 					throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 				}
-				recepientAccount.setBalance(recepientNewBalance);
 
 				// create receiver transaction
 				Transaction reverseTransactionRecord = new Transaction();
-				reverseTransactionRecord.setTransactionId(transactionId);
+				reverseTransactionRecord.setTransactionId(transaction.getTransactionId());
 				reverseTransactionRecord.setUserId(recepientAccount.getUserId());
 				reverseTransactionRecord.setViewerAccountNumber(transaction.getTransactedAccountNumber());
 				reverseTransactionRecord.setTransactedAccountNumber(transaction.getViewerAccountNumber());
 				reverseTransactionRecord.setTransactedAmount(transaction.getTransactedAmount());
+				reverseTransactionRecord.setClosingBalance(recepientAccount.getBalance());
 				reverseTransactionRecord.setTransactionType(TransactionType.CREDIT.getTransactionTypeId());
 				reverseTransactionRecord
 						.setRemarks("CR-TRANSFER-ACC-" + transaction.getViewerAccountNumber() + "-" + remarks);
-				reverseTransactionRecord.setClosingBalance(recepientAccount.getBalance());
+				reverseTransactionRecord.setTimeStamp(transaction.getTimeStamp());
+				reverseTransactionRecord.setCreatedAt(transaction.getCreatedAt());
+				reverseTransactionRecord.setModifiedBy(transaction.getModifiedBy());
+
 				MySQLAPIUtil.createReceiverTransactionRecord(reverseTransactionRecord);
 			}
 			ServerConnection.endTransaction();
-			return transactionId;
+			return transaction;
 		} catch (AppException e) {
 			ServerConnection.reverseTransaction();
 			throw e;
@@ -355,14 +355,18 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public boolean updateProfileDetails(int userId, ModifiableField field, Object value) throws AppException {
-		ValidatorUtil.validatePositiveNumber(userId);
+	public boolean updateProfileDetails(UserRecord user, ModifiableField field, Object value) throws AppException {
+		ValidatorUtil.validateObject(user);
 		ValidatorUtil.validateObject(value);
 		ValidatorUtil.validateObject(field);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.USERS);
 		queryBuilder.setColumn(Column.valueOf(field.toString()));
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.USER_ID);
 		queryBuilder.end();
@@ -370,7 +374,10 @@ public class MySQLUserAPI implements UserAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setObject(1, value);
-			statement.setInt(2, userId);
+			statement.setInt(2, user.getUserId());
+			statement.setLong(3, user.getModifiedAt());
+			statement.setInt(4, user.getUserId());
+
 			int response = statement.executeUpdate();
 			if (response == 1) {
 				return true;
@@ -399,6 +406,10 @@ public class MySQLUserAPI implements UserAPI {
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.CREDENTIALS);
 		queryBuilder.setColumn(Column.PASSWORD);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.USER_ID);
 		queryBuilder.end();
@@ -407,6 +418,8 @@ public class MySQLUserAPI implements UserAPI {
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setString(1, ConvertorUtil.passwordHasher(newPassword));
 			statement.setInt(2, customerId);
+			statement.setLong(3, System.currentTimeMillis());
+			statement.setInt(4, customerId);
 			int response = statement.executeUpdate();
 			if (response == 1) {
 				return true;
@@ -481,6 +494,36 @@ public class MySQLUserAPI implements UserAPI {
 			}
 		} catch (SQLException e) {
 			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean logOperation(int userId, int targetId, LogOperation operation, OperationStatus status,
+			String description, long modifiedAt) throws AppException {
+		ValidatorUtil.validateId(userId);
+		ValidatorUtil.validateId(targetId);
+		ValidatorUtil.validateObject(operation);
+		ValidatorUtil.validateObject(description);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.insertInto(Schemas.AUDIT_LOGS);
+		queryBuilder.insertColumns(List.of(Column.USER_ID, Column.OPERATION, Column.STATUS, Column.DESCRIPTION,
+				Column.MODIFIED_AT, Column.TARGET_ID));
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery());) {
+			statement.setInt(1, userId);
+			statement.setString(2, operation.toString());
+			statement.setString(3, status.toString());
+			statement.setString(4, description);
+			statement.setLong(5, modifiedAt);
+			statement.setInt(6, targetId);
+
+			int response = statement.executeUpdate();
+			return response == 1;
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.LOGGING_FAILED);
 		}
 	}
 }

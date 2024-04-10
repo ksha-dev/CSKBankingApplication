@@ -11,6 +11,7 @@ import api.mysql.MySQLQuery.Column;
 import api.mysql.MySQLQuery.Schemas;
 import exceptions.AppException;
 import exceptions.messages.APIExceptionMessage;
+import modules.Account;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.Transaction;
@@ -22,9 +23,10 @@ class MySQLAPIUtil {
 
 	static void createReceiverTransactionRecord(Transaction receiverTransaction) throws AppException {
 		ValidatorUtil.validateObject(receiverTransaction);
+
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.TRANSACTIONS);
-		queryBuilder.insertValuePlaceholders(9);
+		queryBuilder.insertValuePlaceholders(12);
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -36,8 +38,13 @@ class MySQLAPIUtil {
 			statement.setDouble(5, receiverTransaction.getTransactedAmount());
 			statement.setString(6, receiverTransaction.getTransactionType().getTransactionTypeId() + "");
 			statement.setDouble(7, receiverTransaction.getClosingBalance());
-			statement.setLong(8, System.currentTimeMillis());
+			statement.setLong(8, receiverTransaction.getTimeStamp());
 			statement.setString(9, receiverTransaction.getRemarks());
+			statement.setLong(10, receiverTransaction.getCreatedAt());
+			statement.setInt(11, receiverTransaction.getModifiedBy());
+			statement.setObject(12, null);
+
+			System.out.println(statement);
 
 			int response = statement.executeUpdate();
 			if (response != 1) {
@@ -50,11 +57,12 @@ class MySQLAPIUtil {
 
 	static void createSenderTransactionRecord(Transaction transaction) throws AppException {
 		ValidatorUtil.validateObject(transaction);
+
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.TRANSACTIONS);
 		queryBuilder.insertColumns(List.of(Column.USER_ID, Column.VIEWER_ACCOUNT_NUMBER,
 				Column.TRANSACTED_ACCOUNT_NUMBER, Column.TRANSACTED_AMOUNT, Column.TRANSACTION_TYPE,
-				Column.CLOSING_BALANCE, Column.TIME_STAMP, Column.REMARKS));
+				Column.CLOSING_BALANCE, Column.TIME_STAMP, Column.REMARKS, Column.CREATED_AT, Column.MODIFIED_BY));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -65,8 +73,10 @@ class MySQLAPIUtil {
 			statement.setDouble(4, transaction.getTransactedAmount());
 			statement.setString(5, transaction.getTransactionType().getTransactionTypeId() + "");
 			statement.setDouble(6, transaction.getClosingBalance());
-			statement.setLong(7, System.currentTimeMillis());
+			statement.setLong(7, transaction.getTimeStamp());
 			statement.setString(8, transaction.getRemarks());
+			statement.setLong(9, transaction.getCreatedAt());
+			statement.setInt(10, transaction.getModifiedBy());
 
 			statement.executeUpdate();
 			try (ResultSet keys = statement.getGeneratedKeys()) {
@@ -81,9 +91,8 @@ class MySQLAPIUtil {
 		}
 	}
 
-	static boolean updateBalanceInAccount(long accountNumber, double balance) throws AppException {
-		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateAmount(balance);
+	static boolean updateBalanceInAccount(Account account) throws AppException {
+		ValidatorUtil.validateObject(account);
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.ACCOUNTS);
 		queryBuilder.setColumn(Column.BALANCE);
@@ -91,6 +100,10 @@ class MySQLAPIUtil {
 		queryBuilder.columnEquals(Column.STATUS);
 		queryBuilder.separator();
 		queryBuilder.columnEquals(Column.LAST_TRANSACTED_AT);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.ACCOUNT_NUMBER);
 		queryBuilder.and();
@@ -100,11 +113,13 @@ class MySQLAPIUtil {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setDouble(1, balance);
+			statement.setDouble(1, account.getBalance());
 			statement.setString(2, Status.ACTIVE.getStatusId() + "");
-			statement.setLong(3, System.currentTimeMillis());
-			statement.setLong(4, accountNumber);
-			statement.setString(5, Status.CLOSED.getStatusId() + "");
+			statement.setLong(3, account.getLastTransactedAt());
+			statement.setLong(4, account.getModifiedBy());
+			statement.setLong(5, account.getModifiedAt());
+			statement.setLong(6, account.getAccountNumber());
+			statement.setString(7, Status.CLOSED.getStatusId() + "");
 			int response = statement.executeUpdate();
 			return response == 1;
 		} catch (SQLException e) {

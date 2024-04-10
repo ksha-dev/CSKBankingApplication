@@ -11,7 +11,9 @@ public abstract class Cache<K, V> {
 
 	public abstract void clear();
 
-	public final void refreshData(K key) throws AppException {
-		put(key, fetchData(key));
+	public final V refreshData(K key) throws AppException {
+		V value = fetchData(key);
+		put(key, value);
+		return value;
 	}
 }

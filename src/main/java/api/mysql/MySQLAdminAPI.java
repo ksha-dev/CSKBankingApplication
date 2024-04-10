@@ -54,14 +54,20 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
-	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value) throws AppException {
+	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value, int adminId)
+			throws AppException {
 		ValidatorUtil.validateId(employeeId);
+		ValidatorUtil.validateId(adminId);
 		ValidatorUtil.validateObject(value);
 		ValidatorUtil.validateObject(field);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.EMPLOYEES);
 		queryBuilder.setColumn(Column.valueOf(field.toString()));
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.USER_ID);
 		queryBuilder.end();
@@ -69,7 +75,9 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setObject(1, value);
-			statement.setInt(2, employeeId);
+			statement.setInt(2, adminId);
+			statement.setLong(3, System.currentTimeMillis());
+			statement.setInt(4, employeeId);
 			int response = statement.executeUpdate();
 			if (response == 1) {
 				return true;
@@ -107,13 +115,17 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.BRANCH);
-		queryBuilder.insertColumns(List.of(Column.ADDRESS, Column.PHONE, Column.EMAIL));
+		queryBuilder.insertColumns(
+				List.of(Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.CREATED_AT, Column.MODIFIED_BY));
 		queryBuilder.end();
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery(), Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, branch.getAddress());
 			statement.setLong(2, branch.getPhone());
 			statement.setString(3, branch.getEmail());
+			statement.setLong(4, branch.getCreatedAt());
+			statement.setInt(5, branch.getModifiedBy());
+
 			statement.executeUpdate();
 			try (ResultSet result = statement.getGeneratedKeys()) {
 				if (result.next()) {
@@ -140,14 +152,19 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
-	public boolean updateBranchDetails(int branchId, ModifiableField field, Object value) throws AppException {
+	public boolean updateBranchDetails(Branch branch, ModifiableField field, Object value) throws AppException {
 		ValidatorUtil.validateObject(value);
 		ValidatorUtil.validateObject(field);
-		ValidatorUtil.validateId(branchId);
+		ValidatorUtil.validateObject(branch);
+		branch.setModifiedAt(System.currentTimeMillis());
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.BRANCH);
 		queryBuilder.setColumn(Column.valueOf(field.toString()));
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.BRANCH_ID);
 		queryBuilder.end();
@@ -155,7 +172,9 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setObject(1, value);
-			statement.setInt(2, branchId);
+			statement.setInt(2, branch.getModifiedBy());
+			statement.setLong(2, branch.getModifiedAt());
+			statement.setInt(2, branch.getBranchId());
 
 			int response = statement.executeUpdate();
 			if (response != 1) {

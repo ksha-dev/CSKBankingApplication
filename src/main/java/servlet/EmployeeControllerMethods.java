@@ -1,10 +1,8 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,16 +12,23 @@ import filters.Parameters;
 import modules.Account;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
+import modules.Transaction;
+import operations.AppOperations;
 import operations.EmployeeOperations;
 import utility.ConstantsUtil.AccountType;
+import utility.ConstantsUtil.LogOperation;
+import utility.ConstantsUtil.OperationStatus;
 import utility.ConstantsUtil.TransactionType;
 import utility.ConstantsUtil.UserType;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
 
 public class EmployeeControllerMethods {
+	public EmployeeControllerMethods() throws AppException {
+	}
 
 	private EmployeeOperations operations = new EmployeeOperations();
+	private AppOperations appOperations = new AppOperations();
 
 	public void accountDetailsGetRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -75,6 +80,7 @@ public class EmployeeControllerMethods {
 
 	public void searchPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
+		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String searchBy = request.getParameter(Parameters.SEARCHBY.parameterName());
 		String searchValue = request.getParameter(Parameters.SEARCHVALUE.parameterName());
 		try {
@@ -83,6 +89,12 @@ public class EmployeeControllerMethods {
 				request.setAttribute("customer", (CustomerRecord) operations.getCustomerRecord(userId));
 				request.setAttribute("accounts", operations.getAssociatedAccountsOfCustomer(userId));
 				request.getRequestDispatcher("/WEB-INF/jsp/employee/search_customer.jsp").forward(request, response);
+
+				// Log
+				appOperations.logOperationByUser(employee.getUserId(), userId, LogOperation.VIEW_CUSTOMER,
+						OperationStatus.SUCCESS, "Customer details (ID : " + userId + ") was searched and viewed by "
+								+ employee.getType() + " (ID :  " + employee.getUserId() + ")",
+						System.currentTimeMillis());
 			} else if (searchBy.equals("accountNumber")) {
 				long accountNumber = ConvertorUtil.convertStringToLong(searchValue);
 				Account account = operations.getAccountDetails(accountNumber);
@@ -90,6 +102,13 @@ public class EmployeeControllerMethods {
 				request.setAttribute("account", account);
 				request.setAttribute("customer", customer);
 				request.getRequestDispatcher("/WEB-INF/jsp/employee/search_account.jsp").forward(request, response);
+				// Log
+				appOperations
+						.logOperationByAndForUser(employee.getUserId(), LogOperation.VIEW_ACCOUNT,
+								OperationStatus.SUCCESS,
+								"Account details (ID : " + accountNumber + ") was searched and viewed by "
+										+ employee.getType() + " (ID :  " + employee.getUserId() + ")",
+								System.currentTimeMillis());
 			} else {
 				throw new AppException("Invalid Search By Field Obtained");
 			}
@@ -128,20 +147,38 @@ public class EmployeeControllerMethods {
 		double amount = (double) ServletUtil.session(request).getAttribute("amount");
 		TransactionType type = (TransactionType) ServletUtil.session(request).getAttribute("type");
 		try {
-			long transactionId = 0;
+			Transaction transaction;
 			if (type == TransactionType.CREDIT) {
-				transactionId = operations.depositAmount(employee.getUserId(), accountNumber, amount, pin);
+				transaction = operations.depositAmount(employee.getUserId(), accountNumber, amount, pin);
 			} else {
-				transactionId = operations.withdrawAmount(employee.getUserId(), accountNumber, amount, pin);
+				transaction = operations.withdrawAmount(employee.getUserId(), accountNumber, amount, pin);
 			}
 			request.setAttribute("status", true);
-			request.setAttribute("message", "Your Transaction has been completed!<br>Tranaction ID : " + transactionId);
+			request.setAttribute("message",
+					"Your Transaction has been completed!<br>Tranaction ID : " + transaction.getTransactionId());
 			request.setAttribute("redirect", "branch_accounts");
+
+			// Log
+			appOperations.logOperationByUser(employee.getUserId(), transaction.getUserId(),
+					LogOperation.EMPLOYEE_TRANSACTION, OperationStatus.SUCCESS,
+					employee.getType() + " (ID : " + employee.getUserId() + ") has "
+							+ (transaction.getTransactionType() == TransactionType.CREDIT ? "deposited " : "withdrawn ")
+							+ ConvertorUtil.amountToCurrencyFormat(transaction.getTransactedAmount())
+							+ " from Account(Acc/No : " + accountNumber + ")",
+					transaction.getCreatedAt());
 		} catch (AppException e) {
-			e.printStackTrace();
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 			request.setAttribute("redirect", "transaction");
+
+			// Log
+			Account account = operations.getAccountDetails(accountNumber);
+			appOperations.logOperationByUser(employee.getUserId(), account.getUserId(),
+					LogOperation.EMPLOYEE_TRANSACTION, OperationStatus.FAILURE,
+					employee.getType() + "(ID : " + employee.getUserId() + ") "
+							+ (type == TransactionType.CREDIT ? "deposit" : "withdrawal")
+							+ "failed on Account(Acc/No : " + accountNumber + ") - " + e.getMessage(),
+					System.currentTimeMillis());
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
@@ -194,20 +231,34 @@ public class EmployeeControllerMethods {
 		AccountType accountType = (AccountType) ServletUtil.session(request).getAttribute("accountType");
 		double amount = (double) ServletUtil.session(request).getAttribute("amount");
 		String customerType = (String) ServletUtil.session(request).getAttribute("customerType");
+		Account newAccount = null;
 		try {
 			if (customerType.equals("new")) {
 				CustomerRecord newCustomer = (CustomerRecord) ServletUtil.session(request).getAttribute("newCustomer");
-				Account newAccount = operations.createNewCustomerAndAccount(newCustomer, accountType, amount,
+				newAccount = operations.createNewCustomerAndAccount(newCustomer, accountType, amount,
 						employee.getUserId(), pin);
 				request.setAttribute("message", "New customer and account has been created\nCustomer ID : "
 						+ newCustomer.getUserId() + "\nAccount Number : " + newAccount.getAccountNumber());
+
+				// Log
+				appOperations.logOperationByUser(
+						employee.getUserId(), newCustomer.getUserId(), LogOperation.CREATE_CUSTOMER,
+						OperationStatus.SUCCESS, "Customer(ID : " + newCustomer.getUserId() + ") was created by "
+								+ employee.getType() + "(ID : " + employee.getUserId() + ")",
+						newCustomer.getCreatedAt());
 			} else if (customerType.equals("existing")) {
 				int customerId = (int) ServletUtil.session(request).getAttribute("customerId");
-				Account newAccount = operations.createAccountForExistingCustomer(customerId, accountType, amount,
+				newAccount = operations.createAccountForExistingCustomer(customerId, accountType, amount,
 						employee.getUserId(), pin);
 				request.setAttribute("message",
 						"New account has been created\nAccount Number : " + newAccount.getAccountNumber());
 			}
+			// Log
+			appOperations.logOperationByUser(employee.getUserId(), newAccount.getUserId(), LogOperation.CREATE_ACCOUNT,
+					OperationStatus.SUCCESS, "Account(Acc/No : " + newAccount.getAccountNumber() + ") was created by "
+							+ employee.getType() + "(ID : " + employee.getUserId() + ")",
+					newAccount.getCreatedAt());
+
 			request.setAttribute("status", true);
 			request.setAttribute("redirect", "branch_accounts");
 
@@ -215,6 +266,12 @@ public class EmployeeControllerMethods {
 			request.setAttribute("status", false);
 			request.setAttribute("redirect", "open_account");
 			request.setAttribute("message", e.getMessage());
+			appOperations
+					.logOperationByUser(
+							employee.getUserId(), newAccount.getUserId(), LogOperation.CREATE_CUSTOMER_AND_ACCOUNT,
+							OperationStatus.FAILURE, "Create customer and open account failed " + employee.getType()
+									+ "(ID : " + employee.getUserId() + ") - " + e.getMessage(),
+							System.currentTimeMillis());
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
@@ -241,12 +298,22 @@ public class EmployeeControllerMethods {
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 		long accountNumber = (long) ServletUtil.session(request).getAttribute("accountNumber");
 		try {
-			operations.closeAccount(accountNumber, employee.getUserId(), pin);
+			Account account = operations.closeAccount(accountNumber, employee.getUserId(), pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message", "Account (Acc/No : " + accountNumber + ") has been successfully closed");
+
+			appOperations
+					.logOperationByUser(employee.getUserId(), account.getUserId(), LogOperation.CLOSE_ACCOUNT,
+							OperationStatus.SUCCESS, "Account(Acc/No : " + account.getAccountNumber()
+									+ ") was closed by " + employee.getType() + "(ID : " + employee.getUserId() + ")",
+							account.getModifiedAt());
 		} catch (AppException e) {
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
+			appOperations.logOperationByAndForUser(employee.getUserId(), LogOperation.CLOSE_ACCOUNT,
+					OperationStatus.FAILURE, "Account(Acc/No : " + accountNumber + ") close failed "
+							+ employee.getType() + "(ID : " + employee.getUserId() + ") - " + e.getMessage(),
+					System.currentTimeMillis());
 		}
 		request.setAttribute("redirect", "branch_accounts");
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);

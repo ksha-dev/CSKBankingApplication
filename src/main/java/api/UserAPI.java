@@ -8,7 +8,9 @@ import modules.Account;
 import modules.Branch;
 import modules.Transaction;
 import modules.UserRecord;
+import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.OperationStatus;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 
 public interface UserAPI {
@@ -20,7 +22,7 @@ public interface UserAPI {
 
 	public UserRecord getUserDetails(int userID) throws AppException;
 
-	public boolean updateProfileDetails(int userID, ModifiableField field, Object value) throws AppException;
+	public boolean updateProfileDetails(UserRecord user, ModifiableField field, Object value) throws AppException;
 
 	public boolean updatePassword(int customerID, String oldPassword, String newPassword) throws AppException;
 
@@ -34,7 +36,7 @@ public interface UserAPI {
 
 	public Account getAccountDetails(long accountNumber) throws AppException;
 
-	public long transferAmount(Transaction transaction, boolean isTransferOutsideBank) throws AppException;
+	public Transaction transferAmount(Transaction transaction, boolean isTransferOutsideBank) throws AppException;
 
 	// Transaction
 	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber,
@@ -46,4 +48,8 @@ public interface UserAPI {
 	public int numberOfTransactionPages(long accountNumber, TransactionHistoryLimit timeLimit) throws AppException;
 
 	public int numberOfTransactionPages(long accountNumber, long startDate, long endDate) throws AppException;
+
+	// Audit Logs
+	public boolean logOperation(int userId, int targetId, LogOperation operation, OperationStatus status,
+			String description, long modifiedAt) throws AppException;
 }

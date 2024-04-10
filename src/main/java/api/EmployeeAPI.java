@@ -16,16 +16,16 @@ public interface EmployeeAPI extends UserAPI {
 
 	public int createCustomer(CustomerRecord customer) throws AppException;
 
-	public long createAccount(int customerID, AccountType type, int branchID) throws AppException;
+	public long createAccount(Account account) throws AppException;
 
-	public boolean changeAccountStatus(long accountNumber, Status status, int branchId) throws AppException;
+	public boolean changeAccountStatus(Account account) throws AppException;
 
 	public int getNumberOfPagesOfAccounts(int branchId) throws AppException;
 
 	public Map<Long, Account> viewAccountsInBranch(int branchID, int pageNumber) throws AppException;
 
-	public long depositAmount(long accoutNumber, double amount, EmployeeRecord employee) throws AppException;
+	public long depositAmount(Transaction depositTransaction) throws AppException;
 
-	public long withdrawAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException;
+	public long withdrawAmount(Transaction withdrawTransaction) throws AppException;
 
 }

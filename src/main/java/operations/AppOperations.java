@@ -10,6 +10,9 @@ import exceptions.messages.ActivityExceptionMessages;
 import modules.Transaction;
 import modules.UserRecord;
 import utility.ValidatorUtil;
+import utility.ConstantsUtil.LogOperation;
+import utility.ConstantsUtil.OperationStatus;
+import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 
 public class AppOperations {
@@ -79,6 +82,23 @@ public class AppOperations {
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
+	}
+
+	public synchronized void logOperationByUser(int userId, int targetId, LogOperation operation,
+			OperationStatus status, String description, long modifiedAt) throws AppException {
+		ValidatorUtil.validateId(userId);
+		ValidatorUtil.validatePositiveNumber(targetId);
+		ValidatorUtil.validateObject(operation);
+		ValidatorUtil.validateObject(description);
+		api.logOperation(userId, targetId, operation, status, description, modifiedAt);
+	}
+
+	public synchronized void logOperationByAndForUser(int userId, LogOperation operation, OperationStatus status,
+			String description, long modifiedAt) throws AppException {
+		ValidatorUtil.validateId(userId);
+		ValidatorUtil.validateObject(operation);
+		ValidatorUtil.validateObject(description);
+		api.logOperation(userId, userId, operation, status, description, modifiedAt);
 	}
 
 }

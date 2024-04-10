@@ -16,6 +16,8 @@ import operations.AppOperations;
 import operations.CustomerOperations;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
+import utility.ConstantsUtil.LogOperation;
+import utility.ConstantsUtil.OperationStatus;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
 
@@ -34,9 +36,16 @@ public class CommonControllerMethods {
 			UserRecord user = operation.getUser(userId, password);
 			ServletUtil.session(request).setAttribute("user", user);
 			response.sendRedirect(user.getType().toString().toLowerCase() + "/home");
+
+			// Log
+			operation.logOperationByAndForUser(userId, LogOperation.USER_LOGIN, OperationStatus.SUCCESS,
+					user.getType() + "(ID : " + userId + ") has successfully logged in", System.currentTimeMillis());
 		} catch (AppException e) {
 			request.getSession(false).setAttribute("error", e.getMessage());
 			response.sendRedirect(request.getContextPath() + "/login");
+			// Log
+			operation.logOperationByAndForUser(userId, LogOperation.USER_LOGIN, OperationStatus.FAILURE,
+					"User(ID : " + userId + ") login failed - " + e.getMessage(), System.currentTimeMillis());
 		}
 
 	}
@@ -57,7 +66,7 @@ public class CommonControllerMethods {
 			UserRecord user = ServletUtil.getUser(request);
 			if (user.getType() == UserType.CUSTOMER) {
 				new CustomerOperations().getAccountDetails(accountNumber, user.getUserId());
-			} 
+			}
 			List<Transaction> transactions;
 			if (limitString.equals("custom")) {
 				String startDateString = request.getParameter(Parameters.STARTDATE.parameterName());
@@ -110,18 +119,28 @@ public class CommonControllerMethods {
 		String oldPassword = (String) ServletUtil.session(request).getAttribute("oldPassword");
 		String newPassword = (String) ServletUtil.session(request).getAttribute("newPassword");
 		String pin = request.getParameter(Parameters.PIN.parameterName());
+		UserRecord user = ServletUtil.getUser(request);
 
 		try {
-			operation.updatePassword(ServletUtil.getUser(request).getUserId(), oldPassword, newPassword, pin);
+			operation.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message", "New password has been updated<br>Click Finish to Logout");
 			request.setAttribute("redirect", "logout");
+
+			operation.logOperationByAndForUser(user.getUserId(), LogOperation.UPDATE_PASSWORD, OperationStatus.SUCCESS,
+					user.getType() + "(ID : " + user.getUserId() + ") has changed the password",
+					System.currentTimeMillis());
 		} catch (AppException e) {
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 			request.setAttribute("redirect", "change_password");
+
+			operation.logOperationByAndForUser(user.getUserId(), LogOperation.UPDATE_PASSWORD, OperationStatus.FAILURE,
+					"Password update failed - " + e.getMessage(), System.currentTimeMillis());
 		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp");
 		dispatcher.forward(request, response);
+		// Log
+
 	}
 }

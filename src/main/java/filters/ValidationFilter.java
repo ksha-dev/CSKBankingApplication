@@ -98,10 +98,61 @@ public class ValidationFilter implements Filter {
 						}
 						break;
 
-					case "/employee/authorization":
-					case "/admin/authorization":
 					case "/customer/authorization":
 						ServletUtil.commonAuthorizationCheck(parameters);
+						break;
+
+					case "/admin/authorization": {
+						ServletUtil.commonAuthorizationCheck(parameters);
+						String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
+						switch (operation) {
+						case "authorize_add_employee":
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
+											Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL,
+											Parameters.ROLE, Parameters.BRANCHID));
+							break;
+
+						case "authorize_add_branch":
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL));
+							break;
+						}
+					}
+					case "/employee/authorization": {
+						ServletUtil.commonAuthorizationCheck(parameters);
+						String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
+						switch (operation) {
+						case "authorize_transaction":
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.ACCOUNTNUMBER, Parameters.AMOUNT, Parameters.TYPE));
+							break;
+
+						case "authorize_open_account":
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.TYPE, Parameters.AMOUNT, Parameters.CUSTOMERTYPE));
+							switch (request.getParameter(Parameters.CUSTOMERTYPE.parameterName())) {
+							case "new":
+								ServletUtil.checkRequiredParameters(parameters,
+										List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
+												Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE,
+												Parameters.EMAIL, Parameters.AADHAAR, Parameters.PAN));
+								break;
+
+							case "existing":
+								ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.USERID));
+								break;
+
+							default:
+								throw new AppException("Invalid Customer Type obtained");
+							}
+							break;
+
+						case "authorize_close_account":
+							ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ACCOUNTNUMBER));
+							break;
+						}
+					}
 						break;
 
 					case "/admin/employee_details":

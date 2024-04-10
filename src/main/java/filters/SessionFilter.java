@@ -43,8 +43,9 @@ public class SessionFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		HttpSession session = req.getSession(false);
-		if (req.getPathInfo().endsWith("/logout")) {
-
+		if (req.getPathInfo() == null) {
+			res.sendRedirect(req.getContextPath() + "/login");
+		} else if (req.getPathInfo().endsWith("/logout")) {
 			session.invalidate();
 			req.getSession(true).setAttribute("error", "User has been logged out");
 			res.sendRedirect(req.getContextPath() + "/login");
@@ -61,7 +62,7 @@ public class SessionFilter implements Filter {
 		} else if (session.getAttribute("user") == null) {
 
 			session.invalidate();
-			req.getSession(true).setAttribute("error", "User has been logged out");
+			req.getSession(true).setAttribute("error", "The Session has expired. Login again to access the bank");
 			res.sendRedirect(req.getContextPath() + "/login");
 
 		} else {

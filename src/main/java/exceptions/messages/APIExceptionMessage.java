@@ -7,15 +7,15 @@ public enum APIExceptionMessage {
 	ACCOUNT_RECORD_NOT_FOUND("No account exists with the given account number."),
 	USER_AUNTHENTICATION_FAILED("The credentials entered for the acount is incorrect. Please try again"),
 	NO_SERVER_CONNECTION("Unable to connect to server. Please try again after sometime. Sorry for the inconvenience"),
+	LOGGING_FAILED("An internal error occured during log operation"),
 
-	NO_RECORDS_FOUND("No matching records were found."),
-	CANNOT_FETCH_DETAILS("Unable to fetch details at the moment. Please try again later"),
+	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),
 
-	USER_CREATION_FAILED("Unable to create user record at the moment. Please try again later"),
-	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment. Please try again later"),
-	ACCOUNT_CREATION_FAILED("Failed to create a new Account. Please try again later."),
-	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment. Pleasy try again later"),
+	USER_CREATION_FAILED("Unable to create user record at the moment"),
+	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment"),
+	ACCOUNT_CREATION_FAILED("Failed to create a new Account."),
+	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
 
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),

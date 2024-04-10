@@ -32,7 +32,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</a>
 		<div style="margin: auto"></div>
 		<form action="employee_details" method="post">
-			<input type="number" name="id" placeholder="Search Employee"
+			<input type="number" name="userId" placeholder="Search Employee"
 				style="margin-right: 50px" required="required">
 		</form>
 	</div>

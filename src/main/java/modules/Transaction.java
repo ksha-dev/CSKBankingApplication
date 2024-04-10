@@ -15,9 +15,14 @@ public class Transaction {
 	private double closingBalance;
 	private long timeStamp;
 	private String remarks;
+	private int modifiedBy;
+	private long createdAt;
+	private long modifiedAt;
 
 	public Transaction() throws AppException {
 	}
+
+	// Setters
 
 	public void setTransactionId(long transactionId) throws AppException {
 		ValidatorUtil.validatePositiveNumber(transactionId);
@@ -60,7 +65,20 @@ public class Transaction {
 		this.remarks = remarks;
 	}
 
-	// getters
+	public void setCreatedAt(long dateTime) {
+		this.createdAt = dateTime;
+	}
+
+	public void setModifiedBy(int userId) throws AppException {
+		ValidatorUtil.validateId(userId);
+		this.modifiedBy = userId;
+	}
+
+	public void setModifiedAt(long dateTime) {
+		this.modifiedAt = dateTime;
+	}
+
+	// Getters
 
 	public long getTransactionId() {
 		return this.transactionId;
@@ -96,5 +114,17 @@ public class Transaction {
 
 	public String getRemarks() {
 		return this.remarks;
+	}
+
+	public int getModifiedBy() {
+		return this.modifiedBy;
+	}
+
+	public long getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public long getModifiedAt() {
+		return this.modifiedAt;
 	}
 }

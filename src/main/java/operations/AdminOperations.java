@@ -40,25 +40,34 @@ public class AdminOperations {
 		return api.getPageCountOfEmployees();
 	}
 
-	public boolean createEmployee(EmployeeRecord employee, int userId, String pin) throws AppException {
+	public boolean createEmployee(EmployeeRecord employee, int adminId, String pin) throws AppException {
 		ValidatorUtil.validateObject(employee);
 		ValidatorUtil.validatePIN(pin);
 
-		if (api.userConfimration(userId, pin)) {
+		if (api.userConfimration(adminId, pin)) {
+			employee.setCreatedAt(System.currentTimeMillis());
+			employee.setModifiedBy(adminId);
 			return api.createEmployee(employee);
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
 	}
 
-	public boolean update(int employeeId, ModifiableField field, Object value) throws AppException {
+	public boolean update(int employeeId, ModifiableField field, Object value, int adminId, String pin)
+			throws AppException {
 		ValidatorUtil.validateId(employeeId);
+		ValidatorUtil.validateId(adminId);
 		ValidatorUtil.validateObject(value);
 		ValidatorUtil.validateObject(field);
+		ValidatorUtil.validatePIN(pin);
 
-		boolean status = api.updateEmployeeDetails(employeeId, field, value);
-		CachePool.getUserRecordCache().refreshData(employeeId);
-		return status;
+		if (api.userConfimration(adminId, pin)) {
+			boolean status = api.updateEmployeeDetails(employeeId, field, value, adminId);
+			CachePool.getUserRecordCache().refreshData(employeeId);
+			return status;
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
 	public Branch getBranch(int branchId) throws AppException {
@@ -66,10 +75,16 @@ public class AdminOperations {
 		return CachePool.getBranchCache().get(branchId);
 	}
 
-	public Branch createBranch(Branch branch) throws AppException {
+	public Branch createBranch(Branch branch, int adminId, String pin) throws AppException {
 		ValidatorUtil.validateObject(branch);
-		int branchId = api.createBranch(branch);
-		return CachePool.getBranchCache().get(branchId);
+		if (api.userConfimration(adminId, pin)) {
+			branch.setModifiedBy(adminId);
+			branch.setCreatedAt(System.currentTimeMillis());
+			int branchId = api.createBranch(branch);
+			return CachePool.getBranchCache().get(branchId);
+		} else {
+			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+		}
 	}
 
 	public boolean updateBranchDetails(int branchId, ModifiableField field, Object value) throws AppException {
@@ -80,7 +95,7 @@ public class AdminOperations {
 		}
 		ValidatorUtil.validateObject(value);
 
-		boolean status = api.updateBranchDetails(branchId, field, value);
+		boolean status = api.updateBranchDetails(getBranch(branchId), field, value);
 		CachePool.getBranchCache().refreshData(branchId);
 		return status;
 	}

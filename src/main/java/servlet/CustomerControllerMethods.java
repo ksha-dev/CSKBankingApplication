@@ -17,15 +17,22 @@ import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
 import modules.Transaction;
+import operations.AppOperations;
 import operations.CustomerOperations;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
 import utility.ValidatorUtil;
+import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.OperationStatus;
 
 public class CustomerControllerMethods {
 
+	public CustomerControllerMethods() throws AppException {
+	}
+
 	private CustomerOperations operations = new CustomerOperations();
+	private AppOperations appOperations = new AppOperations();
 
 	public void accountsGetRequest(HttpServletRequest request, HttpServletResponse response, String forwardFileName)
 			throws ServletException, IOException, AppException {
@@ -88,23 +95,39 @@ public class CustomerControllerMethods {
 	}
 
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		try {
-			String pin = request.getParameter(Parameters.PIN.parameterName());
-			Transaction transaction = (Transaction) ServletUtil.session(request).getAttribute("transaction");
-			ServletUtil.session(request).removeAttribute("transaction");
-			boolean transferWithinBank = (boolean) ServletUtil.session(request).getAttribute("transferWithinBank");
-			ServletUtil.session(request).removeAttribute("transferWithinBank");
+			throws IOException, ServletException, AppException {
+		Transaction transaction = (Transaction) ServletUtil.session(request).getAttribute("transaction");
+		String pin = request.getParameter(Parameters.PIN.parameterName());
+		ServletUtil.session(request).removeAttribute("transaction");
+		boolean transferWithinBank = (boolean) ServletUtil.session(request).getAttribute("transferWithinBank");
+		ServletUtil.session(request).removeAttribute("transferWithinBank");
 
-			operations.tranferMoney(transaction, transferWithinBank, pin);
+		try {
+			Transaction completedTransaction = operations.tranferMoney(transaction, transferWithinBank, pin);
 			request.setAttribute("status", true);
-			request.setAttribute("message", "Your Transaction has been completed!\n Tranaction ID : " + transaction.getTransactionId());
+			request.setAttribute("message",
+					"Your Transaction has been completed!\n Tranaction ID : " + transaction.getTransactionId());
 			request.setAttribute("redirect", "account");
+
+			// Log
+			appOperations.logOperationByAndForUser(transaction.getUserId(), LogOperation.USER_TRANSACTION,
+					OperationStatus.SUCCESS,
+					"Customer(ID : " + transaction.getUserId() + ") has transfered "
+							+ ConvertorUtil.amountToCurrencyFormat(transaction.getTransactedAmount())
+							+ " to Account(Acc/No : " + transaction.getTransactedAccountNumber() + ")",
+					completedTransaction.getCreatedAt());
+
 		} catch (AppException e) {
 			e.printStackTrace();
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 			request.setAttribute("redirect", "transfer");
+
+			// Log
+			appOperations.logOperationByAndForUser(transaction.getUserId(), LogOperation.USER_TRANSACTION,
+					OperationStatus.SUCCESS,
+					"Transaction by Customer(ID : " + transaction.getUserId() + ") has failed - " + e.getMessage(),
+					System.currentTimeMillis());
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
@@ -143,12 +166,12 @@ public class CustomerControllerMethods {
 	}
 
 	public void processProfileUpdatePostRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+			throws IOException, ServletException, AppException {
+		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
+		String pin = request.getParameter(Parameters.PIN.parameterName());
+		int customerId = customer.getUserId();
 		try {
-			CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
-			String pin = request.getParameter(Parameters.PIN.parameterName());
 			List<ModifiableField> fields = (List) ServletUtil.session(request).getAttribute("fields");
-			int customerId = customer.getUserId();
 			for (ModifiableField field : fields) {
 				Object value = ServletUtil.session(request).getAttribute(field.toString().toLowerCase());
 				operations.updateUserDetails(customerId, field, value, pin);
@@ -160,12 +183,22 @@ public class CustomerControllerMethods {
 			request.setAttribute("message",
 					"The profile details have been updated\nThe changes will be reflected shortly");
 			request.setAttribute("redirect", "profile");
+
+			// Log
+			appOperations.logOperationByAndForUser(customerId, LogOperation.UPDATE_PROFILE, OperationStatus.SUCCESS,
+					"Profile details Customer(ID : " + customerId + ") has been successfully updated",
+					System.currentTimeMillis());
 		} catch (AppException e) {
 			e.printStackTrace();
 			request.setAttribute("status", true);
 			request.setAttribute("operation", "profile_update");
 			request.setAttribute("message", "An error occured. " + e.getMessage());
 			request.setAttribute("redirect", "profile");
+
+			// Log
+			appOperations.logOperationByAndForUser(customerId, LogOperation.UPDATE_PROFILE, OperationStatus.FAILURE,
+					"Profile details Customer(ID : " + customerId + ") failed - " + e.getMessage(),
+					System.currentTimeMillis());
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}

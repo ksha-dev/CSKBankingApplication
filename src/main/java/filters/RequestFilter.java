@@ -54,9 +54,9 @@ public class RequestFilter implements Filter {
 			req.getRequestDispatcher("/WEB-INF/jsp/common/login.jsp").forward(req, res);
 
 		} else if (url.startsWith("/static")) {
-			req.getRequestDispatcher(url);
+			req.getRequestDispatcher(url).forward(req, res);
 
-		} else if (url.startsWith("/app")) {
+		} else if (url.equals("/app")) {
 			chain.doFilter(req, res);
 
 		} else {

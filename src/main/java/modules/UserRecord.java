@@ -20,10 +20,15 @@ public abstract class UserRecord {
 	private long mobileNumber;
 	private String email;
 	private UserType type;
+	private int modifiedBy;
+	private long createdAt;
+	private long modifiedAt;
 
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+
+	// Setters
 
 	public void setFirstName(String firstName) throws AppException {
 		ValidatorUtil.validateFirstName(firstName);
@@ -69,6 +74,21 @@ public abstract class UserRecord {
 		this.type = UserType.getUserType(userTypeId);
 	}
 
+	public void setCreatedAt(long dateTime) {
+		this.createdAt = dateTime;
+	}
+
+	public void setModifiedBy(int userId) throws AppException {
+		ValidatorUtil.validateId(userId);
+		this.modifiedBy = userId;
+	}
+
+	public void setModifiedAt(long dateTime) {
+		this.modifiedAt = dateTime;
+	}
+
+	// Getters
+
 	public int getUserId() {
 		return userId;
 	}
@@ -110,5 +130,17 @@ public abstract class UserRecord {
 
 	public UserType getType() {
 		return type;
+	}
+
+	public int getModifiedBy() {
+		return this.modifiedBy;
+	}
+
+	public long getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public long getModifiedAt() {
+		return this.modifiedAt;
 	}
 }

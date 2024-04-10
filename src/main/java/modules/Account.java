@@ -18,9 +18,14 @@ public class Account {
 	private long lastTransactionAt;
 	private double balance;
 	private Status status;
+	private int modifiedBy;
+	private long createdAt;
+	private long modifiedAt;
 
 	public Account() {
 	}
+
+	// Setters
 
 	public void setAccountNumber(long accoutNumber) throws AppException {
 		ValidatorUtil.validatePositiveNumber(accoutNumber);
@@ -59,6 +64,21 @@ public class Account {
 		this.balance = balance;
 	}
 
+	public void setCreatedAt(long dateTime) {
+		this.createdAt = dateTime;
+	}
+
+	public void setModifiedBy(int userId) throws AppException {
+		ValidatorUtil.validateId(userId);
+		this.modifiedBy = userId;
+	}
+
+	public void setModifiedAt(long dateTime) {
+		this.modifiedAt = dateTime;
+	}
+
+	// Getters
+
 	public long getAccountNumber() {
 		return this.accountNumber;
 	}
@@ -93,5 +113,17 @@ public class Account {
 
 	public double getBalance() {
 		return this.balance;
+	}
+
+	public int getModifiedBy() {
+		return this.modifiedBy;
+	}
+
+	public long getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public long getModifiedAt() {
+		return this.modifiedAt;
 	}
 }

@@ -32,7 +32,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.CREDENTIALS);
-		queryBuilder.insertValuePlaceholders(3);
+		queryBuilder.insertValuePlaceholders(6);
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -40,6 +40,10 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setInt(1, user.getUserId());
 			statement.setString(2, ConvertorUtil.passwordGenerator(user));
 			statement.setString(3, ConvertorUtil.pinGenerator(user));
+			statement.setLong(4, user.getCreatedAt());
+			statement.setInt(5, user.getModifiedBy());
+			statement.setObject(6, null);
+
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			throw new AppException(e.getMessage());
@@ -52,7 +56,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.USERS);
 		queryBuilder.insertColumns(List.of(Column.FIRST_NAME, Column.LAST_NAME, Column.DATE_OF_BIRTH, Column.GENDER,
-				Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.TYPE));
+				Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.TYPE, Column.CREATED_AT, Column.MODIFIED_BY,
+				Column.MODIFIED_AT));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -65,6 +70,9 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setLong(6, user.getPhone());
 			statement.setString(7, user.getEmail());
 			statement.setString(8, user.getType().getUserTypeId() + "");
+			statement.setLong(9, user.getCreatedAt());
+			statement.setInt(10, user.getModifiedBy());
+			statement.setObject(11, null);
 
 			statement.executeUpdate();
 			try (ResultSet key = statement.getGeneratedKeys()) {
@@ -88,7 +96,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 			MySQLQuery queryBuilder = new MySQLQuery();
 			queryBuilder.insertInto(Schemas.CUSTOMERS);
-			queryBuilder.insertValuePlaceholders(3);
+			queryBuilder.insertValuePlaceholders(5);
 			queryBuilder.end();
 
 			try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -96,6 +104,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				statement.setInt(1, customer.getUserId());
 				statement.setLong(2, customer.getAadhaarNumber());
 				statement.setString(3, customer.getPanNumber());
+
 				int response = statement.executeUpdate();
 				if (response == 1) {
 					ServerConnection.endTransaction();
@@ -111,22 +120,24 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public long createAccount(int customerId, AccountType type, int branchId) throws AppException {
-		ValidatorUtil.validateId(branchId);
-		ValidatorUtil.validateId(customerId);
-		ValidatorUtil.validateObject(type);
+	public long createAccount(Account account) throws AppException {
+		ValidatorUtil.validateObject(account);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.ACCOUNTS);
-		queryBuilder.insertColumns(List.of(Column.USER_ID, Column.TYPE, Column.BRANCH_ID, Column.OPENING_DATE));
+		queryBuilder.insertColumns(List.of(Column.USER_ID, Column.TYPE, Column.BRANCH_ID, Column.OPENING_DATE,
+				Column.CREATED_AT, Column.MODIFIED_AT, Column.MODIFIED_BY));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery(), Statement.RETURN_GENERATED_KEYS)) {
-			statement.setInt(1, customerId);
-			statement.setString(2, type.getAccountTypeId() + "");
-			statement.setInt(3, branchId);
-			statement.setLong(4, System.currentTimeMillis());
+			statement.setInt(1, account.getUserId());
+			statement.setString(2, account.getAccountType().getAccountTypeId() + "");
+			statement.setInt(3, account.getBranchId());
+			statement.setLong(4, account.getOpeningDate());
+			statement.setLong(5, account.getCreatedAt());
+			statement.setInt(6, account.getModifiedBy());
+			statement.setObject(7, null);
 
 			int response = statement.executeUpdate();
 			try (ResultSet key = statement.getGeneratedKeys()) {
@@ -199,25 +210,15 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public long depositAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException {
-		ValidatorUtil.validateAmount(amount);
-		ValidatorUtil.validateObject(employee);
+	public long depositAmount(Transaction depositTransaction) throws AppException {
+		ValidatorUtil.validateObject(depositTransaction);
 		try {
 			ServerConnection.startTransaction();
-			Account customerAccount = getAccountDetails(accountNumber);
-			double newBalance = ConvertorUtil.convertToTwoDecimals(customerAccount.getBalance() + amount);
-			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, newBalance)) {
-				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
-			}
 
-			customerAccount.setBalance(newBalance);
-			Transaction depositTransaction = new Transaction();
-			depositTransaction.setUserId(customerAccount.getUserId());
-			depositTransaction.setViewerAccountNumber(accountNumber);
-			depositTransaction.setTransactedAmount(amount);
-			depositTransaction.setTransactionType(TransactionType.CREDIT.getTransactionTypeId());
-			depositTransaction.setClosingBalance(newBalance);
-			depositTransaction.setRemarks("CR-DEPOSIT-BID-" + employee.getBranchId() + "-EID-" + employee.getUserId());
+			Account transactionAccount = getAccountDetails(depositTransaction.getViewerAccountNumber());
+			transactionAccount.setModifiedBy(depositTransaction.getModifiedBy());
+			transactionAccount.setModifiedAt(depositTransaction.getCreatedAt());
+			MySQLAPIUtil.updateBalanceInAccount(transactionAccount);
 
 			MySQLAPIUtil.createSenderTransactionRecord(depositTransaction);
 			ServerConnection.endTransaction();
@@ -230,31 +231,20 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public long withdrawAmount(long accountNumber, double amount, EmployeeRecord employee) throws AppException {
-		ValidatorUtil.validateAmount(amount);
-		ValidatorUtil.validateObject(employee);
+	public long withdrawAmount(Transaction withdrawTransaction) throws AppException {
+		ValidatorUtil.validateObject(withdrawTransaction);
 		try {
 			ServerConnection.startTransaction();
-			Account customerAccount = getAccountDetails(accountNumber);
-			if (customerAccount.getStatus() == Status.FROZEN) {
-				throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
-			}
-			if (customerAccount.getBalance() < amount) {
-				throw new AppException(APIExceptionMessage.INSUFFICIENT_BALANCE);
-			}
-			double newBalance = ConvertorUtil.convertToTwoDecimals(customerAccount.getBalance() - amount);
-			if (!MySQLAPIUtil.updateBalanceInAccount(accountNumber, newBalance)) {
+			Account transactionAccount = getAccountDetails(withdrawTransaction.getViewerAccountNumber());
+			transactionAccount.setModifiedBy(withdrawTransaction.getModifiedBy());
+			transactionAccount.setModifiedAt(withdrawTransaction.getCreatedAt());
+			transactionAccount.setLastTransactedAt(withdrawTransaction.getCreatedAt());
+			transactionAccount.setBalance(withdrawTransaction.getClosingBalance());
+
+			if (!MySQLAPIUtil.updateBalanceInAccount(transactionAccount)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
-			customerAccount.setBalance(newBalance);
-			Transaction withdrawTransaction = new Transaction();
-			withdrawTransaction.setUserId(customerAccount.getUserId());
-			withdrawTransaction.setViewerAccountNumber(accountNumber);
-			withdrawTransaction.setTransactedAmount(amount);
-			withdrawTransaction.setTransactionType(TransactionType.DEBIT.getTransactionTypeId());
-			withdrawTransaction.setClosingBalance(newBalance);
-			withdrawTransaction
-					.setRemarks("DB-WITHDRAW-BID-" + employee.getBranchId() + "-EID-" + employee.getUserId());
+
 			MySQLAPIUtil.createSenderTransactionRecord(withdrawTransaction);
 			ServerConnection.endTransaction();
 			return withdrawTransaction.getTransactionId();
@@ -266,33 +256,26 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public boolean changeAccountStatus(long accountNumber, Status status, int branchId)
-			throws AppException {
-		ValidatorUtil.validateId(branchId);
-		ValidatorUtil.validateId(accountNumber);
-		ValidatorUtil.validateObject(status);
-
-		Status currentStatus = getAccountDetails(accountNumber).getStatus();
-		if (currentStatus == Status.CLOSED) {
-			throw new AppException(APIExceptionMessage.CANNOT_MODIFY_STATUS);
-		} else if (currentStatus == status) {
-			throw new AppException(APIExceptionMessage.STATUS_ALREADY_SET);
-		}
+	public boolean changeAccountStatus(Account account) throws AppException {
+		ValidatorUtil.validateObject(account);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.ACCOUNTS);
 		queryBuilder.setColumn(Column.STATUS);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
 		queryBuilder.where();
 		queryBuilder.columnEquals(Column.ACCOUNT_NUMBER);
-		queryBuilder.and();
-		queryBuilder.columnEquals(Column.BRANCH_ID);
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setString(1, status.getStatusId() + "");
-			statement.setLong(2, accountNumber);
-			statement.setInt(3, branchId);
+			statement.setString(1, account.getStatus().getStatusId() + "");
+			statement.setInt(2, account.getModifiedBy());
+			statement.setLong(3, account.getModifiedAt());
+			statement.setLong(4, account.getAccountNumber());
 
 			System.out.println(statement);
 			int response = statement.executeUpdate();

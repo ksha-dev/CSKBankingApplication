@@ -8,6 +8,7 @@ public enum ActivityExceptionMessages {
 	INVALID_EMPLOYEE_RECORD("The employee record obtained is not valid."),
 	SERVER_CONNECTION_LOST("The connection to server is lost. Logging out."),
 	USER_AUTHORIZATION_FAILED("User Authorization failed."),
+	EMPLOYEE_UNAUTHORIZED("Operation Forbidden. Cannot be process by current user"),
 	NO_CUSTOMER_RECORD_FOUND("The customer record for the following Customer ID was not found"),
 	NO_EMPLOYEE_RECORD_FOUND("The employee record for the following ID was not found"),
 	MODIFICATION_ACCESS_DENIED("You do not have permission to modify this data"),
