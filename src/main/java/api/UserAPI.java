@@ -5,6 +5,7 @@ import java.util.Map;
 
 import exceptions.AppException;
 import modules.Account;
+import modules.AuditLog;
 import modules.Branch;
 import modules.Transaction;
 import modules.UserRecord;
@@ -22,6 +23,8 @@ public interface UserAPI {
 
 	public UserRecord getUserDetails(int userID) throws AppException;
 
+	public UserRecord getUserDetails(Integer userID) throws AppException;
+
 	public boolean updateProfileDetails(UserRecord user, ModifiableField field, Object value) throws AppException;
 
 	public boolean updatePassword(int customerID, String oldPassword, String newPassword) throws AppException;
@@ -29,12 +32,16 @@ public interface UserAPI {
 	// Branch
 	public Branch getBranchDetails(int branchID) throws AppException;
 
+	public Branch getBranchDetails(Integer branchId) throws AppException;
+
 	// Accounts
 //	public int getNumberOfPagesOfAccounts(int userId, int pageNumber) throws AppException;
 
 	public Map<Long, Account> getAccountsOfUser(int userID) throws AppException;
 
 	public Account getAccountDetails(long accountNumber) throws AppException;
+
+	public Account getAccountDetails(Long accountNumber) throws AppException;
 
 	public Transaction transferAmount(Transaction transaction, boolean isTransferOutsideBank) throws AppException;
 
@@ -50,6 +57,5 @@ public interface UserAPI {
 	public int numberOfTransactionPages(long accountNumber, long startDate, long endDate) throws AppException;
 
 	// Audit Logs
-	public boolean logOperation(int userId, int targetId, LogOperation operation, OperationStatus status,
-			String description, long modifiedAt) throws AppException;
+	public boolean logOperation(AuditLog auditLog) throws AppException;
 }

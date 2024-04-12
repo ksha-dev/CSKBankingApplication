@@ -1,4 +1,4 @@
-package operations;
+package handlers;
 
 import java.util.Map;
 
@@ -16,14 +16,26 @@ import modules.UserRecord;
 import utility.ConstantsUtil;
 import utility.ConvertorUtil;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionType;
 import utility.ConstantsUtil.UserType;
 import utility.ValidatorUtil;
 
-public class CustomerOperations {
+public class CustomerHandler {
 
-	private UserAPI api = new MySQLUserAPI();
+	private UserAPI api;
+
+	public CustomerHandler(PersistanceIdentifier obj) throws AppException {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<UserAPI> persistanceClass = (Class<UserAPI>) Class
+					.forName("api." + obj.toString().toLowerCase() + "." + obj.toString() + "UserAPI");
+			api = persistanceClass.getConstructor().newInstance();
+		} catch (Exception e) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_LOAD_CONNECTOR);
+		}
+	}
 
 	public CustomerRecord getCustomerRecord(int customerId) throws AppException {
 		UserRecord user = CachePool.getUserRecordCache().get(customerId);

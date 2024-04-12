@@ -1,9 +1,8 @@
-package operations;
+package handlers;
 
 import java.util.List;
 
 import api.UserAPI;
-import api.mysql.MySQLUserAPI;
 import cache.CachePool;
 import exceptions.AppException;
 import exceptions.messages.ActivityExceptionMessages;
@@ -12,15 +11,26 @@ import modules.UserRecord;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.OperationStatus;
-import utility.ConstantsUtil.Status;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 
-public class AppOperations {
+public class CommonHandler {
 
-	private UserAPI api = new MySQLUserAPI();
+	private UserAPI api;
 
-	public AppOperations() throws AppException {
-		CachePool.initializeCache(api);
+	public CommonHandler(PersistanceIdentifier identifier) throws AppException {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<UserAPI> persistanceClass = (Class<UserAPI>) Class
+					.forName("api." + identifier.toString().toLowerCase() + "." + identifier.toString() + "UserAPI");
+			api = persistanceClass.getConstructor().newInstance();
+		} catch (Exception e) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_LOAD_CONNECTOR);
+		}
+	}
+
+	public UserAPI getUserAPI() {
+		return api;
 	}
 
 	public UserRecord getUser(int userID, String password) throws AppException {
@@ -82,23 +92,6 @@ public class AppOperations {
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
-	}
-
-	public synchronized void logOperationByUser(int userId, int targetId, LogOperation operation,
-			OperationStatus status, String description, long modifiedAt) throws AppException {
-		ValidatorUtil.validateId(userId);
-		ValidatorUtil.validatePositiveNumber(targetId);
-		ValidatorUtil.validateObject(operation);
-		ValidatorUtil.validateObject(description);
-		api.logOperation(userId, targetId, operation, status, description, modifiedAt);
-	}
-
-	public synchronized void logOperationByAndForUser(int userId, LogOperation operation, OperationStatus status,
-			String description, long modifiedAt) throws AppException {
-		ValidatorUtil.validateId(userId);
-		ValidatorUtil.validateObject(operation);
-		ValidatorUtil.validateObject(description);
-		api.logOperation(userId, userId, operation, status, description, modifiedAt);
 	}
 
 }

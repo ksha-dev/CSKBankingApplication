@@ -16,6 +16,20 @@ public class ConstantsUtil {
 
 	public static final int CACHE_SIZE = 30;
 
+	public static enum CachePort {
+		ACCOUNTS(6379), USER_RECORD(6000);
+
+		private int cachePort;
+
+		private CachePort(int cachePort) {
+			this.cachePort = cachePort;
+		}
+
+		public int getPort() {
+			return this.cachePort;
+		}
+	}
+
 	static {
 		List<ModifiableField> tempList = new ArrayList<>();
 		tempList.addAll(List.of(ModifiableField.ADDRESS, ModifiableField.EMAIL));
@@ -28,6 +42,10 @@ public class ConstantsUtil {
 
 		tempList.addAll(List.of(ModifiableField.BRANCH_ID, ModifiableField.TYPE));
 		ADMIN_MODIFIABLE_FIELDS = List.copyOf(tempList);
+	}
+
+	public static enum PersistanceIdentifier {
+		MySQL
 	}
 
 	public static enum ModifiableField {

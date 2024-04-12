@@ -8,12 +8,12 @@ import consoleRunner.utility.InputUtil;
 import consoleRunner.utility.LoggingUtil;
 import exceptions.AppException;
 import exceptions.messages.ActivityExceptionMessages;
+import handlers.CommonHandler;
+import handlers.CustomerHandler;
 import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
 import modules.Transaction;
-import operations.AppOperations;
-import operations.CustomerOperations;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.ModifiableField;
@@ -27,8 +27,8 @@ class CustomerRunner {
 	public static void run(CustomerRecord customer) throws AppException {
 		boolean isProgramActive = true;
 		int runnerOperations = 9;
-		CustomerOperations operations = new CustomerOperations();
-		AppOperations appOperation = new AppOperations();
+		CustomerHandler operations = new CustomerHandler();
+		CommonHandler appOperation = new CommonHandler();
 
 		while (isProgramActive) {
 
@@ -174,9 +174,9 @@ class CustomerRunner {
 					log.info("Enter PIN to confirm : ");
 					String pin = InputUtil.getPIN();
 
-					long id = operations.tranferMoney(transaction, isTransferInsideBank, pin);
+					Transaction completedTransaciton = operations.tranferMoney(transaction, isTransferInsideBank, pin);
 					log.info("Transaction Successful");
-					log.info("Transaction Id : " + id);
+					log.info("Transaction Id : " + completedTransaciton.getTransactionId());
 				}
 					break;
 
@@ -219,9 +219,8 @@ class CustomerRunner {
 						}
 						log.info("Enter PIN to confirm changes : ");
 						String pin = InputUtil.getPIN();
-						if (operations.updateUserDetails(customer.getUserId(), selectedField, change, pin)) {
-							log.info("Update successful");
-						}
+						operations.updateUserDetails(customer.getUserId(), selectedField, change, pin);
+						log.info("Update successful");
 					}
 				}
 					break;

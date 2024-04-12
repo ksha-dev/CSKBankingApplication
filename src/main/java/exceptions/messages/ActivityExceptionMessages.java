@@ -4,6 +4,8 @@ import utility.ConstantsUtil;
 
 public enum ActivityExceptionMessages {
 
+	CANNOT_LOAD_CONNECTOR("Persistance layer not found"),
+
 	CANNOT_TRANSFER_TO_SAME_ACCOUNT("Amount cannot be transferred within the same account"),
 	INVALID_EMPLOYEE_RECORD("The employee record obtained is not valid."),
 	SERVER_CONNECTION_LOST("The connection to server is lost. Logging out."),

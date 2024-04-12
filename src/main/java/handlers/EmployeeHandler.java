@@ -1,8 +1,9 @@
-package operations;
+package handlers;
 
 import java.util.Map;
 
 import api.EmployeeAPI;
+import api.UserAPI;
 import api.mysql.MySQLEmployeeAPI;
 import cache.CachePool;
 import exceptions.AppException;
@@ -18,13 +19,25 @@ import utility.ValidatorUtil;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.Status;
 import utility.ConstantsUtil.TransactionType;
 import utility.ConstantsUtil.UserType;
 import utility.ConvertorUtil;
 
-public class EmployeeOperations {
+public class EmployeeHandler {
 	private EmployeeAPI api = new MySQLEmployeeAPI();
+
+	public EmployeeHandler(PersistanceIdentifier obj) throws AppException {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<EmployeeAPI> persistanceClass = (Class<EmployeeAPI>) Class
+					.forName("api." + obj.toString().toLowerCase() + "." + obj.toString() + "EmployeeAPI");
+			api = persistanceClass.getConstructor().newInstance();
+		} catch (Exception e) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_LOAD_CONNECTOR);
+		}
+	}
 
 	public EmployeeRecord getEmployeeRecord(int employeeId) throws AppException {
 		UserRecord user = CachePool.getUserRecordCache().get(employeeId);

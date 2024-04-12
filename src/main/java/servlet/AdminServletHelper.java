@@ -8,32 +8,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import exceptions.AppException;
 import filters.Parameters;
+import modules.AuditLog;
 import modules.Branch;
 import modules.EmployeeRecord;
-import operations.AdminOperations;
-import operations.AppOperations;
 import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.OperationStatus;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
 
-public class AdminControllerMethods {
-
-	public AdminControllerMethods() throws AppException {
-	};
-
-	private AdminOperations operations = new AdminOperations();
-	private AppOperations appOperations = new AppOperations();
+class AdminServletHelper {
 
 	public void accountsRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = operations.getPageCountOfAccountsInBank();
+		int pageCount = AppServlet.adminOperations.getPageCountOfAccountsInBank();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("accounts", operations.viewAccountsInBank(currentPage));
+		request.setAttribute("accounts", AppServlet.adminOperations.viewAccountsInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/accounts.jsp").forward(request, response);
@@ -41,13 +34,13 @@ public class AdminControllerMethods {
 
 	public void branchesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = operations.getPageCountOfBranches();
+		int pageCount = AppServlet.adminOperations.getPageCountOfBranches();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("branches", operations.viewBrachesInBank(currentPage));
+		request.setAttribute("branches", AppServlet.adminOperations.viewBrachesInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/branches.jsp").forward(request, response);
@@ -56,16 +49,16 @@ public class AdminControllerMethods {
 	public void employeesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
-		int pageCount = operations.getPageCountOfEmployees();
+		int pageCount = AppServlet.adminOperations.getPageCountOfEmployees();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("employees", operations.getEmployees(currentPage));
+		request.setAttribute("employees", AppServlet.adminOperations.getEmployees(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
-		request.setAttribute("branch", operations.getBranch(admin.getBranchId()));
+		request.setAttribute("branch", AppServlet.adminOperations.getBranch(admin.getBranchId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/employees.jsp").forward(request, response);
 	}
 
@@ -74,14 +67,19 @@ public class AdminControllerMethods {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int employeeId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		try {
-			request.setAttribute("employee", operations.getEmployeeDetails(employeeId));
+			request.setAttribute("employee", AppServlet.adminOperations.getEmployeeDetails(employeeId));
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 			// Log
-			appOperations.logOperationByUser(admin.getUserId(), employeeId, LogOperation.VIEW_EMPLOYEE,
-					OperationStatus.SUCCESS,
-					"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")",
-					System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(employeeId);
+			log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription(
+					"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")");
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
@@ -98,24 +96,36 @@ public class AdminControllerMethods {
 		try {
 			if (searchBy.equals("employeeId")) {
 				int userId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("employee", (EmployeeRecord) operations.getEmployeeDetails(userId));
+				request.setAttribute("employee",
+						(EmployeeRecord) AppServlet.adminOperations.getEmployeeDetails(userId));
 				request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 				// Log
-				appOperations.logOperationByUser(admin.getUserId(), userId, LogOperation.VIEW_EMPLOYEE,
-						OperationStatus.SUCCESS, "Employee details (ID : " + userId
-								+ ") was searched and viewed by Admin (ID :  " + admin.getUserId() + ")",
-						System.currentTimeMillis());
+				AuditLog log = new AuditLog();
+				log.setUserId(admin.getUserId());
+				log.setTargetId(userId);
+				log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
+				log.setOperationStatus(OperationStatus.SUCCESS);
+				log.setDescription("Employee details (ID : " + userId + ") was searched and viewed by Admin (ID :  "
+						+ admin.getUserId() + ")");
+				log.setModifiedAtWithCurrentTime();
+				AppServlet.auditLogService.log(log);
+
 			} else if (searchBy.equals("branchId")) {
 				int branchId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("branch", operations.getBranch(branchId));
+				request.setAttribute("branch", AppServlet.adminOperations.getBranch(branchId));
 				request.getRequestDispatcher("/WEB-INF/jsp/admin/branch_details.jsp").forward(request, response);
 
 				// Log
-				appOperations.logOperationByAndForUser(admin.getUserId(), LogOperation.VIEW_BRANCH,
-						OperationStatus.SUCCESS, "Branch details (ID : " + branchId
-								+ ") was searched and viewed by Admin (ID :  " + admin.getUserId() + ")",
-						System.currentTimeMillis());
+				AuditLog log = new AuditLog();
+				log.setUserId(admin.getUserId());
+				log.setLogOperation(LogOperation.VIEW_BRANCH);
+				log.setOperationStatus(OperationStatus.SUCCESS);
+				log.setDescription("Branch details (ID : " + branchId + ") was searched and viewed by Admin (ID :  "
+						+ admin.getUserId() + ")");
+				log.setModifiedAtWithCurrentTime();
+				AppServlet.auditLogService.log(log);
+
 			} else {
 				return false;
 			}
@@ -159,25 +169,35 @@ public class AdminControllerMethods {
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 		try {
 			EmployeeRecord employee = (EmployeeRecord) ServletUtil.session(request).getAttribute("employee");
-
-			// Log
-			appOperations
-					.logOperationByUser(admin.getUserId(), employee.getUserId(), LogOperation.CREATE_EMPLOYEE,
-							OperationStatus.SUCCESS, "Employee (ID : " + employee.getUserId()
-									+ ") was created by Admin (ID : " + admin.getUserId() + ")",
-							employee.getCreatedAt());
-
 			ServletUtil.session(request).removeAttribute("employee");
-			operations.createEmployee(employee, admin.getUserId(), pin);
+			AppServlet.adminOperations.createEmployee(employee, admin.getUserId(), pin);
+
 			request.setAttribute("message", "New employee has been created<br>Employee ID : " + employee.getUserId());
 			request.setAttribute("status", true);
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(employee.getUserId());
+			log.setLogOperation(LogOperation.CREATE_EMPLOYEE);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Employee (ID : " + employee.getUserId() + ") was created by Admin (ID : "
+					+ admin.getUserId() + ")");
+			log.setModifiedAt(employee.getCreatedAt());
+			AppServlet.auditLogService.log(log);
+
 		} catch (AppException e) {
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
-			appOperations.logOperationByAndForUser(admin.getUserId(), LogOperation.CREATE_EMPLOYEE,
-					OperationStatus.FAILURE,
-					"Employee creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage(),
-					System.currentTimeMillis());
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.CREATE_EMPLOYEE);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Employee creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 		}
 		request.setAttribute("redirect", "employees");
 		request.setAttribute("operation", "add_employee");
@@ -213,26 +233,35 @@ public class AdminControllerMethods {
 		try {
 			Branch branch = (Branch) ServletUtil.session(request).getAttribute("branch");
 			ServletUtil.session(request).removeAttribute("branch");
-			branch = operations.createBranch(branch, admin.getUserId(), pin);
+			branch = AppServlet.adminOperations.createBranch(branch, admin.getUserId(), pin);
 
 			request.setAttribute("message",
 					"New Branch Record has been created<br>Branch ID : " + branch.getBranchId());
 			request.setAttribute("status", true);
 
 			// Log
-			appOperations.logOperationByAndForUser(
-					admin.getUserId(), LogOperation.CREATE_BRANCH, OperationStatus.SUCCESS, "New Branch (ID : "
-							+ branch.getBranchId() + ") was created by Admin (ID : " + admin.getUserId() + ")",
-					branch.getCreatedAt());
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.CREATE_BRANCH);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("New Branch (ID : " + branch.getBranchId() + ") was created by Admin (ID : "
+					+ admin.getUserId() + ")");
+			log.setModifiedAt(branch.getCreatedAt());
+			AppServlet.auditLogService.log(log);
 
 		} catch (AppException e) {
 			e.printStackTrace();
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
-			appOperations.logOperationByAndForUser(admin.getUserId(), LogOperation.CREATE_BRANCH,
-					OperationStatus.FAILURE,
-					"Branch creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage(),
-					System.currentTimeMillis());
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.CREATE_BRANCH);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Branch creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 		}
 		request.setAttribute("redirect", "branches");
 		request.setAttribute("operation", "add_branch");

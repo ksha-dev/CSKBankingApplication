@@ -8,10 +8,10 @@ import consoleRunner.utility.InputUtil;
 import consoleRunner.utility.LoggingUtil;
 import exceptions.AppException;
 import exceptions.messages.ActivityExceptionMessages;
+import handlers.AdminHandler;
 import modules.Account;
 import modules.Branch;
 import modules.EmployeeRecord;
-import operations.AdminOperations;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.ModifiableField;
 import utility.ValidatorUtil;
@@ -21,7 +21,7 @@ class AdminRunner {
 	public Logger log = LoggingUtil.DEFAULT_LOGGER;
 
 	public void run(EmployeeRecord admin) throws AppException {
-		AdminOperations operations = new AdminOperations();
+		AdminHandler operations = new AdminHandler();
 		LoggingUtil.logEmployeeRecord(admin);
 		boolean isProgramActive = true;
 		int runnerOperations = 7;
@@ -140,7 +140,8 @@ class AdminRunner {
 					log.info("Enter the branch Id to change the employee to : ");
 					int branchId = InputUtil.getPositiveInteger();
 					ValidatorUtil.validateId(branchId);
-					if (operations.update(employeeID, ModifiableField.BRANCH_ID, branchId)) {
+					if (operations.update(employeeID, ModifiableField.BRANCH_ID, branchId, admin.getUserId(),
+							InputUtil.getPIN())) {
 						log.info("Update Successful");
 					} else {
 						log.info("Update Failed");
@@ -159,7 +160,7 @@ class AdminRunner {
 					log.info("Enter Email ID : ");
 					newBranch.setEmail(InputUtil.getString());
 
-					Branch branch = operations.createBranch(newBranch);
+					Branch branch = operations.createBranch(newBranch, admin.getUserId(), InputUtil.getPIN());
 					log.info("Branch Successfully created");
 					LoggingUtil.logBrach(branch);
 

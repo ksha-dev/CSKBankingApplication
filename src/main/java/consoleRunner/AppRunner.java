@@ -4,10 +4,10 @@ import java.util.logging.Logger;
 
 import consoleRunner.utility.InputUtil;
 import consoleRunner.utility.LoggingUtil;
+import handlers.CommonHandler;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.UserRecord;
-import operations.AppOperations;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.UserType;
 
@@ -38,7 +38,7 @@ public class AppRunner {
 					}
 				} while (choice < 0 || choice > runnerChoices);
 
-				AppOperations operations = new AppOperations();
+				CommonHandler operations = new CommonHandler();
 				switch (choice) {
 				case 0:
 					log.info("-".repeat(40));

@@ -1,19 +1,21 @@
 package cache;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import api.UserAPI;
 import exceptions.AppException;
 
 public abstract class LRUCache<K, V> extends Cache<K, V> {
 
-	private int capacity;
 	private Map<K, V> cacheData;
 	private LinkedList<K> cacheKeyOrder;
 
-	protected LRUCache(int capacity) {
-		this.capacity = capacity;
+	protected LRUCache(UserAPI api, int capacity, String moduleName) {
+		super(api, capacity, moduleName);
 		cacheData = new HashMap<K, V>();
 		cacheKeyOrder = new LinkedList<K>();
 	}
@@ -48,5 +50,4 @@ public abstract class LRUCache<K, V> extends Cache<K, V> {
 		cacheKeyOrder.clear();
 	}
 
-	protected abstract V fetchData(K key) throws AppException;
 }

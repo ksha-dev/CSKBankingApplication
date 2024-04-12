@@ -14,10 +14,10 @@ import javax.servlet.http.HttpSession;
 import exceptions.AppException;
 import exceptions.messages.ServletExceptionMessage;
 import filters.Parameters;
+import handlers.CommonHandler;
 import modules.Account;
 import modules.Transaction;
 import modules.UserRecord;
-import operations.AppOperations;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
 

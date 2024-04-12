@@ -1,8 +1,9 @@
-package operations;
+package handlers;
 
 import java.util.Map;
 
 import api.AdminAPI;
+import api.UserAPI;
 import api.mysql.MySQLAdminAPI;
 import cache.CachePool;
 import exceptions.AppException;
@@ -13,13 +14,25 @@ import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.UserRecord;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.UserType;
 import utility.ConstantsUtil;
 import utility.ValidatorUtil;
 
-public class AdminOperations {
+public class AdminHandler {
 
-	private AdminAPI api = new MySQLAdminAPI();
+	private AdminAPI api;
+
+	public AdminHandler(PersistanceIdentifier obj) throws AppException {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<AdminAPI> persistanceClass = (Class<AdminAPI>) Class
+					.forName("api." + obj.toString().toLowerCase() + "." + obj.toString() + "AdminAPI");
+			api = persistanceClass.getConstructor().newInstance();
+		} catch (Exception e) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_LOAD_CONNECTOR);
+		}
+	}
 
 	public Map<Integer, EmployeeRecord> getEmployees(int pageNumber) throws AppException {
 		ValidatorUtil.validateId(pageNumber);

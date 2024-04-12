@@ -10,10 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import exceptions.AppException;
 import filters.Parameters;
+import modules.AuditLog;
 import modules.Transaction;
 import modules.UserRecord;
-import operations.AppOperations;
-import operations.CustomerOperations;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
 import utility.ConstantsUtil.LogOperation;
@@ -21,31 +20,38 @@ import utility.ConstantsUtil.OperationStatus;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
 
-public class CommonControllerMethods {
-
-	public CommonControllerMethods() throws AppException {
-	}
-
-	private AppOperations operation = new AppOperations();
+class CommonServletHelper {
 
 	public void loginPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, ServletException, IOException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
 		try {
-			UserRecord user = operation.getUser(userId, password);
+			UserRecord user = AppServlet.appOperations.getUser(userId, password);
 			ServletUtil.session(request).setAttribute("user", user);
 			response.sendRedirect(user.getType().toString().toLowerCase() + "/home");
 
 			// Log
-			operation.logOperationByAndForUser(userId, LogOperation.USER_LOGIN, OperationStatus.SUCCESS,
-					user.getType() + "(ID : " + userId + ") has successfully logged in", System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(userId);
+			log.setLogOperation(LogOperation.USER_LOGIN);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription(user.getType() + "(ID : " + userId + ") has successfully logged in");
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
+
 		} catch (AppException e) {
 			request.getSession(false).setAttribute("error", e.getMessage());
 			response.sendRedirect(request.getContextPath() + "/login");
+
 			// Log
-			operation.logOperationByAndForUser(userId, LogOperation.USER_LOGIN, OperationStatus.FAILURE,
-					"User(ID : " + userId + ") login failed - " + e.getMessage(), System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(userId);
+			log.setLogOperation(LogOperation.USER_LOGIN);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("User(ID : " + userId + ") login failed - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 		}
 
 	}
@@ -65,7 +71,7 @@ public class CommonControllerMethods {
 		try {
 			UserRecord user = ServletUtil.getUser(request);
 			if (user.getType() == UserType.CUSTOMER) {
-				new CustomerOperations().getAccountDetails(accountNumber, user.getUserId());
+				AppServlet.customerOperations.getAccountDetails(accountNumber, user.getUserId());
 			}
 			List<Transaction> transactions;
 			if (limitString.equals("custom")) {
@@ -74,17 +80,18 @@ public class CommonControllerMethods {
 				long startDate = ConvertorUtil.dateStringToMillis(startDateString);
 				long endDate = ConvertorUtil.dateStringToMillisWithCurrentTime(endDateString);
 				if (pageCount <= 0) {
-					pageCount = operation.getPageCountOfTransactions(accountNumber, startDate, endDate);
+					pageCount = AppServlet.appOperations.getPageCountOfTransactions(accountNumber, startDate, endDate);
 				}
-				transactions = operation.getTransactionsOfAccount(accountNumber, currentPage, startDate, endDate);
+				transactions = AppServlet.appOperations.getTransactionsOfAccount(accountNumber, currentPage, startDate,
+						endDate);
 				request.setAttribute("startDate", startDateString);
 				request.setAttribute("endDate", endDateString);
 			} else {
 				TransactionHistoryLimit limit = TransactionHistoryLimit.valueOf(limitString);
 				if (pageCount <= 0) {
-					pageCount = operation.getPageCountOfTransactions(accountNumber, limit);
+					pageCount = AppServlet.appOperations.getPageCountOfTransactions(accountNumber, limit);
 				}
-				transactions = operation.getTransactionsOfAccount(accountNumber, currentPage, limit);
+				transactions = AppServlet.appOperations.getTransactionsOfAccount(accountNumber, currentPage, limit);
 			}
 			request.setAttribute("limit", limitString);
 			request.setAttribute("pageCount", pageCount);
@@ -103,7 +110,7 @@ public class CommonControllerMethods {
 		String oldPassword = request.getParameter(Parameters.OLDPASSWORD.parameterName());
 		String newPassword = request.getParameter(Parameters.NEWPASSWORD.parameterName());
 		try {
-			operation.getUser(ServletUtil.getUser(request).getUserId(), oldPassword);
+			AppServlet.appOperations.getUser(ServletUtil.getUser(request).getUserId(), oldPassword);
 			request.getSession(false).setAttribute("oldPassword", oldPassword);
 			request.getSession(false).setAttribute("newPassword", newPassword);
 			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_change_password")
@@ -122,21 +129,32 @@ public class CommonControllerMethods {
 		UserRecord user = ServletUtil.getUser(request);
 
 		try {
-			operation.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
+			AppServlet.appOperations.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message", "New password has been updated<br>Click Finish to Logout");
 			request.setAttribute("redirect", "logout");
 
-			operation.logOperationByAndForUser(user.getUserId(), LogOperation.UPDATE_PASSWORD, OperationStatus.SUCCESS,
-					user.getType() + "(ID : " + user.getUserId() + ") has changed the password",
-					System.currentTimeMillis());
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(user.getUserId());
+			log.setLogOperation(LogOperation.UPDATE_PASSWORD);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription(user.getType() + "(ID : " + user.getUserId() + ") has changed the password");
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 		} catch (AppException e) {
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 			request.setAttribute("redirect", "change_password");
 
-			operation.logOperationByAndForUser(user.getUserId(), LogOperation.UPDATE_PASSWORD, OperationStatus.FAILURE,
-					"Password update failed - " + e.getMessage(), System.currentTimeMillis());
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(user.getUserId());
+			log.setLogOperation(LogOperation.UPDATE_PASSWORD);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Password update failed - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
 		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp");
 		dispatcher.forward(request, response);

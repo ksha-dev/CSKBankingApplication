@@ -7,7 +7,6 @@ import exceptions.AppException;
 import modules.Account;
 import modules.Branch;
 import modules.UserRecord;
-import utility.ConstantsUtil;
 import utility.ValidatorUtil;
 
 public class CachePool {
@@ -16,26 +15,43 @@ public class CachePool {
 	private static Cache<Long, Account> accountCache;
 	private static Cache<Integer, Branch> branchCache;
 
+	public static enum CacheIdentifier {
+		Redis, LRU
+	}
+
 	private static void validateAPI() throws AppException {
 		if (Objects.isNull(userAPI)) {
 			throw new AppException("Cache has not been initialized");
 		}
 	}
 
-
 	private CachePool() {
 	}
 
-	public static void initializeCache(UserAPI userAPI) throws AppException {
+	@SuppressWarnings("unchecked")
+	public static void initializeLRUCache(UserAPI userAPI, CacheIdentifier identifier) throws AppException {
 		if (Objects.isNull(CachePool.userAPI)) {
 			synchronized (CachePool.class) {
 				if (Objects.isNull(CachePool.userAPI)) {
 					ValidatorUtil.validateObject(userAPI);
 					CachePool.userAPI = userAPI;
-					userRecordCache = new UserRecordCache(userAPI, ConstantsUtil.CACHE_SIZE);
-					accountCache = new AccountCache(userAPI, ConstantsUtil.CACHE_SIZE);
-					branchCache = new BranchCache(userAPI, ConstantsUtil.CACHE_SIZE);
-				} 
+
+					try {
+						userRecordCache = (Cache<Integer, UserRecord>) Class.forName("cache." + identifier + "Cache")
+								.getConstructor().newInstance();
+
+						accountCache = (Cache<Long, Account>) Class.forName("cache." + identifier + "Cache")
+								.getConstructor().newInstance();
+
+						branchCache = (Cache<Integer, Branch>) Class.forName("cache." + identifier + "Cache")
+								.getConstructor().newInstance();
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
 			}
 		}
 	}

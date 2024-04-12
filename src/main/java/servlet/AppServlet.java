@@ -7,14 +7,38 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cache.CachePool;
 import exceptions.AppException;
 import filters.Parameters;
+import handlers.AdminHandler;
+import handlers.AuditHandler;
+import handlers.CommonHandler;
+import handlers.CustomerHandler;
+import handlers.EmployeeHandler;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.UserType;
 import utility.ServletUtil;
 
 public class AppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static final PersistanceIdentifier PERSISTANT_OBJECT = PersistanceIdentifier.MySQL;
+
+	static CommonHandler appOperations;
+	static EmployeeHandler employeeOperations;
+	static CustomerHandler customerOperations;
+	static AdminHandler adminOperations;
+	static AuditHandler auditLogService;
+
+	public AppServlet() throws AppException {
+		appOperations = new CommonHandler(PERSISTANT_OBJECT);
+		employeeOperations = new EmployeeHandler(PERSISTANT_OBJECT);
+		customerOperations = new CustomerHandler(PERSISTANT_OBJECT);
+		adminOperations = new AdminHandler(PERSISTANT_OBJECT);
+
+		auditLogService = new AuditHandler(appOperations.getUserAPI());
+		CachePool.initializeCache(appOperations.getUserAPI());
+	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
@@ -33,7 +57,7 @@ public class AppServlet extends HttpServlet {
 			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
 				homeRedirect(response, ServletUtil.getUser(request).getType());
 			} else if (path.equals("/login")) {
-				new CommonControllerMethods().loginPostRequest(request, response);
+				new CommonServletHelper().loginPostRequest(request, response);
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
@@ -99,7 +123,7 @@ public class AppServlet extends HttpServlet {
 
 	private void customerGetController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws AppException, ServletException, IOException {
-		CustomerControllerMethods customerMethods = new CustomerControllerMethods();
+		CustomerServletHelper customerMethods = new CustomerServletHelper();
 
 		switch (path) {
 		case "home":
@@ -142,8 +166,8 @@ public class AppServlet extends HttpServlet {
 
 	private void customerPostController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws AppException, ServletException, IOException {
-		CommonControllerMethods commonMethods = new CommonControllerMethods();
-		CustomerControllerMethods customerMethods = new CustomerControllerMethods();
+		CommonServletHelper commonMethods = new CommonServletHelper();
+		CustomerServletHelper customerMethods = new CustomerServletHelper();
 
 		switch (path) {
 		case "statement":
@@ -192,7 +216,7 @@ public class AppServlet extends HttpServlet {
 
 	private void employeeGetController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws IOException, AppException, ServletException {
-		EmployeeControllerMethods employeeMethods = new EmployeeControllerMethods();
+		EmployeeServletHelper employeeMethods = new EmployeeServletHelper();
 		switch (path) {
 		case "home":
 			response.sendRedirect("branch_accounts");
@@ -238,8 +262,8 @@ public class AppServlet extends HttpServlet {
 
 	private void employeePostController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws AppException, ServletException, IOException {
-		EmployeeControllerMethods employeeMethods = new EmployeeControllerMethods();
-		CommonControllerMethods commonMethods = new CommonControllerMethods();
+		EmployeeServletHelper employeeMethods = new EmployeeServletHelper();
+		CommonServletHelper commonMethods = new CommonServletHelper();
 		switch (path) {
 		case "branch_accounts":
 			employeeMethods.branchAccountsRequest(request, response);
@@ -303,7 +327,7 @@ public class AppServlet extends HttpServlet {
 
 	private boolean adminGetController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws IOException, AppException, ServletException {
-		AdminControllerMethods adminMethods = new AdminControllerMethods();
+		AdminServletHelper adminMethods = new AdminServletHelper();
 		switch (path) {
 		case "home":
 			response.sendRedirect("employees");
@@ -337,7 +361,7 @@ public class AppServlet extends HttpServlet {
 
 	private boolean adminPostController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws AppException, IOException, ServletException {
-		AdminControllerMethods adminMethods = new AdminControllerMethods();
+		AdminServletHelper adminMethods = new AdminServletHelper();
 		switch (path) {
 		case "accounts":
 			adminMethods.accountsRequest(request, response);

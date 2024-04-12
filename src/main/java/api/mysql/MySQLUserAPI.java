@@ -16,6 +16,7 @@ import consoleRunner.utility.LoggingUtil;
 import exceptions.AppException;
 import exceptions.messages.APIExceptionMessage;
 import modules.Account;
+import modules.AuditLog;
 import modules.Branch;
 import modules.Transaction;
 import modules.UserRecord;
@@ -498,12 +499,12 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public boolean logOperation(int userId, int targetId, LogOperation operation, OperationStatus status,
-			String description, long modifiedAt) throws AppException {
-		ValidatorUtil.validateId(userId);
-		ValidatorUtil.validateId(targetId);
-		ValidatorUtil.validateObject(operation);
-		ValidatorUtil.validateObject(description);
+	public boolean logOperation(AuditLog auditLog) throws AppException {
+		ValidatorUtil.validateId(auditLog.getUserId());
+		ValidatorUtil.validateId(auditLog.getTargetId());
+		ValidatorUtil.validateObject(auditLog.getLogOperation());
+		ValidatorUtil.validateObject(auditLog.getOperationStatus());
+		ValidatorUtil.validateObject(auditLog.getDescription());
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.AUDIT_LOGS);
@@ -513,17 +514,35 @@ public class MySQLUserAPI implements UserAPI {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery());) {
-			statement.setInt(1, userId);
-			statement.setString(2, operation.toString());
-			statement.setString(3, status.toString());
-			statement.setString(4, description);
-			statement.setLong(5, modifiedAt);
-			statement.setInt(6, targetId);
+			statement.setInt(1, auditLog.getUserId());
+			statement.setString(2, auditLog.getLogOperation().toString());
+			statement.setString(3, auditLog.getOperationStatus().toString());
+			statement.setString(4, auditLog.getDescription());
+			statement.setLong(5, auditLog.getModifiedAt());
+			statement.setInt(6, auditLog.getTargetId());
 
 			int response = statement.executeUpdate();
 			return response == 1;
 		} catch (SQLException e) {
 			throw new AppException(APIExceptionMessage.LOGGING_FAILED);
 		}
+	}
+
+	@Override
+	public UserRecord getUserDetails(Integer userID) throws AppException {
+		ValidatorUtil.validateObject(userID);
+		return getUserDetails((int) userID);
+	}
+
+	@Override
+	public Branch getBranchDetails(Integer branchId) throws AppException {
+		ValidatorUtil.validateObject(branchId);
+		return getBranchDetails((int) branchId);
+	}
+
+	@Override
+	public Account getAccountDetails(Long accountNumber) throws AppException {
+		ValidatorUtil.validateObject(accountNumber);
+		return getAccountDetails((long) accountNumber);
 	}
 }

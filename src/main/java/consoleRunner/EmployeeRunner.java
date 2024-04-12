@@ -8,13 +8,13 @@ import consoleRunner.utility.InputUtil;
 import consoleRunner.utility.LoggingUtil;
 import exceptions.AppException;
 import exceptions.messages.ActivityExceptionMessages;
+import handlers.CommonHandler;
+import handlers.EmployeeHandler;
 import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.Transaction;
-import operations.AppOperations;
-import operations.EmployeeOperations;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
@@ -29,8 +29,8 @@ class EmployeeRunner {
 	public static void run(EmployeeRecord employee) throws AppException {
 		boolean isProgramActive = true;
 		int runnerOperations = 12;
-		EmployeeOperations operations = new EmployeeOperations();
-		AppOperations appOperations = new AppOperations();
+		EmployeeHandler operations = new EmployeeHandler();
+		CommonHandler appOperations = new CommonHandler();
 
 		while (isProgramActive) {
 
@@ -196,10 +196,10 @@ class EmployeeRunner {
 					log.info("Enter deposit amount : ");
 					double amount = InputUtil.getPositiveDouble();
 
-					long transactionId = operations.depositAmount(employee.getUserId(), accountNumber, amount,
+					Transaction transaction = operations.depositAmount(employee.getUserId(), accountNumber, amount,
 							InputUtil.getPIN());
 
-					log.info("Deposit Successful!.\nTransaction Id : " + transactionId);
+					log.info("Deposit Successful!.\nTransaction Id : " + transaction.getTransactionId());
 				}
 					break;
 
@@ -208,9 +208,9 @@ class EmployeeRunner {
 					long accountNumber = InputUtil.getPositiveLong();
 					log.info("Enter amount to withdraw : ");
 					double amount = InputUtil.getPositiveDouble();
-					long transactionId = operations.withdrawAmount(employee.getUserId(), accountNumber, amount,
+					Transaction transaction = operations.withdrawAmount(employee.getUserId(), accountNumber, amount,
 							InputUtil.getPIN());
-					log.info("Withdrawal Successful!.\nTransaction Id : " + transactionId);
+					log.info("Withdrawal Successful!.\nTransaction Id : " + transaction.getTransactionId());
 				}
 					break;
 
@@ -273,7 +273,8 @@ class EmployeeRunner {
 					ValidatorUtil.validatePassword(currentPassword);
 					ValidatorUtil.validatePassword(newPasswordConfirm);
 					if (newPassword.equals(newPasswordConfirm)) {
-						if (operations.updatePassword(employee.getUserId(), currentPassword, newPasswordConfirm, InputUtil.getPIN())) {
+						if (new CommonHandler().updatePassword(employee.getUserId(), currentPassword,
+								newPasswordConfirm, InputUtil.getPIN())) {
 							log.info("Your password has been changed.");
 							log.info("Logging out.");
 							isProgramActive = false;
@@ -299,7 +300,7 @@ class EmployeeRunner {
 		}
 	}
 
-	private static void createCustomer(EmployeeOperations activity, int employeeId) throws AppException {
+	private static void createCustomer(EmployeeHandler activity, int employeeId) throws AppException {
 		CustomerRecord customer = new CustomerRecord();
 		log.info("Enter the following details : ");
 

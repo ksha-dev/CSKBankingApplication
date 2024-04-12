@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,11 +13,11 @@ import exceptions.AppException;
 import exceptions.messages.ActivityExceptionMessages;
 import filters.Parameters;
 import modules.Account;
+import modules.AuditLog;
 import modules.Branch;
 import modules.CustomerRecord;
 import modules.Transaction;
-import operations.AppOperations;
-import operations.CustomerOperations;
+import modules.UserRecord;
 import utility.ConvertorUtil;
 import utility.ServletUtil;
 import utility.ValidatorUtil;
@@ -26,19 +25,13 @@ import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.ModifiableField;
 import utility.ConstantsUtil.OperationStatus;
 
-public class CustomerControllerMethods {
-
-	public CustomerControllerMethods() throws AppException {
-	}
-
-	private CustomerOperations operations = new CustomerOperations();
-	private AppOperations appOperations = new AppOperations();
+class CustomerServletHelper {
 
 	public void accountsGetRequest(HttpServletRequest request, HttpServletResponse response, String forwardFileName)
 			throws ServletException, IOException, AppException {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		ValidatorUtil.validateObject(forwardFileName);
-		request.setAttribute("accounts", operations.getAssociatedAccounts(customer.getUserId()));
+		request.setAttribute("accounts", AppServlet.customerOperations.getAssociatedAccounts(customer.getUserId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/" + forwardFileName + ".jsp").forward(request, response);
 	}
 
@@ -47,8 +40,8 @@ public class CustomerControllerMethods {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		Long accountNumber = ConvertorUtil
 				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-		Account account = operations.getAccountDetails(accountNumber, customer.getUserId());
-		Branch branch = operations.getBranchDetailsOfAccount(account.getBranchId());
+		Account account = AppServlet.customerOperations.getAccountDetails(accountNumber, customer.getUserId());
+		Branch branch = AppServlet.customerOperations.getBranchDetailsOfAccount(account.getBranchId());
 		request.setAttribute("account", account);
 		request.setAttribute("branch", branch);
 		request.getRequestDispatcher("/WEB-INF/jsp/customer/account_details.jsp").forward(request, response);
@@ -77,8 +70,8 @@ public class CustomerControllerMethods {
 			ValidatorUtil.validateAmount(amount);
 
 			Transaction transaction = new Transaction();
-			transaction.setViewerAccountNumber(
-					operations.getAccountDetails(viewer_account_number, customer.getUserId()).getAccountNumber());
+			transaction.setViewerAccountNumber(AppServlet.customerOperations
+					.getAccountDetails(viewer_account_number, customer.getUserId()).getAccountNumber());
 			transaction.setTransactedAccountNumber(transacted_account_number);
 			transaction.setTransactedAmount(amount);
 			transaction.setRemarks(remarks);
@@ -103,19 +96,24 @@ public class CustomerControllerMethods {
 		ServletUtil.session(request).removeAttribute("transferWithinBank");
 
 		try {
-			Transaction completedTransaction = operations.tranferMoney(transaction, transferWithinBank, pin);
+			Transaction completedTransaction = AppServlet.customerOperations.tranferMoney(transaction,
+					transferWithinBank, pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message",
 					"Your Transaction has been completed!\n Tranaction ID : " + transaction.getTransactionId());
 			request.setAttribute("redirect", "account");
 
 			// Log
-			appOperations.logOperationByAndForUser(transaction.getUserId(), LogOperation.USER_TRANSACTION,
-					OperationStatus.SUCCESS,
-					"Customer(ID : " + transaction.getUserId() + ") has transfered "
-							+ ConvertorUtil.amountToCurrencyFormat(transaction.getTransactedAmount())
-							+ " to Account(Acc/No : " + transaction.getTransactedAccountNumber() + ")",
-					completedTransaction.getCreatedAt());
+			AuditLog log = new AuditLog();
+			log.setUserId(transaction.getUserId());
+			log.setLogOperation(LogOperation.USER_TRANSACTION);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Customer(ID : " + transaction.getUserId() + ") has transfered "
+					+ ConvertorUtil.amountToCurrencyFormat(transaction.getTransactedAmount())
+					+ " from Account(Acc/No : " + transaction.getViewerAccountNumber() + ")" + " to Account(Acc/No : "
+					+ transaction.getTransactedAccountNumber() + ")");
+			log.setModifiedAt(completedTransaction.getCreatedAt());
+			AppServlet.auditLogService.log(log);
 
 		} catch (AppException e) {
 			e.printStackTrace();
@@ -124,10 +122,15 @@ public class CustomerControllerMethods {
 			request.setAttribute("redirect", "transfer");
 
 			// Log
-			appOperations.logOperationByAndForUser(transaction.getUserId(), LogOperation.USER_TRANSACTION,
-					OperationStatus.SUCCESS,
-					"Transaction by Customer(ID : " + transaction.getUserId() + ") has failed - " + e.getMessage(),
-					System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(transaction.getUserId());
+			log.setLogOperation(LogOperation.USER_TRANSACTION);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription(
+					"Transaction by Customer(ID : " + transaction.getUserId() + ") has failed - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
+
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
@@ -167,16 +170,16 @@ public class CustomerControllerMethods {
 
 	public void processProfileUpdatePostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, AppException {
-		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
+		UserRecord user = ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		int customerId = customer.getUserId();
+		int customerId = user.getUserId();
 		try {
 			List<ModifiableField> fields = (List) ServletUtil.session(request).getAttribute("fields");
 			for (ModifiableField field : fields) {
 				Object value = ServletUtil.session(request).getAttribute(field.toString().toLowerCase());
-				operations.updateUserDetails(customerId, field, value, pin);
+				AppServlet.customerOperations.updateUserDetails(customerId, field, value, pin);
 			}
-			CustomerRecord user = operations.getCustomerRecord(customerId);
+			user = AppServlet.customerOperations.getCustomerRecord(customerId);
 			ServletUtil.session(request).setAttribute("user", user);
 			request.setAttribute("status", true);
 			request.setAttribute("operation", "profile_update");
@@ -185,9 +188,15 @@ public class CustomerControllerMethods {
 			request.setAttribute("redirect", "profile");
 
 			// Log
-			appOperations.logOperationByAndForUser(customerId, LogOperation.UPDATE_PROFILE, OperationStatus.SUCCESS,
-					"Profile details Customer(ID : " + customerId + ") has been successfully updated",
-					System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(user.getUserId());
+			log.setLogOperation(LogOperation.UPDATE_PROFILE);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Profile details " + user.getType() + "(ID : " + user.getUserId()
+					+ ") has been successfully updated");
+			log.setModifiedAt(user.getModifiedAt());
+			AppServlet.auditLogService.log(log);
+
 		} catch (AppException e) {
 			e.printStackTrace();
 			request.setAttribute("status", true);
@@ -196,9 +205,15 @@ public class CustomerControllerMethods {
 			request.setAttribute("redirect", "profile");
 
 			// Log
-			appOperations.logOperationByAndForUser(customerId, LogOperation.UPDATE_PROFILE, OperationStatus.FAILURE,
-					"Profile details Customer(ID : " + customerId + ") failed - " + e.getMessage(),
-					System.currentTimeMillis());
+			AuditLog log = new AuditLog();
+			log.setUserId(customerId);
+			log.setLogOperation(LogOperation.UPDATE_PASSWORD);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Profile details update for " + user.getType() + "(ID : " + customerId + ") failed - "
+					+ e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			AppServlet.auditLogService.log(log);
+
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
