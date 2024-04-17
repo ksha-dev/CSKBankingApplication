@@ -157,6 +157,7 @@ class MySQLQuery {
 	}
 
 	String getQuery() {
+		System.out.println(query.toString());
 		return query.toString();
 	}
 }

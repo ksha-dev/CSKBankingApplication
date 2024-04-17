@@ -529,7 +529,7 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public UserRecord getUserDetails(Integer userID) throws AppException {
+	public UserRecord getUserRecordDetails(Integer userID) throws AppException {
 		ValidatorUtil.validateObject(userID);
 		return getUserDetails((int) userID);
 	}

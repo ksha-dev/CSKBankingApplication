@@ -1,9 +1,11 @@
 package modules;
 
+import java.io.Serializable;
+
 import exceptions.AppException;
 import utility.ValidatorUtil;
 
-public class Branch {
+public class Branch implements Serializable {
 
 	private int branchId;
 	private String address;

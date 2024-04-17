@@ -17,6 +17,7 @@ import modules.Transaction;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.TransactionType;
 
@@ -27,8 +28,8 @@ class CustomerRunner {
 	public static void run(CustomerRecord customer) throws AppException {
 		boolean isProgramActive = true;
 		int runnerOperations = 9;
-		CustomerHandler operations = new CustomerHandler();
-		CommonHandler appOperation = new CommonHandler();
+		CustomerHandler operations = new CustomerHandler(PersistanceIdentifier.MySQL);
+		CommonHandler appOperation = new CommonHandler(PersistanceIdentifier.MySQL);
 
 		while (isProgramActive) {
 

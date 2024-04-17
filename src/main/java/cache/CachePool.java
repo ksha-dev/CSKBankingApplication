@@ -29,22 +29,24 @@ public class CachePool {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void initializeLRUCache(UserAPI userAPI, CacheIdentifier identifier) throws AppException {
+	public static void initializeCache(UserAPI userAPI, CacheIdentifier identifier) throws AppException {
 		if (Objects.isNull(CachePool.userAPI)) {
 			synchronized (CachePool.class) {
 				if (Objects.isNull(CachePool.userAPI)) {
 					ValidatorUtil.validateObject(userAPI);
 					CachePool.userAPI = userAPI;
-
 					try {
 						userRecordCache = (Cache<Integer, UserRecord>) Class.forName("cache." + identifier + "Cache")
-								.getConstructor().newInstance();
+								.getDeclaredConstructor(UserAPI.class, int.class, String.class)
+								.newInstance(userAPI, 10, UserRecord.class.getSimpleName());
 
 						accountCache = (Cache<Long, Account>) Class.forName("cache." + identifier + "Cache")
-								.getConstructor().newInstance();
+								.getDeclaredConstructor(UserAPI.class, int.class, String.class)
+								.newInstance(userAPI, 10, Account.class.getSimpleName());
 
 						branchCache = (Cache<Integer, Branch>) Class.forName("cache." + identifier + "Cache")
-								.getConstructor().newInstance();
+								.getDeclaredConstructor(UserAPI.class, int.class, String.class)
+								.newInstance(userAPI, 10, Branch.class.getSimpleName());
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

@@ -9,6 +9,7 @@ import modules.CustomerRecord;
 import modules.EmployeeRecord;
 import modules.UserRecord;
 import utility.ValidatorUtil;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.UserType;
 
 public class AppRunner {
@@ -38,7 +39,7 @@ public class AppRunner {
 					}
 				} while (choice < 0 || choice > runnerChoices);
 
-				CommonHandler operations = new CommonHandler();
+				CommonHandler operations = new CommonHandler(PersistanceIdentifier.MySQL);
 				switch (choice) {
 				case 0:
 					log.info("-".repeat(40));

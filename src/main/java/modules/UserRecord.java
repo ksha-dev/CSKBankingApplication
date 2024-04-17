@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
@@ -9,7 +10,7 @@ import utility.ConstantsUtil.Gender;
 import utility.ConstantsUtil.UserType;
 import utility.ConvertorUtil;
 
-public abstract class UserRecord {
+public abstract class UserRecord implements Serializable {
 
 	private int userId;
 	private String firstName;

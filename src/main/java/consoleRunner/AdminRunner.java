@@ -14,6 +14,7 @@ import modules.Branch;
 import modules.EmployeeRecord;
 import utility.ConstantsUtil;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ValidatorUtil;
 
 class AdminRunner {
@@ -21,7 +22,7 @@ class AdminRunner {
 	public Logger log = LoggingUtil.DEFAULT_LOGGER;
 
 	public void run(EmployeeRecord admin) throws AppException {
-		AdminHandler operations = new AdminHandler();
+		AdminHandler operations = new AdminHandler(PersistanceIdentifier.MySQL);
 		LoggingUtil.logEmployeeRecord(admin);
 		boolean isProgramActive = true;
 		int runnerOperations = 7;

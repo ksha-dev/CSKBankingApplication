@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import exceptions.AppException;
@@ -8,7 +9,7 @@ import utility.ConstantsUtil.Status;
 import utility.ConvertorUtil;
 import utility.ValidatorUtil;
 
-public class Account {
+public class Account implements Serializable {
 
 	private long accountNumber;
 	private int userId;

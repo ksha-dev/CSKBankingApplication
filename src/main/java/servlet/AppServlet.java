@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cache.CachePool;
+import cache.CachePool.CacheIdentifier;
 import exceptions.AppException;
 import filters.Parameters;
 import handlers.AdminHandler;
@@ -37,12 +38,12 @@ public class AppServlet extends HttpServlet {
 		adminOperations = new AdminHandler(PERSISTANT_OBJECT);
 
 		auditLogService = new AuditHandler(appOperations.getUserAPI());
-		CachePool.initializeCache(appOperations.getUserAPI());
+		CachePool.initializeCache(appOperations.getUserAPI(), CacheIdentifier.Redis);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
-		System.out.println(path);
+		System.out.println("POST : " + path);
 		try {
 			if (path.startsWith("/customer/")) {
 				customerPostController(request, response, path.replace("/customer/", ""));
@@ -72,7 +73,7 @@ public class AppServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
-		System.out.println(path);
+		System.out.println("GET : " + path);
 		try {
 			if (path.contains("/logout")) {
 				request.getSession().invalidate();

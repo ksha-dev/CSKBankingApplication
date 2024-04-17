@@ -23,7 +23,7 @@ public interface UserAPI {
 
 	public UserRecord getUserDetails(int userID) throws AppException;
 
-	public UserRecord getUserDetails(Integer userID) throws AppException;
+	public UserRecord getUserRecordDetails(Integer userID) throws AppException;
 
 	public boolean updateProfileDetails(UserRecord user, ModifiableField field, Object value) throws AppException;
 

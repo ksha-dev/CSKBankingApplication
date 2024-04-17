@@ -22,15 +22,16 @@ public abstract class Cache<K, V> {
 
 	protected abstract void put(K key, V value);
 
+	@SuppressWarnings("unchecked")
 	public final V fetchData(K key) throws AppException {
-		V returnValue = null;
 		try {
-			UserAPI.class.getMethod("get" + moduleName + "Details", int.class).invoke(api, key);
+			System.out.println("get" + moduleName + "Details");
+			return (V) UserAPI.class.getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api, key);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
+			e.printStackTrace();
 			throw new AppException("Cache Layer Failed");
 		}
-		return returnValue;
 	}
 
 	public final V refreshData(K key) throws AppException {

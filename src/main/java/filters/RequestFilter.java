@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import exceptions.AppException;
-import utility.ServletUtil;
 
 /**
  * Servlet Filter implementation class FilterServlet
@@ -47,7 +46,11 @@ public class RequestFilter implements Filter {
 
 		String url = req.getServletPath();
 
-		if (url.equals("/index.html")) {
+		System.out.println(url);
+
+		if (url.equals("/api")) {
+			req.getRequestDispatcher("/api" + req.getPathInfo()).forward(req, res);
+		} else if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
 
 		} else if (url.equals("/login")) {

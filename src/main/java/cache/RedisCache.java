@@ -14,7 +14,7 @@ import exceptions.AppException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisException;
 
-public abstract class RedisCache<K, V> extends Cache<K, V> {
+public class RedisCache<K, V> extends Cache<K, V> {
 
 	private static final String HOST_NAME = "localhost";
 	private static final int PORT = 6379;
@@ -27,32 +27,33 @@ public abstract class RedisCache<K, V> extends Cache<K, V> {
 
 	@Override
 	public final V get(K key) throws AppException {
-		byte[] keyBytes = key.toString().getBytes();
+		byte[] keyBytes = (moduleName + key).getBytes();
 		V returnValue;
-
+		System.out.println(moduleName + key);
 		// If exists, get value or fetch it from API
-		if (jedis.exists(keyBytes)) {
-			returnValue = deserialize(jedis.get(keyBytes));
+		byte[] cacheValue = jedis.get(keyBytes);
+		System.out.println(cacheValue);
+
+		if (cacheValue == null) {
+			returnValue = super.fetchData(key);
+			System.out.println(returnValue);
+			this.put(key, returnValue);
 		} else {
-			returnValue = fetchData(key);
-			jedis.set(keyBytes, serialize(returnValue));
+			returnValue = deserialize(cacheValue);
 		}
 
 		// Update list
-		jedis.lpush(moduleName, key.toString());
-		if (jedis.llen(moduleName) > capacity) {
-			jedis.del(jedis.rpop(moduleName).getBytes());
-		}
+//		jedis.lpush(moduleName, key.toString());
+//		if (jedis.llen(moduleName) > capacity) {
+//			jedis.del(jedis.rpop(moduleName).getBytes());
+//		}
 		return returnValue;
 	}
 
 	@Override
 	protected void put(K key, V value) {
-		byte[] keyBytes = key.toString().getBytes();
-		try {
-			jedis.set(keyBytes, serialize(value));
-		} catch (AppException e) {
-		}
+		byte[] keyBytes = (moduleName + key).getBytes();
+		jedis.set(keyBytes, serialize(value));
 	}
 
 	@Override
@@ -60,23 +61,27 @@ public abstract class RedisCache<K, V> extends Cache<K, V> {
 		jedis.flushDB();
 	}
 
-	private final byte[] serialize(Object object) throws AppException {
+	private final byte[] serialize(Object object) {
+		byte[] returnByte = null;
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(out)) {
 			os.writeObject(object);
-			return out.toByteArray();
+			returnByte = out.toByteArray();
 		} catch (IOException e) {
-			throw new AppException();
+			e.printStackTrace();
 		}
+		return returnByte;
 	}
 
 	@SuppressWarnings("unchecked")
-	private final V deserialize(byte[] bytes) throws AppException {
+	private final V deserialize(byte[] bytes) {
+		V returnObject = null;
 		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 				ObjectInputStream os = new ObjectInputStream(in)) {
-			return (V) os.readObject();
+			returnObject = (V) os.readObject();
 		} catch (IOException | ClassNotFoundException e) {
-			throw new AppException();
+			e.printStackTrace();
 		}
+		return returnObject;
 	}
 }

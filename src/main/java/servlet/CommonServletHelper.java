@@ -29,6 +29,7 @@ class CommonServletHelper {
 		try {
 			UserRecord user = AppServlet.appOperations.getUser(userId, password);
 			ServletUtil.session(request).setAttribute("user", user);
+			System.out.println(user);
 			response.sendRedirect(user.getType().toString().toLowerCase() + "/home");
 
 			// Log
@@ -41,6 +42,7 @@ class CommonServletHelper {
 			AppServlet.auditLogService.log(log);
 
 		} catch (AppException e) {
+			e.printStackTrace();
 			request.getSession(false).setAttribute("error", e.getMessage());
 			response.sendRedirect(request.getContextPath() + "/login");
 

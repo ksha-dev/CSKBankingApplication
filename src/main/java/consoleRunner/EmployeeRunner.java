@@ -18,6 +18,7 @@ import modules.Transaction;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.AccountType;
 import utility.ConstantsUtil.ModifiableField;
+import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.TransactionHistoryLimit;
 import utility.ConstantsUtil.UserType;
 import utility.ConstantsUtil;
@@ -29,8 +30,8 @@ class EmployeeRunner {
 	public static void run(EmployeeRecord employee) throws AppException {
 		boolean isProgramActive = true;
 		int runnerOperations = 12;
-		EmployeeHandler operations = new EmployeeHandler();
-		CommonHandler appOperations = new CommonHandler();
+		EmployeeHandler operations = new EmployeeHandler(PersistanceIdentifier.MySQL);
+		CommonHandler appOperations = new CommonHandler(PersistanceIdentifier.MySQL);
 
 		while (isProgramActive) {
 
@@ -273,8 +274,8 @@ class EmployeeRunner {
 					ValidatorUtil.validatePassword(currentPassword);
 					ValidatorUtil.validatePassword(newPasswordConfirm);
 					if (newPassword.equals(newPasswordConfirm)) {
-						if (new CommonHandler().updatePassword(employee.getUserId(), currentPassword,
-								newPasswordConfirm, InputUtil.getPIN())) {
+						if (new CommonHandler(PersistanceIdentifier.MySQL).updatePassword(employee.getUserId(),
+								currentPassword, newPasswordConfirm, InputUtil.getPIN())) {
 							log.info("Your password has been changed.");
 							log.info("Logging out.");
 							isProgramActive = false;

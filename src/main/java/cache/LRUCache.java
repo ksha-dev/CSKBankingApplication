@@ -1,7 +1,5 @@
 package cache;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -9,7 +7,7 @@ import java.util.Map;
 import api.UserAPI;
 import exceptions.AppException;
 
-public abstract class LRUCache<K, V> extends Cache<K, V> {
+public class LRUCache<K, V> extends Cache<K, V> {
 
 	private Map<K, V> cacheData;
 	private LinkedList<K> cacheKeyOrder;
@@ -21,7 +19,6 @@ public abstract class LRUCache<K, V> extends Cache<K, V> {
 	}
 
 	public final V get(K key) throws AppException {
-
 		if (cacheData.containsKey(key)) {
 			cacheKeyOrder.remove(key);
 			cacheKeyOrder.addFirst(key);
