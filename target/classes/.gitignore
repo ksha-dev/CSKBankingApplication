@@ -1,9 +1,2 @@
-/handlers/
 /api/
-/cache/
-/consoleRunner/
-/exceptions/
-/filters/
-/modules/
-/servlet/
-/utility/
+/handlers/
