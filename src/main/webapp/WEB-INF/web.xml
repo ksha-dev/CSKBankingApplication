@@ -47,4 +47,14 @@
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>apiServlet</servlet-name>
+		<servlet-class>servlet.APIServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>apiServlet</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>

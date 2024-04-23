@@ -22,12 +22,13 @@ import utility.ConstantsUtil.UserType;
 
 class CommonServletHelper {
 
-	public void loginPostRequest(HttpServletRequest request, HttpServletResponse response)
+	public UserRecord loginPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, ServletException, IOException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
+		UserRecord user = null;
 		try {
-			UserRecord user = AppServlet.appOperations.getUser(userId, password);
+			user = AppServlet.appOperations.getUser(userId, password);
 			ServletUtil.session(request).setAttribute("user", user);
 			System.out.println(user);
 			response.sendRedirect(user.getType().toString().toLowerCase() + "/home");
@@ -55,7 +56,7 @@ class CommonServletHelper {
 			log.setModifiedAtWithCurrentTime();
 			AppServlet.auditLogService.log(log);
 		}
-
+		return user;
 	}
 
 	public void statementPostRequest(HttpServletRequest request, HttpServletResponse response)

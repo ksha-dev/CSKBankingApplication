@@ -50,6 +50,7 @@ public class RequestFilter implements Filter {
 
 		if (url.equals("/api")) {
 			req.getRequestDispatcher("/api" + req.getPathInfo()).forward(req, res);
+
 		} else if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
 
