@@ -10,7 +10,7 @@ import handlers.CustomerHandler;
 import handlers.EmployeeHandler;
 import utility.ConstantsUtil.PersistanceIdentifier;
 
-public class ServletInit {
+public class Services {
 	static CommonHandler appOperations;
 	static EmployeeHandler employeeOperations;
 	static CustomerHandler customerOperations;

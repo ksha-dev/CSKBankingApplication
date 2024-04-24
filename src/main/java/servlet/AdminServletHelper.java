@@ -20,13 +20,13 @@ class AdminServletHelper {
 
 	public void accountsRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = AppServlet.adminOperations.getPageCountOfAccountsInBank();
+		int pageCount = Services.adminOperations.getPageCountOfAccountsInBank();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("accounts", AppServlet.adminOperations.viewAccountsInBank(currentPage));
+		request.setAttribute("accounts", Services.adminOperations.viewAccountsInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/accounts.jsp").forward(request, response);
@@ -34,13 +34,13 @@ class AdminServletHelper {
 
 	public void branchesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = AppServlet.adminOperations.getPageCountOfBranches();
+		int pageCount = Services.adminOperations.getPageCountOfBranches();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("branches", AppServlet.adminOperations.viewBrachesInBank(currentPage));
+		request.setAttribute("branches", Services.adminOperations.viewBrachesInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/branches.jsp").forward(request, response);
@@ -49,16 +49,16 @@ class AdminServletHelper {
 	public void employeesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
-		int pageCount = AppServlet.adminOperations.getPageCountOfEmployees();
+		int pageCount = Services.adminOperations.getPageCountOfEmployees();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("employees", AppServlet.adminOperations.getEmployees(currentPage));
+		request.setAttribute("employees", Services.adminOperations.getEmployees(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
-		request.setAttribute("branch", AppServlet.adminOperations.getBranch(admin.getBranchId()));
+		request.setAttribute("branch", Services.adminOperations.getBranch(admin.getBranchId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/employees.jsp").forward(request, response);
 	}
 
@@ -67,7 +67,7 @@ class AdminServletHelper {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int employeeId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		try {
-			request.setAttribute("employee", AppServlet.adminOperations.getEmployeeDetails(employeeId));
+			request.setAttribute("employee", Services.adminOperations.getEmployeeDetails(employeeId));
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 			// Log
@@ -79,7 +79,7 @@ class AdminServletHelper {
 			log.setDescription(
 					"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")");
 			log.setModifiedAtWithCurrentTime();
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
@@ -97,7 +97,7 @@ class AdminServletHelper {
 			if (searchBy.equals("employeeId")) {
 				int userId = ConvertorUtil.convertStringToInteger(searchValue);
 				request.setAttribute("employee",
-						(EmployeeRecord) AppServlet.adminOperations.getEmployeeDetails(userId));
+						(EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
 				request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 				// Log
@@ -109,11 +109,11 @@ class AdminServletHelper {
 				log.setDescription("Employee details (ID : " + userId + ") was searched and viewed by Admin (ID :  "
 						+ admin.getUserId() + ")");
 				log.setModifiedAtWithCurrentTime();
-				AppServlet.auditLogService.log(log);
+				Services.auditLogService.log(log);
 
 			} else if (searchBy.equals("branchId")) {
 				int branchId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("branch", AppServlet.adminOperations.getBranch(branchId));
+				request.setAttribute("branch", Services.adminOperations.getBranch(branchId));
 				request.getRequestDispatcher("/WEB-INF/jsp/admin/branch_details.jsp").forward(request, response);
 
 				// Log
@@ -124,7 +124,7 @@ class AdminServletHelper {
 				log.setDescription("Branch details (ID : " + branchId + ") was searched and viewed by Admin (ID :  "
 						+ admin.getUserId() + ")");
 				log.setModifiedAtWithCurrentTime();
-				AppServlet.auditLogService.log(log);
+				Services.auditLogService.log(log);
 
 			} else {
 				return false;
@@ -170,7 +170,7 @@ class AdminServletHelper {
 		try {
 			EmployeeRecord employee = (EmployeeRecord) ServletUtil.session(request).getAttribute("employee");
 			ServletUtil.session(request).removeAttribute("employee");
-			AppServlet.adminOperations.createEmployee(employee, admin.getUserId(), pin);
+			Services.adminOperations.createEmployee(employee, admin.getUserId(), pin);
 
 			request.setAttribute("message", "New employee has been created<br>Employee ID : " + employee.getUserId());
 			request.setAttribute("status", true);
@@ -184,7 +184,7 @@ class AdminServletHelper {
 			log.setDescription("Employee (ID : " + employee.getUserId() + ") was created by Admin (ID : "
 					+ admin.getUserId() + ")");
 			log.setModifiedAt(employee.getCreatedAt());
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
 			request.setAttribute("status", false);
@@ -197,7 +197,7 @@ class AdminServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("Employee creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 		}
 		request.setAttribute("redirect", "employees");
 		request.setAttribute("operation", "add_employee");
@@ -233,7 +233,7 @@ class AdminServletHelper {
 		try {
 			Branch branch = (Branch) ServletUtil.session(request).getAttribute("branch");
 			ServletUtil.session(request).removeAttribute("branch");
-			branch = AppServlet.adminOperations.createBranch(branch, admin.getUserId(), pin);
+			branch = Services.adminOperations.createBranch(branch, admin.getUserId(), pin);
 
 			request.setAttribute("message",
 					"New Branch Record has been created<br>Branch ID : " + branch.getBranchId());
@@ -247,7 +247,7 @@ class AdminServletHelper {
 			log.setDescription("New Branch (ID : " + branch.getBranchId() + ") was created by Admin (ID : "
 					+ admin.getUserId() + ")");
 			log.setModifiedAt(branch.getCreatedAt());
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
 			e.printStackTrace();
@@ -261,7 +261,7 @@ class AdminServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("Branch creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 		}
 		request.setAttribute("redirect", "branches");
 		request.setAttribute("operation", "add_branch");

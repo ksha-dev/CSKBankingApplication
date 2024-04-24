@@ -80,6 +80,14 @@ public class ConstantsUtil {
 		}
 	}
 
+	public static enum RequestStatus {
+		SUCCESS, FAILED, UNAUTHORIZED;
+
+		public String toString() {
+			return this.name().toLowerCase();
+		}
+	}
+
 	public static enum Status {
 		ACTIVE(0), INACTIVE(1), CLOSED(3), FROZEN(2);
 

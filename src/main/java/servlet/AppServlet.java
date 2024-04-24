@@ -23,22 +23,9 @@ import utility.ServletUtil;
 public class AppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final PersistanceIdentifier PERSISTANT_OBJECT = PersistanceIdentifier.MySQL;
-
-	static CommonHandler appOperations;
-	static EmployeeHandler employeeOperations;
-	static CustomerHandler customerOperations;
-	static AdminHandler adminOperations;
-	static AuditHandler auditLogService;
 
 	public AppServlet() throws AppException {
-		appOperations = new CommonHandler(PERSISTANT_OBJECT);
-		employeeOperations = new EmployeeHandler(PERSISTANT_OBJECT);
-		customerOperations = new CustomerHandler(PERSISTANT_OBJECT);
-		adminOperations = new AdminHandler(PERSISTANT_OBJECT);
-
-		auditLogService = new AuditHandler(appOperations.getUserAPI());
-		CachePool.initializeCache(appOperations.getUserAPI(), CacheIdentifier.Redis);
+		Services.initialize();
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -74,6 +61,7 @@ public class AppServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
 		System.out.println("GET : " + path);
+		System.out.println(System.getProperty("user.dir"));
 		try {
 			if (path.contains("/logout")) {
 				request.getSession().invalidate();

@@ -46,7 +46,7 @@ public class RequestFilter implements Filter {
 
 		String url = req.getServletPath();
 
-		System.out.println(url);
+		System.out.println("Filter URL " + url);
 
 		if (url.equals("/api")) {
 			req.getRequestDispatcher("/api" + req.getPathInfo()).forward(req, res);

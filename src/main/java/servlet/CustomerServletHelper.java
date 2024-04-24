@@ -31,7 +31,7 @@ class CustomerServletHelper {
 			throws ServletException, IOException, AppException {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		ValidatorUtil.validateObject(forwardFileName);
-		request.setAttribute("accounts", AppServlet.customerOperations.getAssociatedAccounts(customer.getUserId()));
+		request.setAttribute("accounts", Services.customerOperations.getAssociatedAccounts(customer.getUserId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/" + forwardFileName + ".jsp").forward(request, response);
 	}
 
@@ -40,8 +40,8 @@ class CustomerServletHelper {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		Long accountNumber = ConvertorUtil
 				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-		Account account = AppServlet.customerOperations.getAccountDetails(accountNumber, customer.getUserId());
-		Branch branch = AppServlet.customerOperations.getBranchDetailsOfAccount(account.getBranchId());
+		Account account = Services.customerOperations.getAccountDetails(accountNumber, customer.getUserId());
+		Branch branch = Services.customerOperations.getBranchDetailsOfAccount(account.getBranchId());
 		request.setAttribute("account", account);
 		request.setAttribute("branch", branch);
 		request.getRequestDispatcher("/WEB-INF/jsp/customer/account_details.jsp").forward(request, response);
@@ -70,7 +70,7 @@ class CustomerServletHelper {
 			ValidatorUtil.validateAmount(amount);
 
 			Transaction transaction = new Transaction();
-			transaction.setViewerAccountNumber(AppServlet.customerOperations
+			transaction.setViewerAccountNumber(Services.customerOperations
 					.getAccountDetails(viewer_account_number, customer.getUserId()).getAccountNumber());
 			transaction.setTransactedAccountNumber(transacted_account_number);
 			transaction.setTransactedAmount(amount);
@@ -96,7 +96,7 @@ class CustomerServletHelper {
 		ServletUtil.session(request).removeAttribute("transferWithinBank");
 
 		try {
-			Transaction completedTransaction = AppServlet.customerOperations.tranferMoney(transaction,
+			Transaction completedTransaction = Services.customerOperations.tranferMoney(transaction,
 					transferWithinBank, pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message",
@@ -113,7 +113,7 @@ class CustomerServletHelper {
 					+ " from Account(Acc/No : " + transaction.getViewerAccountNumber() + ")" + " to Account(Acc/No : "
 					+ transaction.getTransactedAccountNumber() + ")");
 			log.setModifiedAt(completedTransaction.getCreatedAt());
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ class CustomerServletHelper {
 			log.setDescription(
 					"Transaction by Customer(ID : " + transaction.getUserId() + ") has failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
@@ -177,9 +177,9 @@ class CustomerServletHelper {
 			List<ModifiableField> fields = (List) ServletUtil.session(request).getAttribute("fields");
 			for (ModifiableField field : fields) {
 				Object value = ServletUtil.session(request).getAttribute(field.toString().toLowerCase());
-				AppServlet.customerOperations.updateUserDetails(customerId, field, value, pin);
+				Services.customerOperations.updateUserDetails(customerId, field, value, pin);
 			}
-			user = AppServlet.customerOperations.getCustomerRecord(customerId);
+			user = Services.customerOperations.getCustomerRecord(customerId);
 			ServletUtil.session(request).setAttribute("user", user);
 			request.setAttribute("status", true);
 			request.setAttribute("operation", "profile_update");
@@ -195,7 +195,7 @@ class CustomerServletHelper {
 			log.setDescription("Profile details " + user.getType() + "(ID : " + user.getUserId()
 					+ ") has been successfully updated");
 			log.setModifiedAt(user.getModifiedAt());
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
 			e.printStackTrace();
@@ -212,7 +212,7 @@ class CustomerServletHelper {
 			log.setDescription("Profile details update for " + user.getType() + "(ID : " + customerId + ") failed - "
 					+ e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			AppServlet.auditLogService.log(log);
+			Services.auditLogService.log(log);
 
 		}
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
