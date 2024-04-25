@@ -3,6 +3,8 @@ package api;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import exceptions.AppException;
 import modules.Account;
 import modules.AuditLog;
@@ -58,4 +60,9 @@ public interface UserAPI {
 
 	// Audit Logs
 	public boolean logOperation(AuditLog auditLog) throws AppException;
+
+	// API Key
+	public JSONObject generateApiKey() throws AppException;
+
+	public int validateApiKey(String apiKey) throws AppException;
 }

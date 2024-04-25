@@ -14,7 +14,7 @@ public enum APIExceptionMessage {
 
 	USER_CREATION_FAILED("Unable to create user record at the moment"),
 	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment"),
-	ACCOUNT_CREATION_FAILED("Failed to create a new Account."),
+	ACCOUNT_CREATION_FAILED("Failed to create a new Account."), API_GENERATION_FAILED("Failed to generate API Key"),
 	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
 

@@ -132,4 +132,11 @@ public class ValidatorUtil {
 			throw new AppException(InvalidInputMessage.INVALID_DATE_STRING);
 		}
 	}
+
+	public static void validateAPIKey(String apiKey) throws AppException {
+		validateObject(apiKey);
+		if (apiKey.length() != 40) {
+			throw new AppException(InvalidInputMessage.INVALID_API_KEY);
+		}
+	}
 }

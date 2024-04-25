@@ -13,7 +13,7 @@ public enum InvalidInputMessage {
 	INVALID_PASSWORD("The password must contain a minimum of 8 characters with both "
 			+ "upper and lower case, start with a letter, have a special character and a number"),
 	INVALID_AMOUNT("The minimum required amount for a transaction is Rs. 1.00"),
-	POSITIVE_INTEGER_REQUIRED("A positive value value is expected"),
+	INVALID_API_KEY("The API key obtained is invalid"), POSITIVE_INTEGER_REQUIRED("A positive value value is expected"),
 	NULL_OBJECT_ENCOUNTERED("A valid object is expected");
 
 	private String message;

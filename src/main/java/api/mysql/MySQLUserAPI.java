@@ -3,11 +3,15 @@ package api.mysql;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.json.JSONObject;
 
 import api.UserAPI;
 import api.mysql.MySQLQuery.Column;
@@ -15,6 +19,7 @@ import api.mysql.MySQLQuery.Schemas;
 import consoleRunner.utility.LoggingUtil;
 import exceptions.AppException;
 import exceptions.messages.APIExceptionMessage;
+import modules.APIKey;
 import modules.Account;
 import modules.AuditLog;
 import modules.Branch;
@@ -544,5 +549,48 @@ public class MySQLUserAPI implements UserAPI {
 	public Account getAccountDetails(Long accountNumber) throws AppException {
 		ValidatorUtil.validateObject(accountNumber);
 		return getAccountDetails((long) accountNumber);
+	}
+
+	@Override
+	public String generateApiKey(String orgName) throws AppException {
+		ValidatorUtil.validateObject(orgName);
+
+		APIKey apiKey = new APIKey();
+		apiKey.setOrgName(orgName);
+		apiKey.setAPIKey(ConvertorUtil.generateKey());
+
+		long createdAt = System.currentTimeMillis();
+		long validUntil = createdAt + ConstantsUtil.getAPIValidityTime();
+
+		String apiKey = ConvertorUtil.generateKey();
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.insertInto(Schemas.API_KEYS);
+		queryBuilder.insertColumns(
+				List.of(Column.ORG_NAME, Column.API_KEY, Column.CREATED_AT, Column.VALID_UNTIL, Column.MODIFIED_AT));
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setString(1, orgName);
+			statement.setString(2, apiKey);
+			statement.setLong(3, createdAt);
+			statement.setLong(4, validUntil);
+			statement.setLong(5, createdAt);
+
+			int response = statement.executeUpdate();
+			if (response == 1) {
+				return apiKey;
+			} else
+				throw new AppException(APIExceptionMessage.API_GENERATION_FAILED);
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+		}
+	}
+
+	@Override
+	public int validateApiKey(String apiKey) throws AppException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

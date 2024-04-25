@@ -45,13 +45,9 @@ public class RequestFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		String url = req.getServletPath();
+		System.out.println("REQUEST FILTER : " + url);
 
-		System.out.println("Filter URL " + url);
-
-		if (url.equals("/api")) {
-			req.getRequestDispatcher("/api" + req.getPathInfo()).forward(req, res);
-
-		} else if (url.equals("/index.html")) {
+		if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
 
 		} else if (url.equals("/login")) {
@@ -60,7 +56,7 @@ public class RequestFilter implements Filter {
 		} else if (url.startsWith("/static")) {
 			req.getRequestDispatcher(url).forward(req, res);
 
-		} else if (url.equals("/app")) {
+		} else if (url.equals("/app") || url.equals("/api")) {
 			chain.doFilter(req, res);
 
 		} else {

@@ -5,20 +5,38 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import exceptions.AppException;
 import modules.UserRecord;
 
 public class ConvertorUtil {
+
+	private static final int API_KEY_LENGTH = 40;
+	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	public static String generateKey() throws AppException {
+		return randomStringGenerator(API_KEY_LENGTH);
+	}
+
+	private static String randomStringGenerator(int length) {
+		Random random = new Random();
+		StringBuilder sb = new StringBuilder(length);
+
+		for (int i = 0; i < length; i++) {
+			int randomIndex = random.nextInt(CHARACTERS.length());
+			char randomChar = CHARACTERS.charAt(randomIndex);
+			sb.append(randomChar);
+		}
+
+		return sb.toString();
+	}
 
 	public static String passwordHasher(String password) {
 		try {

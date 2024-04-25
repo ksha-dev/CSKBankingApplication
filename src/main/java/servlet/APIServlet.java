@@ -1,29 +1,17 @@
 package servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.google.gson.JsonObject;
-
 import exceptions.AppException;
-import exceptions.messages.APIExceptionMessage;
-import exceptions.messages.ActivityExceptionMessages;
-import handlers.CommonHandler;
-import modules.Branch;
 import modules.CustomerRecord;
 import modules.EmployeeRecord;
-import modules.UserRecord;
 import utility.ConstantsUtil.RequestStatus;
-import utility.ConstantsUtil.Status;
-import utility.ConstantsUtil.UserType;
 
 public class APIServlet extends HttpServlet {
 
@@ -34,23 +22,21 @@ public class APIServlet extends HttpServlet {
 	}
 
 	public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		JSONObject requestBody = getRequestBody(request);
 		JSONObject responseContent = new JSONObject();
 		RequestStatus status = null;
-		System.out.println(requestBody.toString());
+		String path = request.getPathInfo();
 		try {
-			Branch createBranch = new Branch();
-			createBranch.setAddress(requestBody.getString("address"));
-			createBranch.setPhone(requestBody.getLong("phone"));
-			createBranch.setEmail(requestBody.getString("email"));
-			EmployeeRecord admin = Services.adminOperations.getEmployeeDetails(requestBody.getInt("adminId"));
-			if (admin.getType() != UserType.ADMIN) {
-				throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
+			switch (path) {
+			case "/branch":
+				responseContent.accumulate("data", JSONObject.wrap(APIServletHandler.createBranch(request, response)));
+				status = RequestStatus.SUCCESS;
+				break;
+
+			default:
+				responseContent.accumulate("message", "Invalid API Request");
+				status = RequestStatus.FAILED;
+				break;
 			}
-			Branch createdBranch = Services.adminOperations.createBranch(createBranch, requestBody.getInt("adminId"),
-					requestBody.getString("pin"));
-			status = RequestStatus.SUCCESS;
-			responseContent.accumulate("data", JSONObject.wrap(createdBranch));
 		} catch (Exception e) {
 			status = RequestStatus.FAILED;
 			responseContent.accumulate("message", e.getMessage());
@@ -61,14 +47,27 @@ public class APIServlet extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		JSONObject requestBody = getRequestBody(request);
+		String path = request.getPathInfo();
 		JSONObject responseContent = new JSONObject();
 		RequestStatus status = null;
 		try {
-			UserRecord user = Services.appOperations.getUser(requestBody.getInt("userId"),
-					requestBody.getString("password"));
-			responseContent.accumulate("data", JSONObject.wrap(user));
-			status = RequestStatus.SUCCESS;
+			if (path.equals("/generateKey")) {
+				responseContent = Services.appOperations.generateAPIKey();
+				status = RequestStatus.SUCCESS;
+			} else {
+				switch (path) {
+
+				case "/login":
+					responseContent.accumulate("data", JSONObject.wrap(APIServletHandler.login(request, response)));
+					status = RequestStatus.SUCCESS;
+					break;
+
+				default:
+					responseContent.accumulate("message", "Invalid API Request");
+					status = RequestStatus.FAILED;
+					break;
+				}
+			}
 		} catch (AppException e) {
 			responseContent.accumulate("message", e.getMessage());
 			status = RequestStatus.FAILED;
@@ -83,6 +82,10 @@ public class APIServlet extends HttpServlet {
 		try {
 			String apiPath = request.getPathInfo();
 			System.out.println(apiPath);
+			if (apiPath == null) {
+				response.getWriter().write("Welcome to CSK Banking Application REST API");
+				return;
+			}
 			String[] apiPaths = apiPath.split("/");
 			for (String path : apiPaths) {
 				System.out.println(path);
@@ -99,7 +102,10 @@ public class APIServlet extends HttpServlet {
 				EmployeeRecord employee = Services.employeeOperations.getEmployeeRecord(Integer.parseInt(apiPaths[2]));
 				result.accumulate("data", JSONObject.wrap(employee));
 				status = RequestStatus.SUCCESS;
+
 			default:
+				result.accumulate("message", "Invalid API Request");
+				status = RequestStatus.FAILED;
 				break;
 			}
 		} catch (AppException e) {
@@ -110,16 +116,4 @@ public class APIServlet extends HttpServlet {
 		response.getWriter().write(result.toString());
 	}
 
-	private JSONObject getRequestBody(HttpServletRequest request) throws IOException {
-		JSONObject requestBody = null;
-		try (BufferedReader reader = request.getReader()) {
-			StringBuilder requestStringBuilder = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				requestStringBuilder.append(line);
-			}
-			requestBody = new JSONObject(requestStringBuilder.toString());
-		}
-		return requestBody;
-	}
 }

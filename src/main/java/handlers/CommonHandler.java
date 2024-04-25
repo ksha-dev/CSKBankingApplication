@@ -2,6 +2,8 @@ package handlers;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import api.UserAPI;
 import cache.CachePool;
 import exceptions.AppException;
@@ -94,4 +96,7 @@ public class CommonHandler {
 		}
 	}
 
+	public JSONObject generateAPIKey(String orgName) throws AppException {
+		return api.generateApiKey();
+	}
 }

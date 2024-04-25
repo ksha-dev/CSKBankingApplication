@@ -15,6 +15,13 @@ public class ConstantsUtil {
 	public static final List<ModifiableField> ADMIN_MODIFIABLE_FIELDS;
 
 	public static final int CACHE_SIZE = 30;
+	private static final long ONE_MONTH_MILLIS = 2592000000L;
+	private static final long ONE_DAY_MILLIS = 86400000;
+	private static final int API_VALID_DAYS = 5;
+
+	public static long getAPIValidityTime() {
+		return ONE_DAY_MILLIS * API_VALID_DAYS;
+	}
 
 	public static enum CachePort {
 		ACCOUNTS(6379), USER_RECORD(6000);
@@ -201,8 +208,6 @@ public class ConstantsUtil {
 
 	public static enum TransactionHistoryLimit {
 		RECENT, ONE_MONTH, THREE_MONTH, SIX_MONTH;
-
-		private static final long ONE_MONTH_MILLIS = 2592000000L;
 
 		public long getDuration() {
 			long transactionDuration = ONE_MONTH_MILLIS;
