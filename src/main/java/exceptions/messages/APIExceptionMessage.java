@@ -11,6 +11,7 @@ public enum APIExceptionMessage {
 
 	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),
+	CANNOT_GET_API_KEY("Failed to obtained the API Key"),
 
 	USER_CREATION_FAILED("Unable to create user record at the moment"),
 	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment"),
@@ -18,6 +19,7 @@ public enum APIExceptionMessage {
 	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
 
+	API_KEY_NOT_FOUND("The API Key obtained is not valid or does not exist"),
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),
 	CANNOT_MODIFY_STATUS("The status of a closed account cannot be changed"),
 	STATUS_ALREADY_SET("The account is already in the required state"),

@@ -1,5 +1,6 @@
 package handlers;
 
+import java.util.List;
 import java.util.Map;
 
 import api.AdminAPI;
@@ -7,7 +8,9 @@ import api.UserAPI;
 import api.mysql.MySQLAdminAPI;
 import cache.CachePool;
 import exceptions.AppException;
+import exceptions.messages.APIExceptionMessage;
 import exceptions.messages.ActivityExceptionMessages;
+import modules.APIKey;
 import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
@@ -17,6 +20,7 @@ import utility.ConstantsUtil.ModifiableField;
 import utility.ConstantsUtil.PersistanceIdentifier;
 import utility.ConstantsUtil.UserType;
 import utility.ConstantsUtil;
+import utility.ConvertorUtil;
 import utility.ValidatorUtil;
 
 public class AdminHandler {
@@ -118,8 +122,16 @@ public class AdminHandler {
 		return api.viewAccountsInBank(pageNumber);
 	}
 
+	public List<APIKey> getListofApiKeys(int pageNumber) throws AppException {
+		return api.getListOfAPIKeys(pageNumber);
+	}
+
 	public int getPageCountOfAccountsInBank() throws AppException {
 		return api.getPageCountOfAccountsInBank();
+	}
+
+	public int getPageCountOfAPIKeys() throws AppException {
+		return api.getPageCountOfAPIKeys();
 	}
 
 	public Map<Integer, Branch> viewBrachesInBank(int pageNumber) throws AppException {
@@ -129,5 +141,18 @@ public class AdminHandler {
 
 	public int getPageCountOfBranches() throws AppException {
 		return api.getPageCountOfBranches();
+	}
+
+	public APIKey generateAPIKey(String orgName) throws AppException {
+		APIKey apiKey = new APIKey();
+		apiKey.setOrgName(orgName);
+		apiKey.setAPIKey(ConvertorUtil.generateKey());
+		apiKey.setCreatedAt(System.currentTimeMillis());
+		apiKey.setModifiedAt(apiKey.getCreatedAt());
+		apiKey.setValidUntil(apiKey.getCreatedAt() + ConstantsUtil.getAPIValidityTime());
+		if (api.generateApiKey(apiKey)) {
+			return apiKey;
+		} else
+			throw new AppException(APIExceptionMessage.API_GENERATION_FAILED);
 	}
 }

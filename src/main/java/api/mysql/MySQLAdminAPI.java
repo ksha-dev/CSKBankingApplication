@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import api.mysql.MySQLQuery.Column;
 import api.mysql.MySQLQuery.Schemas;
 import exceptions.AppException;
 import exceptions.messages.APIExceptionMessage;
+import modules.APIKey;
 import modules.Account;
 import modules.Branch;
 import modules.EmployeeRecord;
@@ -327,4 +329,83 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 			throw new AppException(e.getMessage());
 		}
 	}
+
+	@Override
+	public boolean generateApiKey(APIKey apiKey) throws AppException {
+		ValidatorUtil.validateObject(apiKey);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.insertInto(Schemas.API_KEYS);
+		queryBuilder.insertColumns(
+				List.of(Column.ORG_NAME, Column.API_KEY, Column.CREATED_AT, Column.VALID_UNTIL, Column.MODIFIED_AT));
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery(), Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, apiKey.getOrgName());
+			statement.setString(2, apiKey.getAPIKey());
+			statement.setLong(3, apiKey.getCreatedAt());
+			statement.setLong(4, apiKey.getValidUntil());
+			statement.setLong(5, apiKey.getModifiedAt());
+
+			statement.executeUpdate();
+			try (ResultSet key = statement.getGeneratedKeys()) {
+				if (key.next()) {
+					apiKey.setAkId(key.getLong(1));
+					apiKey.setIsActive(true);
+					return true;
+				} else {
+					throw new AppException(APIExceptionMessage.API_GENERATION_FAILED);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+		}
+	}
+
+	@Override
+	public int getPageCountOfAPIKeys() throws AppException {
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.API_KEYS);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet countRS = statement.executeQuery()) {
+				if (countRS.next()) {
+					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return pageCount;
+				} else {
+					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<APIKey> getListOfAPIKeys(int pageNumber) throws AppException {
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectColumn(Column.ALL);
+		queryBuilder.fromSchema(Schemas.API_KEYS);
+		queryBuilder.sortField(Column.AK_ID, false);
+		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
+		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			try (ResultSet apiKeyRS = statement.executeQuery()) {
+				List<APIKey> apiKeys = new ArrayList<APIKey>();
+				while (apiKeyRS.next()) {
+					apiKeys.add(MySQLConversionUtil.convertToAPIKey(apiKeyRS));
+				}
+				return apiKeys;
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
 }

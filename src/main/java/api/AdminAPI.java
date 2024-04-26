@@ -1,8 +1,10 @@
 package api;
 
+import java.util.List;
 import java.util.Map;
 
 import exceptions.AppException;
+import modules.APIKey;
 import modules.Account;
 import modules.Branch;
 import modules.EmployeeRecord;
@@ -33,4 +35,13 @@ public interface AdminAPI extends EmployeeAPI {
 	public Map<Long, Account> viewAccountsInBank(int pageNumber) throws AppException;
 
 	public int getPageCountOfAccountsInBank() throws AppException;
+
+	// API Keys
+
+	public int getPageCountOfAPIKeys() throws AppException;
+
+	public List<APIKey> getListOfAPIKeys(int pageNumber) throws AppException;
+
+	public boolean generateApiKey(APIKey apiKey) throws AppException;
+
 }

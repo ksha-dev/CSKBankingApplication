@@ -334,6 +334,9 @@ public class AppServlet extends HttpServlet {
 			adminMethods.branchesRequest(request, response);
 			break;
 
+		case "api_service":
+			adminMethods.apiServiceRequest(request, response);
+
 		case "add_employee":
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/add_employee.jsp").forward(request, response);
 			break;
@@ -374,6 +377,10 @@ public class AppServlet extends HttpServlet {
 			if (!check) {
 				return check;
 			}
+			break;
+
+		case "create_api_key":
+			adminMethods.createAPIKeyPostRequest(request, response);
 			break;
 
 		case "authorization": {

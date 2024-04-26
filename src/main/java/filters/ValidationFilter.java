@@ -79,6 +79,7 @@ public class ValidationFilter implements Filter {
 					case "/admin/accounts":
 					case "/admin/employees":
 					case "/admin/branches":
+					case "/admin/api_service":
 						if (req.getMethod().equals("POST")) {
 							ServletUtil.checkRequiredParameters(parameters,
 									List.of(Parameters.PAGECOUNT, Parameters.CURRENTPAGE));
@@ -152,6 +153,14 @@ public class ValidationFilter implements Filter {
 
 					case "/admin/employee_details":
 						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.USERID));
+						break;
+
+					case "/admin/create_api_key":
+						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ORGNAME));
+						break;
+
+					case "/admin/invalidate_api_key":
+						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.AKID));
 						break;
 
 					}

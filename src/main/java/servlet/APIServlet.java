@@ -51,23 +51,19 @@ public class APIServlet extends HttpServlet {
 		JSONObject responseContent = new JSONObject();
 		RequestStatus status = null;
 		try {
-			if (path.equals("/generateKey")) {
-				responseContent = Services.appOperations.generateAPIKey();
+			switch (path) {
+
+			case "/login":
+				responseContent.accumulate("data", JSONObject.wrap(APIServletHandler.login(request, response)));
 				status = RequestStatus.SUCCESS;
-			} else {
-				switch (path) {
+				break;
 
-				case "/login":
-					responseContent.accumulate("data", JSONObject.wrap(APIServletHandler.login(request, response)));
-					status = RequestStatus.SUCCESS;
-					break;
-
-				default:
-					responseContent.accumulate("message", "Invalid API Request");
-					status = RequestStatus.FAILED;
-					break;
-				}
+			default:
+				responseContent.accumulate("message", "Invalid API Request");
+				status = RequestStatus.FAILED;
+				break;
 			}
+
 		} catch (AppException e) {
 			responseContent.accumulate("message", e.getMessage());
 			status = RequestStatus.FAILED;

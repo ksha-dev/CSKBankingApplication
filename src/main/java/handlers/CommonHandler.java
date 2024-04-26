@@ -7,9 +7,13 @@ import org.json.JSONObject;
 import api.UserAPI;
 import cache.CachePool;
 import exceptions.AppException;
+import exceptions.messages.APIExceptionMessage;
 import exceptions.messages.ActivityExceptionMessages;
+import modules.APIKey;
 import modules.Transaction;
 import modules.UserRecord;
+import utility.ConstantsUtil;
+import utility.ConvertorUtil;
 import utility.ValidatorUtil;
 import utility.ConstantsUtil.LogOperation;
 import utility.ConstantsUtil.OperationStatus;
@@ -96,7 +100,15 @@ public class CommonHandler {
 		}
 	}
 
-	public JSONObject generateAPIKey(String orgName) throws AppException {
-		return api.generateApiKey();
+	public void validateAPIKey(String apiKeyValue) throws AppException {
+		ValidatorUtil.validateAPIKey(apiKeyValue);
+		APIKey apiKey = api.getAPIKey(apiKeyValue);
+
+		if (System.currentTimeMillis() > apiKey.getValidUntil()) {
+			apiKey.setModifiedAt(System.currentTimeMillis());
+			apiKey.setIsActive(false);
+			api.invalidateApiKey(apiKey);
+			throw new AppException(ActivityExceptionMessages.API_KEY_EXPIRED);
+		}
 	}
 }

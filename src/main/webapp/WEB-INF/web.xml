@@ -7,30 +7,38 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+
+	<!-- Request Filter -->
 	<filter>
 		<filter-name>requestFilter</filter-name>
 		<filter-class>filters.RequestFilter</filter-class>
 	</filter>
-
 	<filter-mapping>
 		<filter-name>requestFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- Session Filter -->
 	<filter>
 		<filter-name>sessionFilter</filter-name>
 		<filter-class>filters.SessionFilter</filter-class>
 	</filter>
-
 	<filter-mapping>
 		<filter-name>sessionFilter</filter-name>
 		<url-pattern>/app/*</url-pattern>
 	</filter-mapping>
+
+	<!-- API Authentication Filter -->
+	<filter>
+		<filter-name>apiAuthenticationFilter</filter-name>
+		<filter-class>filters.APIAuthenticationFilter</filter-class>
+	</filter>
 	<filter-mapping>
-		<filter-name>sessionFilter</filter-name>
+		<filter-name>apiAuthenticationFilter</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
 
+	<!-- Validation Filter -->
 	<filter>
 		<filter-name>validationFilter</filter-name>
 		<filter-class>filters.ValidationFilter</filter-class>
@@ -41,21 +49,21 @@
 		<url-pattern>/app/*</url-pattern>
 	</filter-mapping>
 
+	<!-- App Servlet -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>servlet.AppServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- API Servlet -->
 	<servlet>
 		<servlet-name>apiServlet</servlet-name>
 		<servlet-class>servlet.APIServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>apiServlet</servlet-name>
 		<url-pattern>/api/*</url-pattern>

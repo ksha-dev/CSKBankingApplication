@@ -11,7 +11,7 @@ import handlers.EmployeeHandler;
 import utility.ConstantsUtil.PersistanceIdentifier;
 
 public class Services {
-	static CommonHandler appOperations;
+	public static CommonHandler appOperations;
 	static EmployeeHandler employeeOperations;
 	static CustomerHandler customerOperations;
 	static AdminHandler adminOperations;

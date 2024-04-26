@@ -37,6 +37,9 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 			<li id='li-branches'><i class="material-icons">location_city</i>Branches</li>
 		</a> <a id="a-accounts" href="accounts">
 			<li id='li-accounts'><i class="material-icons">account_balance</i>Accounts</li>
+		</a> <a id="a-api_service" href="api_service">
+			<li id='li-api_service'><i class="material-icons">api</i>API
+				Service</li>
 		</a>
 		<%
 		}

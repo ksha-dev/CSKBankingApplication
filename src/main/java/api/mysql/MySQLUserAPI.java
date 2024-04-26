@@ -3,6 +3,7 @@ package api.mysql;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -552,45 +553,47 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public String generateApiKey(String orgName) throws AppException {
-		ValidatorUtil.validateObject(orgName);
+	public APIKey getAPIKey(int akId) throws AppException {
+		ValidatorUtil.validateId(akId);
+		MySQLQuery query = new MySQLQuery();
+		query.selectColumn(Column.ALL);
+		query.fromSchema(Schemas.API_KEYS);
+		query.where();
+		query.columnEquals(Column.AK_ID);
+		query.end();
 
-		APIKey apiKey = new APIKey();
-		apiKey.setOrgName(orgName);
-		apiKey.setAPIKey(ConvertorUtil.generateKey());
-
-		long createdAt = System.currentTimeMillis();
-		long validUntil = createdAt + ConstantsUtil.getAPIValidityTime();
-
-		String apiKey = ConvertorUtil.generateKey();
-
-		MySQLQuery queryBuilder = new MySQLQuery();
-		queryBuilder.insertInto(Schemas.API_KEYS);
-		queryBuilder.insertColumns(
-				List.of(Column.ORG_NAME, Column.API_KEY, Column.CREATED_AT, Column.VALID_UNTIL, Column.MODIFIED_AT));
-		queryBuilder.end();
-
-		try (PreparedStatement statement = ServerConnection.getServerConnection()
-				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setString(1, orgName);
-			statement.setString(2, apiKey);
-			statement.setLong(3, createdAt);
-			statement.setLong(4, validUntil);
-			statement.setLong(5, createdAt);
-
-			int response = statement.executeUpdate();
-			if (response == 1) {
-				return apiKey;
-			} else
-				throw new AppException(APIExceptionMessage.API_GENERATION_FAILED);
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setLong(1, akId);
+			try (ResultSet apiKeyRS = statement.executeQuery()) {
+				if (apiKeyRS.next()) {
+					return MySQLConversionUtil.convertToAPIKey(apiKeyRS);
+				}
+			}
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND);
 		} catch (SQLException e) {
-			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND);
 		}
 	}
 
 	@Override
-	public int validateApiKey(String apiKey) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+	public void invalidateApiKey(APIKey apiKey) throws AppException {
+		ValidatorUtil.validateObject(apiKey);
+		MySQLQuery query = new MySQLQuery();
+		query.update(Schemas.API_KEYS);
+		query.setColumn(Column.MODIFIED_AT);
+		query.separator();
+		query.columnEquals(Column.IS_ACTIVE);
+		query.where();
+		query.columnEquals(Column.AK_ID);
+		query.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setLong(1, apiKey.getModifiedAt());
+			statement.setBoolean(2, apiKey.getIsActive());
+			statement.setLong(3, apiKey.getAkId());
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+		}
 	}
 }

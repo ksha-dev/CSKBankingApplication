@@ -78,6 +78,7 @@ public class ServletUtil {
 		case FROMACCOUNT:
 		case TOACCOUNT:
 		case ACCOUNTNUMBER:
+		case AKID:
 			ValidatorUtil.validateId(ConvertorUtil.convertStringToLong(parameterValue));
 			break;
 
@@ -88,6 +89,7 @@ public class ServletUtil {
 		case TYPE:
 		case CUSTOMERTYPE:
 		case ADDRESS:
+		case ORGNAME:
 			ValidatorUtil.validateObject(parameterValue);
 			break;
 

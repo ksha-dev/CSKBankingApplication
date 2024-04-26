@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import exceptions.AppException;
+import modules.APIKey;
 import modules.Account;
 import modules.Branch;
 import modules.CustomerRecord;
@@ -115,5 +116,21 @@ class MySQLConversionUtil {
 		} catch (SQLException e) {
 		}
 		return branch;
+	}
+
+	static APIKey convertToAPIKey(ResultSet apiKeyRS) throws AppException {
+		ValidatorUtil.validateObject(apiKeyRS);
+		APIKey apiKey = new APIKey();
+		try {
+			apiKey.setAkId(apiKeyRS.getLong(1));
+			apiKey.setOrgName(apiKeyRS.getString(2));
+			apiKey.setAPIKey(apiKeyRS.getString(3));
+			apiKey.setCreatedAt(apiKeyRS.getLong(4));
+			apiKey.setValidUntil(apiKeyRS.getLong(5));
+			apiKey.setIsActive(apiKeyRS.getBoolean(6));
+			apiKey.setModifiedAt(apiKeyRS.getLong(7));
+		} catch (SQLException e) {
+		}
+		return apiKey;
 	}
 }

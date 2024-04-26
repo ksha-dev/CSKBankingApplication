@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import exceptions.AppException;
 import filters.Parameters;
+import modules.APIKey;
 import modules.AuditLog;
 import modules.Branch;
 import modules.EmployeeRecord;
@@ -96,8 +97,7 @@ class AdminServletHelper {
 		try {
 			if (searchBy.equals("employeeId")) {
 				int userId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("employee",
-						(EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
+				request.setAttribute("employee", (EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
 				request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 				// Log
@@ -266,5 +266,63 @@ class AdminServletHelper {
 		request.setAttribute("redirect", "branches");
 		request.setAttribute("operation", "add_branch");
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+	}
+
+	public void apiServiceRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, AppException {
+		int pageCount = Services.adminOperations.getPageCountOfAPIKeys();
+		int currentPage = 1;
+		if (request.getMethod().equals("POST")) {
+			currentPage = ConvertorUtil
+					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
+		}
+		request.setAttribute("apiKeys", Services.adminOperations.getListofApiKeys(currentPage));
+		request.setAttribute("currentPage", currentPage);
+		request.setAttribute("pageCount", pageCount);
+		request.getRequestDispatcher("/WEB-INF/jsp/admin/api_service.jsp").forward(request, response);
+	}
+
+	public void createAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, AppException {
+		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
+		String orgName = request.getParameter(Parameters.ORGNAME.name());
+		try {
+			APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.CREATE_BRANCH);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
+					+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
+			log.setModifiedAt(apikey.getCreatedAt());
+			Services.auditLogService.log(log);
+		} catch (AppException e) {
+			request.getSession(false).setAttribute("error", e.getMessage());
+		}
+		response.sendRedirect("api_service");
+	}
+
+	public void invalidateAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, AppException {
+		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
+		int akId = Integer.parseInt(request.getParameter(Parameters.AKID.name()));
+		try {
+			Services.appOperations.validateAPIKey(null);
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.CREATE_BRANCH);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
+					+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
+			log.setModifiedAt(apikey.getCreatedAt());
+			Services.auditLogService.log(log);
+		} catch (AppException e) {
+			request.getSession(false).setAttribute("error", e.getMessage());
+		}
+		response.sendRedirect("api_service");
 	}
 }

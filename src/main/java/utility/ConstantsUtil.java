@@ -255,7 +255,10 @@ public class ConstantsUtil {
 		VIEW_BRANCH,
 
 		// Login
-		USER_LOGIN, USER_AUTHORIZATION;
+		USER_LOGIN, USER_AUTHORIZATION,
+
+		// API Keys
+		CREATE_API_KEY, INVALIDATE_API_KEY
 	}
 
 	public static enum OperationStatus {

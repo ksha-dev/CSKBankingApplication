@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import exceptions.AppException;
+import modules.APIKey;
 import modules.Account;
 import modules.AuditLog;
 import modules.Branch;
@@ -62,7 +63,7 @@ public interface UserAPI {
 	public boolean logOperation(AuditLog auditLog) throws AppException;
 
 	// API Key
-	public JSONObject generateApiKey() throws AppException;
+	public APIKey getAPIKey(int akId) throws AppException;
 
-	public int validateApiKey(String apiKey) throws AppException;
+	public void invalidateApiKey(APIKey apiKey) throws AppException;
 }
