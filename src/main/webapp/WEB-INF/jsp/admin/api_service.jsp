@@ -68,7 +68,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 					if (apikey.getIsActive()) {
 					%>
 					<td>
-						<form action="delete_api_key" method="post">
+						<form action="invalidate_api_key" method="post">
 							<input type="hidden" name="ak_id" value="<%=apikey.getAkId()%>">
 							<input type="submit" value="Invalidate"
 								style="padding: auto; background: transparent; color: white;">

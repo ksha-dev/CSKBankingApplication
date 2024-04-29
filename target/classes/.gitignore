@@ -1,8 +1,4 @@
-/filters/
-/servlet/
-/api/
 /utility/
-/consoleRunner/
-/exceptions/
 /handlers/
-/modules/
+/api/
+/servlet/

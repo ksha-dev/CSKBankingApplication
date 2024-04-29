@@ -285,7 +285,7 @@ class AdminServletHelper {
 	public void createAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
-		String orgName = request.getParameter(Parameters.ORGNAME.name());
+		String orgName = request.getParameter(Parameters.ORGNAME.parameterName());
 		try {
 			APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
 
@@ -307,18 +307,17 @@ class AdminServletHelper {
 	public void invalidateAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
-		int akId = Integer.parseInt(request.getParameter(Parameters.AKID.name()));
+		int akId = Integer.parseInt(request.getParameter(Parameters.AKID.parameterName()));
 		try {
-			Services.appOperations.validateAPIKey(null);
-
+			APIKey key = Services.adminOperations.invalidateAPIKey(akId);
 			// Log
 			AuditLog log = new AuditLog();
 			log.setUserId(admin.getUserId());
-			log.setLogOperation(LogOperation.CREATE_BRANCH);
+			log.setLogOperation(LogOperation.INVALIDATE_API_KEY);
 			log.setOperationStatus(OperationStatus.SUCCESS);
-			log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
-					+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
-			log.setModifiedAt(apikey.getCreatedAt());
+			log.setDescription(
+					"API Key (AK ID : " + akId + ") was invalidated  by Admin [Admin ID : " + admin.getUserId() + "]");
+			log.setModifiedAt(key.getModifiedAt());
 			Services.auditLogService.log(log);
 		} catch (AppException e) {
 			request.getSession(false).setAttribute("error", e.getMessage());

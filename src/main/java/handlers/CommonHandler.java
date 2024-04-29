@@ -100,6 +100,11 @@ public class CommonHandler {
 		}
 	}
 
+	public APIKey getAPIKey(String apiKeyValue) throws AppException {
+		ValidatorUtil.validateAPIKey(apiKeyValue);
+		return api.getAPIKey(apiKeyValue);
+	}
+
 	public void validateAPIKey(String apiKeyValue) throws AppException {
 		ValidatorUtil.validateAPIKey(apiKeyValue);
 		APIKey apiKey = api.getAPIKey(apiKeyValue);

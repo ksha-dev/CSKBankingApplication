@@ -576,7 +576,30 @@ public class MySQLUserAPI implements UserAPI {
 	}
 
 	@Override
-	public void invalidateApiKey(APIKey apiKey) throws AppException {
+	public APIKey getAPIKey(String apiKeyValue) throws AppException {
+		ValidatorUtil.validateAPIKey(apiKeyValue);
+		MySQLQuery query = new MySQLQuery();
+		query.selectColumn(Column.ALL);
+		query.fromSchema(Schemas.API_KEYS);
+		query.where();
+		query.columnEquals(Column.API_KEY);
+		query.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setString(1, apiKeyValue);
+			try (ResultSet apiKeyRS = statement.executeQuery()) {
+				if (apiKeyRS.next()) {
+					return MySQLConversionUtil.convertToAPIKey(apiKeyRS);
+				}
+			}
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND);
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND);
+		}
+	}
+
+	@Override
+	public APIKey invalidateApiKey(APIKey apiKey) throws AppException {
 		ValidatorUtil.validateObject(apiKey);
 		MySQLQuery query = new MySQLQuery();
 		query.update(Schemas.API_KEYS);
@@ -592,6 +615,8 @@ public class MySQLUserAPI implements UserAPI {
 			statement.setBoolean(2, apiKey.getIsActive());
 			statement.setLong(3, apiKey.getAkId());
 			statement.executeUpdate();
+
+			return apiKey;
 		} catch (SQLException e) {
 			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 		}

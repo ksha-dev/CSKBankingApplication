@@ -65,5 +65,7 @@ public interface UserAPI {
 	// API Key
 	public APIKey getAPIKey(int akId) throws AppException;
 
-	public void invalidateApiKey(APIKey apiKey) throws AppException;
+	public APIKey getAPIKey(String akId) throws AppException;
+
+	public APIKey invalidateApiKey(APIKey apiKey) throws AppException;
 }

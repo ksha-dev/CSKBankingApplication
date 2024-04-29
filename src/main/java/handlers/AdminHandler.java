@@ -155,4 +155,11 @@ public class AdminHandler {
 		} else
 			throw new AppException(APIExceptionMessage.API_GENERATION_FAILED);
 	}
+
+	public APIKey invalidateAPIKey(int akId) throws AppException {
+		APIKey apikey = api.getAPIKey(akId);
+		apikey.setIsActive(false);
+		apikey.setModifiedAt(System.currentTimeMillis());
+		return api.invalidateApiKey(apikey);
+	}
 }

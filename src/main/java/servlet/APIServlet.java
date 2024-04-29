@@ -77,15 +77,11 @@ public class APIServlet extends HttpServlet {
 		RequestStatus status = null;
 		try {
 			String apiPath = request.getPathInfo();
-			System.out.println(apiPath);
 			if (apiPath == null) {
 				response.getWriter().write("Welcome to CSK Banking Application REST API");
 				return;
 			}
 			String[] apiPaths = apiPath.split("/");
-			for (String path : apiPaths) {
-				System.out.println(path);
-			}
 
 			switch (apiPaths[1]) {
 			case "customer":

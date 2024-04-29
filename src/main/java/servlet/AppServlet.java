@@ -61,7 +61,6 @@ public class AppServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
 		System.out.println("GET : " + path);
-		System.out.println(System.getProperty("user.dir"));
 		try {
 			if (path.contains("/logout")) {
 				request.getSession().invalidate();
@@ -316,6 +315,7 @@ public class AppServlet extends HttpServlet {
 
 	private boolean adminGetController(HttpServletRequest request, HttpServletResponse response, String path)
 			throws IOException, AppException, ServletException {
+		System.out.println(request.getRequestURL());
 		AdminServletHelper adminMethods = new AdminServletHelper();
 		switch (path) {
 		case "home":
@@ -336,6 +336,7 @@ public class AppServlet extends HttpServlet {
 
 		case "api_service":
 			adminMethods.apiServiceRequest(request, response);
+			break;
 
 		case "add_employee":
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/add_employee.jsp").forward(request, response);
@@ -381,6 +382,10 @@ public class AppServlet extends HttpServlet {
 
 		case "create_api_key":
 			adminMethods.createAPIKeyPostRequest(request, response);
+			break;
+
+		case "invalidate_api_key":
+			adminMethods.invalidateAPIKeyPostRequest(request, response);
 			break;
 
 		case "authorization": {
