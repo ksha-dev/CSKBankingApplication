@@ -1,9 +1,6 @@
 
 <%@page import="java.util.Objects"%>
 <%
-response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
-response.setHeader("pragma", "no-cache");
-response.setHeader("Expires", "0");
 String error = (String) request.getSession(false).getAttribute("error");
 %>
 
@@ -21,7 +18,8 @@ String error = (String) request.getSession(false).getAttribute("error");
 <%if (!Objects.isNull(error)) {
 	request.getSession(false).removeAttribute("error");%>
 	setTimeout(function() {
-		alert("<%=error%>");
+		alert("<%=error%>
+	");
 	}, 100);
 <%
 }

@@ -1,7 +1,7 @@
 import java.lang.reflect.Method;
 
-import api.UserAPI;
-import exceptions.AppException;
+import com.cskbank.api.UserAPI;
+import com.cskbank.exceptions.AppException;
 
 public class Tester {
 	public static void main(String[] args) throws Exception {

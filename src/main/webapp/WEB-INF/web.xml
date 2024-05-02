@@ -11,7 +11,7 @@
 	<!-- Request Filter -->
 	<filter>
 		<filter-name>requestFilter</filter-name>
-		<filter-class>filters.RequestFilter</filter-class>
+		<filter-class>com.cskbank.filters.RequestFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>requestFilter</filter-name>
@@ -21,7 +21,7 @@
 	<!-- Session Filter -->
 	<filter>
 		<filter-name>sessionFilter</filter-name>
-		<filter-class>filters.SessionFilter</filter-class>
+		<filter-class>com.cskbank.filters.SessionFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>sessionFilter</filter-name>
@@ -31,7 +31,7 @@
 	<!-- API Authentication Filter -->
 	<filter>
 		<filter-name>apiAuthenticationFilter</filter-name>
-		<filter-class>filters.APIAuthenticationFilter</filter-class>
+		<filter-class>com.cskbank.filters.APIAuthenticationFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>apiAuthenticationFilter</filter-name>
@@ -41,7 +41,7 @@
 	<!-- Validation Filter -->
 	<filter>
 		<filter-name>validationFilter</filter-name>
-		<filter-class>filters.ValidationFilter</filter-class>
+		<filter-class>com.cskbank.filters.ValidationFilter</filter-class>
 	</filter>
 
 	<filter-mapping>
@@ -52,7 +52,7 @@
 	<!-- App Servlet -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
-		<servlet-class>servlet.AppServlet</servlet-class>
+		<servlet-class>com.cskbank.servlet.AppServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>appServlet</servlet-name>
@@ -62,7 +62,7 @@
 	<!-- API Servlet -->
 	<servlet>
 		<servlet-name>apiServlet</servlet-name>
-		<servlet-class>servlet.APIServlet</servlet-class>
+		<servlet-class>com.cskbank.servlet.APIServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>apiServlet</servlet-name>

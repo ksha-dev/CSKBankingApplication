@@ -1,4 +1,4 @@
-<%@page import="filters.Parameters"%>
+<%@page import="com.cskbank.filters.Parameters"%>
 <%@page import="java.util.Objects"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>

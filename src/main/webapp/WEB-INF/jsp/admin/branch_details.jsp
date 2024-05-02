@@ -1,7 +1,7 @@
-<%@page import="modules.Branch"%>
-<%@page import="modules.EmployeeRecord"%>
-<%@page import="utility.ConvertorUtil"%>
-<%@page import="modules.CustomerRecord"%>
+<%@page import="com.cskbank.modules.Branch"%>
+<%@page import="com.cskbank.modules.EmployeeRecord"%>
+<%@page import="com.cskbank.utility.ConvertorUtil"%>
+<%@page import="com.cskbank.modules.CustomerRecord"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%

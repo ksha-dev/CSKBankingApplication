@@ -1,5 +1,5 @@
-<%@page import="utility.ConvertorUtil"%>
-<%@page import="utility.ConstantsUtil.Gender"%>
+<%@page import="com.cskbank.utility.ConvertorUtil"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -30,23 +30,20 @@
 				minlength="10" placeholder="Enter Branch Phone Number" required>
 		</div>
 		<div class="dual-element-row">
-			<label for="email">Email ID Prefix<br>
-				<h5 style="font-weight: normal">
-					(Enter only the user name)<br>
-					<h6>Eg: example.someone</h6>
-				</h5>
-			</label> <input type="text" id="userName" name="email"
-				placeholder="Enter User Name" pattern="^[a-z.]{5,}$"
-				title="Must contain atleast 5 characters" required>
+			<label for="email">Email ID </label> <input type="text" id="email"
+				name="email" placeholder="Enter Email ID" required>
+
+			<!--  pattern="^[a-z.]{5,}$"
+				title="Must contain atleast 5 characters" -->
 		</div>
 		<span id="error" style="color: red;"></span> <input type="hidden"
 			name="operation" value="authorize_add_branch"> <input
-			type="submit" value="Submit" onclick="validateUserName()"
-			class="dual-element-row">
+			type="submit" value="Submit" class="dual-element-row">
+		<!-- onclick="validateUserName()" -->
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
 
-	<script>
+	<!-- <script>
 		function validateUserName() {
 			const email = document.getElementById('userName').value;
 			const error = document.getElementById('error');
@@ -56,7 +53,7 @@
 			}
 			event.preventDefault();
 		}
-	</script>
+	</script> -->
 </body>
 
 </html>

@@ -1,9 +1,9 @@
 
 <!DOCTYPE html>
-<%@page import="utility.ConstantsUtil.Gender"%>
-<%@page import="utility.ConstantsUtil.Gender"%>
-<%@page import="utility.ConstantsUtil.Gender"%>
-<%@page import="utility.ConstantsUtil.AccountType"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.AccountType"%>
 <html>
 <head>
 <title>Accounts</title>

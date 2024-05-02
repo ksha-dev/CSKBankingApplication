@@ -1,5 +1,5 @@
-<%@page import="modules.Transaction"%>
-<%@page import="modules.Account"%>
+<%@page import="com.cskbank.modules.Transaction"%>
+<%@page import="com.cskbank.modules.Account"%>
 <%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>

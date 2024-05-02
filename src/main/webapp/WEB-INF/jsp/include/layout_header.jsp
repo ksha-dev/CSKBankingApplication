@@ -1,6 +1,6 @@
 
-<%@page import="utility.ConstantsUtil.UserType"%>
-<%@page import="modules.UserRecord"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.UserType"%>
+<%@page import="com.cskbank.modules.UserRecord"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Map"%>

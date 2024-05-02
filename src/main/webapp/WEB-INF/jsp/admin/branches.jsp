@@ -1,7 +1,7 @@
-<%@page import="utility.ConstantsUtil"%>
-<%@page import="utility.ConvertorUtil"%>
-<%@page import="modules.EmployeeRecord"%>
-<%@page import="modules.Branch"%>
+<%@page import="com.cskbank.utility.ConstantsUtil"%>
+<%@page import="com.cskbank.utility.ConvertorUtil"%>
+<%@page import="com.cskbank.modules.EmployeeRecord"%>
+<%@page import="com.cskbank.modules.Branch"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -74,7 +74,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</table>
 	</div>
 
-	<form action="<%=pageCount == 1 ? "#" : "employees"%>"
+	<form action="<%=pageCount == 1 ? "#" : "branches"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"
