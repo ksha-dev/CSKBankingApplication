@@ -19,6 +19,9 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 </head>
 
 <body>
+	<div class="error-popup" id="errorPopup">
+		<p id="errorMessage"><%=Objects.isNull(error) ? "" : error%></p>
+	</div>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Accounts</h3>
 	<%
@@ -48,7 +51,7 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 				<tr>
 					<td><%=account.getAccountNumber()%></td>
 					<td><%=account.getAccountType()%></td>
-					<td>Rs. <%=account.getBalance()%></td>
+					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate()).format(DateTimeFormatter.ISO_DATE)%></td>
 					<td><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></td>
 					<td><%=account.getStatus()%></td>

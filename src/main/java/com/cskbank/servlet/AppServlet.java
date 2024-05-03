@@ -124,6 +124,14 @@ public class AppServlet extends HttpServlet {
 			customerMethods.accountsGetRequest(request, response, "customer/transfer");
 			break;
 
+		case "authorization":
+			if (ServletUtil.session(request).getAttribute("operation") != null) {
+				request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp").forward(request, response);
+			} else {
+				response.sendRedirect("home");
+			}
+			break;
+
 		case "change_password":
 			request.getRequestDispatcher("/WEB-INF/jsp/common/change_password.jsp").forward(request, response);
 			break;

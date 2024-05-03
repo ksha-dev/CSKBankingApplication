@@ -44,8 +44,6 @@ class MySQLAPIUtil {
 			statement.setInt(11, receiverTransaction.getModifiedBy());
 			statement.setObject(12, null);
 
-			System.out.println(statement);
-
 			int response = statement.executeUpdate();
 			if (response != 1) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);

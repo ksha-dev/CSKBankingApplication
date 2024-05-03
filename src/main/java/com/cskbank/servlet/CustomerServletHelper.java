@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.mysql.cj.Session;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
@@ -63,8 +65,12 @@ class CustomerServletHelper {
 					.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
 
 			String transferWithinBankString = request.getParameter(Parameters.TRANSFERWITHINBANK.parameterName());
+			if (transferWithinBankString != null && !transferWithinBankString.equals("on")) {
+				throw new AppException("Invalid Identifier Obtained : Transfer Within Bank");
+			}
+
 			boolean transferWithinBank = !Objects.isNull(transferWithinBankString);
-			String ifsc = request.getParameter(Parameters.IFSC.parameterName());
+//			String ifsc = request.getParameter(Parameters.IFSC.parameterName());
 			String remarks = request.getParameter(Parameters.REMARKS.parameterName());
 
 			ValidatorUtil.validateAmount(amount);
@@ -76,11 +82,16 @@ class CustomerServletHelper {
 			transaction.setTransactedAmount(amount);
 			transaction.setRemarks(remarks);
 			transaction.setUserId(customer.getUserId());
+			if (transferWithinBank) {
+				transaction.setTransferWithinBank();
+			} else {
+				transaction.setTransferOutsideBank();
+			}
 
+			ServletUtil.session(request).setAttribute("operation", "transaction");
 			ServletUtil.session(request).setAttribute("transaction", transaction);
-			ServletUtil.session(request).setAttribute("transferWithinBank", transferWithinBank);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_transaction")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("transfer");
@@ -90,18 +101,22 @@ class CustomerServletHelper {
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, AppException {
 		Transaction transaction = (Transaction) ServletUtil.session(request).getAttribute("transaction");
-		String pin = request.getParameter(Parameters.PIN.parameterName());
+		if (transaction == null) {
+			response.sendRedirect("transfer");
+			return;
+		}
 		ServletUtil.session(request).removeAttribute("transaction");
-		boolean transferWithinBank = (boolean) ServletUtil.session(request).getAttribute("transferWithinBank");
-		ServletUtil.session(request).removeAttribute("transferWithinBank");
+		ServletUtil.session(request).removeAttribute("redirect");
+		ServletUtil.session(request).removeAttribute("operation");
+
+		String pin = request.getParameter(Parameters.PIN.parameterName());
 
 		try {
 			Transaction completedTransaction = Services.customerOperations.tranferMoney(transaction,
-					transferWithinBank, pin);
+					transaction.getTransferWithinBank(), pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message",
 					"Your Transaction has been completed!\n Tranaction ID : " + transaction.getTransactionId());
-			request.setAttribute("redirect", "account");
 
 			// Log
 			AuditLog log = new AuditLog();
@@ -119,7 +134,6 @@ class CustomerServletHelper {
 			e.printStackTrace();
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
-			request.setAttribute("redirect", "transfer");
 
 			// Log
 			AuditLog log = new AuditLog();
@@ -132,6 +146,7 @@ class CustomerServletHelper {
 			Services.auditLogService.log(log);
 
 		}
+		request.setAttribute("redirect", "transfer");
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
 

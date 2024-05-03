@@ -198,8 +198,6 @@ public class MySQLUserAPI implements UserAPI {
 				statement.setLong(2, timeLimit.getDuration());
 				statement.setLong(3, System.currentTimeMillis());
 			}
-
-			System.out.println(statement);
 			try (ResultSet transactionRS = statement.executeQuery()) {
 				List<Transaction> transactions = new ArrayList<Transaction>();
 				while (transactionRS.next()) {
@@ -229,8 +227,6 @@ public class MySQLUserAPI implements UserAPI {
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
 		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
 		queryBuilder.end();
-
-		System.out.println(queryBuilder.getQuery());
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {

@@ -131,7 +131,8 @@ class EmployeeServletHelper {
 					.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
 			double amount = ConvertorUtil
 					.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
-			TransactionType type = TransactionType.valueOf(request.getParameter(Parameters.TYPE.parameterName()));
+			TransactionType type = TransactionType
+					.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
 
 			Services.employeeOperations.getAccountDetails(accountNumber);
 			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
@@ -203,7 +204,8 @@ class EmployeeServletHelper {
 
 	public void authorizeOpenAccount(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
-		AccountType accountType = AccountType.valueOf(request.getParameter(Parameters.TYPE.parameterName()));
+		AccountType accountType = AccountType
+				.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
 		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
 		String customerType = request.getParameter(Parameters.CUSTOMERTYPE.parameterName());
 		try {

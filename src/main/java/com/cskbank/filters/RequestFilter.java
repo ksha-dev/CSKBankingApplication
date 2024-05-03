@@ -51,11 +51,14 @@ public class RequestFilter implements Filter {
 		res.setHeader("Expires", "0");
 
 		String url = req.getServletPath();
-		System.out.println("Request Filter : " + req.getRequestURL());
+
+		if (!url.startsWith("/static")) {
+			System.out.println("IP : " + req.getRemoteHost() + " | Servlet : " + req.getServletPath() + " | Path : "
+					+ req.getPathInfo() + " | Method : " + req.getMethod());
+		}
 
 		if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
-
 		} else if (url.equals("/login")) {
 			UserRecord user = (UserRecord) req.getSession().getAttribute("user");
 			if (user != null) {

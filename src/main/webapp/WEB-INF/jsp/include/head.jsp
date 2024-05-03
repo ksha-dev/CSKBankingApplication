@@ -17,10 +17,21 @@ String error = (String) request.getSession(false).getAttribute("error");
 	
 <%if (!Objects.isNull(error)) {
 	request.getSession(false).removeAttribute("error");%>
-	setTimeout(function() {
-		alert("<%=error%>
-	");
-	}, 100);
+	<%-- setTimeout(function() {
+		alert("<%=error%>");
+	}, 100); --%>
+	
+	document.addEventListener("DOMContentLoaded", function() {
+		function showError() {
+			const errorPopup = document.getElementById("errorPopup");
+			console.log(errorPopup);
+			setTimeout(function() {
+				console.log(errorPopup);
+				errorPopup.style.display = "none";
+			}, 5000);
+		}
+		showError();
+	}
 <%
 }
 %>

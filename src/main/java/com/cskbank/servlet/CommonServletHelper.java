@@ -89,7 +89,7 @@ class CommonServletHelper {
 				request.setAttribute("startDate", startDateString);
 				request.setAttribute("endDate", endDateString);
 			} else {
-				TransactionHistoryLimit limit = TransactionHistoryLimit.valueOf(limitString);
+				TransactionHistoryLimit limit = TransactionHistoryLimit.convertStringToEnum(limitString);
 				if (pageCount <= 0) {
 					pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, limit);
 				}

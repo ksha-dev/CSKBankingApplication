@@ -47,7 +47,7 @@ public class ServletUtil {
 					throw new AppException("Input not obtained");
 				}
 			} catch (AppException e) {
-				throw new AppException("Error at input : " + parameter + "<br>" + e.getMessage());
+				throw new AppException("Error at input : " + parameter + "\\n" + e.getMessage());
 			}
 		}
 	}

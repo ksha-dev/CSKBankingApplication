@@ -4,6 +4,7 @@
 <%@page import="com.cskbank.exceptions.AppException"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +24,8 @@
 			inputmode="numeric" pattern="[0-9]{4}"
 			title="PIN must contain 4 digits exactly" required> <input
 			type="hidden" name="<%=Parameters.OPERATION.parameterName()%>"
-			value="<%=request.getParameter("redirect")%>"> <br>
+			value="<%=request.getSession(false).getAttribute("redirect")%>">
+		<br>
 		<button class="button-85" type="submit">Submit</button>
 	</form>
 </body>

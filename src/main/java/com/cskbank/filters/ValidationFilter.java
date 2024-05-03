@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -51,13 +52,6 @@ public class ValidationFilter implements Filter {
 		String servletPath = req.getServletPath();
 		String pathInfo = req.getPathInfo();
 		Map<String, String[]> parameters = req.getParameterMap();
-		try {
-			Properties redirectors = GetterUtil.getRedirectProperties();
-			redirectors.forEach((k, v) -> System.out.println(k + " : " + v));
-
-		} catch (AppException e1) {
-			e1.printStackTrace();
-		}
 		if (servletPath.equals("/app")) {
 			try {
 				if (pathInfo.endsWith("/statement")) {
@@ -103,58 +97,62 @@ public class ValidationFilter implements Filter {
 						break;
 
 					case "/customer/authorization":
-						ServletUtil.commonAuthorizationCheck(parameters);
+						if (req.getMethod().equals("POST"))
+							ServletUtil.commonAuthorizationCheck(parameters);
 						break;
 
-					case "/admin/authorization": {
-						ServletUtil.commonAuthorizationCheck(parameters);
-						String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
-						switch (operation) {
-						case "authorize_add_employee":
-							ServletUtil.checkRequiredParameters(parameters,
-									List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
-											Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL,
-											Parameters.ROLE, Parameters.BRANCHID));
-							break;
-
-						case "authorize_add_branch":
-							ServletUtil.checkRequiredParameters(parameters,
-									List.of(Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL));
-							break;
-						}
-					}
-					case "/employee/authorization": {
-						ServletUtil.commonAuthorizationCheck(parameters);
-						String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
-						switch (operation) {
-						case "authorize_transaction":
-							ServletUtil.checkRequiredParameters(parameters,
-									List.of(Parameters.ACCOUNTNUMBER, Parameters.AMOUNT, Parameters.TYPE));
-							break;
-
-						case "authorize_open_account":
-							ServletUtil.checkRequiredParameters(parameters,
-									List.of(Parameters.TYPE, Parameters.AMOUNT, Parameters.CUSTOMERTYPE));
-							switch (request.getParameter(Parameters.CUSTOMERTYPE.parameterName())) {
-							case "new":
+					case "/admin/authorization":
+						if (req.getMethod().equals("POST")) {
+							ServletUtil.commonAuthorizationCheck(parameters);
+							String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
+							switch (operation) {
+							case "authorize_add_employee":
 								ServletUtil.checkRequiredParameters(parameters,
 										List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
 												Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE,
-												Parameters.EMAIL, Parameters.AADHAAR, Parameters.PAN));
+												Parameters.EMAIL, Parameters.ROLE, Parameters.BRANCHID));
 								break;
 
-							case "existing":
-								ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.USERID));
+							case "authorize_add_branch":
+								ServletUtil.checkRequiredParameters(parameters,
+										List.of(Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL));
 								break;
-
-							default:
-								throw new AppException("Invalid Customer Type obtained");
 							}
-							break;
+						}
+					case "/employee/authorization": {
+						if (req.getMethod().equals("POST")) {
+							ServletUtil.commonAuthorizationCheck(parameters);
+							String operation = parameters.get(Parameters.OPERATION.parameterName())[0];
+							switch (operation) {
+							case "authorize_transaction":
+								ServletUtil.checkRequiredParameters(parameters,
+										List.of(Parameters.ACCOUNTNUMBER, Parameters.AMOUNT, Parameters.TYPE));
+								break;
 
-						case "authorize_close_account":
-							ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ACCOUNTNUMBER));
-							break;
+							case "authorize_open_account":
+								ServletUtil.checkRequiredParameters(parameters,
+										List.of(Parameters.TYPE, Parameters.AMOUNT, Parameters.CUSTOMERTYPE));
+								switch (request.getParameter(Parameters.CUSTOMERTYPE.parameterName())) {
+								case "new":
+									ServletUtil.checkRequiredParameters(parameters,
+											List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
+													Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE,
+													Parameters.EMAIL, Parameters.AADHAAR, Parameters.PAN));
+									break;
+
+								case "existing":
+									ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.USERID));
+									break;
+
+								default:
+									throw new AppException("Invalid Customer Type obtained");
+								}
+								break;
+
+							case "authorize_close_account":
+								ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ACCOUNTNUMBER));
+								break;
+							}
 						}
 					}
 						break;
@@ -175,11 +173,38 @@ public class ValidationFilter implements Filter {
 					chain.doFilter(req, res);
 				}
 			} catch (AppException e) {
+				try {
+					Properties props = GetterUtil.getPropertiesFromFile(
+							System.getProperty("project.location") + "/properties", "redirects.properties");
+					String requestURL = servletPath + pathInfo;
 
-				req.setAttribute("status", false);
-				req.setAttribute("message", e.getMessage());
-				req.setAttribute("redirect", "back");
-				req.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+					if (Pattern.matches("^/(customer|employee|admin)/authorization$", pathInfo)) {
+						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OPERATION));
+						String operation = req.getParameter(Parameters.OPERATION.parameterName());
+						if (operation != null) {
+							requestURL = requestURL + "." + operation;
+						}
+					} else {
+
+					}
+
+					System.out.println(requestURL);
+
+					String redirect = props.getProperty(requestURL);
+
+					if (redirect != null) {
+						req.getSession(false).setAttribute("error", e.getMessage());
+						res.sendRedirect(req.getContextPath() + redirect);
+					} else {
+						req.setAttribute("status", false);
+						req.setAttribute("message", e.getMessage());
+						req.setAttribute("redirect", "back");
+						req.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request,
+								response);
+					}
+				} catch (AppException e1) {
+					e1.printStackTrace();
+				}
 			}
 		} else {
 			req.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);

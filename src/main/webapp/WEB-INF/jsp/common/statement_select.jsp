@@ -3,7 +3,8 @@
 <%@page import="com.cskbank.modules.Account"%>
 <%@page import="java.util.Map"%>
 <%@page import="com.cskbank.modules.Transaction"%>
-<%@page import="com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit"%>
+<%@page
+	import="com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -15,6 +16,9 @@
 </head>
 
 <body>
+	<div class="error-popup show" id="errorPopup">
+		<p id="errorMessage"><%=Objects.isNull(error) ? "" : error%></p>
+	</div>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Statement</h3>
 	<form action="statement" method="post" class="container"

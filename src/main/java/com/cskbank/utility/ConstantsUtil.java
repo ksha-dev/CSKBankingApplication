@@ -85,6 +85,14 @@ public class ConstantsUtil {
 				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
 			}
 		}
+
+		public static UserType convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
+		}
 	}
 
 	public static enum RequestStatus {
@@ -92,6 +100,14 @@ public class ConstantsUtil {
 
 		public String toString() {
 			return this.name().toLowerCase();
+		}
+
+		public static RequestStatus convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
 		}
 	}
 
@@ -123,6 +139,14 @@ public class ConstantsUtil {
 				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
 			}
 		}
+
+		public static Status convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
+		}
 	}
 
 	public static enum TransactionType {
@@ -146,6 +170,14 @@ public class ConstantsUtil {
 				return CREDIT;
 			default:
 				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
+			}
+		}
+
+		public static TransactionType convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
 			}
 		}
 	}
@@ -176,6 +208,14 @@ public class ConstantsUtil {
 				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
 			}
 		}
+
+		public static AccountType convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
+		}
 	}
 
 	public static enum Gender {
@@ -204,6 +244,14 @@ public class ConstantsUtil {
 				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
 			}
 		}
+
+		public static Gender convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
+		}
 	}
 
 	public static enum TransactionHistoryLimit {
@@ -226,6 +274,14 @@ public class ConstantsUtil {
 				break;
 			}
 			return System.currentTimeMillis() - transactionDuration;
+		}
+
+		public static TransactionHistoryLimit convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
 		}
 	}
 
@@ -264,4 +320,5 @@ public class ConstantsUtil {
 	public static enum OperationStatus {
 		SUCCESS, FAILURE, PROCESSING;
 	}
+
 }

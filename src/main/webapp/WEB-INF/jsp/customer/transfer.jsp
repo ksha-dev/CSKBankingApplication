@@ -13,6 +13,9 @@
 
 
 <body>
+	<div class="error-popup" id="errorPopup">
+		<p id="errorMessage"><%=Objects.isNull(error) ? "" : error%></p>
+	</div>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Transfer</h3>
 	<form action="authorization" id="transferForm" class="container"
@@ -84,24 +87,24 @@
 				event.preventDefault();
 			}
 
-// 			if (!transferWithinBank.checked) {
-// 				if (ifscField.value === "") {
-// 					error.textContent = "Please Enter IFSC Code";
-// 					event.preventDefault();
-// 				}
-// 			}
+			// 			if (!transferWithinBank.checked) {
+			// 				if (ifscField.value === "") {
+			// 					error.textContent = "Please Enter IFSC Code";
+			// 					event.preventDefault();
+			// 				}
+			// 			}
 		}
 
-// 		function ifscDisplay() {
-// 			const transferWithinBank = document
-// 					.getElementById("transferWithinBank");
-// 			const ifscField = document.getElementById("ifsc");
-// 			ifscField.style.display = 'none';
+		// 		function ifscDisplay() {
+		// 			const transferWithinBank = document
+		// 					.getElementById("transferWithinBank");
+		// 			const ifscField = document.getElementById("ifsc");
+		// 			ifscField.style.display = 'none';
 
-// 			if (!transferWithinBank.checked) {
-// 				ifscField.style.display = 'flex';
-// 			}
-// 		}
+		// 			if (!transferWithinBank.checked) {
+		// 				ifscField.style.display = 'flex';
+		// 			}
+		// 		}
 		// document
 		// 	.getElementById("transferForm")
 		// 	.addEventListener(

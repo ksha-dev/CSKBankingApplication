@@ -394,3 +394,21 @@ button {
 	color: white;
 	border-radius: 5px;
 }
+
+.error-popup {
+	position: fixed;
+	top: 50px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #ffebee; /* Light red */
+	color: #c62828; /* Dark red */
+	max-width: 300px;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: none; /* Hidden by default */
+}
+
+.error-popup.show {
+	display: block; /* Show when needed */
+}

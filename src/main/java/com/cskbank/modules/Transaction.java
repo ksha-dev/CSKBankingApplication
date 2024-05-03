@@ -18,6 +18,7 @@ public class Transaction {
 	private int modifiedBy;
 	private long createdAt;
 	private long modifiedAt;
+	private boolean transferWithinBank = false;
 
 	public Transaction() throws AppException {
 	}
@@ -78,6 +79,14 @@ public class Transaction {
 		this.modifiedAt = dateTime;
 	}
 
+	public void setTransferWithinBank() {
+		this.transferWithinBank = true;
+	}
+
+	public void setTransferOutsideBank() {
+		this.transferWithinBank = false;
+	}
+
 	// Getters
 
 	public long getTransactionId() {
@@ -126,5 +135,9 @@ public class Transaction {
 
 	public long getModifiedAt() {
 		return this.modifiedAt;
+	}
+
+	public boolean getTransferWithinBank() {
+		return this.transferWithinBank;
 	}
 }

@@ -26,10 +26,10 @@ public abstract class Cache<K, V> {
 	public final V fetchData(K key) throws AppException {
 		try {
 			return (V) UserAPI.class.getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api, key);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			e.printStackTrace();
-			throw new AppException(e.toString());
+		} catch (InvocationTargetException me) {
+			throw new AppException(me.getCause().getMessage());
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
+			throw new AppException("Cache Failiure");
 		}
 	}
 

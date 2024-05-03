@@ -19,6 +19,15 @@ Branch branch = (Branch) request.getAttribute("branch");
 <%@include file="../include/head.jsp"%>
 </head>
 <body style="width: 100%;">
+	<%
+	if (Objects.isNull(error)) {
+	%>
+	<div class="error-popup" id="errorPopup">
+		<p id="errorMessage"></p>
+	</div>
+	<%
+	}
+	%>
 	<%@include file="../include/layout_header.jsp"%>
 	<script>
 		document.getElementById('li-search').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
