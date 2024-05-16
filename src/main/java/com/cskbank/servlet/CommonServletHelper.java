@@ -11,10 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.AuditLog;
+import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
@@ -56,6 +58,56 @@ class CommonServletHelper {
 			Services.auditLogService.log(log);
 		}
 		return user;
+	}
+
+	public void signupPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		try {
+			CustomerRecord newCustomer = new CustomerRecord();
+
+			newCustomer.setFirstName(request.getParameter(Parameters.FIRSTNAME.parameterName()));
+			newCustomer.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
+			newCustomer.setDateOfBirth(
+					ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
+			newCustomer.setGender(
+					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.GENDER.parameterName())));
+			newCustomer.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
+			newCustomer.setPhone(
+					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
+			newCustomer.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
+			newCustomer.setAadhaarNumber(
+					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.AADHAAR.parameterName())));
+			newCustomer.setPanNumber(request.getParameter(Parameters.PAN.parameterName()));
+
+			Services.employeeOperations.createNewCustomerFromSignup(newCustomer);
+			request.setAttribute("message",
+					"New customer has been created through signup\nCustomer ID : " + newCustomer.getUserId());
+			ServletUtil.session(request).setAttribute("user", newCustomer);
+			ServletUtil.session(request).setAttribute("error", "User Signup successful!");
+
+			response.sendRedirect(newCustomer.getType().toString().toLowerCase() + "/home");
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(newCustomer.getUserId());
+			log.setTargetId(newCustomer.getUserId());
+			log.setLogOperation(LogOperation.CREATE_CUSTOMER_AT_SIGNUP);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Customer(ID : " + newCustomer.getUserId() + ") was created at signup Admin(ID : 1)");
+			log.setModifiedAt(newCustomer.getCreatedAt());
+			Services.auditLogService.log(log);
+		} catch (AppException e) {
+			e.printStackTrace();
+			ServletUtil.session(request).setAttribute("error", e.getMessage());
+			response.sendRedirect(request.getContextPath() + "/signup");
+
+			AuditLog log = new AuditLog();
+			log.setUserId(1);
+			log.setLogOperation(LogOperation.CREATE_CUSTOMER_AT_SIGNUP);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Cannot create new customer. Reason : " + e.getMessage());
+			log.setModifiedAt(System.currentTimeMillis());
+			Services.auditLogService.log(log);
+		}
 	}
 
 	public void statementPostRequest(HttpServletRequest request, HttpServletResponse response)

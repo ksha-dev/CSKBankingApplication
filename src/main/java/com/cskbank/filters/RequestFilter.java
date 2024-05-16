@@ -59,13 +59,10 @@ public class RequestFilter implements Filter {
 
 		if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
-		} else if (url.equals("/login")) {
-			UserRecord user = (UserRecord) req.getSession().getAttribute("user");
-			if (user != null) {
-				res.sendRedirect("app/" + user.getType().toString().toLowerCase() + "/home");
-			} else {
-				req.getRequestDispatcher("/WEB-INF/jsp/common/login.jsp").forward(req, res);
-			}
+
+		} else if (url.equals("/login") || url.equals("/signup")) {
+			chain.doFilter(req, res);
+
 		} else if (url.startsWith("/static")) {
 			req.getRequestDispatcher(url).forward(req, res);
 

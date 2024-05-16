@@ -34,6 +34,7 @@ public class AdminHandler {
 					.forName("com.cskbank.api." + obj.toString().toLowerCase() + "." + obj.toString() + "AdminAPI");
 			api = persistanceClass.getConstructor().newInstance();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new AppException(ActivityExceptionMessages.CANNOT_LOAD_CONNECTOR);
 		}
 	}

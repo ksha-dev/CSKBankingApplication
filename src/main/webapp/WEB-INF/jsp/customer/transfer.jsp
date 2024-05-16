@@ -13,9 +13,6 @@
 
 
 <body>
-	<div class="error-popup" id="errorPopup">
-		<p id="errorMessage"><%=Objects.isNull(error) ? "" : error%></p>
-	</div>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Transfer</h3>
 	<form action="authorization" id="transferForm" class="container"

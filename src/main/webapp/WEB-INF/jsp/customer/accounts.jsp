@@ -19,9 +19,6 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 </head>
 
 <body>
-	<div class="error-popup" id="errorPopup">
-		<p id="errorMessage"><%=Objects.isNull(error) ? "" : error%></p>
-	</div>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Accounts</h3>
 	<%

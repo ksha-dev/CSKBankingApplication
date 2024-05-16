@@ -44,35 +44,40 @@ public class SessionFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		HttpSession session = req.getSession();
+		String controller = req.getServletPath();
+		String controllerSuffix = req.getPathInfo();
+		String contextPath = req.getContextPath();
 
-		if (req.getServletPath().equals("/login")) {
+		if (controller.equals("/login") || controller.equals("/signup")) {
 			UserRecord user = (UserRecord) session.getAttribute("user");
 			if (user != null) {
 				res.sendRedirect("app/" + user.getType().toString().toLowerCase() + "/home");
 			} else {
-				req.getRequestDispatcher("/WEB-INF/jsp/common/login.jsp").forward(req, res);
+				req.getRequestDispatcher("/WEB-INF/jsp/common/" + controller + ".jsp").forward(req, res);
 			}
-		} else if (req.getPathInfo() == null) {
-			res.sendRedirect(req.getContextPath() + "/login");
-		} else if (req.getPathInfo().endsWith("/logout")) {
+		} else if (controllerSuffix == null) {
+			res.sendRedirect(contextPath + "/login");
+
+		} else if (controllerSuffix.endsWith("/logout")) {
 			session.invalidate();
 			req.getSession(true).setAttribute("error", "User has been logged out");
-			res.sendRedirect(req.getContextPath() + "/login");
+			res.sendRedirect(contextPath + "/login");
 
-		} else if (req.getServletPath().equals("/app") && req.getPathInfo().equals("/login")) {
+		} else if (controller.equals("/app")
+				&& (controllerSuffix.equals("/login") || controllerSuffix.equals("/signup"))) {
 
 			chain.doFilter(req, res);
 
 		} else if (session == null) {
 
 			req.getSession(true).setAttribute("error", "The Session has expired. Login again to access the bank");
-			res.sendRedirect(req.getContextPath() + "/login");
+			res.sendRedirect(contextPath + "/login");
 
 		} else if (session.getAttribute("user") == null) {
 
 			session.invalidate();
 			req.getSession(true).setAttribute("error", "The Session has expired. Login again to access the bank");
-			res.sendRedirect(req.getContextPath() + "/login");
+			res.sendRedirect(contextPath + "/login");
 
 		} else {
 			chain.doFilter(req, res);

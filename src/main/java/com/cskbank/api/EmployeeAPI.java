@@ -1,16 +1,11 @@
 package com.cskbank.api;
 
-import java.util.List;
 import java.util.Map;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.CustomerRecord;
-import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
-import com.cskbank.utility.ConstantsUtil.AccountType;
-import com.cskbank.utility.ConstantsUtil.Status;
-import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 
 public interface EmployeeAPI extends UserAPI {
 

@@ -71,6 +71,13 @@ public class ValidationFilter implements Filter {
 								List.of(Parameters.USERID, Parameters.PASSWORD));
 						break;
 
+					case "/signup":
+						ServletUtil.checkRequiredParameters(parameters,
+								List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
+										Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL,
+										Parameters.AADHAAR, Parameters.PAN));
+						break;
+
 					case "/employee/account_details":
 					case "/customer/account_details":
 					case "/admin/account_details":
@@ -174,34 +181,17 @@ public class ValidationFilter implements Filter {
 				}
 			} catch (AppException e) {
 				try {
-					Properties props = GetterUtil.getPropertiesFromFile(
-							System.getProperty("project.location") + "/properties", "redirects.properties");
+					GetterUtil.loadRedirectURLProperties();
 					String requestURL = servletPath + pathInfo;
-
 					if (Pattern.matches("^/(customer|employee|admin)/authorization$", pathInfo)) {
 						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OPERATION));
 						String operation = req.getParameter(Parameters.OPERATION.parameterName());
 						if (operation != null) {
 							requestURL = requestURL + "." + operation;
 						}
-					} else {
-
 					}
-
-					System.out.println(requestURL);
-
-					String redirect = props.getProperty(requestURL);
-
-					if (redirect != null) {
-						req.getSession(false).setAttribute("error", e.getMessage());
-						res.sendRedirect(req.getContextPath() + redirect);
-					} else {
-						req.setAttribute("status", false);
-						req.setAttribute("message", e.getMessage());
-						req.setAttribute("redirect", "back");
-						req.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request,
-								response);
-					}
+					req.getSession(false).setAttribute("error", e.getMessage());
+					res.sendRedirect(req.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 				} catch (AppException e1) {
 					e1.printStackTrace();
 				}

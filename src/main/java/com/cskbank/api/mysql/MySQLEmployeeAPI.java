@@ -96,7 +96,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 			MySQLQuery queryBuilder = new MySQLQuery();
 			queryBuilder.insertInto(Schemas.CUSTOMERS);
-			queryBuilder.insertValuePlaceholders(5);
+			queryBuilder.insertValuePlaceholders(3);
 			queryBuilder.end();
 
 			try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -104,6 +104,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				statement.setInt(1, customer.getUserId());
 				statement.setLong(2, customer.getAadhaarNumber());
 				statement.setString(3, customer.getPanNumber());
+
+				System.out.println(statement);
 
 				int response = statement.executeUpdate();
 				if (response == 1) {

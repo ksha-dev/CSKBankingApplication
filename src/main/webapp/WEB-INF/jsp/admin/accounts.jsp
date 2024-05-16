@@ -22,15 +22,6 @@ int currentPage = (int) request.getAttribute("currentPage");
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
-	<%
-	if (Objects.isNull(error)) {
-	%>
-	<div class="error-popup" id="errorPopup">
-		<p id="errorMessage"></p>
-	</div>
-	<%
-	}
-	%>
 	<div
 		style="display: flex; justify-content: space-between; align-items: center;">
 		<h3 class="content-title">List of Accounts</h3>

@@ -9,7 +9,9 @@ import com.cskbank.exceptions.AppException;
 
 public class GetterUtil {
 
-	public static Properties getPropertiesFromFile(String path, String fileName) throws AppException {
+	private static Properties redirectURLProperties = null;
+
+	public static Properties getProperties(String path, String fileName) throws AppException {
 		Properties returnProps = new Properties();
 		try (BufferedReader reader = new BufferedReader(new FileReader(path + "/" + fileName))) {
 			returnProps.load(reader);
@@ -19,7 +21,16 @@ public class GetterUtil {
 		}
 	}
 
-	public static Properties getRedirectProperties() throws AppException {
-		return getPropertiesFromFile(System.getProperty("project.location") + "/properties", "redirects.properties");
+	public static void loadRedirectURLProperties() throws AppException {
+		redirectURLProperties = getProperties(System.getProperty("project.location") + "/properties",
+				"redirects.properties");
+	}
+
+	public static String getRedirectURL(String requestURL) {
+		if (requestURL == null) {
+			return "/login";
+		} else {
+			return redirectURLProperties.getProperty(requestURL, "/login");
+		}
 	}
 }

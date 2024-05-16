@@ -25,20 +25,14 @@ import com.cskbank.utility.ConstantsUtil.UserType;
 class EmployeeServletHelper {
 
 	public void accountDetailsGetRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
-		try {
-			Long accountNumber = ConvertorUtil
-					.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-			Account account = Services.employeeOperations.getAccountDetails(accountNumber);
-			CustomerRecord customer = Services.employeeOperations.getCustomerRecord(account.getUserId());
-			request.setAttribute("account", account);
-			request.setAttribute("customer", customer);
-			request.getRequestDispatcher("/WEB-INF/jsp/employee/account_details.jsp").forward(request, response);
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect(employee.getType() == UserType.ADMIN ? "accounts" : "branch_accounts");
-		}
+			throws ServletException, IOException, AppException {
+		Long accountNumber = ConvertorUtil
+				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
+		Account account = Services.employeeOperations.getAccountDetails(accountNumber);
+		CustomerRecord customer = Services.employeeOperations.getCustomerRecord(account.getUserId());
+		request.setAttribute("account", account);
+		request.setAttribute("customer", customer);
+		request.getRequestDispatcher("/WEB-INF/jsp/employee/account_details.jsp").forward(request, response);
 	}
 
 	public void statementGetRequest(HttpServletRequest request, HttpServletResponse response)

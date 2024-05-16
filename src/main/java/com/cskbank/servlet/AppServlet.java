@@ -1,6 +1,9 @@
 package com.cskbank.servlet;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
-import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ConstantsUtil.UserType;
+import com.cskbank.utility.GetterUtil;
+import com.cskbank.utility.ServletUtil;
 
 public class AppServlet extends HttpServlet {
 
@@ -37,15 +41,27 @@ public class AppServlet extends HttpServlet {
 				homeRedirect(response, ServletUtil.getUser(request).getType());
 			} else if (path.equals("/login")) {
 				new CommonServletHelper().loginPostRequest(request, response);
+			} else if (path.equals("/signup")) {
+				new CommonServletHelper().signupPostRequest(request, response);
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
 		} catch (AppException e) {
-			e.printStackTrace();
-			request.setAttribute("status", false);
-			request.setAttribute("message", e.getMessage());
-			request.setAttribute("redirect", "history.back()");
-			request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+			try {
+				GetterUtil.loadRedirectURLProperties();
+				String requestURL = request.getServletPath() + request.getPathInfo();
+				if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
+					ServletUtil.checkRequiredParameters(request.getParameterMap(), List.of(Parameters.OPERATION));
+					String operation = request.getParameter(Parameters.OPERATION.parameterName());
+					if (operation != null) {
+						requestURL = requestURL + "." + operation;
+					}
+				}
+				request.getSession(false).setAttribute("error", e.getMessage());
+				response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
+			} catch (AppException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -75,11 +91,21 @@ public class AppServlet extends HttpServlet {
 			}
 
 		} catch (AppException e) {
-			e.printStackTrace();
-			request.setAttribute("status", false);
-			request.setAttribute("message", e.getMessage());
-			request.setAttribute("redirect", "history.back()");
-			request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+			try {
+				GetterUtil.loadRedirectURLProperties();
+				String requestURL = request.getServletPath() + request.getPathInfo();
+				if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
+					ServletUtil.checkRequiredParameters(request.getParameterMap(), List.of(Parameters.OPERATION));
+					String operation = request.getParameter(Parameters.OPERATION.parameterName());
+					if (operation != null) {
+						requestURL = requestURL + "." + operation;
+					}
+				}
+				request.getSession(false).setAttribute("error", e.getMessage());
+				response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
+			} catch (AppException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 

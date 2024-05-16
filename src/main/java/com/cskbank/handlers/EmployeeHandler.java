@@ -78,6 +78,14 @@ public class EmployeeHandler {
 		return api.getAccountsOfUser(customerId);
 	}
 
+	public void createNewCustomerFromSignup(CustomerRecord customer) throws AppException {
+		ValidatorUtil.validateObject(customer);
+		customer.setType(UserType.CUSTOMER.getUserTypeId());
+		customer.setCreatedAt(System.currentTimeMillis());
+		customer.setModifiedBy(1);
+		customer.setUserId(api.createCustomer(customer));
+	}
+
 	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
 			int employeeId, String pin) throws AppException {
 		customer.setType(UserType.CUSTOMER.getUserTypeId());

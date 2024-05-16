@@ -19,9 +19,9 @@ import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.utility.ConstantsUtil;
+import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.ModifiableField;
 
 public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 

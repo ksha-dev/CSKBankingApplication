@@ -4,29 +4,23 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-
 <%
 response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
 response.setHeader("pragma", "no-cache");
 response.setHeader("Expires", "0");
-String error = (String) request.getSession(false).getAttribute("error");
 %>
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | CSK Bank</title>
 <link rel="stylesheet" href="static/css/styles.css">
-
-<%
-if (!Objects.isNull(error)) {
-	request.getSession(false).removeAttribute("error");%>
+<script src="static/script/script.js"></script>
 <script>
-	setTimeout(function() {
-		alert("<%=error%>");
-	}, 100);
-</script>
+<%String error = (String) request.getSession(false).getAttribute("error");
+if (error!=null) { request.getSession(false).removeAttribute("error");%>
+	errorMessage('<%=error%>');
 <%}%>
+</script>
 </head>
 
 <body class="login">
@@ -47,6 +41,10 @@ if (!Objects.isNull(error)) {
 					required> <input class="login-element" type="submit"
 					value="Login" style="margin-top: 20px;">
 			</form>
+			<br>
+			<p>
+				New User, <a href="signup" style="color : white; font-weight : bold;"">Click here to Sign up</a>
+			</p>
 		</div>
 	</div>
 </body>
