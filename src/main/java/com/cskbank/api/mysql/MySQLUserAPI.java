@@ -118,7 +118,7 @@ public class MySQLUserAPI implements UserAPI {
 			try (ResultSet record = statement.executeQuery()) {
 				if (record.next()) {
 					UserRecord user = null;
-					UserType type = UserType.getUserType(Integer.parseInt(record.getString(Column.TYPE.toString())));
+					UserType type = UserType.convertStringToEnum(record.getString(Column.TYPE.toString()));
 					switch (type) {
 					case CUSTOMER:
 						user = MySQLAPIUtil.getCustomerRecord(userId);

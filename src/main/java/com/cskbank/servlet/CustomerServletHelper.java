@@ -88,10 +88,8 @@ class CustomerServletHelper {
 				transaction.setTransferOutsideBank();
 			}
 
-			ServletUtil.session(request).setAttribute("operation", "transaction");
-			ServletUtil.session(request).setAttribute("transaction", transaction);
-			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
-			response.sendRedirect("authorization");
+			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_transaction")
+					.forward(request, response);
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("transfer");

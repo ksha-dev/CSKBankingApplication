@@ -71,8 +71,13 @@ public abstract class UserRecord implements Serializable {
 		this.email = email;
 	}
 
-	public void setType(int userTypeId) throws AppException {
-		this.type = UserType.getUserType(userTypeId);
+	public void setType(String userType) throws AppException {
+		this.type = UserType.convertStringToEnum(userType);
+	}
+
+	public void setType(UserType userType) throws AppException {
+		ValidatorUtil.validateObject(userType);
+		this.type = userType;
 	}
 
 	public void setCreatedAt(long dateTime) {

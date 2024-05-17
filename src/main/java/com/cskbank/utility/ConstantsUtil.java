@@ -3,6 +3,8 @@ package com.cskbank.utility;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.catalina.User;
+
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
 
@@ -61,36 +63,13 @@ public class ConstantsUtil {
 	}
 
 	public static enum UserType {
-		CUSTOMER(0), EMPLOYEE(1), ADMIN(2);
-
-		private int userTypeId;
-
-		private UserType(int userTypeId) {
-			this.userTypeId = userTypeId;
-		}
-
-		public int getUserTypeId() {
-			return this.userTypeId;
-		}
-
-		public static UserType getUserType(int userTypeId) throws AppException {
-			switch (userTypeId) {
-			case 0:
-				return CUSTOMER;
-			case 1:
-				return EMPLOYEE;
-			case 2:
-				return ADMIN;
-			default:
-				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
-			}
-		}
+		CUSTOMER, EMPLOYEE, ADMIN;
 
 		public static UserType convertStringToEnum(String label) throws AppException {
 			try {
 				return valueOf(label);
 			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
+				throw new AppException("Invalid User Type Obtained");
 			}
 		}
 	}
@@ -112,7 +91,7 @@ public class ConstantsUtil {
 	}
 
 	public static enum Status {
-		ACTIVE(0), INACTIVE(1), CLOSED(3), FROZEN(2);
+		ACTIVE(1), INACTIVE(2), CLOSED(4), FROZEN(3), BLOCKED(5), VERIFICATION(6);
 
 		private int statusId;
 
@@ -219,7 +198,7 @@ public class ConstantsUtil {
 	}
 
 	public static enum Gender {
-		MALE(0), FEMALE(1), OTHER(2);
+		MALE(1), FEMALE(2), OTHER(3);
 
 		private int genderId;
 
@@ -233,11 +212,11 @@ public class ConstantsUtil {
 
 		public static Gender getGender(int genderId) throws AppException {
 			switch (genderId) {
-			case 0:
-				return MALE;
 			case 1:
-				return FEMALE;
+				return MALE;
 			case 2:
+				return FEMALE;
+			case 3:
 				return OTHER;
 
 			default:

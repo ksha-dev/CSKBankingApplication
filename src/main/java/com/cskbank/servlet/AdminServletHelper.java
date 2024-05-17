@@ -67,25 +67,19 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int employeeId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
-		try {
-			request.setAttribute("employee", Services.adminOperations.getEmployeeDetails(employeeId));
-			request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
+		request.setAttribute("employee", Services.adminOperations.getEmployeeDetails(employeeId));
+		request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
-			// Log
-			AuditLog log = new AuditLog();
-			log.setUserId(admin.getUserId());
-			log.setTargetId(employeeId);
-			log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
-			log.setOperationStatus(OperationStatus.SUCCESS);
-			log.setDescription(
-					"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")");
-			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
-
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("employees");
-		}
+		// Log
+		AuditLog log = new AuditLog();
+		log.setUserId(admin.getUserId());
+		log.setTargetId(employeeId);
+		log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
+		log.setOperationStatus(OperationStatus.SUCCESS);
+		log.setDescription(
+				"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")");
+		log.setModifiedAtWithCurrentTime();
+		Services.auditLogService.log(log);
 	}
 
 	public boolean searchPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -150,8 +144,7 @@ class AdminServletHelper {
 			employee.setPhone(
 					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
 			employee.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
-			employee.setType(
-					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.ROLE.parameterName())));
+			employee.setType(request.getParameter(Parameters.ROLE.parameterName()));
 			employee.setBranchId(
 					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.BRANCHID.parameterName())));
 			ServletUtil.session(request).setAttribute("employee", employee);
@@ -282,22 +275,17 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		String orgName = request.getParameter(Parameters.ORGNAME.parameterName());
-		try {
-			APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
+		APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
 
-			// Log
-			AuditLog log = new AuditLog();
-			log.setUserId(admin.getUserId());
-			log.setLogOperation(LogOperation.CREATE_BRANCH);
-			log.setOperationStatus(OperationStatus.SUCCESS);
-			log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
-					+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
-			log.setModifiedAt(apikey.getCreatedAt());
-			Services.auditLogService.log(log);
-		} catch (AppException e) {
-			request.getSession(false).setAttribute("error", e.getMessage());
-		}
-		response.sendRedirect("api_service");
+		// Log
+		AuditLog log = new AuditLog();
+		log.setUserId(admin.getUserId());
+		log.setLogOperation(LogOperation.CREATE_BRANCH);
+		log.setOperationStatus(OperationStatus.SUCCESS);
+		log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
+				+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
+		log.setModifiedAt(apikey.getCreatedAt());
+		Services.auditLogService.log(log);
 	}
 
 	public void invalidateAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)

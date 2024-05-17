@@ -12,6 +12,7 @@ public enum APIExceptionMessage {
 	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),
 	CANNOT_GET_API_KEY("Failed to obtained the API Key"),
+	CONSTANT_VALUE_ERROR("Cannot load constant value"),
 
 	USER_CREATION_FAILED("Unable to create user record at the moment"),
 	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment"),

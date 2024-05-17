@@ -1,9 +1,12 @@
 package com.cskbank.api.mysql;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
@@ -11,6 +14,9 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil.Gender;
+import com.cskbank.utility.ConstantsUtil.UserType;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 class MySQLConversionUtil {
@@ -51,7 +57,7 @@ class MySQLConversionUtil {
 			user.setAddress(record.getString(6));
 			user.setPhone(record.getLong(7));
 			user.setEmail(record.getString(8));
-			user.setType(Integer.parseInt(record.getString(9)));
+			user.setType(getEnumConstant(UserType.class, record.getInt(9)));
 			user.setCreatedAt(record.getLong(10));
 			user.setModifiedBy(record.getInt(11));
 			user.setModifiedAt(record.getLong(12));
@@ -132,5 +138,30 @@ class MySQLConversionUtil {
 		} catch (SQLException e) {
 		}
 		return apiKey;
+	}
+
+	static <E extends Enum<E>> E getEnumConstant(Class<E> type, int id) throws AppException {
+		ValidatorUtil.validateId(id);
+		String query = "SELECT * FROM " + type.getSimpleName() + " WHERE id = " + id + ";";
+		try (ResultSet result = ServerConnection.getServerConnection().prepareStatement(query).executeQuery()) {
+			if (result.next()) {
+				return convertToEnum(type, result.getString(0));
+			}
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+		} catch (SQLException e) {
+			throw new AppException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Enum<E>> E convertToEnum(Class<E> enumType, String enumName) throws AppException {
+		try {
+			Method method = enumType.getMethod("convertStringToEnum", String.class);
+			return (E) method.invoke(null, enumName);
+		} catch (InvocationTargetException e) {
+			throw new AppException(e.getCause().getMessage());
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+		}
 	}
 }

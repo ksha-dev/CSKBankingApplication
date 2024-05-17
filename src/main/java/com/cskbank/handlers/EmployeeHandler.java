@@ -80,7 +80,7 @@ public class EmployeeHandler {
 
 	public void createNewCustomerFromSignup(CustomerRecord customer) throws AppException {
 		ValidatorUtil.validateObject(customer);
-		customer.setType(UserType.CUSTOMER.getUserTypeId());
+		customer.setType(UserType.CUSTOMER);
 		customer.setCreatedAt(System.currentTimeMillis());
 		customer.setModifiedBy(1);
 		customer.setUserId(api.createCustomer(customer));
@@ -88,7 +88,7 @@ public class EmployeeHandler {
 
 	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
 			int employeeId, String pin) throws AppException {
-		customer.setType(UserType.CUSTOMER.getUserTypeId());
+		customer.setType(UserType.CUSTOMER);
 		ValidatorUtil.validateObject(customer);
 		if (api.userConfimration(employeeId, pin)) {
 			customer.setCreatedAt(System.currentTimeMillis());
