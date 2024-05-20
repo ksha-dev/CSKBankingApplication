@@ -8,9 +8,9 @@ import com.cskbank.handlers.CommonHandler;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 public class AppRunner {
 	public static final Logger log = LoggingUtil.DEFAULT_LOGGER;
@@ -58,10 +58,10 @@ public class AppRunner {
 					String password = InputUtil.getString();
 					ValidatorUtil.validatePassword(password);
 					user = operations.getUser(userID, password);
-					if (user.getType() == UserType.CUSTOMER) {
+					if (user.getType() == UserRecord.Type.CUSTOMER) {
 						LoggingUtil.logCustomerRecord((CustomerRecord) user);
 						CustomerRunner.run((CustomerRecord) user);
-					} else if (user.getType() == UserType.EMPLOYEE || user.getType() == UserType.ADMIN) {
+					} else if (user.getType() == UserRecord.Type.EMPLOYEE || user.getType() == UserRecord.Type.ADMIN) {
 						LoggingUtil.logEmployeeRecord((EmployeeRecord) user);
 						EmployeeRunner.run((EmployeeRecord) user);
 					}

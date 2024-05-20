@@ -41,7 +41,7 @@ public class CommonHandler {
 
 	public UserRecord getUser(int userID, String password) throws AppException {
 		if (api.userAuthentication(userID, password)) {
-			return CachePool.getUserRecordCache().get(userID);
+			return CachePool.getUserRecordCache().refreshData(userID);
 		}
 		return null;
 	}
@@ -117,5 +117,10 @@ public class CommonHandler {
 		} else if (!apiKey.getIsActive()) {
 			throw new AppException(ActivityExceptionMessages.API_KEY_EXPIRED);
 		}
+	}
+
+	public boolean doesEmailExist(String email) throws AppException {
+		ValidatorUtil.validateEmail(email);
+		return api.doesEmailExist(email);
 	}
 }

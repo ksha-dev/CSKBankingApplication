@@ -22,11 +22,11 @@
 		style="width: 50%;" id="statement_form">
 		<%
 		String accountNumber = request.getParameter("accountNumber");
-		long selectedAccount = 0;
-		if (!Objects.isNull(accountNumber)) {
+				long selectedAccount = 0;
+				if (!Objects.isNull(accountNumber)) {
 			selectedAccount = Long.parseLong(accountNumber);
-		}
-		if (user.getType() == UserType.CUSTOMER) {
+				}
+				if (user.getType() == UserRecord.Type.CUSTOMER) {
 		%>
 		<div class="dual-element-row">
 			<label for="account_number">Account</label> <select

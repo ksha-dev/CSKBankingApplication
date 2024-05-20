@@ -8,10 +8,13 @@ import com.cskbank.handlers.AuditHandler;
 import com.cskbank.handlers.CommonHandler;
 import com.cskbank.handlers.CustomerHandler;
 import com.cskbank.handlers.EmployeeHandler;
+import com.cskbank.mail.OTPDatabase;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 
 public class Services {
 	public static CommonHandler appOperations;
+	public static OTPDatabase otpDatabase;
+
 	static EmployeeHandler employeeOperations;
 	static CustomerHandler customerOperations;
 	static AdminHandler adminOperations;
@@ -24,6 +27,7 @@ public class Services {
 		employeeOperations = new EmployeeHandler(PERSISTANT_OBJECT);
 		customerOperations = new CustomerHandler(PERSISTANT_OBJECT);
 		adminOperations = new AdminHandler(PERSISTANT_OBJECT);
+		otpDatabase = new OTPDatabase();
 
 		auditLogService = new AuditHandler(appOperations.getUserAPI());
 		CachePool.initializeCache(appOperations.getUserAPI(), CacheIdentifier.Redis);

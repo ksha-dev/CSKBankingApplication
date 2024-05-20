@@ -14,7 +14,7 @@ public enum Parameters {
 	PHONE("phone", "Phone Number"), EMAIL("email", "Email ID"), AADHAAR("aadhaar", "Aadhaar Number"),
 	GENDER("gender", "Gender"), PAN("pan", "PAN Number"), STARTDATE("startDate", "Start Date"),
 	ENDDATE("endDate", "End Date"), ROLE("role", "Role"), BRANCHID("branchId", "Branch ID"),
-	AKID("ak_id", "API Key ID"), ORGNAME("orgName", "Organisation Name");
+	AKID("ak_id", "API Key ID"), ORGNAME("orgName", "Organisation Name"), OTP("otp", "One Time Password(OTP)");
 
 	private String parameterName;
 	private String parameterDisplayName;

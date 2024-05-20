@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
-import com.cskbank.utility.ConstantsUtil.UserType;
+import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ServletUtil;
 
@@ -43,10 +44,13 @@ public class AppServlet extends HttpServlet {
 				new CommonServletHelper().loginPostRequest(request, response);
 			} else if (path.equals("/signup")) {
 				new CommonServletHelper().signupPostRequest(request, response);
+			} else if (path.equals("/verification")) {
+				new CommonServletHelper().verificationPostRequest(request, response);
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
 		} catch (AppException e) {
+			e.printStackTrace();
 			try {
 				GetterUtil.loadRedirectURLProperties();
 				String requestURL = request.getServletPath() + request.getPathInfo();
@@ -58,6 +62,7 @@ public class AppServlet extends HttpServlet {
 					}
 				}
 				request.getSession(false).setAttribute("error", e.getMessage());
+				System.out.println(requestURL);
 				response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 			} catch (AppException e1) {
 				e1.printStackTrace();
@@ -109,7 +114,7 @@ public class AppServlet extends HttpServlet {
 		}
 	}
 
-	private void homeRedirect(HttpServletResponse response, UserType userType) throws IOException {
+	private void homeRedirect(HttpServletResponse response, UserRecord.Type userType) throws IOException {
 		switch (userType) {
 		case CUSTOMER:
 			response.sendRedirect("account");

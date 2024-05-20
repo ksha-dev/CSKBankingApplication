@@ -139,4 +139,11 @@ public class ValidatorUtil {
 			throw new AppException(InvalidInputMessage.INVALID_API_KEY);
 		}
 	}
+
+	public static void validateOTP(String otp) throws AppException {
+		if (!Pattern.matches("^\\d{6}$", otp))
+		{
+			throw new AppException(InvalidInputMessage.INVALID_OTP);
+		}
+	}
 }

@@ -15,8 +15,8 @@ import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.RequestStatus;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 public class APIServletHandler {
 
@@ -28,7 +28,7 @@ public class APIServletHandler {
 		createBranch.setPhone(requestBody.getLong("phone"));
 		createBranch.setEmail(requestBody.getString("email"));
 		EmployeeRecord admin = Services.adminOperations.getEmployeeDetails(requestBody.getInt("adminId"));
-		if (admin.getType() != UserType.ADMIN) {
+		if (admin.getType() != UserRecord.Type.ADMIN) {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
 		return Services.adminOperations.createBranch(createBranch, requestBody.getInt("adminId"),

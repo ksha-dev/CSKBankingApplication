@@ -26,6 +26,7 @@ import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
@@ -35,7 +36,6 @@ import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 public class MySQLUserAPI implements UserAPI {
 
@@ -118,7 +118,8 @@ public class MySQLUserAPI implements UserAPI {
 			try (ResultSet record = statement.executeQuery()) {
 				if (record.next()) {
 					UserRecord user = null;
-					UserType type = UserType.convertStringToEnum(record.getString(Column.TYPE.toString()));
+					UserRecord.Type type = UserRecord.Type.convertStringToEnum(
+							MySQLAPIUtil.getConstantFromId(Schemas.USER_TYPES, record.getInt(Column.TYPE.toString())));
 					switch (type) {
 					case CUSTOMER:
 						user = MySQLAPIUtil.getCustomerRecord(userId);
@@ -615,6 +616,31 @@ public class MySQLUserAPI implements UserAPI {
 			return apiKey;
 		} catch (SQLException e) {
 			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+		}
+	}
+
+	@Override
+	public boolean doesEmailExist(String email) throws AppException {
+		ValidatorUtil.validateEmail(email);
+
+		MySQLQuery query = new MySQLQuery();
+		query.selectCount(Schemas.USERS);
+		query.where();
+		query.columnEquals(Column.EMAIL);
+		query.limit(1);
+		query.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setString(1, email);
+
+			try (ResultSet result = statement.executeQuery()) {
+				if (result.next()) {
+					return result.getInt(1) > 0;
+				}
+			}
+			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED);
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED);
 		}
 	}
 }

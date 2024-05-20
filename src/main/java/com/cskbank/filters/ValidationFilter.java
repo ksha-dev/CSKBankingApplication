@@ -78,6 +78,10 @@ public class ValidationFilter implements Filter {
 										Parameters.AADHAAR, Parameters.PAN));
 						break;
 
+					case "/verification":
+						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OTP));
+						break;
+
 					case "/employee/account_details":
 					case "/customer/account_details":
 					case "/admin/account_details":
@@ -190,6 +194,7 @@ public class ValidationFilter implements Filter {
 							requestURL = requestURL + "." + operation;
 						}
 					}
+					System.out.println(requestURL);
 					req.getSession(false).setAttribute("error", e.getMessage());
 					res.sendRedirect(req.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 				} catch (AppException e1) {

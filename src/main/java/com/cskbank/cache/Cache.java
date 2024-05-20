@@ -27,6 +27,7 @@ public abstract class Cache<K, V> {
 		try {
 			return (V) UserAPI.class.getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api, key);
 		} catch (InvocationTargetException me) {
+			me.getCause().printStackTrace();
 			throw new AppException(me.getCause().getMessage());
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
 			throw new AppException("Cache Failiure");

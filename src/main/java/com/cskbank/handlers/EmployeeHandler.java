@@ -10,20 +10,20 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.Account;
+import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 public class EmployeeHandler {
 	private EmployeeAPI api = new MySQLEmployeeAPI();
@@ -41,7 +41,7 @@ public class EmployeeHandler {
 
 	public EmployeeRecord getEmployeeRecord(int employeeId) throws AppException {
 		UserRecord user = CachePool.getUserRecordCache().get(employeeId);
-		if (!(user.getType() == UserType.EMPLOYEE || user.getType() == UserType.ADMIN)) {
+		if (!(user.getType() == UserRecord.Type.EMPLOYEE || user.getType() == UserRecord.Type.ADMIN)) {
 			throw new AppException(ActivityExceptionMessages.INVALID_EMPLOYEE_RECORD);
 		}
 		return (EmployeeRecord) user;
@@ -54,7 +54,7 @@ public class EmployeeHandler {
 	public CustomerRecord getCustomerRecord(int customerId) throws AppException {
 		ValidatorUtil.validateId(customerId);
 		UserRecord user = CachePool.getUserRecordCache().get(customerId);
-		if (user.getType() != UserType.CUSTOMER) {
+		if (user.getType() != UserRecord.Type.CUSTOMER) {
 			throw new AppException(ActivityExceptionMessages.NO_CUSTOMER_RECORD_FOUND);
 		}
 		return (CustomerRecord) user;
@@ -80,17 +80,19 @@ public class EmployeeHandler {
 
 	public void createNewCustomerFromSignup(CustomerRecord customer) throws AppException {
 		ValidatorUtil.validateObject(customer);
-		customer.setType(UserType.CUSTOMER);
+		customer.setType(UserRecord.Type.CUSTOMER);
+		customer.setStatus(Status.VERIFICATION);
 		customer.setCreatedAt(System.currentTimeMillis());
 		customer.setModifiedBy(1);
 		customer.setUserId(api.createCustomer(customer));
 	}
 
-	public Account createNewCustomerAndAccount(CustomerRecord customer, AccountType accountType, double depositAmount,
-			int employeeId, String pin) throws AppException {
-		customer.setType(UserType.CUSTOMER);
+	public Account createNewCustomerAndAccount(CustomerRecord customer, Account.AccountType accountType,
+			double depositAmount, int employeeId, String pin) throws AppException {
 		ValidatorUtil.validateObject(customer);
 		if (api.userConfimration(employeeId, pin)) {
+			customer.setType(UserRecord.Type.CUSTOMER);
+			customer.setStatus(Status.ACTIVE);
 			customer.setCreatedAt(System.currentTimeMillis());
 			customer.setModifiedBy(employeeId);
 			return createAccountForExistingCustomer(api.createCustomer(customer), accountType, depositAmount,
@@ -100,8 +102,8 @@ public class EmployeeHandler {
 		}
 	}
 
-	public Account createAccountForExistingCustomer(int customerId, AccountType accountType, double depositAmount,
-			int employeeId, String pin) throws AppException {
+	public Account createAccountForExistingCustomer(int customerId, Account.AccountType accountType,
+			double depositAmount, int employeeId, String pin) throws AppException {
 		ValidatorUtil.validateId(customerId);
 		ValidatorUtil.validateId(employeeId);
 		ValidatorUtil.validateObject(accountType);
@@ -141,8 +143,6 @@ public class EmployeeHandler {
 			depositTransaction.setUserId(employeeId);
 			depositTransaction.setViewerAccountNumber(accountNumber);
 			depositTransaction.setTransactedAmount(amount);
-			depositTransaction
-					.setClosingBalance(ConvertorUtil.convertToTwoDecimals(amount + transactionAccount.getBalance()));
 			depositTransaction.setRemarks("CR-DEPOSIT-BID-" + employee.getBranchId() + "-EID-" + employee.getUserId());
 			depositTransaction.setTransactionType(TransactionType.CREDIT.getTransactionTypeId());
 			depositTransaction.setTimeStamp(System.currentTimeMillis());
@@ -202,7 +202,7 @@ public class EmployeeHandler {
 
 		EmployeeRecord employee = getEmployeeRecord(employeeId);
 		Account account = getAccountDetails(accountNumber);
-		if (employee.getType() == UserType.EMPLOYEE && employee.getBranchId() != account.getBranchId()) {
+		if (employee.getType() == UserRecord.Type.EMPLOYEE && employee.getBranchId() != account.getBranchId()) {
 			throw new AppException(ActivityExceptionMessages.EMPLOYEE_UNAUTHORIZED);
 		}
 
@@ -227,6 +227,22 @@ public class EmployeeHandler {
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
+	}
+
+	public boolean blockUser(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+		user.setStatus(Status.BLOCKED);
+		user.setModifiedAt(System.currentTimeMillis());
+		user.setModifiedBy(1);
+		return api.changeUserStatus(user);
+	}
+
+	public boolean activateUserWithOTPVerification(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+		user.setStatus(Status.ACTIVE);
+		user.setModifiedAt(System.currentTimeMillis());
+		user.setModifiedBy(1);
+		return api.changeUserStatus(user);
 	}
 
 	public Account closeAccount(long accountNumber, int employeeId, String pin) throws AppException {

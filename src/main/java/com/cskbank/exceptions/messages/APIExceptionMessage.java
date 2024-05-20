@@ -8,11 +8,11 @@ public enum APIExceptionMessage {
 	USER_AUNTHENTICATION_FAILED("The credentials entered for the acount is incorrect. Please try again"),
 	NO_SERVER_CONNECTION("Unable to connect to server. Please try again after sometime. Sorry for the inconvenience"),
 	LOGGING_FAILED("An internal error occured during log operation"),
+	EMAIL_CHECK_FAILED("Failed to check if user exists via Email Id"),
 
 	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),
-	CANNOT_GET_API_KEY("Failed to obtained the API Key"),
-	CONSTANT_VALUE_ERROR("Cannot load constant value"),
+	CANNOT_GET_API_KEY("Failed to obtained the API Key"), CONSTANT_VALUE_ERROR("Cannot load constant value"),
 
 	USER_CREATION_FAILED("Unable to create user record at the moment"),
 	EMPLOYEE_CREATION_FAILED("Unable to create employee record at the moment"),
@@ -38,7 +38,7 @@ public enum APIExceptionMessage {
 	INSUFFICIENT_BALANCE("The account selected does not contain sufficient balance for the transaction"),
 	TRANSACTION_FAILED("The transaction has failed. Any changes done will be reverted in few minutes."),
 	USER_CONFIRMATION_FAILED("User Confirmation Failed. Cannot process the request"),
-	SAME_PASSWORD("New password cannot be the same as old password."),
+	SAME_PASSWORD("New password cannot be the same as old password."), USER_BLOCK_FAILED("Failed to block user"),
 	BRANCH_DETAILS_NOT_FOUND("Cannot find a linked branch details");
 
 	private String message;

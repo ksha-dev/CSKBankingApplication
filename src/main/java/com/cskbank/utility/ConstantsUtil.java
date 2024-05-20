@@ -62,18 +62,6 @@ public class ConstantsUtil {
 		STATUS, TYPE
 	}
 
-	public static enum UserType {
-		CUSTOMER, EMPLOYEE, ADMIN;
-
-		public static UserType convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid User Type Obtained");
-			}
-		}
-	}
-
 	public static enum RequestStatus {
 		SUCCESS, FAILED, UNAUTHORIZED;
 
@@ -161,42 +149,6 @@ public class ConstantsUtil {
 		}
 	}
 
-	public static enum AccountType {
-		SAVINGS(0), CURRENT(1), SALARY(2);
-
-		private int accountTypeId;
-
-		private AccountType(int accountTypeId) {
-			this.accountTypeId = accountTypeId;
-		}
-
-		public int getAccountTypeId() {
-			return this.accountTypeId;
-		}
-
-		public static AccountType getAccountType(int accountTypeId) throws AppException {
-			switch (accountTypeId) {
-			case 0:
-				return SAVINGS;
-			case 1:
-				return CURRENT;
-			case 2:
-				return SALARY;
-
-			default:
-				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
-			}
-		}
-
-		public static AccountType convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
-			}
-		}
-	}
-
 	public static enum Gender {
 		MALE(1), FEMALE(2), OTHER(3);
 
@@ -271,7 +223,8 @@ public class ConstantsUtil {
 
 		// Users
 		UPDATE_USER_FIRST_NAME, UPDATE_USER_LAST_NAME, UPDATE_USER_DATE_OF_BIRTH, UPDATE_USER_ADDRESS,
-		UPDATE_USER_MOBILE, UPDATE_USER_EMAIL, UPDATE_USER_TYPE, UPDATE_USER_GENDER, UPDATE_PROFILE,
+		UPDATE_USER_MOBILE, UPDATE_USER_EMAIL, UPDATE_USER_TYPE, UPDATE_USER_GENDER, UPDATE_PROFILE, USER_BLOCKED,
+		USER_UNBLOCKED, USER_VERIFICATION,
 
 		// Customers
 		CREATE_CUSTOMER, CREATE_CUSTOMER_AT_SIGNUP, UPDATE_AADHAAR_NUMBER, UPDATE_PAN_NUMBER, VIEW_CUSTOMER,
@@ -294,11 +247,22 @@ public class ConstantsUtil {
 		USER_LOGIN, USER_AUTHORIZATION,
 
 		// API Keys
-		CREATE_API_KEY, INVALIDATE_API_KEY
+		CREATE_API_KEY, INVALIDATE_API_KEY,
+
+		// OTP
+		OTP_SENT_TO_USER, WRONG_OTP_ENTERED, OTP_REGENERATED
 	}
 
 	public static enum OperationStatus {
 		SUCCESS, FAILURE, PROCESSING;
 	}
+
+	public static enum SessionUser {
+		user, blocked_user, unverified_user;
+	}
+
+	public static final int MAX_RETRY_COUNT = 5;
+	public static final int MAX_REGENERATION_COUNT = 5;
+	public static final long EXPIRY_DURATION = 300000L;
 
 }

@@ -33,6 +33,10 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>sessionFilter</filter-name>
+		<url-pattern>/verification</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>sessionFilter</filter-name>
 		<url-pattern>/app/*</url-pattern>
 	</filter-mapping>
 

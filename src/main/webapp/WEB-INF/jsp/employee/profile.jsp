@@ -43,6 +43,11 @@
 					<p class="profile-element">Date of Birth</p>
 					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(employee.getDateOfBirth())%></h4>
 				</div>
+
+				<div class="dual-element-row">
+					<p class="profile-element">Status</p>
+					<h4 class="profile-element"><%=employee.getStatus()%></h4>
+				</div>
 			</div>
 
 			<div class="container">

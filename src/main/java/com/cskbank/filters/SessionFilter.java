@@ -48,23 +48,23 @@ public class SessionFilter implements Filter {
 		String controllerSuffix = req.getPathInfo();
 		String contextPath = req.getContextPath();
 
-		if (controller.equals("/login") || controller.equals("/signup")) {
+		if (controller.equals("/login") || controller.equals("/signup") || controller.equals("/verification")) {
 			UserRecord user = (UserRecord) session.getAttribute("user");
 			if (user != null) {
 				res.sendRedirect("app/" + user.getType().toString().toLowerCase() + "/home");
 			} else {
-				req.getRequestDispatcher("/WEB-INF/jsp/common/" + controller + ".jsp").forward(req, res);
+				req.getRequestDispatcher("/WEB-INF/jsp/common" + controller + ".jsp").forward(req, res);
 			}
+
 		} else if (controllerSuffix == null) {
 			res.sendRedirect(contextPath + "/login");
 
 		} else if (controllerSuffix.endsWith("/logout")) {
 			session.invalidate();
-			req.getSession(true).setAttribute("error", "User has been logged out");
 			res.sendRedirect(contextPath + "/login");
 
-		} else if (controller.equals("/app")
-				&& (controllerSuffix.equals("/login") || controllerSuffix.equals("/signup"))) {
+		} else if (controller.equals("/app") && (controllerSuffix.equals("/login") || controllerSuffix.equals("/signup")
+				|| controllerSuffix.equals("/verification"))) {
 
 			chain.doFilter(req, res);
 

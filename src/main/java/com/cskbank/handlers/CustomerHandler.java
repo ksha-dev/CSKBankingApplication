@@ -13,6 +13,7 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
@@ -20,7 +21,6 @@ import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 public class CustomerHandler {
 
@@ -39,7 +39,7 @@ public class CustomerHandler {
 
 	public CustomerRecord getCustomerRecord(int customerId) throws AppException {
 		UserRecord user = CachePool.getUserRecordCache().get(customerId);
-		if (user.getType() != UserType.CUSTOMER) {
+		if (user.getType() != UserRecord.Type.CUSTOMER) {
 			throw new AppException(ActivityExceptionMessages.NO_CUSTOMER_RECORD_FOUND);
 		}
 		return (CustomerRecord) user;

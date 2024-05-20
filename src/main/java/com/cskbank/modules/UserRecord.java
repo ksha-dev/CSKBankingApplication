@@ -5,12 +5,25 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
-import com.cskbank.utility.ConstantsUtil.UserType;
+import com.cskbank.utility.ConstantsUtil.Status;
 
 public abstract class UserRecord implements Serializable {
+
+	public static enum Type {
+		CUSTOMER, EMPLOYEE, ADMIN;
+
+		public static Type convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid User Type Obtained");
+			}
+		}
+	}
 
 	private int userId;
 	private String firstName;
@@ -20,7 +33,8 @@ public abstract class UserRecord implements Serializable {
 	private String address;
 	private long mobileNumber;
 	private String email;
-	private UserType type;
+	private UserRecord.Type type;
+	private Status status;
 	private int modifiedBy;
 	private long createdAt;
 	private long modifiedAt;
@@ -72,12 +86,22 @@ public abstract class UserRecord implements Serializable {
 	}
 
 	public void setType(String userType) throws AppException {
-		this.type = UserType.convertStringToEnum(userType);
+		this.type = UserRecord.Type.convertStringToEnum(userType);
 	}
 
-	public void setType(UserType userType) throws AppException {
+	public void setType(UserRecord.Type userType) throws AppException {
 		ValidatorUtil.validateObject(userType);
 		this.type = userType;
+	}
+
+	public void setStatus(Status status) throws AppException {
+		ValidatorUtil.validateObject(status);
+		this.status = status;
+	}
+
+	public void setStatus(String status) throws AppException {
+		ValidatorUtil.validateObject(status);
+		this.status = Status.convertStringToEnum(status);
 	}
 
 	public void setCreatedAt(long dateTime) {
@@ -134,8 +158,12 @@ public abstract class UserRecord implements Serializable {
 		return email;
 	}
 
-	public UserType getType() {
+	public UserRecord.Type getType() {
 		return type;
+	}
+
+	public Status getStatus() {
+		return this.status;
 	}
 
 	public int getModifiedBy() {

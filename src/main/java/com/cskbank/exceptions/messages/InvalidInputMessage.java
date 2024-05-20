@@ -8,8 +8,8 @@ public enum InvalidInputMessage {
 	INVALID_PAN_NUMBER("The PAN number is invalid"),
 	INVALID_DOB("The date of birth cannot exceed the current date and time and should be valid"),
 	INVALID_ID("An Identifier value cannot be less than 1"), INVALID_GENDER("Invalid Gender"),
-	INVALID_INTEGER_INPUT("A number is expected."), INVALID_DATE_INPUT("The date of birth entered is incorrect."),
-	INVALID_DATE_STRING("Invalid Date Obtained"),
+	INVALID_OTP("The OTP obtained is incorrect"), INVALID_INTEGER_INPUT("A number is expected."),
+	INVALID_DATE_INPUT("The date of birth entered is incorrect."), INVALID_DATE_STRING("Invalid Date Obtained"),
 	INVALID_PASSWORD("The password must contain a minimum of 8 characters with both "
 			+ "upper and lower case, start with a letter, have a special character and a number"),
 	INVALID_AMOUNT("The minimum required amount for a transaction is Rs. 1.00"),

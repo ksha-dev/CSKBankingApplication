@@ -16,7 +16,9 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.mysql.cj.xdevapi.Schema;
 import com.cskbank.utility.ConstantsUtil.Status;
 
 class MySQLAPIUtil {
@@ -195,6 +197,47 @@ class MySQLAPIUtil {
 			}
 		} catch (SQLException e) {
 			throw new AppException(e.getMessage());
+		}
+	}
+
+//	static <E extends Enum<E>> E getEnumConstant(Class<E> type, int id) throws AppException {
+//		ValidatorUtil.validateId(id);
+//		String query = "SELECT value FROM " + type.getSimpleName().toLowerCase() + " WHERE id = " + id + ";";
+//		try (ResultSet result = ServerConnection.getServerConnection().prepareStatement(query).executeQuery()) {
+//			if (result.next()) {
+//				return ConvertorUtil.convertToEnum(type, result.getString(0));
+//			}
+//			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+//		} catch (SQLException e) {
+//			throw new AppException(e);
+//		}
+//	}
+
+	static String getConstantFromId(Schemas schema, int id) throws AppException {
+		String query = "SELECT " + Column.VALUE + " FROM " + schema + " WHERE " + Column.ID + " = " + id + ";";
+		try (ResultSet result = ServerConnection.getServerConnection().prepareStatement(query).executeQuery()) {
+			if (result.next()) {
+				return result.getString(1);
+			}
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+		} catch (SQLException e) {
+			throw new AppException(e);
+		}
+	}
+
+	static int getIdFromConstantValue(Schemas schema, String value) throws AppException {
+		ValidatorUtil.validateObject(value);
+		String query = "SELECT " + Column.ID + " FROM " + schema + " WHERE " + Column.VALUE + " =  ?;";
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query)) {
+			statement.setString(1, value);
+			try (ResultSet result = statement.executeQuery()) {
+				if (result.next()) {
+					return result.getInt(1);
+				}
+			}
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 	}
 

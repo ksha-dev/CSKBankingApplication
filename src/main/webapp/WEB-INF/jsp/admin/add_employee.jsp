@@ -59,8 +59,8 @@
 						<label for="role">Role</label> <select name="role" id="role"
 							required>
 							<option value=null style="display: none;">Select</option>
-							<option value="<%=UserType.EMPLOYEE.getUserTypeId()%>"><%=UserType.EMPLOYEE%></option>
-							<option value="<%=UserType.ADMIN.getUserTypeId()%>"><%=UserType.ADMIN%></option>
+							<option value="<%=UserRecord.Type.EMPLOYEE%>"><%=UserRecord.Type.EMPLOYEE%></option>
+							<option value="<%=UserRecord.Type.ADMIN%>"><%=UserRecord.Type.ADMIN%></option>
 						</select>
 
 					</div>

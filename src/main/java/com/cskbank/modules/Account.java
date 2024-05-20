@@ -4,17 +4,54 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.InvalidInputMessage;
+import com.cskbank.modules.Account.AccountType;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.Status;
 
 public class Account implements Serializable {
 
+	public static enum AccountType {
+		SAVINGS(0), CURRENT(1), SALARY(2);
+	
+		private int accountTypeId;
+	
+		private AccountType(int accountTypeId) {
+			this.accountTypeId = accountTypeId;
+		}
+	
+		public int getAccountTypeId() {
+			return this.accountTypeId;
+		}
+	
+		public static AccountType getAccountType(int accountTypeId) throws AppException {
+			switch (accountTypeId) {
+			case 0:
+				return SAVINGS;
+			case 1:
+				return CURRENT;
+			case 2:
+				return SALARY;
+	
+			default:
+				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
+			}
+		}
+	
+		public static AccountType convertStringToEnum(String label) throws AppException {
+			try {
+				return valueOf(label);
+			} catch (IllegalArgumentException e) {
+				throw new AppException("Invalid Identifier Obtained");
+			}
+		}
+	}
+
 	private long accountNumber;
 	private int userId;
 	private int branchId;
-	private AccountType type;
+	private Account.AccountType type;
 	private long openingDate;
 	private long lastTransactionAt;
 	private double balance;
@@ -58,7 +95,7 @@ public class Account implements Serializable {
 	}
 
 	public void setType(int accountTypeId) throws AppException {
-		this.type = AccountType.getAccountType(accountTypeId);
+		this.type = Account.AccountType.getAccountType(accountTypeId);
 	}
 
 	public void setBalance(double balance) {
@@ -92,7 +129,7 @@ public class Account implements Serializable {
 		return this.branchId;
 	}
 
-	public AccountType getAccountType() {
+	public Account.AccountType getAccountType() {
 		return this.type;
 	}
 

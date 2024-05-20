@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
+<%@page import="com.cskbank.filters.Parameters"%>
+<%@page import="com.cskbank.modules.Account"%>
 <%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
 <%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
 <%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
-<%@page import="com.cskbank.utility.ConstantsUtil.AccountType"%>
 <html>
 <head>
 <title>Accounts</title>
@@ -13,7 +14,7 @@
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<%
-	if (user.getType() == UserType.ADMIN) {
+	if (user.getType() == UserRecord.Type.ADMIN) {
 	%>
 	<script>
 		document.getElementById('li-accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
@@ -29,10 +30,10 @@
 			<div style="width: 50%; padding-right: 50px;">
 				<div class="dual-element-row">
 					<label for="select-account">Select Account Type</label> <select
-						id="account-type" name="type" required>
+						id="account-type" name="<%=Parameters.TYPE.parameterName()%>" required>
 						<option value=null style="display: none;">Account Type</option>
 						<%
-						for (AccountType type : AccountType.values()) {
+						for (Account.AccountType type : Account.AccountType.values()) {
 						%>
 						<option value="<%=type%>"><%=type%></option>
 						<%
@@ -53,7 +54,8 @@
 			<div style="width: 50%;">
 				<div class="dual-element-row">
 					<label for="amount">Deposit Amount</label> <input type="number"
-						name="amount" placeholder="Enter Deposit Amount" required>
+						name="<%=Parameters.AMOUNT.parameterName()%>"
+						placeholder="Enter Deposit Amount" required>
 				</div>
 			</div>
 		</div>
@@ -66,21 +68,23 @@
 				<div style="width: 50%; padding-right: 50px;">
 					<div class="dual-element-row">
 						<label for="firstName">First Name</label> <input type="text"
-							name="firstName" placeholder="Enter First Name"
-							pattern="^[a-zA-Z]{3,}" required>
+							name="<%=Parameters.FIRSTNAME.parameterName()%>"
+							placeholder="Enter First Name" pattern="^[a-zA-Z]{3,}" required>
 					</div>
 					<div class="dual-element-row">
 						<label for="lastName">Last Name</label> <input type="text"
-							name="lastName" placeholder="Enter Last Name" required>
+							name="<%=Parameters.LASTNAME.parameterName()%>"
+							placeholder="Enter Last Name" required>
 					</div>
 					<div class="dual-element-row">
-						<label >Date of Birth</label required> <input type="date"
-							name="dateOfBirth" required>
+						<label>Date of Birth</label required> <input type="date"
+							name="<%=Parameters.DATEOFBIRTH.parameterName()%>" required>
 					</div>
 
 					<div class="dual-element-row">
-						<label for="gender">Gender</label> <select name="gender"
-							id="gender" required>
+						<label for="gender">Gender</label> <select
+							name="<%=Parameters.GENDER.parameterName()%>" id="gender"
+							required>
 							<option value=null style="display: none;">Select</option>
 							<%
 							for (Gender gender : Gender.values()) {
@@ -93,26 +97,30 @@
 					</div>
 					<div class="dual-element-row">
 						<label for="address">Address</label required> <input type="text"
-							placeHolder="Enter Address" name="address" required>
+							placeHolder="Enter Address"
+							name="<%=Parameters.ADDRESS.parameterName()%>" required>
 					</div>
 				</div>
 
 				<div style="width: 50%;">
 					<div class="dual-element-row">
 						<label for="phone">Mobile</label> <input type="number"
-							name="phone" placeholder="Enter Mobile Number"
-							pattern="[7-8]\\d{9}" required>
+							name="<%=Parameters.PHONE.parameterName()%>"
+							placeholder="Enter Mobile Number" pattern="[7-8]\\d{9}" required>
 					</div>
 					<div class="dual-element-row">
 						<label for="email">Email ID</label> <input type="email"
-							name="email" placeholder="Enter Email ID" required>
+							name="<%=Parameters.EMAIL.parameterName()%>"
+							placeholder="Enter Email ID" required>
 					</div>
 					<div class="dual-element-row">
 						<label for="aadhaar">Aadhaar Number</label> <input type="text"
-							name="aadhar" placeholder="Enter Aadhaar Number" required>
+							name="<%=Parameters.AADHAAR.parameterName()%>"
+							placeholder="Enter Aadhaar Number" required>
 					</div>
 					<div class="dual-element-row">
-						<label for="pan">PAN</label> <input type="text" name="pan"
+						<label for="pan">PAN</label> <input type="text"
+							name="<%=Parameters.PAN.parameterName()%>"
 							placeholder="Enter PAN Number" required>
 					</div>
 				</div>
@@ -129,7 +137,8 @@
 				<div style="width: 50%; padding-right: 50px;">
 					<div class="dual-element-row">
 						<label for="userId">Customer ID</label> <input type="number"
-							name="userId" placeholder="Enter Customer ID" required>
+							name="<%=Parameters.USERID.parameterName()%>"
+							placeholder="Enter Customer ID" required>
 					</div>
 
 				</div>

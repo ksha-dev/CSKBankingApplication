@@ -15,6 +15,6 @@ function errorMessage(error) {
 		document.body.appendChild(errorElement);
 		setTimeout(function() {
 			document.body.removeChild(errorElement);
-		}, 10000);
+		}, 5000);
 	});
 }

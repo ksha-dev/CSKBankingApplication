@@ -10,17 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.Account;
+import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
+import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
-import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 class EmployeeServletHelper {
 
@@ -198,7 +199,7 @@ class EmployeeServletHelper {
 
 	public void authorizeOpenAccount(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
-		AccountType accountType = AccountType
+		Account.AccountType accountType = Account.AccountType
 				.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
 		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
 		String customerType = request.getParameter(Parameters.CUSTOMERTYPE.parameterName());
@@ -242,7 +243,7 @@ class EmployeeServletHelper {
 			throws AppException, IOException, ServletException {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		AccountType accountType = (AccountType) ServletUtil.session(request).getAttribute("accountType");
+		Account.AccountType accountType = (Account.AccountType) ServletUtil.session(request).getAttribute("accountType");
 		double amount = (double) ServletUtil.session(request).getAttribute("amount");
 		String customerType = (String) ServletUtil.session(request).getAttribute("customerType");
 		Account newAccount = null;
@@ -318,7 +319,7 @@ class EmployeeServletHelper {
 					.forward(request, response);
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect(employee.getType() == UserType.ADMIN ? "accounts" : "branch_accounts");
+			response.sendRedirect(employee.getType() == UserRecord.Type.ADMIN ? "accounts" : "branch_accounts");
 		}
 	}
 

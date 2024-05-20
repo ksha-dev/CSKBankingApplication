@@ -32,6 +32,8 @@ public interface UserAPI {
 
 	public boolean updatePassword(int customerID, String oldPassword, String newPassword) throws AppException;
 
+	public boolean doesEmailExist(String email) throws AppException;
+
 	// Branch
 	public Branch getBranchDetails(int branchID) throws AppException;
 

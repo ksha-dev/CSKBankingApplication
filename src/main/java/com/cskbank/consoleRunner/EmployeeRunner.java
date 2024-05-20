@@ -11,17 +11,18 @@ import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.handlers.CommonHandler;
 import com.cskbank.handlers.EmployeeHandler;
 import com.cskbank.modules.Account;
+import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
+import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
-import com.cskbank.utility.ConstantsUtil.UserType;
 
 class EmployeeRunner {
 
@@ -48,7 +49,7 @@ class EmployeeRunner {
 					+ "\n6 - Open a new account for an existing customer" + "\n7 - View Employee Branch Details"
 					+ "\n8 - Deposit money into an account" + "\n9 - Withdraw money from an account"
 					+ "\n10 - Update Customer details" + "\n11 - Update Password"
-					+ (employee.getType() == UserType.ADMIN ? "\n12 - Go to Admin Portal" : "")
+					+ (employee.getType() == UserRecord.Type.ADMIN ? "\n12 - Go to Admin Portal" : "")
 					+ "\n\nTo logout, enter 0\n" + "-".repeat(30));
 
 			int choice = -1;
@@ -165,14 +166,14 @@ class EmployeeRunner {
 					double amount = InputUtil.getPositiveDouble();
 
 					int i = 0;
-					for (AccountType type : AccountType.values()) {
+					for (Account.AccountType type : Account.AccountType.values()) {
 						log.info((i + 1) + " : " + type);
 					}
 					log.info("Enter the associated number to select the type of account : ");
 					int typeSelection = InputUtil.getInteger();
 					if (typeSelection > 0 && typeSelection <= (i + 1)) {
 						Account account = operations.createAccountForExistingCustomer(customer.getUserId(),
-								AccountType.values()[typeSelection - 1], amount, employee.getUserId(),
+								Account.AccountType.values()[typeSelection - 1], amount, employee.getUserId(),
 								InputUtil.getPIN());
 						log.info("-".repeat(40));
 						log.info("ACCOUNT HAS BEEN CREATED SUCCESSFULLY");
@@ -286,7 +287,7 @@ class EmployeeRunner {
 					break;
 
 				case 12: {
-					if (employee.getType() == UserType.ADMIN) {
+					if (employee.getType() == UserRecord.Type.ADMIN) {
 						new AdminRunner().run(employee);
 					}
 				}
@@ -340,14 +341,14 @@ class EmployeeRunner {
 		log.info("Enter 'y' to confirm creation, 'N' to cancel");
 		if (InputUtil.getString().charAt(0) == 'y') {
 			int i = 0;
-			for (AccountType type : AccountType.values()) {
+			for (Account.AccountType type : Account.AccountType.values()) {
 				log.info((++i) + " : " + type);
 			}
 			log.info("Enter the associated number to select the type of account : ");
 			int typeSelection = InputUtil.getInteger();
 			if (typeSelection > 0 && typeSelection <= (i + 1)) {
 				Account account = activity.createNewCustomerAndAccount(customer,
-						AccountType.values()[typeSelection - 1], amount, employeeId, InputUtil.getPIN());
+						Account.AccountType.values()[typeSelection - 1], amount, employeeId, InputUtil.getPIN());
 				log.info("-".repeat(40));
 				log.info("CUSTOMER AND ACCOUNT HAS BEEN CREATED SUCCESSFULLY");
 				activity.getCustomerRecord(account.getUserId());

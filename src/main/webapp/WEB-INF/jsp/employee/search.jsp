@@ -24,7 +24,7 @@
 				<option value="accountNumber">Account Number</option>
 				<option value="customerId">Customer ID</option>
 				<%
-				if (user.getType() == UserType.ADMIN) {
+				if (user.getType() == UserRecord.Type.ADMIN) {
 				%>
 				<option value="employeeId">Employee ID</option>
 				<option value="branchId">Branch ID</option>

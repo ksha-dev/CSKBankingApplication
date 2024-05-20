@@ -1,7 +1,6 @@
 package com.cskbank.mail;
 
 import java.util.Properties;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -11,6 +10,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.modules.OTP;
+import com.cskbank.servlet.Services;
+import com.cskbank.utility.ConstantsUtil;
+import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class OTPMail {
@@ -40,8 +43,10 @@ public class OTPMail {
 
 	private static final Session MESSAGE_SESSION_TEST = Session.getInstance(HOST_PROPERTIES);
 
-	private static boolean sendOTPMail(String receipientEmail, int otp) throws AppException {
+	public static synchronized boolean generateOTPMail(String receipientEmail, int regenerationCount)
+			throws AppException {
 		ValidatorUtil.validateEmail(receipientEmail);
+		int otp = ConvertorUtil.randomOTPGenerator();
 		try {
 			Message message = new MimeMessage(MESSAGE_SESSION_TEST);
 			message.setFrom(new InternetAddress(FROM));
@@ -52,22 +57,23 @@ public class OTPMail {
 					+ "\n\n This will expire within 5 minutes. The signup process will be invalidated and blocked "
 					+ "after entering the wrong OTP for 5 consecutive times");
 			Transport.send(message);
+
+			OTP otpObj = new OTP();
+			otpObj.setOTP(otp + "");
+			otpObj.setEmail(receipientEmail);
+			otpObj.setExpiresAt(System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION);
+			otpObj.setRetryCount(ConstantsUtil.MAX_RETRY_COUNT);
+			otpObj.setRegenerationCount(regenerationCount);
+
+			Services.otpDatabase.setOTP(otpObj);
 			return true;
 		} catch (MessagingException e) {
-			throw new AppException(e);
+			throw new AppException("OTP Mail could not be sent. Please try again");
 		}
 	}
 
-	private static int randomOTPGenerator() {
-		return ThreadLocalRandom.current().nextInt(999999);
-	}
-
-	public static boolean generateOTPMail(String receipientEmail) throws AppException {
-		int otp = randomOTPGenerator();
-		System.out.println(otp);
-		boolean status = sendOTPMail(receipientEmail, otp);
-
-		return status;
+	public static synchronized boolean generateOTPMail(String receipientMail) throws AppException {
+		return generateOTPMail(receipientMail, ConstantsUtil.MAX_REGENERATION_COUNT);
 	}
 
 	public static void main(String[] args) {
@@ -75,7 +81,7 @@ public class OTPMail {
 			generateOTPMail("ksha1933@outlook.in");
 			System.out.println("Mail Delivered");
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 }

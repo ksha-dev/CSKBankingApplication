@@ -74,4 +74,10 @@ public class CachePool {
 		validateAPI();
 		return branchCache;
 	}
+
+	public static void clear() {
+		userRecordCache.clear();
+		accountCache.clear();
+		branchCache.clear();
+	}
 }

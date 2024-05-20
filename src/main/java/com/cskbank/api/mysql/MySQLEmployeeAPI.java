@@ -14,6 +14,7 @@ import com.cskbank.api.mysql.MySQLQuery.Schemas;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.Account;
+import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
@@ -21,7 +22,6 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.AccountType;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
 
@@ -56,8 +56,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.USERS);
 		queryBuilder.insertColumns(List.of(Column.FIRST_NAME, Column.LAST_NAME, Column.DATE_OF_BIRTH, Column.GENDER,
-				Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.TYPE, Column.CREATED_AT, Column.MODIFIED_BY,
-				Column.MODIFIED_AT));
+				Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.TYPE, Column.STATUS, Column.CREATED_AT,
+				Column.MODIFIED_BY, Column.MODIFIED_AT));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
@@ -65,14 +65,15 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setString(1, user.getFirstName());
 			statement.setString(2, user.getLastName());
 			statement.setLong(3, user.getDateOfBirth());
-			statement.setString(4, user.getGender().getGenderId() + "");
+			statement.setInt(4, MySQLAPIUtil.getIdFromConstantValue(Schemas.GENDER, user.getGender().toString()));
 			statement.setString(5, user.getAddress());
 			statement.setLong(6, user.getPhone());
 			statement.setString(7, user.getEmail());
-			statement.setString(8, user.getType().getUserTypeId() + "");
-			statement.setLong(9, user.getCreatedAt());
-			statement.setInt(10, user.getModifiedBy());
-			statement.setObject(11, null);
+			statement.setInt(8, MySQLAPIUtil.getIdFromConstantValue(Schemas.USER_TYPES, user.getType().toString()));
+			statement.setInt(9, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, user.getStatus().toString()));
+			statement.setLong(10, user.getCreatedAt());
+			statement.setInt(11, user.getModifiedBy());
+			statement.setObject(12, null);
 
 			statement.executeUpdate();
 			try (ResultSet key = statement.getGeneratedKeys()) {
@@ -138,8 +139,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setInt(3, account.getBranchId());
 			statement.setLong(4, account.getOpeningDate());
 			statement.setLong(5, account.getCreatedAt());
-			statement.setInt(6, account.getModifiedBy());
-			statement.setObject(7, null);
+			statement.setLong(6, account.getCreatedAt());
+			statement.setInt(7, account.getModifiedBy());
 
 			int response = statement.executeUpdate();
 			try (ResultSet key = statement.getGeneratedKeys()) {
@@ -218,10 +219,13 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			ServerConnection.startTransaction();
 
 			Account transactionAccount = getAccountDetails(depositTransaction.getViewerAccountNumber());
+			transactionAccount.setBalance(ConvertorUtil
+					.convertToTwoDecimals(depositTransaction.getTransactedAmount() + transactionAccount.getBalance()));
 			transactionAccount.setModifiedBy(depositTransaction.getModifiedBy());
 			transactionAccount.setModifiedAt(depositTransaction.getCreatedAt());
 			MySQLAPIUtil.updateBalanceInAccount(transactionAccount);
 
+			depositTransaction.setClosingBalance(transactionAccount.getBalance());
 			MySQLAPIUtil.createSenderTransactionRecord(depositTransaction);
 			ServerConnection.endTransaction();
 			return depositTransaction.getTransactionId();
@@ -288,6 +292,32 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			}
 		} catch (SQLException e) {
 			throw new AppException(e);
+		}
+	}
+
+	@Override
+	public boolean changeUserStatus(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+
+		MySQLQuery query = new MySQLQuery();
+		query.update(Schemas.USERS);
+		query.setColumn(Column.STATUS);
+		query.separator();
+		query.addColumn(Column.MODIFIED_BY);
+		query.separator();
+		query.addColumn(Column.MODIFIED_AT);
+		query.where();
+		query.columnEquals(Column.USER_ID);
+		query.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setInt(1, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.BLOCKED.toString()));
+			statement.setInt(2, user.getModifiedBy());
+			statement.setLong(3, user.getModifiedAt());
+
+			return statement.executeUpdate() == 1;
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.USER_BLOCK_FAILED);
 		}
 	}
 }

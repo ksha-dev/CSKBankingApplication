@@ -6,6 +6,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
+import com.cskbank.modules.UserRecord;
 
 public interface EmployeeAPI extends UserAPI {
 
@@ -23,4 +24,5 @@ public interface EmployeeAPI extends UserAPI {
 
 	public long withdrawAmount(Transaction withdrawTransaction) throws AppException;
 
+	public boolean changeUserStatus(UserRecord user) throws AppException;
 }

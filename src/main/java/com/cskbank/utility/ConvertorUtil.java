@@ -1,5 +1,7 @@
 package com.cskbank.utility;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -11,9 +13,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.UserRecord;
 
 public class ConvertorUtil {
@@ -196,5 +200,21 @@ public class ConvertorUtil {
 		} catch (NumberFormatException e) {
 			throw new AppException("Value obtained is too long");
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Enum<E>> E convertToEnum(Class<E> enumType, String enumName) throws AppException {
+		try {
+			Method method = enumType.getMethod("convertStringToEnum", String.class);
+			return (E) method.invoke(null, enumName);
+		} catch (InvocationTargetException e) {
+			throw new AppException(e.getCause().getMessage());
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
+		}
+	}
+
+	public static int randomOTPGenerator() {
+		return ThreadLocalRandom.current().nextInt(111111, 999999);
 	}
 }

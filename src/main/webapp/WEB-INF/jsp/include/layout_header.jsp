@@ -1,6 +1,5 @@
 
 <%@page import="java.util.Objects"%>
-<%@page import="com.cskbank.utility.ConstantsUtil.UserType"%>
 <%@page import="com.cskbank.modules.UserRecord"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
@@ -45,7 +44,7 @@ UserRecord user = (UserRecord) session.getAttribute("user");
 		<%
 		}
 		case EMPLOYEE : {
-		if (user.getType() != UserType.ADMIN) {
+		if (user.getType() != UserRecord.Type.ADMIN) {
 		%>
 		<a id="a-branch_accounts" href="branch_accounts">
 			<li id='li-branch_accounts'><i class="material-icons">account_balance</i>Branch
