@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.mail.OTPMail;
@@ -111,7 +112,7 @@ class CommonServletHelper {
 		String email = request.getParameter(Parameters.EMAIL.parameterName());
 		if (Services.appOperations.doesEmailExist(email)) {
 			request.getSession().setAttribute("error", "User already exists with the given email address");
-			response.sendRedirect(request.getContextPath() + "/login");
+			response.sendRedirect(request.getContextPath() + "/signup");
 			return;
 		}
 		try {
@@ -188,9 +189,10 @@ class CommonServletHelper {
 		sendMailIfOTPAbsent(unverifiedUser);
 		OTP otp = Services.otpDatabase.getOTP(email);
 
-		if (otp.getRegenerationCount() < 1 || otp.getRetryCount() < 0) {
+		if (otp.getRegenerationCount() < 1 || otp.getRetryCount() < 1) {
 			Services.otpDatabase.removeOTP(otp.getEmail());
 			Services.employeeOperations.blockUser(unverifiedUser);
+			CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId());
 			ServletUtil.session(request).removeAttribute("unverified_user");
 			request.getRequestDispatcher("/WEB-INF/jsp/common/blocked.jsp").forward(request, response);
 			return;
@@ -217,7 +219,7 @@ class CommonServletHelper {
 			return;
 		}
 
-		if (!otp.getOTP().equals(otp)) {
+		if (!otp.getOTP().equals(obtainedOTP)) {
 			otp.reduceRetryCount();
 			Services.otpDatabase.setOTP(otp);
 			ServletUtil.session(request).setAttribute("error",
@@ -237,6 +239,7 @@ class CommonServletHelper {
 
 		Services.otpDatabase.removeOTP(otp.getEmail());
 		Services.employeeOperations.activateUserWithOTPVerification(unverifiedUser);
+		CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId());
 		ServletUtil.session(request).removeAttribute("unverified_user");
 		ServletUtil.session(request).setAttribute("user", unverifiedUser);
 		ServletUtil.session(request).setAttribute("error", "User verification successful");

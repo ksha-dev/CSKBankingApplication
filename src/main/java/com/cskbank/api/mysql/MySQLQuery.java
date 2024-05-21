@@ -3,6 +3,8 @@ package com.cskbank.api.mysql;
 import java.util.List;
 import java.util.StringJoiner;
 
+import com.cskbank.api.mysql.MySQLQuery.Column;
+import com.cskbank.api.mysql.MySQLQuery.Schemas;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.utility.ValidatorUtil;
 

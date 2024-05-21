@@ -50,7 +50,6 @@ public class AppServlet extends HttpServlet {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
 		} catch (AppException e) {
-			e.printStackTrace();
 			try {
 				GetterUtil.loadRedirectURLProperties();
 				String requestURL = request.getServletPath() + request.getPathInfo();

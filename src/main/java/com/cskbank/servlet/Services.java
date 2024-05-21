@@ -14,22 +14,27 @@ import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 public class Services {
 	public static CommonHandler appOperations;
 	public static OTPDatabase otpDatabase;
+	public static AuditHandler auditLogService;
 
 	static EmployeeHandler employeeOperations;
 	static CustomerHandler customerOperations;
 	static AdminHandler adminOperations;
-	static AuditHandler auditLogService;
 
 	private static final PersistanceIdentifier PERSISTANT_OBJECT = PersistanceIdentifier.MySQL;
 
-	public static void initialize() throws AppException {
-		appOperations = new CommonHandler(PERSISTANT_OBJECT);
-		employeeOperations = new EmployeeHandler(PERSISTANT_OBJECT);
-		customerOperations = new CustomerHandler(PERSISTANT_OBJECT);
-		adminOperations = new AdminHandler(PERSISTANT_OBJECT);
-		otpDatabase = new OTPDatabase();
-
-		auditLogService = new AuditHandler(appOperations.getUserAPI());
+	public static synchronized void initialize() throws AppException {
+		if (appOperations == null)
+			appOperations = new CommonHandler(PERSISTANT_OBJECT);
+		if (employeeOperations == null)
+			employeeOperations = new EmployeeHandler(PERSISTANT_OBJECT);
+		if (customerOperations == null)
+			customerOperations = new CustomerHandler(PERSISTANT_OBJECT);
+		if (adminOperations == null)
+			adminOperations = new AdminHandler(PERSISTANT_OBJECT);
+		if (otpDatabase == null)
+			otpDatabase = new OTPDatabase();
+		if (auditLogService == null)
+			auditLogService = new AuditHandler(appOperations.getUserAPI());
 		CachePool.initializeCache(appOperations.getUserAPI(), CacheIdentifier.Redis);
 	}
 }

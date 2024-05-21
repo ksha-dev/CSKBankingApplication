@@ -65,6 +65,8 @@ public class OTPMail {
 			otpObj.setRetryCount(ConstantsUtil.MAX_RETRY_COUNT);
 			otpObj.setRegenerationCount(regenerationCount);
 
+			System.out.println("OTP sent to " + receipientEmail + " : " + otp);
+
 			Services.otpDatabase.setOTP(otpObj);
 			return true;
 		} catch (MessagingException e) {

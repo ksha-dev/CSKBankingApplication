@@ -78,6 +78,9 @@ public class ConstantsUtil {
 		}
 	}
 
+	public static final List<Status> ADMIN_MODIFIABLE_USER_STATUS = List.of(Status.ACTIVE, Status.FROZEN,
+			Status.BLOCKED);
+
 	public static enum Status {
 		ACTIVE(1), INACTIVE(2), CLOSED(4), FROZEN(3), BLOCKED(5), VERIFICATION(6);
 

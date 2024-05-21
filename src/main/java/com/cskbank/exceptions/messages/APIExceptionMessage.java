@@ -38,7 +38,8 @@ public enum APIExceptionMessage {
 	INSUFFICIENT_BALANCE("The account selected does not contain sufficient balance for the transaction"),
 	TRANSACTION_FAILED("The transaction has failed. Any changes done will be reverted in few minutes."),
 	USER_CONFIRMATION_FAILED("User Confirmation Failed. Cannot process the request"),
-	SAME_PASSWORD("New password cannot be the same as old password."), USER_BLOCK_FAILED("Failed to block user"),
+	SAME_PASSWORD("New password cannot be the same as old password."),
+	USER_STATUS_CHANGE_FAILED("Failed to change status of user"),
 	BRANCH_DETAILS_NOT_FOUND("Cannot find a linked branch details");
 
 	private String message;

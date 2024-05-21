@@ -32,13 +32,12 @@ public class OTPDatabase {
 			long expiresAt = ConvertorUtil.convertStringToLong(jedis.hget(otpkey, EXPIRATION_FIELD));
 			if (System.currentTimeMillis() > expiresAt) {
 				removeOTP(email);
-				System.out.print(email + " - OTP Not present");
 				return false;
 			} else {
 				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public synchronized void setOTP(OTP otp) throws AppException {

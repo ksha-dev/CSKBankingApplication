@@ -1,3 +1,5 @@
+<%@page import="com.cskbank.utility.ConstantsUtil"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Status"%>
 <%@page import="com.cskbank.modules.EmployeeRecord"%>
 <%@page import="com.cskbank.modules.CustomerRecord"%>
 <%@page import="com.cskbank.modules.Branch"%>
@@ -53,11 +55,31 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">Date of Birth</p>
 					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
 				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">PAN</p>
-					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
-				</div>
-			
+				<form action="authorization" method="post">
+					<div class="dual-element-row">
+						<p class="profile-element">Status</p>
+						<div class="profile-element">
+							<select name="status" required>
+								<option value=null style="display: none;"><%=user.getStatus()%></option>
+								<%
+								for (Status status : ConstantsUtil.ADMIN_MODIFIABLE_USER_STATUS) {
+									if (user.getStatus() != status) {
+										out.println("<option value=" + status + ">" + status + "</option>");
+									}
+								}
+								%>
+							</select>
+						</div>
+					</div>
+					<div class="dual-element-row">
+						<p class="profile-element">Reason</p>
+						<div class="profile-element">
+							<input type="number" name="reason"
+								placeholder="Enter the reason for status change">
+						</div>
+					</div>
+				</form>
+
 			</div>
 
 			<div style="width: 100%;">
@@ -77,11 +99,18 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">Aadhar</p>
 					<h4 class="profile-element"><%=customer.getAadhaarNumber()%></h4>
 				</div>
+				<div class="dual-element-row">
+					<p class="profile-element">PAN</p>
+					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
+				</div>
 			</div>
 		</div>
 	</div>
 	<br>
 
+	<%
+	if (accounts != null && !accounts.isEmpty()) {
+	%>
 	<h1>Linked Accounts</h1>
 	<div id="accountsTable" class="content-table">
 		<table width="100%">
@@ -125,9 +154,26 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 			</tbody>
 		</table>
 	</div>
+	<%
+	}
+	%>
 
 	</div>
 	</section>
+
+	<script>
+		function cancelEditStatus() {
+			const status = document.getElementById('status-display');
+			status.innerHTML = '<div class="profile-element"><h4 class="profile-element">'
+					+
+	<%=customer.getStatus()%>
+		+ '</h4><a id="a-statement" href="#"><i class="material-icons">edit</i></a></div>'
+		}
+
+		function editStatus() {
+
+		}
+	</script>
 
 
 </body>

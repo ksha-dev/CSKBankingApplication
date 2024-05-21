@@ -303,9 +303,9 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		query.update(Schemas.USERS);
 		query.setColumn(Column.STATUS);
 		query.separator();
-		query.addColumn(Column.MODIFIED_BY);
+		query.columnEquals(Column.MODIFIED_BY);
 		query.separator();
-		query.addColumn(Column.MODIFIED_AT);
+		query.columnEquals(Column.MODIFIED_AT);
 		query.where();
 		query.columnEquals(Column.USER_ID);
 		query.end();
@@ -314,10 +314,12 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setInt(1, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.BLOCKED.toString()));
 			statement.setInt(2, user.getModifiedBy());
 			statement.setLong(3, user.getModifiedAt());
+			statement.setInt(4, user.getUserId());
 
 			return statement.executeUpdate() == 1;
 		} catch (SQLException e) {
-			throw new AppException(APIExceptionMessage.USER_BLOCK_FAILED);
+			e.printStackTrace();
+			throw new AppException(APIExceptionMessage.USER_STATUS_CHANGE_FAILED, "Status : " + user.getStatus());
 		}
 	}
 }
