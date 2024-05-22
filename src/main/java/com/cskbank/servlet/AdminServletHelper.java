@@ -2,20 +2,26 @@ package com.cskbank.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.Branch;
+import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
+import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
+import com.cskbank.utility.ConstantsUtil.Status;
 
 class AdminServletHelper {
 
@@ -307,5 +313,61 @@ class AdminServletHelper {
 			request.getSession(false).setAttribute("error", e.getMessage());
 		}
 		response.sendRedirect("api_service");
+	}
+
+	public void authorizeChangeStatus(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
+		Status status = Status.convertStringToEnum(request.getParameter(Parameters.STATUS.parameterName()));
+		String reason = request.getParameter(Parameters.REASON.parameterName());
+
+		if (Services.employeeOperations.getCustomerRecord(userId).getStatus() == status) {
+			throw new AppException(APIExceptionMessage.USER_STATUS_UNCHANGED);
+		}
+
+		ServletUtil.session(request).setAttribute("status", status);
+		ServletUtil.session(request).setAttribute("reason", reason);
+		ServletUtil.session(request).setAttribute("userId", userId);
+		request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_change_status")
+				.forward(request, response);
+	}
+
+	public void processChangeStatus(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
+		String pin = request.getParameter(Parameters.PIN.parameterName());
+
+		Status status = (Status) ServletUtil.session(request).getAttribute("status");
+		String reason = (String) ServletUtil.session(request).getAttribute("reason");
+		int userId = (int) ServletUtil.session(request).getAttribute("userId");
+
+		ServletUtil.session(request).removeAttribute("status");
+		ServletUtil.session(request).removeAttribute("reason");
+		ServletUtil.session(request).removeAttribute("userId");
+		try {
+			UserRecord user = Services.adminOperations.changeUserStatus(userId, status, reason, admin.getUserId(), pin);
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(userId);
+			log.setLogOperation(LogOperation.USER_STATUS_CHANGE);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Admin(ID : " + admin.getUserId() + ") has changed User(ID : " + user.getUserId()
+					+ ") status to " + status + ", Reason - " + reason);
+			log.setModifiedAt(user.getModifiedAt());
+			Services.auditLogService.log(log);
+			ServletUtil.session(request).setAttribute("error", "Status changed successfully");
+		} catch (AppException e) {
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(userId);
+			log.setLogOperation(LogOperation.USER_STATUS_CHANGE);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Admin(ID : " + admin.getUserId() + ") failed to changed User(ID : " + userId
+					+ ") status to " + status + ", Reason - " + reason);
+			log.setModifiedAt(System.currentTimeMillis());
+			Services.auditLogService.log(log);
+			ServletUtil.session(request).setAttribute("error", e.getMessage());
+		}
+		response.sendRedirect("search");
 	}
 }

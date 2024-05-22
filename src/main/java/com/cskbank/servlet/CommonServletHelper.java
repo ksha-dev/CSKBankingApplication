@@ -11,17 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
-import com.cskbank.mail.OTPMail;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.OTP;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.GetterUtil;
+import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -92,8 +94,8 @@ class CommonServletHelper {
 
 	private void sendMailIfOTPAbsent(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
-		if (!Services.otpDatabase.isValidOTPPresent(user.getEmail())) {
-			OTPMail.generateOTPMail(user.getEmail());
+		if (!Services.otpCache.isValidOTPPresent(user.getEmail())) {
+			MailGenerationUtil.sendVerificationOTPMail(user.getEmail());
 
 			AuditLog log = new AuditLog();
 			log.setUserId(user.getUserId());
@@ -146,7 +148,7 @@ class CommonServletHelper {
 			log.setModifiedAt(newCustomer.getCreatedAt());
 			Services.auditLogService.log(log);
 
-			OTPMail.generateOTPMail(newCustomer.getEmail());
+			MailGenerationUtil.sendVerificationOTPMail(newCustomer.getEmail());
 			log = new AuditLog();
 			log.setUserId(newCustomer.getUserId());
 			log.setTargetId(newCustomer.getUserId());
@@ -177,9 +179,85 @@ class CommonServletHelper {
 		}
 	}
 
+	public void resendGetRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		UserRecord unverifiedUser = (UserRecord) ServletUtil.session(request).getAttribute("unverified_user");
+		if (unverifiedUser == null) {
+			ServletUtil.session(request).setAttribute("error", "No verification user found");
+			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
+			return;
+		}
+
+		if (Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
+			OTP currentOTP = Services.otpCache.getOTP(unverifiedUser.getEmail());
+			MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail(),
+					currentOTP.getRegenerationCount() - 1);
+
+			AuditLog log = new AuditLog();
+			log.setUserId(unverifiedUser.getUserId());
+			log.setLogOperation(LogOperation.OTP_REGENERATED);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("OTP was resent to Customer(ID : " + unverifiedUser.getUserId() + ") - Email ID - "
+					+ unverifiedUser.getEmail() + ". Resends remaining : " + (currentOTP.getRegenerationCount() - 1));
+			log.setModifiedAt(System.currentTimeMillis());
+			Services.auditLogService.log(log);
+			ServletUtil.session(request).setAttribute("error", "OTP resent to user's mail");
+
+		} else {
+			MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail());
+
+			AuditLog log = new AuditLog();
+			log.setUserId(unverifiedUser.getUserId());
+			log.setLogOperation(LogOperation.OTP_REGENERATED);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("OTP not found. An otp was generated at resend request Customer(ID : "
+					+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
+			log.setModifiedAt(System.currentTimeMillis());
+			Services.auditLogService.log(log);
+			ServletUtil.session(request).setAttribute("error", "OTP sent to user's mail");
+		}
+		response.sendRedirect(ServletUtil.getRedirectContextURL(request, "verification"));
+	}
+
+	public void verificationGetRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		UserRecord unverifiedUser = (UserRecord) ServletUtil.session(request).getAttribute("unverified_user");
+		if (unverifiedUser == null) {
+			ServletUtil.session(request).setAttribute("error", "No verification user found");
+			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
+			return;
+		}
+		try {
+			if (!Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
+				MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail());
+
+				AuditLog log = new AuditLog();
+				log.setUserId(unverifiedUser.getUserId());
+				log.setTargetId(unverifiedUser.getUserId());
+				log.setLogOperation(LogOperation.OTP_SENT_TO_USER);
+				log.setOperationStatus(OperationStatus.SUCCESS);
+				log.setDescription("OTP not found. A new otp was generated and sent to Customer(ID : "
+						+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
+				log.setModifiedAt(System.currentTimeMillis());
+				Services.auditLogService.log(log);
+
+				ServletUtil.session(request).setAttribute("error", "OTP sent to user's mail");
+			}
+			request.getRequestDispatcher("/WEB-INF/jsp/common/verification.jsp").forward(request, response);
+		} catch (AppException e) {
+			ServletUtil.session(request).setAttribute("error", "An error occured - " + e.getMessage());
+			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
+		}
+	}
+
 	public void verificationPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
 		UserRecord unverifiedUser = (UserRecord) ServletUtil.session(request).getAttribute("unverified_user");
+		if (unverifiedUser == null) {
+			ServletUtil.session(request).setAttribute("error", "No verification user found");
+			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
+			return;
+		}
 		String email = unverifiedUser.getEmail();
 		String obtainedOTP = request.getParameter(Parameters.OTP.parameterName());
 
@@ -187,11 +265,11 @@ class CommonServletHelper {
 		ValidatorUtil.validateEmail(email);
 
 		sendMailIfOTPAbsent(unverifiedUser);
-		OTP otp = Services.otpDatabase.getOTP(email);
+		OTP otp = Services.otpCache.getOTP(email);
 
 		if (otp.getRegenerationCount() < 1 || otp.getRetryCount() < 1) {
-			Services.otpDatabase.removeOTP(otp.getEmail());
-			Services.employeeOperations.blockUser(unverifiedUser);
+			Services.otpCache.removeOTP(otp.getEmail());
+			Services.adminOperations.blockUser(unverifiedUser);
 			CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId());
 			ServletUtil.session(request).removeAttribute("unverified_user");
 			request.getRequestDispatcher("/WEB-INF/jsp/common/blocked.jsp").forward(request, response);
@@ -199,16 +277,15 @@ class CommonServletHelper {
 		}
 
 		if (otp.isOTPExpired()) {
-			Services.otpDatabase.removeOTP(otp.getEmail());
+			Services.otpCache.removeOTP(otp.getEmail());
 			ServletUtil.session(request).setAttribute("error",
 					"Your OTP has expired. A new mail has been sent to your email. Please retry");
 
-			OTPMail.generateOTPMail(unverifiedUser.getEmail(), otp.getRegenerationCount() - 1);
+			MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail(), otp.getRegenerationCount() - 1);
 			response.sendRedirect(request.getContextPath() + "/verification");
 
 			AuditLog log = new AuditLog();
 			log.setUserId(unverifiedUser.getUserId());
-			log.setTargetId(unverifiedUser.getUserId());
 			log.setLogOperation(LogOperation.OTP_SENT_TO_USER);
 			log.setOperationStatus(OperationStatus.SUCCESS);
 			log.setDescription(
@@ -221,13 +298,12 @@ class CommonServletHelper {
 
 		if (!otp.getOTP().equals(obtainedOTP)) {
 			otp.reduceRetryCount();
-			Services.otpDatabase.setOTP(otp);
+			Services.otpCache.setOTP(otp);
 			ServletUtil.session(request).setAttribute("error",
 					"OTP Entered is incorrect. Number of Attemps left : " + otp.getRetryCount());
 			response.sendRedirect(request.getContextPath() + "/verification");
 			AuditLog log = new AuditLog();
 			log.setUserId(unverifiedUser.getUserId());
-			log.setTargetId(unverifiedUser.getUserId());
 			log.setLogOperation(LogOperation.OTP_SENT_TO_USER);
 			log.setOperationStatus(OperationStatus.SUCCESS);
 			log.setDescription("Wrong OTP Entered by Customer(ID : " + unverifiedUser.getUserId() + ") - Email ID - "
@@ -237,14 +313,29 @@ class CommonServletHelper {
 			return;
 		}
 
-		Services.otpDatabase.removeOTP(otp.getEmail());
-		Services.employeeOperations.activateUserWithOTPVerification(unverifiedUser);
+		Services.otpCache.removeOTP(otp.getEmail());
+		Services.adminOperations.activateUserWithOTPVerification(unverifiedUser);
+		AuditLog log = new AuditLog();
+		log.setUserId(unverifiedUser.getUserId());
+		log.setLogOperation(LogOperation.USER_VERIFICATION);
+		log.setOperationStatus(OperationStatus.SUCCESS);
+		log.setDescription("User(ID : " + unverifiedUser.getUserId() + ") verification is successful");
+		log.setModifiedAt(System.currentTimeMillis());
+		Services.auditLogService.log(log);
+
 		CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId());
 		ServletUtil.session(request).removeAttribute("unverified_user");
 		ServletUtil.session(request).setAttribute("user", unverifiedUser);
 		ServletUtil.session(request).setAttribute("error", "User verification successful");
 		response.sendRedirect(
 				request.getContextPath() + "/app/" + unverifiedUser.getType().toString().toLowerCase() + "/home");
+		log.setUserId(unverifiedUser.getUserId());
+		log.setLogOperation(LogOperation.USER_LOGIN);
+		log.setOperationStatus(OperationStatus.SUCCESS);
+		log.setDescription(
+				unverifiedUser.getType() + "(ID : " + unverifiedUser.getUserId() + ") has successfully logged in");
+		log.setModifiedAtWithCurrentTime();
+		Services.auditLogService.log(log);
 	}
 
 	public void statementPostRequest(HttpServletRequest request, HttpServletResponse response)

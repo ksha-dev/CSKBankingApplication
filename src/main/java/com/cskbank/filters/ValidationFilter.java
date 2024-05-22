@@ -3,7 +3,6 @@ package com.cskbank.filters;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -79,7 +78,9 @@ public class ValidationFilter implements Filter {
 						break;
 
 					case "/verification":
-						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OTP));
+						if (req.getMethod() == "POST") {
+							ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OTP));
+						}
 						break;
 
 					case "/employee/account_details":
@@ -127,6 +128,11 @@ public class ValidationFilter implements Filter {
 							case "authorize_add_branch":
 								ServletUtil.checkRequiredParameters(parameters,
 										List.of(Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL));
+								break;
+
+							case "authorize_change_status":
+								ServletUtil.checkRequiredParameters(parameters,
+										List.of(Parameters.STATUS, Parameters.REASON, Parameters.USERID));
 								break;
 							}
 						}

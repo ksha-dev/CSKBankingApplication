@@ -6,11 +6,14 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil.Gender;
+import com.cskbank.utility.ConstantsUtil.Status;
 
 public class ServletUtil {
 
@@ -22,8 +25,23 @@ public class ServletUtil {
 	}
 
 	public static UserRecord getUser(HttpServletRequest request) throws ServletException, IOException {
-		HttpSession currentSession = ServletUtil.session(request);
-		return (UserRecord) currentSession.getAttribute("user");
+		return (UserRecord) ServletUtil.session(request).getAttribute("user");
+	}
+
+	public static UserRecord getUnverifiedUser(HttpServletRequest request) throws ServletException, IOException {
+		return (UserRecord) ServletUtil.session(request).getAttribute("unverified_user");
+	}
+
+	public static String getRedirectContextURL(HttpServletRequest request, String redirect) {
+		return request.getContextPath() + "/" + redirect;
+	}
+
+	public static String getRootRedirect(HttpServletRequest request) {
+		return request.getContextPath() + "/";
+	}
+
+	public static String getLoginRedirect(HttpServletRequest request) {
+		return getRedirectContextURL(request, "login");
 	}
 
 	public static void commonAuthorizationCheck(Map<String, String[]> parameters) throws AppException {
@@ -81,11 +99,19 @@ public class ServletUtil {
 		case CUSTOMERTYPE:
 		case ADDRESS:
 		case ORGNAME:
+		case REASON:
 			ValidatorUtil.validateObject(parameterValue);
 			break;
 
-		case PAGECOUNT:
+		case STATUS:
+			ConvertorUtil.convertToEnum(Status.class, parameterValue);
+			break;
+
 		case GENDER:
+			ConvertorUtil.convertToEnum(Gender.class, parameterValue);
+			break;
+
+		case PAGECOUNT:
 			ConvertorUtil.convertStringToInteger(parameterValue);
 			break;
 

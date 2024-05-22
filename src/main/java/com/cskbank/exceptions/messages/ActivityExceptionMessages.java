@@ -14,9 +14,11 @@ public enum ActivityExceptionMessages {
 	NO_CUSTOMER_RECORD_FOUND("The customer record for the following Customer ID was not found"),
 	NO_EMPLOYEE_RECORD_FOUND("The employee record for the following ID was not found"),
 	MODIFICATION_ACCESS_DENIED("You do not have permission to modify this data"),
+	BLOCKED_USER_STATUS_CHANGE_DENIED("A blocked user status can only be changed to verification"),
 	MINIMUM_DEPOSIT_REQUIRED(
 			"The deposit amount must meet the minimum required amount. The minimum deposit amount is Rs. "
 					+ ConstantsUtil.MINIMUM_DEPOSIT_AMOUNT),
+	ENCRYPTION_FAILED("Data encryption failed"), DECRYPTION_FAILED("Data decryption failed"),
 	CLEAR_BALANCE_TO_CLOSE_ACCOUNT(
 			"The balance in the account needs to be withdrawn or transferred to another account before it can be closed"),
 

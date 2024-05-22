@@ -44,7 +44,7 @@ if (error != null) {
 					type="submit" value="Verify OTP">
 			</form>
 			<p class="login-element">
-				<a href="login" style="color: white; font-weight: bold;">Resend
+				<a href="verification/resend" style="color: white; font-weight: bold;">Resend
 					OTP</a>
 			</p>
 		</div>

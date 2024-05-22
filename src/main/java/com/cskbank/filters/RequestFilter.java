@@ -60,7 +60,10 @@ public class RequestFilter implements Filter {
 		if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
 
-		} else if (url.equals("/login") || url.equals("/signup") || url.equals("/verification")) {
+		} else if (url.equals("/login") || url.equals("/signup")) {
+			chain.doFilter(req, res);
+
+		} else if (url.equals("/verification") && (req.getPathInfo() == null || req.getPathInfo() == "/resend")) {
 			chain.doFilter(req, res);
 
 		} else if (url.startsWith("/static")) {

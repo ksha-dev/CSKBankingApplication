@@ -24,5 +24,5 @@ public interface EmployeeAPI extends UserAPI {
 
 	public long withdrawAmount(Transaction withdrawTransaction) throws AppException;
 
-	public boolean changeUserStatus(UserRecord user) throws AppException;
+	public UserRecord changeUserStatus(UserRecord user) throws AppException;
 }

@@ -29,6 +29,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
@@ -56,7 +57,7 @@ public class MySQLUserAPI implements UserAPI {
 			statement.setInt(1, userId);
 			try (ResultSet authenticationResult = statement.executeQuery()) {
 				if (authenticationResult.next()) {
-					if (authenticationResult.getString(1).equals(ConvertorUtil.passwordHasher(password))) {
+					if (authenticationResult.getString(1).equals(SecurityUtil.encryptPasswordSHA256(password))) {
 						return true;
 					} else {
 						throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED);
@@ -87,7 +88,7 @@ public class MySQLUserAPI implements UserAPI {
 			statement.setInt(1, userId);
 			try (ResultSet authenticationResult = statement.executeQuery()) {
 				if (authenticationResult.next()) {
-					if (authenticationResult.getString(1).equals(ConvertorUtil.passwordHasher(pin))) {
+					if (authenticationResult.getString(1).equals(SecurityUtil.encryptPasswordSHA256(pin))) {
 						return true;
 					} else {
 						throw new AppException(APIExceptionMessage.USER_CONFIRMATION_FAILED);
@@ -420,7 +421,7 @@ public class MySQLUserAPI implements UserAPI {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setString(1, ConvertorUtil.passwordHasher(newPassword));
+			statement.setString(1, SecurityUtil.encryptPasswordSHA256(newPassword));
 			statement.setInt(2, customerId);
 			statement.setLong(3, System.currentTimeMillis());
 			statement.setInt(4, customerId);

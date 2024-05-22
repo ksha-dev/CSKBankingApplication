@@ -21,6 +21,7 @@ import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
@@ -101,7 +102,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setString(1, ConvertorUtil.ifscGenerator(branchId));
+			statement.setString(1, GetterUtil.getIfscCode(branchId));
 			statement.setInt(2, branchId);
 			int response = statement.executeUpdate();
 			if (response != 1) {

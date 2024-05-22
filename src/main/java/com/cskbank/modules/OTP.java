@@ -1,8 +1,10 @@
 package com.cskbank.modules;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.servlet.Services;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class OTP {
@@ -69,5 +71,30 @@ public class OTP {
 
 	public void reduceRetryCount() {
 		retryCount = retryCount - 1;
+	}
+
+	public void reduceRegenerationCount() {
+		regenerationCount = regenerationCount - 1;
+	}
+
+	public static OTP getNewOTP(String email) throws AppException {
+		OTP otpObj = new OTP();
+		otpObj.setOTP(GetterUtil.getOTP() + "");
+		otpObj.setEmail(email);
+		otpObj.setExpiresAt(System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION);
+		otpObj.setRetryCount(ConstantsUtil.MAX_RETRY_COUNT);
+		otpObj.setRegenerationCount(ConstantsUtil.MAX_REGENERATION_COUNT);
+		Services.otpCache.setOTP(otpObj);
+		return otpObj;
+	}
+
+	public void remove() {
+		if (!ValidatorUtil.isObjectNull(email)) {
+			Services.otpCache.removeOTP(email);
+		}
+	}
+
+	public static void remove(String email) {
+		Services.otpCache.removeOTP(email);
 	}
 }

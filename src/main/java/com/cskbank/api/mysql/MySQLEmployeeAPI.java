@@ -21,6 +21,7 @@ import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
@@ -38,8 +39,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setInt(1, user.getUserId());
-			statement.setString(2, ConvertorUtil.passwordGenerator(user));
-			statement.setString(3, ConvertorUtil.pinGenerator(user));
+			statement.setString(2, SecurityUtil.passwordGenerator(user));
+			statement.setString(3, SecurityUtil.generatePIN(user));
 			statement.setLong(4, user.getCreatedAt());
 			statement.setInt(5, user.getModifiedBy());
 			statement.setObject(6, null);
@@ -296,7 +297,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public boolean changeUserStatus(UserRecord user) throws AppException {
+	public UserRecord changeUserStatus(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
 		MySQLQuery query = new MySQLQuery();
@@ -311,12 +312,15 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		query.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
-			statement.setInt(1, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.BLOCKED.toString()));
+			statement.setInt(1, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, user.getStatus().toString()));
 			statement.setInt(2, user.getModifiedBy());
 			statement.setLong(3, user.getModifiedAt());
 			statement.setInt(4, user.getUserId());
 
-			return statement.executeUpdate() == 1;
+			if (statement.executeUpdate() == 1) {
+				return user;
+			} else
+				throw new AppException();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new AppException(APIExceptionMessage.USER_STATUS_CHANGE_FAILED, "Status : " + user.getStatus());

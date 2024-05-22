@@ -22,7 +22,7 @@ public enum APIExceptionMessage {
 
 	API_KEY_NOT_FOUND("The API Key obtained is not valid or does not exist"),
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),
-	CANNOT_MODIFY_STATUS("The status of a closed account cannot be changed"),
+	CANNOT_MODIFY_CLOSED_ACCOUNT_STATUS("The status of a closed account cannot be changed"),
 	STATUS_ALREADY_SET("The account is already in the required state"),
 	ACCOUNT_RESTRICTED("This account has been restricted for transactions."),
 	ACCOUNT_FROZEN(
@@ -40,6 +40,7 @@ public enum APIExceptionMessage {
 	USER_CONFIRMATION_FAILED("User Confirmation Failed. Cannot process the request"),
 	SAME_PASSWORD("New password cannot be the same as old password."),
 	USER_STATUS_CHANGE_FAILED("Failed to change status of user"),
+	USER_STATUS_UNCHANGED("Status to be modified is already set for the user"),
 	BRANCH_DETAILS_NOT_FOUND("Cannot find a linked branch details");
 
 	private String message;

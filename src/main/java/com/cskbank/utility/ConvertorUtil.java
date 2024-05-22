@@ -2,7 +2,6 @@ package com.cskbank.utility;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Instant;
@@ -12,52 +11,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
-import com.cskbank.modules.UserRecord;
 
 public class ConvertorUtil {
-
-	private static final int API_KEY_LENGTH = 40;
-	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-	public static String generateKey() throws AppException {
-		return randomStringGenerator(API_KEY_LENGTH);
-	}
-
-	private static String randomStringGenerator(int length) {
-		Random random = new Random();
-		StringBuilder sb = new StringBuilder(length);
-
-		for (int i = 0; i < length; i++) {
-			int randomIndex = random.nextInt(CHARACTERS.length());
-			char randomChar = CHARACTERS.charAt(randomIndex);
-			sb.append(randomChar);
-		}
-
-		return sb.toString();
-	}
-
-	public static String passwordHasher(String password) {
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			final byte[] hash = digest.digest(password.getBytes("UTF-8"));
-			final StringBuilder hexString = new StringBuilder();
-			for (int i = 0; i < hash.length; i++) {
-				final String hex = Integer.toHexString(0xff & hash[i]);
-				if (hex.length() == 1)
-					hexString.append('0');
-				hexString.append(hex);
-			}
-			return hexString.toString();
-		} catch (Exception ex) {
-		}
-		return null;
-	}
 
 	public static ZonedDateTime convertLongZonedDateTime(long dateTime) {
 		return ZonedDateTime.ofInstant(Instant.ofEpochMilli(dateTime), ZoneId.systemDefault());
@@ -78,22 +37,6 @@ public class ConvertorUtil {
 
 	public static String formatToUTCDate(long dateTime) {
 		return convertLongToLocalDate(dateTime).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-	}
-
-	public static String passwordGenerator(UserRecord user) throws AppException {
-		ValidatorUtil.validateObject(user);
-		return passwordHasher(user.getFirstName().substring(0, 4) + "@"
-				+ user.getDateOfBirthInLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE).substring(4, 8));
-	}
-
-	public static String pinGenerator(UserRecord user) throws AppException {
-		ValidatorUtil.validateObject(user);
-		return passwordHasher(String.format("%04d", user.getPhone() % 10000));
-	}
-
-	public static String ifscGenerator(int branchId) throws AppException {
-		ValidatorUtil.validateId(branchId);
-		return String.format("CSKB0%06d", branchId);
 	}
 
 	public static int convertPageToOffset(int pageNumber) throws AppException {
@@ -212,9 +155,5 @@ public class ConvertorUtil {
 		} catch (Exception e) {
 			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
 		}
-	}
-
-	public static int randomOTPGenerator() {
-		return ThreadLocalRandom.current().nextInt(111111, 999999);
 	}
 }

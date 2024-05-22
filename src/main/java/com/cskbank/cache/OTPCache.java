@@ -1,4 +1,4 @@
-package com.cskbank.mail;
+package com.cskbank.cache;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.OTP;
@@ -7,7 +7,7 @@ import com.cskbank.utility.ValidatorUtil;
 
 import redis.clients.jedis.Jedis;
 
-public class OTPDatabase {
+public class OTPCache {
 	private static final String HOST_NAME = "localhost";
 	private static final int PORT = 6379;
 	private Jedis jedis;
@@ -21,7 +21,7 @@ public class OTPDatabase {
 		return OTP_FIELD + "-" + email;
 	}
 
-	public OTPDatabase() {
+	public OTPCache() {
 		jedis = new Jedis(HOST_NAME, PORT);
 	}
 
@@ -69,7 +69,7 @@ public class OTPDatabase {
 		}
 	}
 
-	public void removeOTP(String email) {
+	public synchronized void removeOTP(String email) {
 		String optkey = otpKey(email);
 		if (jedis.exists(optkey)) {
 			jedis.del(optkey);

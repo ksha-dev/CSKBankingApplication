@@ -55,31 +55,14 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<p class="profile-element">Date of Birth</p>
 					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
 				</div>
-				<form action="authorization" method="post">
+				<div id="status">
 					<div class="dual-element-row">
 						<p class="profile-element">Status</p>
-						<div class="profile-element">
-							<select name="status" required>
-								<option value=null style="display: none;"><%=user.getStatus()%></option>
-								<%
-								for (Status status : ConstantsUtil.ADMIN_MODIFIABLE_USER_STATUS) {
-									if (user.getStatus() != status) {
-										out.println("<option value=" + status + ">" + status + "</option>");
-									}
-								}
-								%>
-							</select>
-						</div>
+						<h4 class="profile-element"><%=customer.getStatus()%></h4>
 					</div>
-					<div class="dual-element-row">
-						<p class="profile-element">Reason</p>
-						<div class="profile-element">
-							<input type="number" name="reason"
-								placeholder="Enter the reason for status change">
-						</div>
-					</div>
-				</form>
-
+					<%if(user.getType()==UserRecord.Type.ADMIN) {%>
+					<button onclick="editStatus()">Change Status</button><%}%>
+				</div>
 			</div>
 
 			<div style="width: 100%;">
@@ -160,21 +143,43 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 
 	</div>
 	</section>
-
+<%if(user.getType()==UserRecord.Type.ADMIN) {%>
 	<script>
+	const status = document.getElementById('status');
 		function cancelEditStatus() {
-			const status = document.getElementById('status-display');
-			status.innerHTML = '<div class="profile-element"><h4 class="profile-element">'
-					+
-	<%=customer.getStatus()%>
-		+ '</h4><a id="a-statement" href="#"><i class="material-icons">edit</i></a></div>'
+			status.innerHTML = '<div class="dual-element-row">'
+			+'<p class="profile-element">Status</p><h4 class="profile-element"><%=customer.getStatus()%></h4>'
+			+'</div></div><button onclick="editStatus()">Change Status</button>'
 		}
 
 		function editStatus() {
-
+			status.innerHTML = '<form action="authorization" method="post" id="status"><div class="dual-element-row">'+
+			'<p class="profile-element">Status</p><div class="profile-element"><select name="status" id="selected-status" required>'+
+			'<option value=null style="display: none;"><%=customer.getStatus()%></option>'+
+	<%
+	if(customer.getStatus()==Status.BLOCKED) {
+		out.println("'<option value=" + Status.VERIFICATION + ">" + Status.VERIFICATION + "</option>'+");
+	} else {
+	for (Status status : ConstantsUtil.ADMIN_MODIFIABLE_USER_STATUS) {
+	if (customer.getStatus() != status) {
+		out.println("'<option value=" + status + ">" + status + "</option>'+");
+	}}
+}%>
+		'</select></div></div><div class="dual-element-row"><p class="profile-element">Reason</p>'
+					+ '<div class="profile-element"><input id="reason" type="text" name="reason" placeholder="Enter the reason for status change" required></div></div>'
+					+ '<div style="display: flex;"><input type="hidden" name="operation" value="authorize_change_status"><input type="hidden" name="userId" value="'+<%=customer.getUserId()%>+'">'
+					+'<button type="submit" onclick="changeStatusValidation()">Confirm</button><button type="button" onclick="cancelEditStatus()" style="margin-left: 20px;">Cancel</button></div></form>';
+		}
+		
+		function changeStatusValidation() {
+			const changedStatus = document.getElementById('selected-status').value;
+			if(changedStatus==='null'){
+				runtimeError('Status was not changed');
+				event.preventDefault();
+			}
 		}
 	</script>
-
+<%}%>
 
 </body>
 

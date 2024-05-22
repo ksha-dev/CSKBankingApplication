@@ -17,11 +17,13 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
+import com.cskbank.servlet.Services;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
+import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.SecurityUtil;
 
 public class AdminHandler {
 
@@ -147,7 +149,7 @@ public class AdminHandler {
 	public APIKey generateAPIKey(String orgName) throws AppException {
 		APIKey apiKey = new APIKey();
 		apiKey.setOrgName(orgName);
-		apiKey.setAPIKey(ConvertorUtil.generateKey());
+		apiKey.setAPIKey(SecurityUtil.generateAPIKey());
 		apiKey.setCreatedAt(System.currentTimeMillis());
 		apiKey.setModifiedAt(apiKey.getCreatedAt());
 		apiKey.setValidUntil(apiKey.getCreatedAt() + ConstantsUtil.getAPIValidityTime());
@@ -162,5 +164,47 @@ public class AdminHandler {
 		apikey.setIsActive(false);
 		apikey.setModifiedAt(System.currentTimeMillis());
 		return api.invalidateApiKey(apikey);
+	}
+
+	public UserRecord blockUser(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+		user.setStatus(Status.BLOCKED);
+		user.setModifiedAt(System.currentTimeMillis());
+		user.setModifiedBy(1);
+		return api.changeUserStatus(user);
+	}
+
+	public UserRecord activateUserWithOTPVerification(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+		user.setStatus(Status.ACTIVE);
+		user.setModifiedAt(System.currentTimeMillis());
+		user.setModifiedBy(1);
+		return api.changeUserStatus(user);
+	}
+
+	public UserRecord changeUserStatus(int userId, Status status, String reason, int adminId, String pin)
+			throws AppException {
+		ValidatorUtil.validateId(userId);
+		ValidatorUtil.validateObject(status);
+		ValidatorUtil.validateObject(reason);
+		ValidatorUtil.validateId(adminId);
+		ValidatorUtil.validatePIN(pin);
+
+		if (api.userConfimration(adminId, pin)) {
+			UserRecord user = api.getUserDetails(userId);
+			if (user.getStatus() == status) {
+				throw new AppException(APIExceptionMessage.USER_STATUS_UNCHANGED);
+			}
+			if (user.getStatus() == Status.BLOCKED && status != Status.VERIFICATION) {
+				throw new AppException(ActivityExceptionMessages.BLOCKED_USER_STATUS_CHANGE_DENIED);
+			}
+			user.setStatus(status);
+			user.setModifiedBy(adminId);
+			user.setModifiedAt(System.currentTimeMillis());
+			api.changeUserStatus(user);
+			CachePool.getUserRecordCache().refreshData(userId);
+			return user;
+		} else
+			throw new AppException(APIExceptionMessage.USER_CONFIRMATION_FAILED);
 	}
 }

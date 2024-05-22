@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.cskbank.exceptions.AppException;
 
@@ -32,5 +33,14 @@ public class GetterUtil {
 		} else {
 			return redirectURLProperties.getProperty(requestURL, "/login");
 		}
+	}
+
+	public static String getIfscCode(int branchId) throws AppException {
+		ValidatorUtil.validateId(branchId);
+		return String.format("CSKB0%06d", branchId);
+	}
+
+	public static int getOTP() {
+		return ThreadLocalRandom.current().nextInt(111111, 999999);
 	}
 }

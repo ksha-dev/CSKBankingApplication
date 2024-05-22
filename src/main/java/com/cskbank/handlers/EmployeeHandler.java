@@ -208,7 +208,7 @@ public class EmployeeHandler {
 
 		Status currentStatus = account.getStatus();
 		if (currentStatus == Status.CLOSED) {
-			throw new AppException(APIExceptionMessage.CANNOT_MODIFY_STATUS);
+			throw new AppException(APIExceptionMessage.CANNOT_MODIFY_CLOSED_ACCOUNT_STATUS);
 		} else if (currentStatus == status) {
 			throw new AppException(APIExceptionMessage.STATUS_ALREADY_SET);
 		}
@@ -227,22 +227,6 @@ public class EmployeeHandler {
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
-	}
-
-	public boolean blockUser(UserRecord user) throws AppException {
-		ValidatorUtil.validateObject(user);
-		user.setStatus(Status.BLOCKED);
-		user.setModifiedAt(System.currentTimeMillis());
-		user.setModifiedBy(1);
-		return api.changeUserStatus(user);
-	}
-
-	public boolean activateUserWithOTPVerification(UserRecord user) throws AppException {
-		ValidatorUtil.validateObject(user);
-		user.setStatus(Status.ACTIVE);
-		user.setModifiedAt(System.currentTimeMillis());
-		user.setModifiedBy(1);
-		return api.changeUserStatus(user);
 	}
 
 	public Account closeAccount(long accountNumber, int employeeId, String pin) throws AppException {

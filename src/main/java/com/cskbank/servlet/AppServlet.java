@@ -90,6 +90,10 @@ public class AppServlet extends HttpServlet {
 				}
 			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
 				homeRedirect(response, ServletUtil.getUser(request).getType());
+			} else if (path.equals("/verification")) {
+				new CommonServletHelper().verificationGetRequest(request, response);
+			} else if (path.equals("/resend")) {
+				new CommonServletHelper().resendGetRequest(request, response);
 			} else {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
@@ -421,6 +425,10 @@ public class AppServlet extends HttpServlet {
 				adminMethods.authorizeAddEmployee(request, response);
 				break;
 
+			case "authorize_change_status":
+				adminMethods.authorizeChangeStatus(request, response);
+				break;
+
 			case "process_add_employee":
 				adminMethods.processAddEmployeePostRequest(request, response);
 				break;
@@ -431,6 +439,10 @@ public class AppServlet extends HttpServlet {
 
 			case "process_add_branch":
 				adminMethods.processAddBranchPostRequest(request, response);
+				break;
+
+			case "process_change_status":
+				adminMethods.processChangeStatus(request, response);
 				break;
 
 			default:
