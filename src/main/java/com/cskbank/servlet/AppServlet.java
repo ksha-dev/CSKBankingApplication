@@ -398,6 +398,10 @@ public class AppServlet extends HttpServlet {
 		case "employee_details":
 			adminMethods.employeeDetailsPostMethod(request, response);
 			break;
+			
+		case "api_service":
+			adminMethods.apiServiceRequest(request, response);
+			break;
 
 		case "branches":
 			adminMethods.branchesRequest(request, response);

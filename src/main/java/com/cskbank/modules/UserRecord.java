@@ -5,11 +5,10 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.modules.UserRecord.Type;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 public abstract class UserRecord implements Serializable {
 
@@ -66,8 +65,14 @@ public abstract class UserRecord implements Serializable {
 		this.dateOfBirth = temp;
 	}
 
-	public void setGender(int genderId) throws AppException {
-		this.gender = Gender.getGender(genderId);
+	public void setGender(String gender) throws AppException {
+		ValidatorUtil.validateGender(gender);
+		this.gender = Gender.convertStringToEnum(gender);
+	}
+
+	public void setGender(Gender gender) throws AppException {
+		ValidatorUtil.validateObject(gender);
+		this.gender = gender;
 	}
 
 	public void setAddress(String address) throws AppException {

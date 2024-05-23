@@ -46,7 +46,7 @@ if (error!=null) { request.getSession(false).removeAttribute("error");%>
 					<select name="gender" id="gender" style="margin-top" required>
 						<option value=null style="display: none;">Select</option>
 						<%for (Gender gender : Gender.values()) {%>
-						<option value="<%=gender.getGenderId()%>"><%=gender%></option>
+						<option value="<%=gender%>"><%=gender%></option>
 						<%}%>
 					</select>
 					<input class="login-element" type="submit" value="Sign Up" style="margin-top: 50px;">

@@ -2,6 +2,7 @@ package com.cskbank.cache;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.OTP;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -14,7 +15,7 @@ public class OTPCache {
 
 	private static final String OTP_FIELD = "OTP";
 	private static final String RETRY_COUNT_FIELD = "RETRY_COUNT";
-	private static final String GENERATED_COUNT_FIELD = "GENERATED_COUNT";
+	private static final String GENERATED_COUNT_FIELD = "REGENERATION_COUNT";
 	private static final String EXPIRATION_FIELD = "EXPIRES_IN";
 
 	private static String otpKey(String email) {
@@ -43,12 +44,13 @@ public class OTPCache {
 	public synchronized void setOTP(OTP otp) throws AppException {
 		ValidatorUtil.validateObject(otp);
 		String otpKey = otpKey(otp.getEmail());
-		System.out.println(otpKey);
 
 		jedis.hset(otpKey, GENERATED_COUNT_FIELD, otp.getRegenerationCount() + "");
 		jedis.hset(otpKey, RETRY_COUNT_FIELD, otp.getRetryCount() + "");
 		jedis.hset(otpKey, OTP_FIELD, otp.getOTP());
 		jedis.hset(otpKey, EXPIRATION_FIELD, otp.getExpiresAt() + "");
+
+		jedis.expire(otpKey, ConstantsUtil.EXPIRY_DURATION_SECONDS);
 	}
 
 	public synchronized OTP getOTP(String email) throws AppException {

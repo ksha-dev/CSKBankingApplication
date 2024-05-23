@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.OTP;
+import com.cskbank.modules.UserRecord;
 import com.cskbank.servlet.Services;
 
 public class MailGenerationUtil {
@@ -42,14 +43,15 @@ public class MailGenerationUtil {
 			System.out.println("Mail sent :" + receipientEmail + " : " + subject);
 			return true;
 		} catch (MessagingException e) {
-			throw new AppException("OTP Mail could not be sent. Please try again");
+			throw new AppException("Mail could not be sent. Please try again");
 		}
 	}
 
 	public static synchronized boolean sendVerificationOTPMail(String receipientEmail, int regenerationCount)
 			throws AppException {
 		ValidatorUtil.validateEmail(receipientEmail);
-		OTP otp = OTP.getNewOTP(receipientEmail);
+		OTP otp = OTP.getNewOTP(receipientEmail, regenerationCount);
+		System.out.println(regenerationCount);
 		try {
 			String subject = "Verification Code";
 			String bodyText = "Your one time verification code has been generated successfully and the same is \n\n"
@@ -65,5 +67,16 @@ public class MailGenerationUtil {
 
 	public static synchronized boolean sendVerificationOTPMail(String receipientMail) throws AppException {
 		return sendVerificationOTPMail(receipientMail, ConstantsUtil.MAX_REGENERATION_COUNT);
+	}
+
+	public static boolean sendUserSignupMail(UserRecord user) throws AppException {
+		String subject = "CSK Bank - User Signup";
+		String bodyText = "Hello " + user.getFirstName()
+				+ ",\n\nThank you for signing up with up. Your user record has been created. "
+				+ "Please follow the instructions to login to our application." + "\n\nUser ID : " + user.getUserId()
+				+ "\nPassword : <First 4 letters of your first name>@<Date of birth in MMDD format>"
+				+ "\nExample : If your name is Ramesh and you were born on August 20, your password will be Rame@0820"
+				+ "\n\nLogin URL : https://localhost:8443/CSKBankingApplication/login" + "\n\nTeam CSKBank.";
+		return sendMail(user.getEmail(), subject, bodyText);
 	}
 }

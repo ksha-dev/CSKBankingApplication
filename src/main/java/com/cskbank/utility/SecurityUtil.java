@@ -23,8 +23,6 @@ public class SecurityUtil {
 	static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final String ALGORITHM = "AES";
 	private static final String TRANSFORMATION = "AES";
-	private static final String KEY_TEXT = "CSKBankingApp000";
-	private static final SecretKey KEY = new SecretKeySpec(KEY_TEXT.getBytes(), ALGORITHM);
 
 	public static String encryptPasswordSHA256(String password) {
 		try {
@@ -71,38 +69,50 @@ public class SecurityUtil {
 				+ user.getDateOfBirthInLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE).substring(4, 8));
 	}
 
-	private static synchronized String encrypt(String value) throws NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+	private static synchronized String encrypt(String value, SecretKey key)
+			throws AppException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException {
+		ValidatorUtil.validateObject(key);
+		ValidatorUtil.validateObject(value);
 		Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-		cipher.init(Cipher.ENCRYPT_MODE, KEY);
+		cipher.init(Cipher.ENCRYPT_MODE, key);
 		String encryptedValue = Base64.getEncoder().encodeToString(cipher.doFinal(value.getBytes()));
 		return encryptedValue;
 	}
 
-	private static synchronized String decrypt(String value) throws NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+	private static synchronized String decrypt(String value, SecretKey key)
+			throws AppException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
+			BadPaddingException, InvalidKeyException {
+		ValidatorUtil.validateObject(key);
+		ValidatorUtil.validateObject(value);
 		Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-		cipher.init(Cipher.DECRYPT_MODE, KEY);
-
+		cipher.init(Cipher.DECRYPT_MODE, key);
 		byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(value));
 		String decryptedText = new String(decryptedBytes);
 		return decryptedText;
+
 	}
 
-	public static String encryptText(String plainText) throws AppException {
+	public static String encryptText(String plainText, SecretKey key) throws AppException {
 		try {
-			return encrypt(plainText);
+			return encrypt(encrypt(plainText, key), key);
 		} catch (Exception e) {
-			throw new AppException(ActivityExceptionMessages.ENCRYPTION_FAILED);
+			throw new AppException(ActivityExceptionMessages.ENCRYPTION_FAILED, e.getMessage());
 		}
 	}
 
-	public static String decryptCipher(String cipherText) throws AppException {
+	public static String decryptCipher(String cipherText, SecretKey key) throws AppException {
 		try {
-			return decrypt(cipherText);
+			return decrypt(decrypt(cipherText, key), key);
 		} catch (Exception e) {
-			throw new AppException(ActivityExceptionMessages.DECRYPTION_FAILED);
+			throw new AppException(ActivityExceptionMessages.DECRYPTION_FAILED, e.getMessage());
 		}
+	}
+
+	public static SecretKey getSecretKey(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+		return new SecretKeySpec(
+				String.format("%016d", ((user.getCreatedAt() * user.getUserId()) % (10 ^ 16))).getBytes(), ALGORITHM);
 	}
 
 }

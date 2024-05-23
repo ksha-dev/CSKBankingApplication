@@ -171,7 +171,9 @@ public class AdminHandler {
 		user.setStatus(Status.BLOCKED);
 		user.setModifiedAt(System.currentTimeMillis());
 		user.setModifiedBy(1);
-		return api.changeUserStatus(user);
+		user = api.changeUserStatus(user);
+		CachePool.getUserRecordCache().refreshData(user.getUserId());
+		return user;
 	}
 
 	public UserRecord activateUserWithOTPVerification(UserRecord user) throws AppException {
@@ -179,7 +181,9 @@ public class AdminHandler {
 		user.setStatus(Status.ACTIVE);
 		user.setModifiedAt(System.currentTimeMillis());
 		user.setModifiedBy(1);
-		return api.changeUserStatus(user);
+		user = api.changeUserStatus(user);
+		CachePool.getUserRecordCache().refreshData(user.getUserId());
+		return user;
 	}
 
 	public UserRecord changeUserStatus(int userId, Status status, String reason, int adminId, String pin)

@@ -89,7 +89,7 @@
 							<%
 							for (Gender gender : Gender.values()) {
 							%>
-							<option value="<%=gender.getGenderId()%>"><%=gender%></option>
+							<option value="<%=gender%>"><%=gender%></option>
 							<%
 							}
 							%>

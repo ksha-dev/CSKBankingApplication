@@ -11,6 +11,7 @@ import com.cskbank.exceptions.messages.InvalidInputMessage;
 public class ConstantsUtil {
 
 	public static final int LIST_LIMIT = 10;
+	public static final int MAX_PAGE_COUNT = 10;
 	public static final double MINIMUM_DEPOSIT_AMOUNT = 2000.0;
 	public static final List<ModifiableField> USER_MODIFIABLE_FIELDS;
 	public static final List<ModifiableField> EMPLOYEE_MODIFIABLE_FIELDS;
@@ -265,7 +266,8 @@ public class ConstantsUtil {
 	}
 
 	public static final int MAX_RETRY_COUNT = 5;
-	public static final int MAX_REGENERATION_COUNT = 5;
-	public static final long EXPIRY_DURATION = 300000L;
+	public static final int MAX_REGENERATION_COUNT = 3;
+	public static final long EXPIRY_DURATION_SECONDS = 300;
+	public static final long EXPIRY_DURATION_MILLIS = EXPIRY_DURATION_SECONDS * 1000;
 
 }

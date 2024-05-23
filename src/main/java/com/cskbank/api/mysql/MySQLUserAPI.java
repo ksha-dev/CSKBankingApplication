@@ -29,6 +29,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
@@ -461,7 +462,7 @@ public class MySQLUserAPI implements UserAPI {
 
 			try (ResultSet countRS = statement.executeQuery()) {
 				if (countRS.next()) {
-					return countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
+					return GetterUtil.getPageCount(countRS.getInt(1));
 				} else {
 					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 				}
@@ -491,8 +492,7 @@ public class MySQLUserAPI implements UserAPI {
 
 			try (ResultSet countRS = statement.executeQuery()) {
 				if (countRS.next()) {
-					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
-					return pageCount < 10 ? pageCount : 10;
+					return GetterUtil.getPageCount(countRS.getInt(1));
 				} else {
 					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 				}

@@ -10,7 +10,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.utility.ValidatorUtil;
 
-class ServerConnection {
+public class ServerConnection {
 	private static Connection serverConnection = null;
 	private static final String SERVER_URL = "jdbc:mysql://localhost:3306";
 	private static final String SERVER_USER_NAME = "admin";
@@ -29,14 +29,14 @@ class ServerConnection {
 		}
 	}
 
-	static Connection getServerConnection() throws AppException {
+	public static Connection getServerConnection() throws AppException {
 		if (ValidatorUtil.isObjectNull(serverConnection)) {
 			throw new AppException(APIExceptionMessage.NO_SERVER_CONNECTION);
 		}
 		return serverConnection;
 	}
 
-	static void closeServerConnection() {
+	public static void closeServerConnection() {
 		if (!ValidatorUtil.isObjectNull(serverConnection)) {
 			try {
 				serverConnection.close();

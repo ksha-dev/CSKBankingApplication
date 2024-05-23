@@ -200,19 +200,6 @@ class MySQLAPIUtil {
 		}
 	}
 
-//	static <E extends Enum<E>> E getEnumConstant(Class<E> type, int id) throws AppException {
-//		ValidatorUtil.validateId(id);
-//		String query = "SELECT value FROM " + type.getSimpleName().toLowerCase() + " WHERE id = " + id + ";";
-//		try (ResultSet result = ServerConnection.getServerConnection().prepareStatement(query).executeQuery()) {
-//			if (result.next()) {
-//				return ConvertorUtil.convertToEnum(type, result.getString(0));
-//			}
-//			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
-//		} catch (SQLException e) {
-//			throw new AppException(e);
-//		}
-//	}
-
 	static String getConstantFromId(Schemas schema, int id) throws AppException {
 		String query = "SELECT " + Column.VALUE + " FROM " + schema + " WHERE " + Column.ID + " = " + id + ";";
 		try (ResultSet result = ServerConnection.getServerConnection().prepareStatement(query).executeQuery()) {

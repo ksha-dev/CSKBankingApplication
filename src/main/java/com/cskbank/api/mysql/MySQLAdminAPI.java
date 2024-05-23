@@ -226,8 +226,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				.prepareStatement(queryBuilder.getQuery())) {
 			try (ResultSet countRS = statement.executeQuery()) {
 				if (countRS.next()) {
-					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
-					return pageCount;
+					return GetterUtil.getPageCount(countRS.getInt(1));
 				} else {
 					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 				}
@@ -300,8 +299,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				.prepareStatement(queryBuilder.getQuery())) {
 			try (ResultSet result = statement.executeQuery()) {
 				while (result.next()) {
-					int pageCount = result.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
-					return pageCount > 10 ? 10 : pageCount;
+					return GetterUtil.getPageCount(result.getInt(1));
 				}
 			}
 			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
@@ -320,8 +318,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				.prepareStatement(queryBuilder.getQuery())) {
 			try (ResultSet countRS = statement.executeQuery()) {
 				if (countRS.next()) {
-					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
-					return pageCount;
+					return GetterUtil.getPageCount(countRS.getInt(1));
 				} else {
 					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 				}
@@ -374,8 +371,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				.prepareStatement(queryBuilder.getQuery())) {
 			try (ResultSet countRS = statement.executeQuery()) {
 				if (countRS.next()) {
-					int pageCount = countRS.getInt(1) / ConstantsUtil.LIST_LIMIT + 1;
-					return pageCount;
+					return GetterUtil.getPageCount(countRS.getInt(1));
 				} else {
 					throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
 				}
@@ -390,7 +386,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.selectColumn(Column.ALL);
 		queryBuilder.fromSchema(Schemas.API_KEYS);
-		queryBuilder.sortField(Column.AK_ID, false);
+		queryBuilder.sortField(Column.AK_ID, true);
 		queryBuilder.limit(ConstantsUtil.LIST_LIMIT);
 		queryBuilder.offset(ConvertorUtil.convertPageToOffset(pageNumber));
 		queryBuilder.end();

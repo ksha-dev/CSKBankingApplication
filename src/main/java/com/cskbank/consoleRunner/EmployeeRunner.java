@@ -20,6 +20,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
@@ -313,7 +314,20 @@ class EmployeeRunner {
 		customer.setLastName(InputUtil.getString());
 
 		log.info("Enter Gender (0 - Male, 1 - Female, 2 - Other): ");
-		customer.setGender(InputUtil.getPositiveInteger());
+		switch (InputUtil.getPositiveInteger()) {
+		case 0:
+			customer.setGender(Gender.MALE);
+			break;
+		case 1:
+			customer.setGender(Gender.FEMALE);
+			break;
+		case 2:
+			customer.setGender(Gender.OTHER);
+			break;
+		default:
+			customer.setGender(Gender.OTHER);
+			break;
+		}
 
 		log.info("Enter Phone number : ");
 		customer.setPhone(InputUtil.getPositiveLong());

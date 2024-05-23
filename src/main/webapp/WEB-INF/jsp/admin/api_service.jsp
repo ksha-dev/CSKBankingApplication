@@ -92,7 +92,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		</table>
 	</div>
 
-	<form action="<%=pageCount == 1 ? "#" : "accounts"%>"
+	<form action="<%=pageCount == 1 ? "#" : "api_service"%>"
 		class="pagination" method="post">
 		<button type="<%=currentPage == 1 ? "reset" : "submit"%>"
 			name="currentPage" value="<%=currentPage - 1%>"

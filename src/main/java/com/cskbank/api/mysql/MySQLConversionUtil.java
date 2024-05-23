@@ -53,7 +53,7 @@ public class MySQLConversionUtil {
 			user.setFirstName(record.getString(2));
 			user.setLastName(record.getString(3));
 			user.setDateOfBirth(record.getLong(4));
-			user.setGender(Integer.parseInt(record.getString(5)));
+			user.setGender(MySQLAPIUtil.getConstantFromId(Schemas.GENDER, record.getInt(5)));
 			user.setAddress(record.getString(6));
 			user.setPhone(record.getLong(7));
 			user.setEmail(record.getString(8));

@@ -16,8 +16,8 @@ response.setHeader("Expires", "0");
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTP Verification | CSK Bank</title>
-<link rel="stylesheet" href="static/css/styles.css">
-<script src="static/script/script.js"></script>
+<link rel="stylesheet" href="../static/css/styles.css">
+<script src="../static/script/script.js"></script>
 <script>
 <%String error = (String) request.getSession(false).getAttribute("error");
 if (error != null) {
@@ -37,14 +37,14 @@ if (error != null) {
 				one time password (OTP) displayed in the mail. If the OTP is entered
 				incorrectly for five consecutive times, sign up process will be
 				blocked</p>
-			<form action="app/verification" method="post" style="display: block;">
+			<form action="verification" method="post" style="display: block;">
 				<input type="text" name="otp" placeholder="Enter OTP"
 					pattern="^\d{6}$" title="OTP must be of 6 digits" min="0"
 					max="999999" required> <br> <br> <input
 					type="submit" value="Verify OTP">
 			</form>
 			<p class="login-element">
-				<a href="verification/resend" style="color: white; font-weight: bold;">Resend
+				<a href="resend" style="color: white; font-weight: bold;">Resend
 					OTP</a>
 			</p>
 		</div>

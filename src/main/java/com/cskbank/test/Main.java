@@ -5,6 +5,7 @@
 //import java.io.IOException;
 //import java.util.Properties;
 //
+package com.cskbank.test;
 
 import com.cskbank.consoleRunner.AppRunner;
 import com.cskbank.exceptions.AppException;

@@ -19,6 +19,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
@@ -211,8 +212,8 @@ class EmployeeServletHelper {
 				newCustomer.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
 				newCustomer.setDateOfBirth(
 						ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
-				newCustomer.setGender(
-						ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.GENDER.parameterName())));
+				newCustomer.setGender(ConvertorUtil.convertToEnum(Gender.class,
+						request.getParameter(Parameters.GENDER.parameterName())));
 				newCustomer.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
 				newCustomer.setPhone(
 						ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
@@ -243,7 +244,8 @@ class EmployeeServletHelper {
 			throws AppException, IOException, ServletException {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		Account.AccountType accountType = (Account.AccountType) ServletUtil.session(request).getAttribute("accountType");
+		Account.AccountType accountType = (Account.AccountType) ServletUtil.session(request)
+				.getAttribute("accountType");
 		double amount = (double) ServletUtil.session(request).getAttribute("amount");
 		String customerType = (String) ServletUtil.session(request).getAttribute("customerType");
 		Account newAccount = null;

@@ -14,6 +14,7 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 
@@ -108,7 +109,20 @@ class AdminRunner {
 					newEmployeeRecord.setLastName(InputUtil.getString());
 
 					log.info("Enter Gender (0 - MALE, 1 - FEMALE, 2 - OTHER): ");
-					newEmployeeRecord.setGender(InputUtil.getPositiveInteger());
+					switch (InputUtil.getPositiveInteger()) {
+					case 0:
+						newEmployeeRecord.setGender(Gender.MALE);
+						break;
+					case 1:
+						newEmployeeRecord.setGender(Gender.FEMALE);
+						break;
+					case 2:
+						newEmployeeRecord.setGender(Gender.OTHER);
+						break;
+					default:
+						newEmployeeRecord.setGender(Gender.OTHER);
+						break;
+					}
 
 					log.info("Enter Date of Birth in ddmmyyyy format: ");
 					newEmployeeRecord.setDateOfBirth(InputUtil.getDate());

@@ -77,15 +77,19 @@ public class OTP {
 		regenerationCount = regenerationCount - 1;
 	}
 
-	public static OTP getNewOTP(String email) throws AppException {
+	public static OTP getNewOTP(String email, int regenerationCount) throws AppException {
 		OTP otpObj = new OTP();
 		otpObj.setOTP(GetterUtil.getOTP() + "");
 		otpObj.setEmail(email);
-		otpObj.setExpiresAt(System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION);
+		otpObj.setExpiresAt(System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION_MILLIS);
 		otpObj.setRetryCount(ConstantsUtil.MAX_RETRY_COUNT);
-		otpObj.setRegenerationCount(ConstantsUtil.MAX_REGENERATION_COUNT);
+		otpObj.setRegenerationCount(regenerationCount);
 		Services.otpCache.setOTP(otpObj);
 		return otpObj;
+	}
+
+	public static OTP getNewOTP(String email) throws AppException {
+		return getNewOTP(email, ConstantsUtil.MAX_REGENERATION_COUNT);
 	}
 
 	public void remove() {

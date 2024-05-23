@@ -19,6 +19,7 @@ import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
@@ -145,7 +146,7 @@ class AdminServletHelper {
 			employee.setDateOfBirth(
 					ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
 			employee.setGender(
-					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.GENDER.parameterName())));
+					ConvertorUtil.convertToEnum(Gender.class, request.getParameter(Parameters.GENDER.parameterName())));
 			employee.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
 			employee.setPhone(
 					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
@@ -282,6 +283,7 @@ class AdminServletHelper {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		String orgName = request.getParameter(Parameters.ORGNAME.parameterName());
 		APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
+		ServletUtil.session(request).setAttribute("error", "API Key generated<br>API Key ID : " + apikey.getAkId());
 
 		// Log
 		AuditLog log = new AuditLog();
@@ -292,6 +294,8 @@ class AdminServletHelper {
 				+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
 		log.setModifiedAt(apikey.getCreatedAt());
 		Services.auditLogService.log(log);
+
+		response.sendRedirect("api_service");
 	}
 
 	public void invalidateAPIKeyPostRequest(HttpServletRequest request, HttpServletResponse response)

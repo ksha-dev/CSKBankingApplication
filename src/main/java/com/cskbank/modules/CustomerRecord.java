@@ -26,8 +26,9 @@ public class CustomerRecord extends UserRecord {
 	}
 
 	public String getPanNumber() throws AppException {
+		System.out.println(this.panNumber);
 		ValidatorUtil.validatePANNumber(panNumber);
 		return this.panNumber;
 	}
-	
+
 }

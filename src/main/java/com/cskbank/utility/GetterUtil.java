@@ -43,4 +43,14 @@ public class GetterUtil {
 	public static int getOTP() {
 		return ThreadLocalRandom.current().nextInt(111111, 999999);
 	}
+
+	public static int getPageCount(int count) {
+		int pageCount = 0;
+		if (count % ConstantsUtil.LIST_LIMIT == 0) {
+			pageCount = count / ConstantsUtil.LIST_LIMIT;
+		} else {
+			pageCount = count / ConstantsUtil.LIST_LIMIT + 1;
+		}
+		return pageCount > ConstantsUtil.MAX_PAGE_COUNT ? ConstantsUtil.MAX_PAGE_COUNT : pageCount;
+	}
 }
