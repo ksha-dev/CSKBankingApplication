@@ -56,6 +56,7 @@ public class ServletUtil {
 
 	public static void checkRequiredParameters(Map<String, String[]> requestParameters,
 			List<Parameters> requiredParameters) throws AppException {
+
 		for (Parameters parameter : requiredParameters) {
 			try {
 				String parameterName = parameter.parameterName();

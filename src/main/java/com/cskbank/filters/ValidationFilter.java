@@ -67,14 +67,14 @@ public class ValidationFilter implements Filter {
 					switch (pathInfo) {
 					case "/login":
 						ServletUtil.checkRequiredParameters(parameters,
-								List.of(Parameters.USERID, Parameters.PASSWORD));
+								List.of(Parameters.USERID, Parameters.PASSWORD, Parameters.RECAPTCHA_RESPONSE));
 						break;
 
 					case "/signup":
 						ServletUtil.checkRequiredParameters(parameters,
 								List.of(Parameters.FIRSTNAME, Parameters.LASTNAME, Parameters.DATEOFBIRTH,
 										Parameters.GENDER, Parameters.ADDRESS, Parameters.PHONE, Parameters.EMAIL,
-										Parameters.AADHAAR, Parameters.PAN));
+										Parameters.AADHAAR, Parameters.PAN, Parameters.RECAPTCHA_RESPONSE));
 						break;
 
 					case "/verification":

@@ -24,7 +24,6 @@ class RedisCache<K, V> extends Cache<K, V> {
 
 	@Override
 	public final V get(K key) throws AppException {
-		System.out.println(moduleName + key);
 		byte[] keyBytes = (moduleName + key).getBytes();
 		V returnValue;
 		byte[] cacheValue = jedis.get(keyBytes);

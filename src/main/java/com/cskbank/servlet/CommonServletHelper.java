@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
+import com.cskbank.handlers.ReCAPTCHAHandler;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.OTP;
@@ -32,8 +33,10 @@ class CommonServletHelper {
 			throws AppException, ServletException, IOException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
+//		String token = request.getParameter(Parameters.RECAPTCHA.parameterName());
 		UserRecord user = null;
 		try {
+//			ReCAPTCHAHandler.reCAPTCHAVerfication(token);
 			user = Services.appOperations.getUser(userId, password);
 
 			if (user.getStatus() == Status.VERIFICATION) {
