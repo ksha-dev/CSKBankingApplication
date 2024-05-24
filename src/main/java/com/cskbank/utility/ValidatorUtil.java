@@ -17,6 +17,7 @@ public class ValidatorUtil {
 	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-z]{2,}+$";
 	private static final String PAN_REGEX = "^[A-Z]{3}[ABCFGHLJPT][A-Z]\\d{4}[A-Z]$";
 	private static final String PASSWORD_REGEX = "^((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%&]).{8,20})$";
+	private static final String AADHAAR_REGEX = "^[2-9]\\d{11}$";
 
 	// Common Validators
 	public static boolean isObjectNull(Object object) {
@@ -64,7 +65,7 @@ public class ValidatorUtil {
 	}
 
 	public static void validateAadhaarNumber(long aadhaarNumber) throws AppException {
-		if (aadhaarNumber < 0 && aadhaarNumber > 999999999999L) {
+		if (!Pattern.matches(AADHAAR_REGEX, aadhaarNumber + "")) {
 			throw new AppException(InvalidInputMessage.INVALID_AADHAAR_NUMBER);
 		}
 	}
@@ -141,8 +142,7 @@ public class ValidatorUtil {
 	}
 
 	public static void validateOTP(String otp) throws AppException {
-		if (!Pattern.matches("^\\d{6}$", otp))
-		{
+		if (!Pattern.matches("^\\d{6}$", otp)) {
 			throw new AppException(InvalidInputMessage.INVALID_OTP);
 		}
 	}

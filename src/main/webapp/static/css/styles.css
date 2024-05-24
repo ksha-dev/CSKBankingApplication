@@ -449,3 +449,11 @@ button {
 	display: flex;
 	flex-direction: column;
 }
+
+.error-text {
+	color: red;
+}
+
+.error-input {
+	outline: 1px solid red !important;
+}

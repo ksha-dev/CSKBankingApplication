@@ -9,20 +9,25 @@ response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
 response.setHeader("pragma", "no-cache");
 response.setHeader("Expires", "0");
 %>
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | CSK Bank</title>
 <link rel="stylesheet" href="static/css/styles.css">
 <script src="static/script/script.js"></script>
-<script src="https://www.google.com/recaptcha/enterprise.js" async defer>
-	</script>
+<script src="static/script/validator.js"></script>
+<script src="static/script/login.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 <script>
+	
 <%String error = (String) request.getSession(false).getAttribute("error");
 if (error != null) {
-	request.getSession(false).removeAttribute("error");%>
-	errorMessage('<%=error%>');
-<%}%>
+	request.getSession(false).removeAttribute("error");
+	out.print("errorMessage('" + error + "')");
+}%>
+	
 </script>
 </head>
 
@@ -34,18 +39,19 @@ if (error != null) {
 				User ID and Password</p>
 			<form action="app/login" id="login-form" method="post">
 				<label for="userId" style="margin-bottom: 10px;">User ID</label> <input
-					type="number" name="<%=Parameters.USERID.parameterName()%>"
-					class="login-element" required> <label for="password"
-					class="login-element">Password</label> <input type="password"
+					id="userId" type="number"
+					name="<%=Parameters.USERID.parameterName()%>" class="login-element"
+					required> <span class="error-text" id="e-userId"></span> <label
+					for="password" class="login-element">Password</label> <input
+					id="password" type="password"
 					name="<%=Parameters.PASSWORD.parameterName()%>"
-					class="login-element"
-					pattern="(?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%&]).{8,20}"
-					title="Must start with a letter, contain at least one number, uppercase, lowercase letter, special character and at least 8 or more characters"
-					required> <label>Human Verification</label>
-				<div class="g-recaptcha" data-theme="dark" id="recaptch-element"
+					class="login-element" required> <span class="error-text"
+					id="e-password"></span> <label>Human Verification</label>
+				<div class="g-recaptcha" data-theme="dark" id="captcha"
 					style="margin: 10px 0px"
-					data-sitekey="6LeyIuYpAAAAABrOOV8oTgPY0BXUAwbq1FXoIPtf"></div>
-				<span id="error-captcha" style="color: red;"></span> <input
+					data-sitekey="6Lfk5-YpAAAAAI5tbo0SdcZFcNTX1FVikXO0jAxi"
+					data-action="LOGIN"></div>
+				<span class="error-text" id="e-captcha"></span> <input
 					class="login-element" type="submit" value="Login"
 					style="margin-top: 20px;">
 			</form>
@@ -56,21 +62,6 @@ if (error != null) {
 			</p>
 		</div>
 	</div>
-	<script>
-		const form = document.getElementById('login-form');
-		const error = document.getElementById('error-captcha');
-
-		
-		form.addEventListener('submit', (e) => {		
-			const captchaResponse = grecaptcha.enterprise.getResponse();
-			if(captchaResponse.length < 1) {
-				e.preventDefault();
-				error.textContent = 'Please click here to verify';
-				setTimeout(() => {
-					error.textContent = null;
-				}, 5000);
-			}
-		});
-	</script>
 </body>
+
 </html>
