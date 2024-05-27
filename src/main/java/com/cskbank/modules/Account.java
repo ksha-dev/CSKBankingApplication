@@ -4,41 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.exceptions.messages.InvalidInputMessage;
-import com.cskbank.modules.Account.AccountType;
+import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.Status;
 
 public class Account implements Serializable {
 
 	public static enum AccountType {
-		SAVINGS(0), CURRENT(1), SALARY(2);
-	
-		private int accountTypeId;
-	
-		private AccountType(int accountTypeId) {
-			this.accountTypeId = accountTypeId;
-		}
-	
-		public int getAccountTypeId() {
-			return this.accountTypeId;
-		}
-	
-		public static AccountType getAccountType(int accountTypeId) throws AppException {
-			switch (accountTypeId) {
-			case 0:
-				return SAVINGS;
-			case 1:
-				return CURRENT;
-			case 2:
-				return SALARY;
-	
-			default:
-				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
-			}
-		}
-	
+		SAVINGS, CURRENT, SALARY;
+
 		public static AccountType convertStringToEnum(String label) throws AppException {
 			try {
 				return valueOf(label);
@@ -90,12 +64,22 @@ public class Account implements Serializable {
 		this.lastTransactionAt = lastTransactionDateTime;
 	}
 
-	public void setStatus(int statusId) throws AppException {
-		this.status = Status.getStatus(statusId);
+	public void setStatus(String status) throws AppException {
+		this.status = ConvertorUtil.convertToEnum(Status.class, status);
 	}
 
-	public void setType(int accountTypeId) throws AppException {
-		this.type = Account.AccountType.getAccountType(accountTypeId);
+	public void setStatus(Status status) throws AppException {
+		ValidatorUtil.validateObject(status);
+		this.status = status;
+	}
+
+	public void setType(String type) throws AppException {
+		this.type = ConvertorUtil.convertToEnum(AccountType.class, type);
+	}
+
+	public void setType(AccountType type) throws AppException {
+		ValidatorUtil.validateObject(type);
+		this.type = type;
 	}
 
 	public void setBalance(double balance) {

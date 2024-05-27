@@ -15,6 +15,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Account.AccountType;
+import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
@@ -128,31 +129,63 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	public long createAccount(Account account) throws AppException {
 		ValidatorUtil.validateObject(account);
 
+		Branch branch = getBranchDetails(account.getBranchId());
+		branch.setAccountsCount(branch.getAccountsCount() + 1);
+		account.setAccountNumber(
+				Long.parseLong(String.format("%d%010d", branch.getBranchId(), branch.getAccountsCount())));
+		System.out.println(account.getAccountNumber());
+
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.ACCOUNTS);
-		queryBuilder.insertColumns(List.of(Column.USER_ID, Column.TYPE, Column.BRANCH_ID, Column.OPENING_DATE,
-				Column.CREATED_AT, Column.MODIFIED_AT, Column.MODIFIED_BY));
+		queryBuilder.insertColumns(List.of(Column.ACCOUNT_NUMBER, Column.USER_ID, Column.TYPE, Column.BRANCH_ID,
+				Column.OPENING_DATE, Column.CREATED_AT, Column.MODIFIED_AT, Column.MODIFIED_BY));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
-				.prepareStatement(queryBuilder.getQuery(), Statement.RETURN_GENERATED_KEYS)) {
-			statement.setInt(1, account.getUserId());
-			statement.setString(2, account.getAccountType().getAccountTypeId() + "");
-			statement.setInt(3, account.getBranchId());
-			statement.setLong(4, account.getOpeningDate());
-			statement.setLong(5, account.getCreatedAt());
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, account.getAccountNumber());
+			statement.setInt(2, account.getUserId());
+			statement.setInt(3,
+					MySQLAPIUtil.getIdFromConstantValue(Schemas.ACCOUNT_TYPES, account.getAccountType().toString()));
+			statement.setInt(4, account.getBranchId());
+			statement.setLong(5, account.getOpeningDate());
 			statement.setLong(6, account.getCreatedAt());
-			statement.setInt(7, account.getModifiedBy());
+			statement.setLong(7, account.getCreatedAt());
+			statement.setInt(8, account.getModifiedBy());
+			ServerConnection.startTransaction();
+			System.out.println(statement);
+			if (statement.executeUpdate() == 1) {
+				branch.setModifiedBy(account.getModifiedBy());
+				branch.setModifiedAt(account.getModifiedAt());
 
-			int response = statement.executeUpdate();
-			try (ResultSet key = statement.getGeneratedKeys()) {
-				if (key.next() && response == 1) {
-					return key.getLong(1);
-				} else {
-					throw new AppException(APIExceptionMessage.ACCOUNT_CREATION_FAILED);
+				MySQLQuery branchUpdateQuery = new MySQLQuery();
+				branchUpdateQuery.update(Schemas.BRANCH);
+				branchUpdateQuery.setColumn(Column.ACCOUNTS);
+				branchUpdateQuery.separator();
+				branchUpdateQuery.columnEquals(Column.MODIFIED_BY);
+				branchUpdateQuery.separator();
+				branchUpdateQuery.columnEquals(Column.MODIFIED_AT);
+				branchUpdateQuery.where();
+				branchUpdateQuery.columnEquals(Column.BRANCH_ID);
+				branchUpdateQuery.end();
+				System.out.println(branchUpdateQuery.getQuery());
+				try (PreparedStatement branchUpdateStatement = ServerConnection.getServerConnection()
+						.prepareStatement(branchUpdateQuery.getQuery())) {
+					branchUpdateStatement.setLong(1, branch.getAccountsCount());
+					branchUpdateStatement.setInt(2, branch.getModifiedBy());
+					branchUpdateStatement.setLong(3, branch.getModifiedAt());
+					branchUpdateStatement.setInt(4, branch.getBranchId());
+					System.out.println(branchUpdateStatement);
+
+					if (branchUpdateStatement.executeUpdate() == 1) {
+						ServerConnection.endTransaction();
+						return account.getAccountNumber();
+					}
 				}
 			}
+			throw new AppException(APIExceptionMessage.ACCOUNT_CREATION_FAILED);
 		} catch (SQLException e) {
+			ServerConnection.reverseTransaction();
 			throw new AppException(e.getMessage());
 		}
 	}
@@ -188,7 +221,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 	}
 
 	@Override
-	public int getNumberOfPagesOfAccounts(int branchId) throws AppException {
+	public int getNumberOfPagesOfAccountsInBranch(int branchId) throws AppException {
 		ValidatorUtil.validateId(branchId);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
@@ -279,7 +312,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setString(1, account.getStatus().getStatusId() + "");
+			statement.setInt(1, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, account.getStatus().toString()));
 			statement.setInt(2, account.getModifiedBy());
 			statement.setLong(3, account.getModifiedAt());
 			statement.setLong(4, account.getAccountNumber());

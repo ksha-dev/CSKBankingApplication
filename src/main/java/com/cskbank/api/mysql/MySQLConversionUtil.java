@@ -72,12 +72,12 @@ public class MySQLConversionUtil {
 		try {
 			account.setAccountNumber(accountRS.getLong(1));
 			account.setUserId(accountRS.getInt(2));
-			account.setType(Integer.parseInt(accountRS.getString(3)));
+			account.setType(MySQLAPIUtil.getConstantFromId(Schemas.ACCOUNT_TYPES, accountRS.getInt(3)));
 			account.setBranchId(accountRS.getInt(4));
 			account.setOpeningDate(accountRS.getLong(5));
 			account.setLastTransactedAt(accountRS.getLong(6));
 			account.setBalance(accountRS.getDouble(7));
-			account.setStatus(Integer.parseInt(accountRS.getString(8)));
+			account.setStatus(MySQLAPIUtil.getConstantFromId(Schemas.STATUS, accountRS.getInt(8)));
 			account.setCreatedAt(accountRS.getLong(9));
 			account.setModifiedBy(accountRS.getInt(10));
 			account.setModifiedAt(accountRS.getLong(11));
@@ -117,9 +117,10 @@ public class MySQLConversionUtil {
 			branch.setPhone(branchRS.getLong(3));
 			branch.setEmail(branchRS.getString(4));
 			branch.setIfscCode(branchRS.getString(5));
-			branch.setCreatedAt(branchRS.getLong(6));
-			branch.setModifiedBy(branchRS.getInt(7));
-			branch.setModifiedAt(branchRS.getLong(8));
+			branch.setAccountsCount(branchRS.getLong(6));
+			branch.setCreatedAt(branchRS.getLong(7));
+			branch.setModifiedBy(branchRS.getInt(8));
+			branch.setModifiedAt(branchRS.getLong(9));
 		} catch (SQLException e) {
 		}
 		return branch;

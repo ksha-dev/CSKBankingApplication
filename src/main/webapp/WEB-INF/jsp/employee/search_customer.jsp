@@ -61,7 +61,8 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 						<h4 class="profile-element"><%=customer.getStatus()%></h4>
 					</div>
 					<%if(user.getType()==UserRecord.Type.ADMIN) {%>
-					<button onclick="editStatus()">Change Status</button><%}%>
+					<button onclick="editStatus()">Change Status</button>
+					<%}%>
 				</div>
 			</div>
 
@@ -116,8 +117,8 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					<td><%=account.getAccountNumber()%></td>
 					<td><%=account.getAccountType()%></td>
 					<td>Rs. <%=account.getBalance()%></td>
-					<td><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate()).format(DateTimeFormatter.ISO_DATE)%></td>
-					<td><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></td>
+					<td><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate())%></td>
+					<td><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
 					<td>
 						<form action="search" method="post">
@@ -143,7 +144,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 
 	</div>
 	</section>
-<%if(user.getType()==UserRecord.Type.ADMIN) {%>
+	<%if(user.getType()==UserRecord.Type.ADMIN) {%>
 	<script>
 	const status = document.getElementById('status');
 		function cancelEditStatus() {
@@ -167,19 +168,20 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 }%>
 		'</select></div></div><div class="dual-element-row"><p class="profile-element">Reason</p>'
 					+ '<div class="profile-element"><input id="reason" type="text" name="reason" placeholder="Enter the reason for status change" required></div></div>'
-					+ '<div style="display: flex;"><input type="hidden" name="operation" value="authorize_change_status"><input type="hidden" name="userId" value="'+<%=customer.getUserId()%>+'">'
-					+'<button type="submit" onclick="changeStatusValidation()">Confirm</button><button type="button" onclick="cancelEditStatus()" style="margin-left: 20px;">Cancel</button></div></form>';
+					+ '<div style="display: flex;"><input type="hidden" name="operation" value="authorize_change_status"><input type="hidden" name="userId" value="'+<%=customer.getUserId()%>
+		+ '">'
+					+ '<button type="submit" onclick="changeStatusValidation()">Confirm</button><button type="button" onclick="cancelEditStatus()" style="margin-left: 20px;">Cancel</button></div></form>';
 		}
-		
+
 		function changeStatusValidation() {
 			const changedStatus = document.getElementById('selected-status').value;
-			if(changedStatus==='null'){
+			if (changedStatus === 'null') {
 				runtimeError('Status was not changed');
 				event.preventDefault();
 			}
 		}
 	</script>
-<%}%>
+	<%}%>
 
 </body>
 

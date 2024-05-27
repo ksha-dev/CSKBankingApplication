@@ -1,5 +1,6 @@
 var form;
 function initialize() {
+	initializeDOBMax();
 	form = document.getElementById('signup-form');
 	form.addEventListener('submit', (e) => submitValidation(e));
 }
@@ -16,7 +17,6 @@ function submitValidation(e) {
 	addressCheck();
 	aadhaarCheck();
 	panCheck();
-	captchaCheck();
 }
 
 document.addEventListener('DOMContentLoaded', () => initialize());

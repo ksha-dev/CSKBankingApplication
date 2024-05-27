@@ -20,17 +20,22 @@ function userIdCheck() {
 }
 
 function passwordCheck() {
-	const password = document.getElementById('password').value;
+	passwordCheck('password', "Password");
+}
+
+function passwordCheck(elementId, displayName) {
+	const password = document.getElementById(elementId).value;
 	if (password === null) {
-		spanErrorMessageBelowInput("password", "Enter your password");
+		spanErrorMessageBelowInput(elementId, "Enter your " + displayName);
 	} else if (new RegExp("^((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%&]).{8,20})$").test(password) === false) {
-		spanErrorMessageBelowInput("password", "Invalid Password");
+		spanErrorMessageBelowInput(elementId, "Invalid Password");
 		runtimeError("Password must start with a letter, " +
 			"contain atleast one speical character, " +
 			"<br>number, mixed cases and should range " +
 			"between 8 to 20 characters");
 	}
 }
+
 
 function captchaCheck() {
 	const captchaResponse = grecaptcha.enterprise.getResponse();
@@ -78,4 +83,81 @@ function aadhaarCheck() {
 
 function panCheck() {
 	regexValidator("pan", "PAN", "^[A-Z]{3}[ABCFGHLJPT][A-Z]\\d{4}[A-Z]$");
+}
+
+function accountTypeCheck() {
+	nullValidator("accountType", "Account Type");
+}
+
+function amountCheck() {
+	nullValidator('amount', "Amount");
+	if (document.getElementById("amount").value <= 0) {
+		spanErrorMessageBelowInput("amount", "Amount cannot be negative or zero");
+	}
+}
+
+function customerTypeCheck() {
+	nullValidator('customerType', "Customer Type");
+}
+
+function searchByCheck() {
+	nullValidator('searchBy', "Search By");
+}
+
+function searchValueCheck() {
+	nullValidator('searchValue', "Search Value");
+	if (document.getElementById("searchValue").value <= 0) {
+		spanErrorMessageBelowInput("searchValue", "Search Value cannot be negative or zero");
+	}
+}
+
+function oldPasswordCheck() {
+	passwordCheck('oldPassword', "Old Password");
+}
+
+function newPasswordCheck() {
+	passwordCheck('newPassword', "New Password");
+	if ($("#newPassword").val() === $("#oldPassword").val()) {
+		spanErrorMessageBelowInput("newPassword", "New password cannot be same as Old password");
+	}
+}
+
+function confirmPasswordCheck() {
+	passwordCheck('confirmPassword', 'Confirm Password');
+	if ($("#newPassword").val() !== $("#confirmPassword").val()) {
+		spanErrorMessageBelowInput("confirmPassword", "Password do not match");
+	}
+}
+
+function fromAccountCheck() {
+	nullValidator("fromAccount", "Sender Account");
+}
+
+function toAccountCheck() {
+	nullValidator("toAccount", "Receipient Account");
+}
+
+function remarksCheck() {
+	nullValidator("remarks", "Remarks");
+	if ($("#remarks").val().length < 5) {
+		spanErrorMessageBelowInput("remarks", "Remarks must contain a minimum of 5 characters");
+	}
+}
+
+function accountNumberCheck() {
+	nullValidator("accountNumber", "Account Number");
+}
+
+function transactionLimitCheck() {
+	nullValidator("transactionLimit", "Transaction Limit");
+}
+
+
+
+function startDateCheck() {
+	nullValidator("startDate", "Start Date");
+}
+
+function endDateCheck() {
+	nullValidator("endDate", "End Date");
 }

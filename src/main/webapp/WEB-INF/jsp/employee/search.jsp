@@ -9,18 +9,22 @@
 <head>
 <title>Search</title>
 <%@include file="../include/head.jsp"%>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/search.js"></script>
 </head>
 
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Search</h3>
-	<form action="search" id="transferForm" class="container"
+	<form action="search" id="search-form" class="container"
 		style="width: 50%;" method="post">
 		<div class="dual-element-row">
-			<label for="search_by">Search By</label><select name="searchBy"
-				id="search_by" required>
-				<option style="display: none" value="null">Select Search By</option>
+			<label>Search By</label><select name="searchBy" id="searchBy"
+				required>
+				<option style="display: none" value=null>Select Search By</option>
 				<option value="accountNumber">Account Number</option>
 				<option value="customerId">Customer ID</option>
 				<%
@@ -33,26 +37,15 @@
 				%>
 			</select>
 		</div>
+		<span id="e-searchBy" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="id">Search Value</label> <input id="id" type="number"
+			<label>Search Value</label> <input id="searchValue" type="number"
 				name="searchValue" placeholder="Enter Search Value" required>
 		</div>
-		<span id="error-message" style="color: red;"></span> <input
-			type="submit" value="Search" class="dual-element-row"
-			onclick="validateSearchBy()">
+		<span id="e-searchValue" class="error-text"></span> <input
+			type="submit" value="Search" class="dual-element-row">
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
-	<script>
-		function validateSearchBy() {
-			const searchBy = document.getElementById("search_by");
-			const error = document.getElementById("error-message");
-			error.textContent = "";
-			if (searchBy.value === "null") {
-				error.textContent = "Please choose any one of the search by field";
-				event.preventDefault();
-			}
-		}
-	</script>
 </body>
 
 </html>

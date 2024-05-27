@@ -9,24 +9,22 @@
 <head>
 <title>Transfer</title>
 <%@include file="../include/head.jsp"%>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/transfer.js"></script>
 </head>
 
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Transfer</h3>
-	<form action="authorization" id="transferForm" class="container"
+	<form action="authorization" id="transfer-form" class="container"
 		style="width: 50%;" method="post">
+
 		<div class="dual-element-row">
-			<label for="transferWithinBank">Transfer Within Bank</label>
-			<div style="justify-content: start; width: 45%;">
-				<input id="transferWithinBank" type="checkbox"
-					name="transferWithinBank">
-			</div>
-		</div>
-		<div class="dual-element-row">
-			<label for="from-account">Select Account</label> <select
-				name="fromAccount" id="from-account" required>
+			<label>Select Account</label> <select name="fromAccount"
+				id="fromAccount" required>
 				<option style="display: none" value="null">Select Account</option>
 
 				<%
@@ -42,87 +40,30 @@
 				%>
 			</select>
 		</div>
+		<span id="e-fromAccount" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="to-account">Receipent Account Number</label> <input
-				id="to-account" type="number" name="toAccount"
-				placeholder="Enter Account Number" required>
+			<label>Receipent Account Number</label> <input id="toAccount"
+				type="number" name="toAccount" placeholder="Enter Account Number"
+				required>
 		</div>
-
-
-
-		<!-- <div class="dual-element-row" id="ifsc">
-			<label for="ifsc">Receipent IFSC Code</label> <input type="text"
-				id="ifscCode" name="ifsc" placeholder="Enter IFSC Code">
-		</div> -->
-
+		<span id="e-toAccount" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="amount">Amount to Transfer</label> <input type="number"
-				step=".01" id="amount" name="amount" placeholder="Enter Amount"
+			<label>Amount to Transfer</label> <input type="number" step=".01"
+				id="amount" name="amount" placeholder="Enter Amount"
 				inputmode="numeric" required>
 		</div>
-
+		<span id="e-amount" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="remarks">Remarks</label> <input type="text"
-				placeholder="Enter remarks" name="remarks" id="remarks" required>
+			<label>Remarks</label> <input type="text" placeholder="Enter remarks"
+				name="remarks" id="remarks" required>
 		</div>
-		<span id="error-message" style="color: red;"></span> <input
-			type="hidden" name="operation" value="authorize_transaction">
-		<input type="submit" value="Submit" class="dual-element-row"
-			onclick="validateAccountSelection()">
+		<span id="e-remarks" class="error-text"></span><input type="hidden"
+			name="operation" value="authorize_transaction"> <input
+			id="transferWithinBank" type=hidden value="on"
+			name="transferWithinBank"><input type="submit" value="Submit"
+			class="dual-element-row">
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
-	<script>
-		function validateAccountSelection() {
-			const fromAccount = document.getElementById("from-account");
-			const transferWithinBank = document
-					.getElementById("transferWithinBank");
-			// const ifscField = document.getElementById("ifscCode");
-			const error = document.getElementById("error-message");
-			error.textContent = "";
-			if (fromAccount.value === "null") {
-				error.textContent = "Please Select any one of the accounts";
-				event.preventDefault();
-			}
-
-			// 			if (!transferWithinBank.checked) {
-			// 				if (ifscField.value === "") {
-			// 					error.textContent = "Please Enter IFSC Code";
-			// 					event.preventDefault();
-			// 				}
-			// 			}
-		}
-
-		// 		function ifscDisplay() {
-		// 			const transferWithinBank = document
-		// 					.getElementById("transferWithinBank");
-		// 			const ifscField = document.getElementById("ifsc");
-		// 			ifscField.style.display = 'none';
-
-		// 			if (!transferWithinBank.checked) {
-		// 				ifscField.style.display = 'flex';
-		// 			}
-		// 		}
-		// document
-		// 	.getElementById("transferForm")
-		// 	.addEventListener(
-		// 		"submit",
-		// 		function (event) {
-		// 			event.preventDefault();
-		// 			const fromAccount = document
-		// 				.getElementById("from-account");
-
-		// 			console.log(fromAccount);
-		// 			if (fromAccount.value === "null") {
-		// 				document.getElementById("error-message").textContent = "Please Select any one of the accounts";
-		// 				event.preventDefault();
-		// 			} else {
-		// 				var confirmation = confirm("Confirmation of Transfer\nOn confirmation, do not press back before the transaction completes");
-		// 				if (confirmation) {
-		// 					this.submit();
-		// 				}
-		// 			}
-		// 		});
-	</script>
 </body>
 
 </html>

@@ -24,17 +24,42 @@ int currentPage = (int) request.getAttribute("currentPage");
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
+	<%
+	if (user.getType() == UserRecord.Type.ADMIN) {
+	%>
+	<script>
+		document.getElementById('li-branches').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
+		document.getElementById('a-branches').href = '#';
+	</script>
+
+	<div
+		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
+		<button style="z-index: 0;" type="button"
+			onclick="location.href='branches'">
+			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
+		</button>
+	</div>
+	<br>
+	<%
+	}
+	%>
 	<div style="display: flex; justify-content: space-between;">
 		<h3 class="content-title">
 			Accounts in
 			<%=branch.getAddress()%>
 			Branch
 		</h3>
+		<%
+		if (user.getType() == UserRecord.Type.EMPLOYEE) {
+		%>
 		<form action="account_details">
 			<input type="number" name="account_number"
 				placeholder="Search account number" style="margin-right: 50px"
 				required="required">
 		</form>
+		<%
+		}
+		%>
 	</div>
 	<%
 	if (accounts.isEmpty()) {
@@ -68,13 +93,17 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td><%=account.getAccountType()%></td>
 					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
+					<td><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
-					<% if(account.getStatus()!=Status.CLOSED) { %>
+					<%
+					if (account.getStatus() != Status.CLOSED) {
+					%>
 					<td><a
 						href="account_details?accountNumber=<%=account.getAccountNumber()%>"><i
 							class="material-icons">keyboard_arrow_right</i></a></td>
-					<% } %>
+					<%
+					}
+					%>
 				</tr>
 				<%
 				}

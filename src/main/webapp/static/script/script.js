@@ -49,4 +49,11 @@ function spanErrorMessage(elementId, message) {
 	setTimeout(() => {
 		$("#e-" + elementId).text("");
 	}, 5000);
-} 
+}
+
+
+function initializeDOBMax() {
+	const dob = document.getElementById('dateOfBirth');
+	var currentDate = new Date();
+	dob.max = currentDate.toISOString().split('T')[0];
+}

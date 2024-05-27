@@ -1,6 +1,8 @@
 package com.cskbank.filters;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -53,8 +55,9 @@ public class RequestFilter implements Filter {
 		String url = req.getServletPath();
 
 		if (!url.startsWith("/static")) {
-			System.out.println("IP : " + req.getRemoteHost() + " | Servlet : " + req.getServletPath() + " | Path : "
-					+ req.getPathInfo() + " | Method : " + req.getMethod());
+			System.out.println(String.format("%20s | %16s | %5s | %-8s | %s",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")), req.getRemoteHost(),
+					req.getMethod(), req.getServletPath(), req.getPathInfo()));
 		}
 
 		if (url.equals("/index.html")) {

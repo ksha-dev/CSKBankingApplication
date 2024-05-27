@@ -13,35 +13,37 @@
 <head>
 <title>Statement</title>
 <%@include file="../include/head.jsp"%>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/statement.js"></script>
 </head>
 
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Statement</h3>
 	<form action="statement" method="post" class="container"
-		style="width: 50%;" id="statement_form">
+		style="width: 50%;" id="statement-form">
 		<%
 		String accountNumber = request.getParameter("accountNumber");
-				long selectedAccount = 0;
-				if (!Objects.isNull(accountNumber)) {
+		long selectedAccount = 0;
+		if (!Objects.isNull(accountNumber)) {
 			selectedAccount = Long.parseLong(accountNumber);
-				}
-				if (user.getType() == UserRecord.Type.CUSTOMER) {
+		}
+		if (user.getType() == UserRecord.Type.CUSTOMER) {
 		%>
 		<div class="dual-element-row">
-			<label for="account_number">Account</label> <select
-				id="account_number" name="accountNumber" required>
+			<label>Account</label> <select id="accountNumber"
+				name="accountNumber" required>
 				<option style="display: none" value="null">Select Account</option>
 				<%
 				Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("accounts");
 				for (Account account : accounts.values()) {
-				%>
-				<option value="<%=account.getAccountNumber()%>"
-					<%=(selectedAccount == account.getAccountNumber()) ? "selected" : ""%>>
-					<%=account.getAccountNumber()%> -
-					<%=account.getAccountType()%>
-				</option>
-				<%
+					out.print("<option value='" + account.getAccountNumber() + "' ");
+					if (selectedAccount == account.getAccountNumber()) {
+						out.print("selected");
+					}
+					out.print(">" + account.getAccountType() + " - " + account.getAccountNumber() + "</option>");
 				}
 				%>
 			</select>
@@ -50,17 +52,18 @@
 		} else {
 		%>
 		<div class="dual-element-row">
-			<label for="account_number">Account</label> <input type="number"
-				placeholder="Enter Account Number" id="account_number"
+			<label>Account</label> <input type="number"
+				placeholder="Enter Account Number" id="accountNumber"
 				<%=(selectedAccount > 0 ? "value=\"" + selectedAccount + "\"" : "")%>
 				name="accountNumber" required>
 		</div>
 		<%
 		}
 		%>
+		<span id="e-accountNumber" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="transaction_limit">Duration</label> <select
-				name="transactionLimit" id="transaction_limit" required>
+			<label>Duration</label> <select name="transactionLimit"
+				onclick="triggerTransactionLimit()" id="transactionLimit" required>
 				<option style="display: none" value="null">Statement
 					Duration</option>
 				<option value="<%=TransactionHistoryLimit.RECENT%>">Last 10
@@ -74,25 +77,30 @@
 				<option value="custom">Custom</option>
 			</select>
 		</div>
-		<div style="width: 100%; display: none;" id="custom-dates">
+		<span id="e-transactionLimit" class="error-text"></span>
+		<div style="width: 100%; display: none;" id="customDates">
 			<div class="dual-element-row">
-				<label for="startDate">Start Date</label> <input type="date"
-					id="startDate" name="startDate" max="2024-04-03">
+				<label>Start Date</label> <input type="date" id="startDate"
+					name="startDate" max="2024-04-03">
 			</div>
+			<span id="e-startDate" class="error-text"></span>
+
 			<div class="dual-element-row">
-				<label for="endDate">End Date</label> <input type="date"
-					id="endDate" name="endDate" max="2024-04-03">
+				<label>End Date</label> <input type="date" id="endDate"
+					name="endDate" max="2024-04-03">
 			</div>
+			<span id="e-endDate" class="error-text"></span>
+
 		</div>
-		<span id="error" style="color: red;"></span> <input type="hidden"
+		<span id="error" class="error-text"></span> <input type="hidden"
 			name="<%=Parameters.PAGECOUNT.parameterName()%>" value="0"> <input
 			type="hidden" name="<%=Parameters.CURRENTPAGE.parameterName()%>"
 			value="1"> <input class="dual-element-row" type="submit"
-			onclick="validateStatementSelection()" value="View Statement">
+			value="View Statement">
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
 </body>
-<script>
+<!-- <script>
 	const customSelect = document.getElementById('custom-dates');
 	const transactionLimit = document.getElementById('transaction_limit')
 	const startDate = document.getElementById('startDate');
@@ -138,5 +146,5 @@
 		}
 	}
 </script>
-
+ -->
 </html>

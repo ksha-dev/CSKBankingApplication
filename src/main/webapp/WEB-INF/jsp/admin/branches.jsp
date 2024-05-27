@@ -44,6 +44,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td>Phone</td>
 					<td>Email</td>
 					<td>IFSC</td>
+					<td>Accounts Count</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -57,6 +58,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td><%=branch.getPhone()%>
 					<td><%=branch.getEmail()%></td>
 					<td><%=branch.getIfscCode()%></td>
+					<td><%=branch.getAccountsCount()%></td>
+					<td><a
+						href="branch_accounts?branchId=<%=branch.getBranchId()%>"><i
+							class="material-icons">keyboard_arrow_right</i></a></td>
 				</tr>
 				<%
 				}

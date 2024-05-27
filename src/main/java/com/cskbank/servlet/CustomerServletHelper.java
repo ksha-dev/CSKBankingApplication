@@ -1,17 +1,19 @@
 package com.cskbank.servlet;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
+import com.cskbank.exceptions.messages.ServletExceptionMessage;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.AuditLog;
@@ -19,13 +21,12 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.ServletUtil;
-import com.cskbank.utility.ValidatorUtil;
-import com.mysql.cj.Session;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 class CustomerServletHelper {
 
@@ -83,13 +84,15 @@ class CustomerServletHelper {
 			transaction.setRemarks(remarks);
 			transaction.setUserId(customer.getUserId());
 			if (transferWithinBank) {
+				Services.employeeOperations.getAccountDetails(transacted_account_number);
 				transaction.setTransferWithinBank();
 			} else {
 				transaction.setTransferOutsideBank();
 			}
 
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_transaction")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("transaction", transaction);
+			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("transfer");
@@ -98,14 +101,12 @@ class CustomerServletHelper {
 
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, AppException {
-		Transaction transaction = (Transaction) ServletUtil.session(request).getAttribute("transaction");
+		Transaction transaction = ServletUtil.getSessionObject(request, "transaction");
 		if (transaction == null) {
+			ServletUtil.session(request).setAttribute("error", "Invalid transaction");
 			response.sendRedirect("transfer");
 			return;
 		}
-		ServletUtil.session(request).removeAttribute("transaction");
-		ServletUtil.session(request).removeAttribute("redirect");
-		ServletUtil.session(request).removeAttribute("operation");
 
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 
@@ -173,8 +174,8 @@ class CustomerServletHelper {
 				}
 				request.getSession(false).setAttribute("fields", fields);
 			}
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_profile_update")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_profile_update");
+			response.sendRedirect("authorization");
 		} catch (Exception e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("profile");
@@ -190,15 +191,15 @@ class CustomerServletHelper {
 			List<ModifiableField> fields = (List) ServletUtil.session(request).getAttribute("fields");
 			for (ModifiableField field : fields) {
 				Object value = ServletUtil.session(request).getAttribute(field.toString().toLowerCase());
+				ServletUtil.session(request).removeAttribute(field.toString().toLowerCase());
 				Services.customerOperations.updateUserDetails(customerId, field, value, pin);
 			}
 			user = Services.customerOperations.getCustomerRecord(customerId);
 			ServletUtil.session(request).setAttribute("user", user);
+			ServletUtil.session(request).removeAttribute("fields");
 			request.setAttribute("status", true);
-			request.setAttribute("operation", "profile_update");
 			request.setAttribute("message",
 					"The profile details have been updated\nThe changes will be reflected shortly");
-			request.setAttribute("redirect", "profile");
 
 			// Log
 			AuditLog log = new AuditLog();
@@ -212,10 +213,8 @@ class CustomerServletHelper {
 
 		} catch (AppException e) {
 			e.printStackTrace();
-			request.setAttribute("status", true);
-			request.setAttribute("operation", "profile_update");
+			request.setAttribute("status", false);
 			request.setAttribute("message", "An error occured. " + e.getMessage());
-			request.setAttribute("redirect", "profile");
 
 			// Log
 			AuditLog log = new AuditLog();
@@ -228,6 +227,7 @@ class CustomerServletHelper {
 			Services.auditLogService.log(log);
 
 		}
+		request.setAttribute("redirect", "profile");
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
 }

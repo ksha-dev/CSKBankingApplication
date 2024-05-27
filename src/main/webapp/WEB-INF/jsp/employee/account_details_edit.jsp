@@ -102,7 +102,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 						<%
 						for (Gender gender : Gender.values()) {
 						%>
-						<option value="<%=gender.getGenderId()%>"
+						<option value="<%=gender%>"
 							<%=customer.getGender() == gender ? "selected" : ""%>><%=gender%></option>
 						<%
 						}

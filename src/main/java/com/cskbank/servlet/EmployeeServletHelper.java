@@ -19,6 +19,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
@@ -58,14 +59,28 @@ class EmployeeServletHelper {
 					.convertStringToInteger(request.getParameter(Parameters.PAGECOUNT.parameterName()));
 		}
 
-		if (pageCount <= 0) {
-			pageCount = Services.employeeOperations.getBranchAccountsPageCount(employee.getUserId());
+		int branchId = employee.getBranchId();
+
+		if (employee.getType() == Type.ADMIN) {
+			String branchIdParam = request.getParameter(Parameters.BRANCHID.parameterName());
+			if (!ValidatorUtil.isObjectNull(branchIdParam)) {
+				branchId = ConvertorUtil.convertStringToInteger(branchIdParam);
+			}
+			if (pageCount <= 0) {
+				pageCount = Services.adminOperations.getPageCountOfAccountsInBranch(branchId);
+			}
+			request.setAttribute("accounts", Services.adminOperations.getListOfAccountsInBranch(branchId, currentPage));
+		} else {
+			if (pageCount <= 0) {
+				pageCount = Services.employeeOperations.getBranchAccountsPageCount(employee.getUserId());
+			}
+			request.setAttribute("accounts",
+					Services.employeeOperations.getListOfAccountsInBranch(employee.getUserId(), currentPage));
 		}
-		request.setAttribute("accounts",
-				Services.employeeOperations.getListOfAccountsInBranch(employee.getUserId(), currentPage));
+
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
-		request.setAttribute("branch", Services.employeeOperations.getBrachDetails(employee.getBranchId()));
+		request.setAttribute("branch", Services.employeeOperations.getBrachDetails(branchId));
 		request.getRequestDispatcher("/WEB-INF/jsp/employee/branch_accounts.jsp").forward(request, response);
 	}
 
@@ -134,8 +149,8 @@ class EmployeeServletHelper {
 			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
 			ServletUtil.session(request).setAttribute("amount", amount);
 			ServletUtil.session(request).setAttribute("type", type);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_transaction")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("transaction");
@@ -146,9 +161,10 @@ class EmployeeServletHelper {
 			throws AppException, IOException, ServletException {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		long accountNumber = (long) ServletUtil.session(request).getAttribute("accountNumber");
-		double amount = (double) ServletUtil.session(request).getAttribute("amount");
-		TransactionType type = (TransactionType) ServletUtil.session(request).getAttribute("type");
+		long accountNumber = ServletUtil.getSessionObject(request, "accountNumber");
+		double amount = ServletUtil.getSessionObject(request, "amount");
+		TransactionType type = ServletUtil.getSessionObject(request, "type");
+
 		try {
 			Transaction transaction;
 			if (type == TransactionType.CREDIT) {
@@ -232,8 +248,8 @@ class EmployeeServletHelper {
 			ServletUtil.session(request).setAttribute("accountType", accountType);
 			ServletUtil.session(request).setAttribute("amount", amount);
 			ServletUtil.session(request).setAttribute("customerType", customerType);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_open_account")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_open_account");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("open_account");
@@ -243,15 +259,16 @@ class EmployeeServletHelper {
 	public void processOpenAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
+
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		Account.AccountType accountType = (Account.AccountType) ServletUtil.session(request)
-				.getAttribute("accountType");
-		double amount = (double) ServletUtil.session(request).getAttribute("amount");
-		String customerType = (String) ServletUtil.session(request).getAttribute("customerType");
+
+		Account.AccountType accountType = ServletUtil.getSessionObject(request, "accountType");
+		double amount = ServletUtil.getSessionObject(request, "amount");
+		String customerType = ServletUtil.getSessionObject(request, "customerType");
 		Account newAccount = null;
 		try {
 			if (customerType.equals("new")) {
-				CustomerRecord newCustomer = (CustomerRecord) ServletUtil.session(request).getAttribute("newCustomer");
+				CustomerRecord newCustomer = ServletUtil.getSessionObject(request, "newCustomer");
 				newAccount = Services.employeeOperations.createNewCustomerAndAccount(newCustomer, accountType, amount,
 						employee.getUserId(), pin);
 				request.setAttribute("message", "New customer and account has been created\nCustomer ID : "
@@ -269,7 +286,7 @@ class EmployeeServletHelper {
 				Services.auditLogService.log(log);
 
 			} else if (customerType.equals("existing")) {
-				int customerId = (int) ServletUtil.session(request).getAttribute("customerId");
+				int customerId = ServletUtil.getSessionObject(request, "customerId");
 				newAccount = Services.employeeOperations.createAccountForExistingCustomer(customerId, accountType,
 						amount, employee.getUserId(), pin);
 				request.setAttribute("message",
@@ -317,8 +334,8 @@ class EmployeeServletHelper {
 		try {
 			Services.employeeOperations.getAccountDetails(accountNumber);
 			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_close_account")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_close_account");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect(employee.getType() == UserRecord.Type.ADMIN ? "accounts" : "branch_accounts");
@@ -329,7 +346,7 @@ class EmployeeServletHelper {
 			throws AppException, IOException, ServletException {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
-		long accountNumber = (long) ServletUtil.session(request).getAttribute("accountNumber");
+		long accountNumber = ServletUtil.getSessionObject(request, "accountNumber");
 		try {
 			Account account = Services.employeeOperations.closeAccount(accountNumber, employee.getUserId(), pin);
 			request.setAttribute("status", true);

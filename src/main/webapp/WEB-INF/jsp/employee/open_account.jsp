@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <%@page import="com.cskbank.filters.Parameters"%>
 <%@page import="com.cskbank.modules.Account"%>
@@ -6,9 +5,15 @@
 <%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
 <%@page import="com.cskbank.utility.ConstantsUtil.Gender"%>
 <html>
+
 <head>
 <title>Accounts</title>
 <%@include file="../include/head.jsp"%>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/open_account.js"></script>
+
 </head>
 
 <body>
@@ -29,35 +34,42 @@
 		<div class="container" style="flex-direction: row;">
 			<div style="width: 50%; padding-right: 50px;">
 				<div class="dual-element-row">
-					<label for="select-account">Select Account Type</label> <select
-						id="account-type" name="<%=Parameters.TYPE.parameterName()%>" required>
+					<label>Select Account Type</label> <select id="accountType"
+						name="<%=Parameters.TYPE.parameterName()%>">
 						<option value=null style="display: none;">Account Type</option>
 						<%
 						for (Account.AccountType type : Account.AccountType.values()) {
 						%>
-						<option value="<%=type%>"><%=type%></option>
+						<option value="<%=type%>">
+							<%=type%>
+						</option>
 						<%
 						}
 						%>
 					</select>
 				</div>
+				<span id="e-accountType" class="error-text"></span>
 				<div class="dual-element-row" id="select-customer">
-					<label for="select-customer">Select Customer Type</label> <select
-						name="customerType" id="customer-select" required>
+					<label>Select Customer Type</label> <select
+						onclick="triggerCustomerType()" name="customerType"
+						id="customerType">
 						<option value=null style="display: none;">Customer Type</option>
 						<option value="new">New Customer</option>
 						<option value="existing">Existing Customer</option>
 					</select>
 				</div>
-				<span id="error-1" style="color: red"></span>
+				<span id="e-customerType" class="error-text"></span>
 			</div>
 			<div style="width: 50%;">
 				<div class="dual-element-row">
 					<label for="amount">Deposit Amount</label> <input type="number"
-						name="<%=Parameters.AMOUNT.parameterName()%>"
-						placeholder="Enter Deposit Amount" required>
+						id="amount" name="<%=Parameters.AMOUNT.parameterName()%>"
+						placeholder="Enter Deposit Amount">
 				</div>
+				<span id="e-amount" class="error-text"></span>
+
 			</div>
+
 		</div>
 		<div id="new-customer-fields" class="container"
 			style="display: none; flex-direction: column;">
@@ -68,64 +80,82 @@
 				<div style="width: 50%; padding-right: 50px;">
 					<div class="dual-element-row">
 						<label for="firstName">First Name</label> <input type="text"
-							name="<%=Parameters.FIRSTNAME.parameterName()%>"
-							placeholder="Enter First Name" pattern="^[a-zA-Z]{3,}" required>
+							id="firstName" name="<%=Parameters.FIRSTNAME.parameterName()%>"
+							placeholder="Enter First Name" pattern="^[a-zA-Z]{3,}">
 					</div>
+					<span id="e-firstName" class="error-text"></span>
+
 					<div class="dual-element-row">
 						<label for="lastName">Last Name</label> <input type="text"
-							name="<%=Parameters.LASTNAME.parameterName()%>"
-							placeholder="Enter Last Name" required>
+							id="lastName" name="<%=Parameters.LASTNAME.parameterName()%>"
+							placeholder="Enter Last Name">
 					</div>
+					<span id="e-lastName" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label>Date of Birth</label required> <input type="date"
-							name="<%=Parameters.DATEOFBIRTH.parameterName()%>" required>
+						<label>Date of Birth</label> <input type="date" id="dateOfBirth"
+							name="<%=Parameters.DATEOFBIRTH.parameterName()%>">
 					</div>
+					<span id="e-dateOfBirth" class="error-text"></span>
+
 
 					<div class="dual-element-row">
 						<label for="gender">Gender</label> <select
-							name="<%=Parameters.GENDER.parameterName()%>" id="gender"
-							required>
+							name="<%=Parameters.GENDER.parameterName()%>" id="gender">
 							<option value=null style="display: none;">Select</option>
 							<%
 							for (Gender gender : Gender.values()) {
 							%>
-							<option value="<%=gender%>"><%=gender%></option>
+							<option value="<%=gender%>">
+								<%=gender%>
+							</option>
 							<%
 							}
 							%>
 						</select>
 					</div>
+					<span id="e-gender" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="address">Address</label required> <input type="text"
-							placeHolder="Enter Address"
-							name="<%=Parameters.ADDRESS.parameterName()%>" required>
+						<label for="address">Address</label> <input type="text"
+							placeHolder="Enter Address" id="address"
+							name="<%=Parameters.ADDRESS.parameterName()%>">
 					</div>
+					<span id="e-address" class="error-text"></span>
+
 				</div>
 
 				<div style="width: 50%;">
 					<div class="dual-element-row">
-						<label for="phone">Mobile</label> <input type="number"
+						<label for="phone">Mobile</label> <input type="number" id="phone"
 							name="<%=Parameters.PHONE.parameterName()%>"
-							placeholder="Enter Mobile Number" pattern="[7-8]\\d{9}" required>
+							placeholder="Enter Phone Number">
 					</div>
+					<span id="e-phone" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="email">Email ID</label> <input type="email"
+						<label for="email">Email ID</label> <input type="email" id="email"
 							name="<%=Parameters.EMAIL.parameterName()%>"
-							placeholder="Enter Email ID" required>
+							placeholder="Enter Email ID">
 					</div>
+					<span id="e-email" class="error-text"></span>
+
 					<div class="dual-element-row">
 						<label for="aadhaar">Aadhaar Number</label> <input type="text"
-							name="<%=Parameters.AADHAAR.parameterName()%>"
-							placeholder="Enter Aadhaar Number" required>
+							id="aadhaar" name="<%=Parameters.AADHAAR.parameterName()%>"
+							placeholder="Enter Aadhaar Number">
 					</div>
+					<span id="e-aadhaar" class="error-text"></span>
+
 					<div class="dual-element-row">
 						<label for="pan">PAN</label> <input type="text"
-							name="<%=Parameters.PAN.parameterName()%>"
-							placeholder="Enter PAN Number" required>
+							name="<%=Parameters.PAN.parameterName()%>" id="pan"
+							placeholder="Enter PAN Number">
 					</div>
+					<span id="e-pan" class="error-text"></span>
+
 				</div>
 			</div>
-			<span id="error-2" style="color: red"></span>
 		</div>
 
 		<div id="existing-customer-fields" class="container"
@@ -137,9 +167,10 @@
 				<div style="width: 50%; padding-right: 50px;">
 					<div class="dual-element-row">
 						<label for="userId">Customer ID</label> <input type="number"
-							name="<%=Parameters.USERID.parameterName()%>"
-							placeholder="Enter Customer ID" required>
+							id="userId" name="<%=Parameters.USERID.parameterName()%>"
+							placeholder="Enter Customer ID">
 					</div>
+					<span id="e-userId" class="error-text"></span>
 
 				</div>
 
@@ -149,60 +180,12 @@
 
 		<input type="hidden" value="authorize_open_account" name="operation">
 		<button id="submit-button"
-			style="display: none; margin-left: auto; margin-right: 50px;"
-			type="submit" onclick="validateDropDowns()">Finish</button>
+			style="display: block; margin-left: auto; margin-right: 50px;"
+			type="submit">Finish</button>
 	</form>
 
 	</div>
 	</section>
-
-	<script>
-		const openAccountForm = document.getElementById('open-account-form');
-		const selectField = document
-				.getElementById('customer-select')
-				.addEventListener(
-						'change',
-						function(event) {
-							var newCustomerFields = document
-									.getElementById('new-customer-fields');
-							var existingCustomerFields = document
-									.getElementById('existing-customer-fields');
-
-							if (this.value === "new") {
-								newCustomerFields.style.display = "flex";
-								openAccountForm
-										.removeChild(existingCustomerFields);
-							} else if (this.value === "existing") {
-								existingCustomerFields.style.display = "flex";
-								openAccountForm.removeChild(newCustomerFields);
-							}
-							document.getElementById('submit-button').style.display = "block";
-							document.getElementById('select-customer').style.display = "none";
-						});
-
-		function validateDropDowns() {
-			const accountType = document.getElementById('account-type').value;
-			const customerSelect = document.getElementById('customer-select').value;
-			const error1 = document.getElementById('error-1');
-			error1.textContent = "";
-			if (accountType === "null") {
-				error1.textContent = 'Please select an account type';
-				event.preventDefault();
-			} else if (customerSelect === "null") {
-				error1.textContent = 'Please select customer type';
-				event.preventDefault();
-			} else if (customerSelect === 'new') {
-				const gender = document.getElementById('gender').value;
-				const error2 = document.getElementById('error-2');
-				error2.textContent = "";
-				if (gender === "null") {
-					error2.textContent = 'Please select a gender';
-					event.preventDefault();
-				}
-			}
-
-		}
-	</script>
 </body>
 
 </html>

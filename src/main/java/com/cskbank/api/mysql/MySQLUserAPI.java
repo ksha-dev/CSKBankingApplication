@@ -161,7 +161,7 @@ public class MySQLUserAPI implements UserAPI {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setInt(1, userId);
-			statement.setString(2, Status.CLOSED.getStatusId() + "");
+			statement.setInt(2, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.CLOSED.toString()));
 			try (ResultSet accountRS = statement.executeQuery()) {
 				while (accountRS.next()) {
 					accounts.put(accountRS.getLong(1), MySQLConversionUtil.convertToAccount(accountRS));

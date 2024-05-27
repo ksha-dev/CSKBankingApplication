@@ -36,7 +36,7 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 					<td>Account Type</td>
 					<td>Available Balance</td>
 					<td>Opening Date</td>
-					<td>Trasaction Date</td>
+					<td>Last TXN Date</td>
 					<td>Status</td>
 					<td></td>
 				</tr>
@@ -50,7 +50,7 @@ Map<Long, Account> accounts = (Map<Long, Account>) request.getAttribute("account
 					<td><%=account.getAccountType()%></td>
 					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.convertLongToLocalDate(account.getOpeningDate()).format(DateTimeFormatter.ISO_DATE)%></td>
-					<td><%=ConvertorUtil.convertLongToLocalDate(account.getLastTransactedAt()).format(DateTimeFormatter.ISO_DATE)%></td>
+					<td><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
 					<td><a
 						href="account_details?accountNumber=<%=account.getAccountNumber()%>"><i

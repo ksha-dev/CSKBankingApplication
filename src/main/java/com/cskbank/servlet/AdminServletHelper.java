@@ -155,8 +155,8 @@ class AdminServletHelper {
 			employee.setBranchId(
 					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.BRANCHID.parameterName())));
 			ServletUtil.session(request).setAttribute("employee", employee);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_add_employee")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_add_employee");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("employees");
@@ -168,8 +168,7 @@ class AdminServletHelper {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 		try {
-			EmployeeRecord employee = (EmployeeRecord) ServletUtil.session(request).getAttribute("employee");
-			ServletUtil.session(request).removeAttribute("employee");
+			EmployeeRecord employee = ServletUtil.getSessionObject(request, "employee");
 			Services.adminOperations.createEmployee(employee, admin.getUserId(), pin);
 
 			request.setAttribute("message", "New employee has been created<br>Employee ID : " + employee.getUserId());
@@ -213,8 +212,8 @@ class AdminServletHelper {
 			branch.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
 
 			ServletUtil.session(request).setAttribute("branch", branch);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_add_branch")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("redirect", "process_add_branch");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("branches");
@@ -227,8 +226,7 @@ class AdminServletHelper {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 
 		try {
-			Branch branch = (Branch) ServletUtil.session(request).getAttribute("branch");
-			ServletUtil.session(request).removeAttribute("branch");
+			Branch branch = ServletUtil.getSessionObject(request, "branch");
 			branch = Services.adminOperations.createBranch(branch, admin.getUserId(), pin);
 
 			request.setAttribute("message",
@@ -322,7 +320,8 @@ class AdminServletHelper {
 	public void authorizeChangeStatus(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
-		Status status = Status.convertStringToEnum(request.getParameter(Parameters.STATUS.parameterName()));
+		Status status = ConvertorUtil.convertToEnum(Status.class,
+				(request.getParameter(Parameters.STATUS.parameterName())));
 		String reason = request.getParameter(Parameters.REASON.parameterName());
 
 		if (Services.employeeOperations.getCustomerRecord(userId).getStatus() == status) {
@@ -332,8 +331,8 @@ class AdminServletHelper {
 		ServletUtil.session(request).setAttribute("status", status);
 		ServletUtil.session(request).setAttribute("reason", reason);
 		ServletUtil.session(request).setAttribute("userId", userId);
-		request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_change_status")
-				.forward(request, response);
+		ServletUtil.session(request).setAttribute("redirect", "process_change_status");
+		response.sendRedirect("authorization");
 	}
 
 	public void processChangeStatus(HttpServletRequest request, HttpServletResponse response)
@@ -341,13 +340,10 @@ class AdminServletHelper {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 
-		Status status = (Status) ServletUtil.session(request).getAttribute("status");
-		String reason = (String) ServletUtil.session(request).getAttribute("reason");
-		int userId = (int) ServletUtil.session(request).getAttribute("userId");
+		Status status = ServletUtil.getSessionObject(request, "status");
+		String reason = ServletUtil.getSessionObject(request, "reason");
+		int userId = ServletUtil.getSessionObject(request, "userId");
 
-		ServletUtil.session(request).removeAttribute("status");
-		ServletUtil.session(request).removeAttribute("reason");
-		ServletUtil.session(request).removeAttribute("userId");
 		try {
 			UserRecord user = Services.adminOperations.changeUserStatus(userId, status, reason, admin.getUserId(), pin);
 			AuditLog log = new AuditLog();

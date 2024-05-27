@@ -3,6 +3,7 @@ package com.cskbank.utility;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.ServletExceptionMessage;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil.Gender;
@@ -22,6 +24,17 @@ public class ServletUtil {
 
 	public static HttpSession session(HttpServletRequest request) throws ServletException, IOException {
 		return request.getSession(false);
+	}
+
+	public static <T> T getSessionObject(HttpServletRequest request, String attributeName)
+			throws ServletException, IOException, AppException {
+		@SuppressWarnings("unchecked")
+		T object = (T) session(request).getAttribute(attributeName);
+		if (object == null) {
+			throw new AppException(ServletExceptionMessage.INVALID_OBJECT);
+		}
+		session(request).removeAttribute(attributeName);
+		return object;
 	}
 
 	public static UserRecord getUser(HttpServletRequest request) throws ServletException, IOException {
@@ -155,5 +168,24 @@ public class ServletUtil {
 			break;
 		}
 
+	}
+
+	public static void redirectError(HttpServletRequest request, HttpServletResponse response,
+			AppException appException) {
+		try {
+			GetterUtil.loadRedirectURLProperties();
+			String requestURL = request.getServletPath() + request.getPathInfo();
+			if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
+				ServletUtil.checkRequiredParameters(request.getParameterMap(), List.of(Parameters.OPERATION));
+				String operation = request.getParameter(Parameters.OPERATION.parameterName());
+				if (operation != null) {
+					requestURL = requestURL + "." + operation;
+				}
+			}
+			request.getSession(false).setAttribute("error", appException.getMessage());
+			response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

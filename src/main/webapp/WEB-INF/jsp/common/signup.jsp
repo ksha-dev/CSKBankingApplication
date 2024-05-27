@@ -103,10 +103,4 @@ if (error != null) {
 		</div>
 	</div>
 </body>
-
-<script>
-	const dob = document.getElementById('dateOfBirth');
-	var currentDate = new Date();
-	dob.max = currentDate.toISOString().split('T')[0];
-</script>
 </html>

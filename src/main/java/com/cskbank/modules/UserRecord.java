@@ -66,8 +66,7 @@ public abstract class UserRecord implements Serializable {
 	}
 
 	public void setGender(String gender) throws AppException {
-		ValidatorUtil.validateGender(gender);
-		this.gender = Gender.convertStringToEnum(gender);
+		this.gender = ConvertorUtil.convertToEnum(Gender.class, gender);
 	}
 
 	public void setGender(Gender gender) throws AppException {
@@ -105,8 +104,7 @@ public abstract class UserRecord implements Serializable {
 	}
 
 	public void setStatus(String status) throws AppException {
-		ValidatorUtil.validateObject(status);
-		this.status = Status.convertStringToEnum(status);
+		this.status = ConvertorUtil.convertToEnum(Status.class, status);
 	}
 
 	public void setCreatedAt(long dateTime) {

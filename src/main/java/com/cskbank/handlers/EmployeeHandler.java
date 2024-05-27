@@ -65,7 +65,7 @@ public class EmployeeHandler {
 	}
 
 	public int getBranchAccountsPageCount(int employeeId) throws AppException {
-		return api.getNumberOfPagesOfAccounts(getEmployeeRecord(employeeId).getBranchId());
+		return api.getNumberOfPagesOfAccountsInBranch(getEmployeeRecord(employeeId).getBranchId());
 	}
 
 	public Map<Long, Account> getListOfAccountsInBranch(int employeeId, int pageNumber) throws AppException {
@@ -116,7 +116,7 @@ public class EmployeeHandler {
 		if (api.userConfimration(employeeId, pin)) {
 			Account account = new Account();
 			account.setBranchId(getEmployeeRecord(employeeId).getBranchId());
-			account.setType(accountType.getAccountTypeId());
+			account.setType(accountType);
 			account.setModifiedBy(employeeId);
 			account.setCreatedAt(System.currentTimeMillis());
 			account.setUserId(customerId);
@@ -218,7 +218,7 @@ public class EmployeeHandler {
 		}
 
 		if (api.userConfimration(employeeId, pin)) {
-			account.setStatus(status.getStatusId());
+			account.setStatus(status);
 			account.setModifiedBy(employeeId);
 			account.setModifiedAt(System.currentTimeMillis());
 

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
+import com.cskbank.exceptions.messages.InvalidInputMessage;
 
 public class ConvertorUtil {
 
@@ -147,12 +148,18 @@ public class ConvertorUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <E extends Enum<E>> E convertToEnum(Class<E> enumType, String enumName) throws AppException {
+		ValidatorUtil.validateObject(enumType);
+		ValidatorUtil.validateObject(enumName);
 		try {
-			Method method = enumType.getMethod("convertStringToEnum", String.class);
+			Method method = enumType.getMethod("valueOf", String.class);
 			return (E) method.invoke(null, enumName);
 		} catch (InvocationTargetException e) {
-			throw new AppException(e.getCause().getMessage());
+			if (e.getCause() instanceof IllegalArgumentException) {
+				throw new AppException(InvalidInputMessage.INVALID_IDENTIFIER);
+			}
+			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
 		}
 	}

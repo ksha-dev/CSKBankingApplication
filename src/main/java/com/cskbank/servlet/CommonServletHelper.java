@@ -431,10 +431,10 @@ class CommonServletHelper {
 		String newPassword = request.getParameter(Parameters.NEWPASSWORD.parameterName());
 		try {
 			Services.appOperations.getUser(ServletUtil.getUser(request).getUserId(), oldPassword);
-			request.getSession(false).setAttribute("oldPassword", oldPassword);
-			request.getSession(false).setAttribute("newPassword", newPassword);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp?redirect=process_change_password")
-					.forward(request, response);
+			ServletUtil.session(request).setAttribute("oldPassword", oldPassword);
+			ServletUtil.session(request).setAttribute("newPassword", newPassword);
+			ServletUtil.session(request).setAttribute("redirect", "process_change_password");
+			response.sendRedirect("authorization");
 		} catch (AppException e) {
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("change_password");
@@ -443,8 +443,8 @@ class CommonServletHelper {
 
 	public void passwordChangeProcessPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, ServletException, IOException {
-		String oldPassword = (String) ServletUtil.session(request).getAttribute("oldPassword");
-		String newPassword = (String) ServletUtil.session(request).getAttribute("newPassword");
+		String oldPassword = ServletUtil.getSessionObject(request, "oldPassword");
+		String newPassword = ServletUtil.getSessionObject(request, "newPassword");
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 		UserRecord user = ServletUtil.getUser(request);
 

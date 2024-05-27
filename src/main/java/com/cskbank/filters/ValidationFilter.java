@@ -190,22 +190,7 @@ public class ValidationFilter implements Filter {
 					chain.doFilter(req, res);
 				}
 			} catch (AppException e) {
-				try {
-					GetterUtil.loadRedirectURLProperties();
-					String requestURL = servletPath + pathInfo;
-					if (Pattern.matches("^/(customer|employee|admin)/authorization$", pathInfo)) {
-						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OPERATION));
-						String operation = req.getParameter(Parameters.OPERATION.parameterName());
-						if (operation != null) {
-							requestURL = requestURL + "." + operation;
-						}
-					}
-					System.out.println(requestURL);
-					req.getSession(false).setAttribute("error", e.getMessage());
-					res.sendRedirect(req.getContextPath() + GetterUtil.getRedirectURL(requestURL));
-				} catch (AppException e1) {
-					e1.printStackTrace();
-				}
+				ServletUtil.redirectError(req, res, e);
 			}
 		} else {
 			req.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);

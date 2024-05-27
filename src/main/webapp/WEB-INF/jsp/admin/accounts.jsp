@@ -68,7 +68,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 					<td><%=account.getAccountType()%></td>
 					<td class="pr"><%=ConvertorUtil.amountToCurrencyFormat(account.getBalance())%></td>
 					<td><%=ConvertorUtil.formatToDate(account.getOpeningDate())%></td>
-					<td><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
+					<td><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></td>
 					<td><%=account.getStatus()%></td>
 					<td><a
 						href="account_details?accountNumber=<%=account.getAccountNumber()%>"><i

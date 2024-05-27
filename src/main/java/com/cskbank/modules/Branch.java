@@ -12,6 +12,7 @@ public class Branch implements Serializable {
 	private long phone;
 	private String email;
 	private String ifscCode;
+	private long accountsCount;
 	private int modifiedBy;
 	private long createdAt;
 	private long modifiedAt;
@@ -44,6 +45,11 @@ public class Branch implements Serializable {
 	public void setIfscCode(String ifscCode) throws AppException {
 		ValidatorUtil.validateObject(ifscCode);
 		this.ifscCode = ifscCode;
+	}
+
+	public void setAccountsCount(long accountsCount) throws AppException {
+		ValidatorUtil.validatePositiveNumber(accountsCount);
+		this.accountsCount = accountsCount;
 	}
 
 	public void setCreatedAt(long dateTime) {
@@ -79,6 +85,10 @@ public class Branch implements Serializable {
 
 	public String getIfscCode() {
 		return this.ifscCode;
+	}
+
+	public long getAccountsCount() {
+		return this.accountsCount;
 	}
 
 	public int getModifiedBy() {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.catalina.User;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
 
 public class ConstantsUtil {
@@ -70,54 +71,13 @@ public class ConstantsUtil {
 			return this.name().toLowerCase();
 		}
 
-		public static RequestStatus convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
-			}
-		}
 	}
 
 	public static final List<Status> ADMIN_MODIFIABLE_USER_STATUS = List.of(Status.ACTIVE, Status.FROZEN,
 			Status.BLOCKED);
 
 	public static enum Status {
-		ACTIVE(1), INACTIVE(2), CLOSED(4), FROZEN(3), BLOCKED(5), VERIFICATION(6);
-
-		private int statusId;
-
-		Status(int statusID) {
-			this.statusId = statusID;
-		}
-
-		public int getStatusId() {
-			return this.statusId;
-		}
-
-		public static Status getStatus(int statusId) throws AppException {
-			switch (statusId) {
-			case 0:
-				return ACTIVE;
-			case 1:
-				return INACTIVE;
-			case 2:
-				return FROZEN;
-			case 3:
-				return CLOSED;
-
-			default:
-				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
-			}
-		}
-
-		public static Status convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
-			}
-		}
+		ACTIVE, INACTIVE, CLOSED, FROZEN, BLOCKED, VERIFICATION;
 	}
 
 	public static enum TransactionType {
@@ -154,39 +114,8 @@ public class ConstantsUtil {
 	}
 
 	public static enum Gender {
-		MALE(1), FEMALE(2), OTHER(3);
+		MALE, FEMALE, OTHER;
 
-		private int genderId;
-
-		private Gender(int genderId) {
-			this.genderId = genderId;
-		}
-
-		public int getGenderId() {
-			return this.genderId;
-		}
-
-		public static Gender getGender(int genderId) throws AppException {
-			switch (genderId) {
-			case 1:
-				return MALE;
-			case 2:
-				return FEMALE;
-			case 3:
-				return OTHER;
-
-			default:
-				throw new AppException(InvalidInputMessage.INVALID_INTEGER_INPUT);
-			}
-		}
-
-		public static Gender convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
-			}
-		}
 	}
 
 	public static enum TransactionHistoryLimit {

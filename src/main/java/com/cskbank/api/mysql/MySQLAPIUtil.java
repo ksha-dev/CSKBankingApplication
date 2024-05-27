@@ -114,12 +114,12 @@ class MySQLAPIUtil {
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
 			statement.setDouble(1, account.getBalance());
-			statement.setString(2, Status.ACTIVE.getStatusId() + "");
+			statement.setInt(2, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.ACTIVE.toString()));
 			statement.setLong(3, account.getLastTransactedAt());
 			statement.setLong(4, account.getModifiedBy());
 			statement.setLong(5, account.getModifiedAt());
 			statement.setLong(6, account.getAccountNumber());
-			statement.setString(7, Status.CLOSED.getStatusId() + "");
+			statement.setInt(7, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.CLOSED.toString()));
 			int response = statement.executeUpdate();
 			return response == 1;
 		} catch (SQLException e) {

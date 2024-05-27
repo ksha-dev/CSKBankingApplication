@@ -211,4 +211,15 @@ public class AdminHandler {
 		} else
 			throw new AppException(APIExceptionMessage.USER_CONFIRMATION_FAILED);
 	}
+
+	public Map<Long, Account> getListOfAccountsInBranch(int branchId, int pageNumber) throws AppException {
+		ValidatorUtil.validateId(pageNumber);
+		ValidatorUtil.validateId(branchId);
+		return api.viewAccountsInBranch(branchId, pageNumber);
+	}
+
+	public int getPageCountOfAccountsInBranch(int branchId) throws AppException {
+		ValidatorUtil.validateId(branchId);
+		return api.getNumberOfPagesOfAccountsInBranch(branchId);
+	}
 }

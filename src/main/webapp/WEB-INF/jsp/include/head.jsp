@@ -6,8 +6,11 @@
 <script src="../../static/script/script.js"></script>
 
 <script>
+	
 <%String error = (String) request.getSession(false).getAttribute("error");
-if (error!=null) { request.getSession(false).removeAttribute("error");%>
-	errorMessage('<%=error%>');
-<%}%>
+if (error != null) {
+	request.getSession(false).removeAttribute("error");
+	out.print("errorMessage('" + error + "')");
+}%>
+	
 </script>

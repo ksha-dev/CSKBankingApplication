@@ -1,3 +1,4 @@
+<%@page import="com.cskbank.modules.UserRecord.Type"%>
 <%@page import="com.cskbank.modules.CustomerRecord"%>
 <%@page import="com.cskbank.modules.Branch"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -26,7 +27,8 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 	</script>
 	<div
 		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
-		<button style="z-index: 0;" type="button" onclick="history.back()">
+		<button style="z-index: 0;" type="button"
+			onclick="location.href='<%=(user.getType() == Type.ADMIN) ? "accounts" : "branch_accounts"%>'">
 			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
 		</button>
 	</div>
@@ -68,7 +70,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Last Transaction Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
+					<h4 class="profile-element"><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
 				</div>
 			</div>
 		</div>

@@ -2,7 +2,6 @@ package com.cskbank.servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -13,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 public class AppServlet extends HttpServlet {
 
@@ -50,22 +49,7 @@ public class AppServlet extends HttpServlet {
 				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			}
 		} catch (AppException e) {
-			try {
-				GetterUtil.loadRedirectURLProperties();
-				String requestURL = request.getServletPath() + request.getPathInfo();
-				if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
-					ServletUtil.checkRequiredParameters(request.getParameterMap(), List.of(Parameters.OPERATION));
-					String operation = request.getParameter(Parameters.OPERATION.parameterName());
-					if (operation != null) {
-						requestURL = requestURL + "." + operation;
-					}
-				}
-				request.getSession(false).setAttribute("error", e.getMessage());
-				System.out.println(requestURL);
-				response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
-			} catch (AppException e1) {
-				e1.printStackTrace();
-			}
+			ServletUtil.redirectError(request, response, e);
 		}
 	}
 
@@ -99,21 +83,7 @@ public class AppServlet extends HttpServlet {
 			}
 
 		} catch (AppException e) {
-			try {
-				GetterUtil.loadRedirectURLProperties();
-				String requestURL = request.getServletPath() + request.getPathInfo();
-				if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
-					ServletUtil.checkRequiredParameters(request.getParameterMap(), List.of(Parameters.OPERATION));
-					String operation = request.getParameter(Parameters.OPERATION.parameterName());
-					if (operation != null) {
-						requestURL = requestURL + "." + operation;
-					}
-				}
-				request.getSession(false).setAttribute("error", e.getMessage());
-				response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
-			} catch (AppException e1) {
-				e1.printStackTrace();
-			}
+			ServletUtil.redirectError(request, response, e);
 		}
 	}
 
@@ -159,10 +129,10 @@ public class AppServlet extends HttpServlet {
 			break;
 
 		case "authorization":
-			if (ServletUtil.session(request).getAttribute("operation") != null) {
-				request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp").forward(request, response);
-			} else {
+			if (ValidatorUtil.isObjectNull(ServletUtil.session(request).getAttribute("redirect"))) {
 				response.sendRedirect("home");
+			} else {
+				request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp").forward(request, response);
 			}
 			break;
 
@@ -274,6 +244,14 @@ public class AppServlet extends HttpServlet {
 			request.getRequestDispatcher("/WEB-INF/jsp/employee/search.jsp").forward(request, response);
 			break;
 
+		case "authorization":
+			if (ValidatorUtil.isObjectNull(ServletUtil.session(request).getAttribute("redirect"))) {
+				response.sendRedirect("home");
+			} else {
+				request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp").forward(request, response);
+			}
+			break;
+
 		default:
 			request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
 			break;
@@ -377,6 +355,14 @@ public class AppServlet extends HttpServlet {
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/add_branch.jsp").forward(request, response);
 			break;
 
+		case "authorization":
+			if (ValidatorUtil.isObjectNull(ServletUtil.session(request).getAttribute("redirect"))) {
+				response.sendRedirect("home");
+			} else {
+				request.getRequestDispatcher("/WEB-INF/jsp/common/authorization.jsp").forward(request, response);
+			}
+			break;
+
 		default:
 			return false;
 		}
@@ -398,7 +384,7 @@ public class AppServlet extends HttpServlet {
 		case "employee_details":
 			adminMethods.employeeDetailsPostMethod(request, response);
 			break;
-			
+
 		case "api_service":
 			adminMethods.apiServiceRequest(request, response);
 			break;

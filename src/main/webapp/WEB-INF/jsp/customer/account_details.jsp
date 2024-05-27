@@ -63,7 +63,7 @@ Branch branch = (Branch) request.getAttribute("branch");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Last Transaction Date</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
+					<h4 class="profile-element"><%=account.getLastTransactedAt() == 0 ? "-" : ConvertorUtil.formatToDate(account.getLastTransactedAt())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">IFSC</p>

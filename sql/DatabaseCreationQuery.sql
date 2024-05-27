@@ -7,12 +7,19 @@ create table users (
     first_name varchar(20) not null,
     last_name varchar(20) not null,
     date_of_birth bigint not null,
-    gender enum('0', '1', '2') not null, -- 0 - Male, 1 - Female, 2 - Other
+    gender int not null,
     address varchar(255) not null,
     mobile bigint not null,
     email varchar(100) not null,
-    type enum('0', '1', '2') not null,  -- 0 - Customer, 1 - Employee, 2 - Admin
-    primary key(user_id)
+    type int not null,
+    status int not null,
+    created_at bigint not null,
+    modified_by int not null,
+    modified_at bigint null,
+    primary key(user_id),
+    foreign key(gender) references gender(id) on update cascade,
+    foreign key(type) references user_types(id) on update cascade,
+    foreign key(status) references status(id) on update cascade
 );
 
 create table credentials (
@@ -55,8 +62,8 @@ create table accounts (
     balance double not null,
     status enum('0', '1', '2', '3') not null default '0', -- 0 - Active, 1 - Inactive, 2 - Frozen, 3 - Closed
     primary key (account_number),
-    foreign key (user_id) references customers(user_id) on delete no action,
-	foreign key (branch_id) references branch(branch_id) on delete no action
+    foreign key (user_id) references customers(user_id) on delete no action on update cascade,
+	foreign key (branch_id) references branch(branch_id) on delete no action on update cascade
 );
 
 create table transactions (
@@ -70,7 +77,7 @@ create table transactions (
     time_stamp bigint not null,
     remarks varchar(255) not null,
     primary key (transaction_id, user_id, viewer_account_number),
-    foreign key (viewer_account_number) references accounts(account_number) on delete no action
+    foreign key (viewer_account_number) references accounts(account_number) on delete no action on update cascade,
 );
 
 create table user_types (
