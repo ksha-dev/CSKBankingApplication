@@ -23,17 +23,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<div
-		style="display: flex; justify-content: space-between; align-items: center;">
-		<h3 class="content-title">List of Accounts</h3>
-		<a href="open_account" style="color: white; padding-left: 10px"> <i
-			class="material-icons">add_circle</i>
-		</a>
-		<div style="margin: auto"></div>
-		<form action="account_details">
-			<input type="number" name="accountNumber"
-				placeholder="Search account number" style="margin-right: 50px"
-				required="required">
-		</form>
+		style="display: flex; justify-content: space-between; align-items: center; margin-right: 40px;">
+		<h3 class="content-title">Accounts in Bank</h3>
+		<button type="submit" onclick="location.href='open_account'">Open
+			Account</button>
 	</div>
 	<%
 	if (accounts.isEmpty()) {

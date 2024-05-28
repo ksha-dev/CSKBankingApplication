@@ -1,14 +1,13 @@
 var form;
 function initialize() {
-	form = document.getElementById('login-form');
+	form = document.getElementById('reset-password-input-form');
 	form.addEventListener('submit', (e) => submitValidation(e));
 }
 
 function submitValidation(e) {
 	action = e;
-	userIdCheck();
-	inputPasswordCheck();
-	captchaCheck();
+	newPasswordCheck();
+	confirmPasswordCheck();
 }
 
 document.addEventListener('DOMContentLoaded', () => initialize());

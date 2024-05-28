@@ -23,6 +23,7 @@ public class SecurityUtil {
 	static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final String ALGORITHM = "AES";
 	private static final String TRANSFORMATION = "AES";
+	private static final SecretKey DEFAULT_KEY = new SecretKeySpec("CSKBankingApp001".getBytes(), ALGORITHM);
 
 	public static String encryptPasswordSHA256(String password) {
 		try {
@@ -101,6 +102,10 @@ public class SecurityUtil {
 		}
 	}
 
+	public static String encryptText(String plainText) throws AppException {
+		return encryptText(plainText, DEFAULT_KEY);
+	}
+
 	public static String decryptCipher(String cipherText, SecretKey key) throws AppException {
 		try {
 			return decrypt(decrypt(cipherText, key), key);
@@ -109,10 +114,13 @@ public class SecurityUtil {
 		}
 	}
 
+	public static String decryptCipher(String cipherText) throws AppException {
+		return decryptCipher(cipherText, DEFAULT_KEY);
+	}
+
 	public static SecretKey getSecretKey(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 		return new SecretKeySpec(
 				String.format("%016d", ((user.getCreatedAt() * user.getUserId()) % (10 ^ 16))).getBytes(), ALGORITHM);
 	}
-
 }

@@ -290,7 +290,7 @@ public class MySQLUserAPI implements UserAPI {
 			payeeAccount.setModifiedAt(transaction.getCreatedAt());
 			payeeAccount.setBalance(transaction.getClosingBalance());
 			payeeAccount.setLastTransactedAt(transaction.getCreatedAt());
-			if (!MySQLAPIUtil.updateBalanceInAccount(payeeAccount)) {
+			if (!MySQLAPIUtil.updateBalanceInAccount(payeeAccount, true)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
 
@@ -305,7 +305,7 @@ public class MySQLUserAPI implements UserAPI {
 				recepientAccount.setBalance(ConvertorUtil
 						.convertToTwoDecimals(recepientAccount.getBalance() + transaction.getTransactedAmount()));
 
-				if (!MySQLAPIUtil.updateBalanceInAccount(recepientAccount)) {
+				if (!MySQLAPIUtil.updateBalanceInAccount(recepientAccount, false)) {
 					throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 				}
 
@@ -408,6 +408,39 @@ public class MySQLUserAPI implements UserAPI {
 		if (newPassword.equals(oldPassword)) {
 			throw new AppException(APIExceptionMessage.SAME_PASSWORD);
 		}
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.update(Schemas.CREDENTIALS);
+		queryBuilder.setColumn(Column.PASSWORD);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_BY);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.MODIFIED_AT);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.USER_ID);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setString(1, SecurityUtil.encryptPasswordSHA256(newPassword));
+			statement.setInt(2, customerId);
+			statement.setLong(3, System.currentTimeMillis());
+			statement.setInt(4, customerId);
+			int response = statement.executeUpdate();
+			if (response == 1) {
+				return true;
+			} else {
+				throw new AppException(APIExceptionMessage.UPDATE_FAILED);
+			}
+		} catch (SQLException e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS);
+		}
+	}
+
+	@Override
+	public boolean resetPassword(int customerId, String newPassword) throws AppException {
+		ValidatorUtil.validatePositiveNumber(customerId);
+		ValidatorUtil.validatePassword(newPassword);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.CREDENTIALS);
@@ -642,6 +675,35 @@ public class MySQLUserAPI implements UserAPI {
 			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED);
 		} catch (Exception e) {
 			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED);
+		}
+	}
+
+	@Override
+	public boolean doesEmailBelongToUser(int userId, String email) throws AppException {
+		ValidatorUtil.validateEmail(email);
+		ValidatorUtil.validateId(userId);
+
+		MySQLQuery query = new MySQLQuery();
+		query.selectCount(Schemas.USERS);
+		query.where();
+		query.columnEquals(Column.USER_ID);
+		query.and();
+		query.columnEquals(Column.EMAIL);
+		query.limit(1);
+		query.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
+			statement.setInt(1, userId);
+			statement.setString(2, email);
+
+			try (ResultSet result = statement.executeQuery()) {
+				if (result.next()) {
+					return result.getInt(1) > 0;
+				}
+			}
+			throw new AppException(APIExceptionMessage.USER_EMAIL_INCORRECT);
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.USER_EMAIL_INCORRECT);
 		}
 	}
 }

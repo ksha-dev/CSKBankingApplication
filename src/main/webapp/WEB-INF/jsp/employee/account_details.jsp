@@ -5,6 +5,7 @@
 <%@page import="com.cskbank.utility.ConvertorUtil"%>
 <%@page import="com.cskbank.modules.Account"%>
 <%@page import="com.cskbank.modules.Transaction"%>
+<%@page import="com.cskbank.utility.ConstantsUtil.Status"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -22,7 +23,8 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 <body style="width: 100%;">
 	<%@include file="../include/layout_header.jsp"%>
 	<script>
-		document.getElementById('li-branch_accounts').style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
+		document.getElementById('li-<%=user.getType() == Type.ADMIN ? "accounts'" : "branch_accounts'"%>
+		).style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
 		document.getElementById('a-branch_accounts').href = '#';
 	</script>
 	<div
@@ -81,65 +83,53 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 					name="accountNumber">
 				<button type="submit">View Statement</button>
 			</form>
+			<%
+			if (account.getStatus() != Status.CLOSED) {
+			%>
 			<form action="authorization" style="padding-left: 30px" method="post">
 				<input type="hidden" name="operation"
 					value="authorize_close_account"> <input type="hidden"
 					name="accountNumber" value="<%=account.getAccountNumber()%>">
 				<button type="submit">Close Account</button>
 			</form>
+			<%
+			if (account.getStatus() != Status.FROZEN) {
+			%>
+			<form action="authorization" style="padding-left: 30px" method="post">
+				<input type="hidden" name="operation"
+					value="authorize_freeze_account"> <input type="hidden"
+					name="accountNumber" value="<%=account.getAccountNumber()%>">
+				<button type="submit">Freeze Account</button>
+			</form>
+			<%
+			}
+			}
+			%>
 		</div>
 	</div>
 
 	<div class="container">
-		<h3 class="profile-element">Customer Details</h3>
+		<h3 class="profile-element">Customer Information</h3>
 		<div class="divider"></div>
 
 		<div
 			style="display: flex; justify-content: space-between; width: 100%;">
-
-			<div style="width: 100%;">
-				<div class="dual-element-row">
-					<p class="profile-element">Customer ID</p>
-					<h4 class="profile-element"><%=customer.getUserId()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Customer Name</p>
-					<h4 class="profile-element"><%=customer.getFirstName()%>
-						<%=customer.getLastName()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Gender</p>
-					<h4 class="profile-element"><%=customer.getGender()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Date of Birth</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">PAN</p>
-					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
-				</div>
+			<div class="dual-element-row">
+				<p class="profile-element">Customer ID</p>
+				<h4 class="profile-element"><%=customer.getUserId()%></h4>
 			</div>
-
-			<div style="width: 100%;">
-				<div class="dual-element-row">
-					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=customer.getPhone()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Email</p>
-					<h4 class="profile-element"><%=customer.getEmail()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Address</p>
-					<h4 class="profile-element"><%=customer.getAddress()%></h4>
-				</div>
-				<div class="dual-element-row">
-					<p class="profile-element">Aadhaar</p>
-					<h4 class="profile-element"><%=customer.getAadhaarNumber()%></h4>
-				</div>
+			<div class="dual-element-row">
+				<p class="profile-element">Customer Name</p>
+				<h4 class="profile-element"><%=customer.getFirstName()%>
+					<%=customer.getLastName()%></h4>
 			</div>
 		</div>
+
+		<form action="search" method="post">
+			<input type="hidden" name="searchBy" value="customerId"> <input
+				type="hidden" name="searchValue" value="<%=account.getUserId()%>">
+			<button type="submit">View Customer Details</button>
+		</form>
 	</div>
 
 	</div>

@@ -32,7 +32,11 @@ public interface UserAPI {
 
 	public boolean updatePassword(int customerID, String oldPassword, String newPassword) throws AppException;
 
+	public boolean resetPassword(int customerId, String newPassword) throws AppException;
+
 	public boolean doesEmailExist(String email) throws AppException;
+
+	public boolean doesEmailBelongToUser(int userId, String email) throws AppException;
 
 	// Branch
 	public Branch getBranchDetails(int branchID) throws AppException;
@@ -70,4 +74,5 @@ public interface UserAPI {
 	public APIKey getAPIKey(String akId) throws AppException;
 
 	public APIKey invalidateApiKey(APIKey apiKey) throws AppException;
+
 }

@@ -1,7 +1,8 @@
 var form;
+var customerType;
 function initialize() {
 	initializeDOBMax();
-	form = document.getElementById('signup-form');
+	form = document.getElementById('add-employee-form');
 	form.addEventListener('submit', (e) => submitValidation(e));
 }
 
@@ -12,10 +13,10 @@ function submitValidation(e) {
 	dateOfBirthCheck();
 	phoneNumberCheck();
 	genderCheck();
+	roleCheck();
 	emailCheck();
 	addressCheck();
-	aadhaarCheck();
-	panCheck();
+	branchIdCheck();
 }
 
 document.addEventListener('DOMContentLoaded', () => initialize());

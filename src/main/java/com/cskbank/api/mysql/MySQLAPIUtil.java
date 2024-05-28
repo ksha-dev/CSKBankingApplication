@@ -91,14 +91,16 @@ class MySQLAPIUtil {
 		}
 	}
 
-	static boolean updateBalanceInAccount(Account account) throws AppException {
+	static boolean updateBalanceInAccount(Account account, boolean changeStatus) throws AppException {
 		ValidatorUtil.validateObject(account);
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.update(Schemas.ACCOUNTS);
 		queryBuilder.setColumn(Column.BALANCE);
 		queryBuilder.separator();
-		queryBuilder.columnEquals(Column.STATUS);
-		queryBuilder.separator();
+		if (changeStatus) {
+			queryBuilder.columnEquals(Column.STATUS);
+			queryBuilder.separator();
+		}
 		queryBuilder.columnEquals(Column.LAST_TRANSACTED_AT);
 		queryBuilder.separator();
 		queryBuilder.columnEquals(Column.MODIFIED_BY);
@@ -113,13 +115,15 @@ class MySQLAPIUtil {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery())) {
-			statement.setDouble(1, account.getBalance());
-			statement.setInt(2, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.ACTIVE.toString()));
-			statement.setLong(3, account.getLastTransactedAt());
-			statement.setLong(4, account.getModifiedBy());
-			statement.setLong(5, account.getModifiedAt());
-			statement.setLong(6, account.getAccountNumber());
-			statement.setInt(7, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.CLOSED.toString()));
+			int i = 1;
+			statement.setDouble(i++, account.getBalance());
+			if (changeStatus)
+				statement.setInt(i++, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.ACTIVE.toString()));
+			statement.setLong(i++, account.getLastTransactedAt());
+			statement.setLong(i++, account.getModifiedBy());
+			statement.setLong(i++, account.getModifiedAt());
+			statement.setLong(i++, account.getAccountNumber());
+			statement.setInt(i, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.CLOSED.toString()));
 			int response = statement.executeUpdate();
 			return response == 1;
 		} catch (SQLException e) {

@@ -21,26 +21,15 @@ int currentPage = (int) request.getAttribute("currentPage");
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<div
-		style="display: flex; justify-content: space-between; align-items: center">
-		<h3 class="content-title" style="padding-right: 10px">
-			Employees in
-			<%=branch.getAddress()%>
-			Branch
-		</h3>
-		<a href="add_employee" style="color: white;"> <i
-			class="material-icons">add_circle</i>
-		</a>
-		<div style="margin: auto"></div>
-		<form action="employee_details" method="post">
-			<input type="number" name="userId" placeholder="Search Employee"
-				style="margin-right: 50px" required="required">
-		</form>
+		style="display: flex; justify-content: space-between; align-items: center; margin-right: 50px;">
+		<h3 class="content-title">Employees Data</h3>
+		<button onclick="location.href='add_employee'" type="submit">Add
+			Employee</button>
 	</div>
 	<%
 	if (employees.isEmpty()) {
 	%>
-	<div class="container">No employees have been assign to this
-		branch yet</div>
+	<div class="container">No data to display/</div>
 	<%
 	} else {
 	%>
@@ -49,11 +38,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 			<thead>
 				<tr>
 					<td>Employee ID</td>
+					<td>Branch ID</td>
 					<td>Employee Name</td>
-					<td>Date of Birth</td>
 					<td>Phone</td>
 					<td>Email</td>
-					<td>Role</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -63,14 +51,14 @@ int currentPage = (int) request.getAttribute("currentPage");
 				%>
 				<tr>
 					<td><%=employee.getUserId()%></td>
+					<td><%=employee.getBranchId()%></td>
 					<td><%=employee.getFirstName()%> <%=employee.getLastName()%></td>
-					<td><%=ConvertorUtil.formatToDate(employee.getDateOfBirth())%></td>
 					<td><%=employee.getPhone()%></td>
 					<td><%=employee.getEmail()%></td>
-					<td><%=employee.getType()%></td>
 					<td>
 						<form action="employee_details" method="post">
-							<input type="hidden" name="userId" value="<%=employee.getUserId()%>">
+							<input type="hidden" name="userId"
+								value="<%=employee.getUserId()%>">
 							<button type="submit"
 								style="background: none; border: none; padding: 0;">
 								<i class="material-icons">keyboard_arrow_right</i>

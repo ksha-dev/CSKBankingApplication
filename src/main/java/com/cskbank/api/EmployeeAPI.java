@@ -24,6 +24,10 @@ public interface EmployeeAPI extends UserAPI {
 
 	public Map<Long, Account> viewAccountsInBranch(int branchID, int pageNumber) throws AppException;
 
+	public Account getClosedAccountDetails(Long accountNumber) throws AppException;
+
+	public boolean isAccountClosed(long accountNumber) throws AppException;
+
 	// Transaction
 	public long depositAmount(Transaction depositTransaction) throws AppException;
 

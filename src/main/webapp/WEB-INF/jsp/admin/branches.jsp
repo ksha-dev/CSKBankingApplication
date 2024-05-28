@@ -20,12 +20,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 <body>
 	<%@include file="../include/layout_header.jsp"%>
 	<div
-		style="display: flex; justify-content: space-between; align-items: center">
+		style="display: flex; justify-content: space-between; align-items: center; margin-right: 50px;">
 		<h3 class="content-title">List of Branches</h3>
-		<a href="add_branch" style="color: white; padding-left: 10px"> <i
-			class="material-icons">add_circle</i>
-		</a>
-		<div style="margin: auto"></div>
+		<button input="submit" onclick="location.href='add_branch'">Add
+			Branch</button>
 	</div>
 
 	<%

@@ -14,12 +14,19 @@ function nullValidator(elementId, displayName) {
 	}
 }
 
+function nonZeroPositiveNumberCheck(elementId, displayName) {
+	nullValidator(elementId, displayName);
+	if ($("#" + elementId).val() <= 0) {
+		spanErrorMessageBelowInput(elementId, displayName + " cannot be negative or zero");
+	}
+}
+
 
 function userIdCheck() {
 	regexValidator("userId", "User ID", "^[1-9]\\d*$");
 }
 
-function passwordCheck() {
+function inputPasswordCheck() {
 	passwordCheck('password', "Password");
 }
 
@@ -90,10 +97,7 @@ function accountTypeCheck() {
 }
 
 function amountCheck() {
-	nullValidator('amount', "Amount");
-	if (document.getElementById("amount").value <= 0) {
-		spanErrorMessageBelowInput("amount", "Amount cannot be negative or zero");
-	}
+	nonZeroPositiveNumberCheck("amount", "Amount");
 }
 
 function customerTypeCheck() {
@@ -105,10 +109,7 @@ function searchByCheck() {
 }
 
 function searchValueCheck() {
-	nullValidator('searchValue', "Search Value");
-	if (document.getElementById("searchValue").value <= 0) {
-		spanErrorMessageBelowInput("searchValue", "Search Value cannot be negative or zero");
-	}
+	nonZeroPositiveNumberCheck('searchValue', "Search Value");
 }
 
 function oldPasswordCheck() {
@@ -130,11 +131,11 @@ function confirmPasswordCheck() {
 }
 
 function fromAccountCheck() {
-	nullValidator("fromAccount", "Sender Account");
+	nonZeroPositiveNumberCheck("fromAccount", "Sender Account");
 }
 
 function toAccountCheck() {
-	nullValidator("toAccount", "Receipient Account");
+	nonZeroPositiveNumberCheck("toAccount", "Receipient Account");
 }
 
 function remarksCheck() {
@@ -145,7 +146,7 @@ function remarksCheck() {
 }
 
 function accountNumberCheck() {
-	nullValidator("accountNumber", "Account Number");
+	nonZeroPositiveNumberCheck("accountNumber", "Account Number");
 }
 
 function transactionLimitCheck() {
@@ -154,10 +155,38 @@ function transactionLimitCheck() {
 
 
 
-function startDateCheck() {
+function customDateCheck() {
 	nullValidator("startDate", "Start Date");
+	nullValidator("endDate", "End Date");
+
+	const startDate = new Date($("#startDate").val());
+	const endDate = new Date($("#endDate").val());
+	const today = new Date();
+
+	console.log(startDate);
+	console.log(endDate);
+
+	if (startDate > today) {
+		spanErrorMessageBelowInput("startDate", "Please select a valid start date.");
+	}
+
+	if (endDate > today) {
+		spanErrorMessageBelowInput("endDate", "Please select a valid start date.");
+	}
+
+	if (startDate >= endDate) {
+		spanErrorMessageBelowInput("endDate", "End date should be greater than Start date");
+	}
 }
 
-function endDateCheck() {
-	nullValidator("endDate", "End Date");
+function transactionTypeCheck() {
+	nullValidator("transactionType", "Transaction Type");
+}
+
+function branchIdCheck() {
+	nonZeroPositiveNumberCheck("branchId", "Branch ID");
+}
+
+function roleCheck() {
+	nullValidator("role", "Employee Role")
 }

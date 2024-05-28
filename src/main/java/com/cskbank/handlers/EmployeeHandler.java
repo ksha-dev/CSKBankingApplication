@@ -48,6 +48,13 @@ public class EmployeeHandler {
 	}
 
 	public Account getAccountDetails(long accountNumber) throws AppException {
+		if (api.isAccountClosed(accountNumber)) {
+			return api.getClosedAccountDetails(accountNumber);
+		}
+		return CachePool.getAccountCache().get(accountNumber);
+	}
+
+	public Account getUnclosedAccountDetails(long accountNumber) throws AppException {
 		return CachePool.getAccountCache().get(accountNumber);
 	}
 
@@ -223,6 +230,7 @@ public class EmployeeHandler {
 			account.setModifiedAt(System.currentTimeMillis());
 
 			api.changeAccountStatus(account);
+			CachePool.getAccountCache().refreshData(account.getAccountNumber());
 			return account;
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
@@ -230,8 +238,11 @@ public class EmployeeHandler {
 	}
 
 	public Account closeAccount(long accountNumber, int employeeId, String pin) throws AppException {
-		ValidatorUtil.validateId(accountNumber);
 		return changeAccountStatus(accountNumber, Status.CLOSED, employeeId, pin);
+	}
+
+	public Account freezeAccount(long accountNumber, int employeeId, String pin) throws AppException {
+		return changeAccountStatus(accountNumber, Status.FROZEN, employeeId, pin);
 	}
 
 	public boolean updateCustomerDetails(int employeeId, int customerId, ModifiableField field, Object value,

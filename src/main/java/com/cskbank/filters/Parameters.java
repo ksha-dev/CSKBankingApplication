@@ -15,7 +15,8 @@ public enum Parameters {
 	GENDER("gender", "Gender"), PAN("pan", "PAN Number"), STARTDATE("startDate", "Start Date"),
 	ENDDATE("endDate", "End Date"), ROLE("role", "Role"), BRANCHID("branchId", "Branch ID"),
 	AKID("ak_id", "API Key ID"), ORGNAME("orgName", "Organisation Name"), OTP("otp", "One Time Password(OTP)"),
-	STATUS("status", "Status"), REASON("reason", "Reason"), RECAPTCHA_RESPONSE("g-recaptcha-response", "reCAPTCHA");
+	STATUS("status", "Status"), REASON("reason", "Reason"), RECAPTCHA_RESPONSE("g-recaptcha-response", "reCAPTCHA"),
+	CONFIRM_PASSWORD("confirmPassword", "Confirm Password"), ID("id", "ID");
 
 	private String parameterName;
 	private String parameterDisplayName;

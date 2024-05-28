@@ -25,7 +25,6 @@ function triggerTransactionLimit() {
 
 function submitValidation(e) {
 	action = e;
-	e.preventDefault();
 	accountNumberCheck();
 	transactionLimitCheck();
 

@@ -13,11 +13,11 @@ response.setHeader("Expires", "0");
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login | CSK Bank</title>
+<title>Reset Password | CSK Bank</title>
 <link rel="stylesheet" href="static/css/styles.css">
 <script src="static/script/script.js"></script>
 <script src="static/script/validator.js"></script>
-<script src="static/script/login.js"></script>
+<script src="static/script/reset_password.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
@@ -35,37 +35,31 @@ if (error != null) {
 <body class="login">
 	<div class="login-align">
 		<div class="login-container">
-			<h1 class="login-element">Login</h1>
+			<h1 class="login-element">Reset Password</h1>
 			<p class="login-element" style="margin-bottom: 20px;">Enter your
-				User ID and Password</p>
-			<form action="app/login" id="login-form" method="post">
+				User ID and respective Email ID</p>
+			<form action="app/reset_password" id="reset-password-form"
+				method="post">
 				<label for="userId" style="margin-bottom: 10px;">User ID</label> <input
 					id="userId" type="number"
 					name="<%=Parameters.USERID.parameterName()%>" class="login-element"
 					required> <span class="error-text" id="e-userId"></span> <label
-					for="password" class="login-element">Password</label> <input
-					id="password" type="password"
-					name="<%=Parameters.PASSWORD.parameterName()%>"
+					class="login-element">Email ID</label> <input id="email"
+					type="email" name="<%=Parameters.EMAIL.parameterName()%>"
 					class="login-element" required> <span class="error-text"
-					id="e-password"></span>
-				<h5>
-					Forgot password, <a href="reset_password"
-						style="color: white; font-weight: bold;">click here to reset</a>
-				</h5>
-				<div style="margin: 5px 0"></div>
-				<label>Human Verification</label>
+					id="e-email"></span> <label>Human Verification</label>
 				<div class="g-recaptcha" data-theme="dark" id="captcha"
 					style="margin: 10px 0px"
 					data-sitekey="6Lfk5-YpAAAAAI5tbo0SdcZFcNTX1FVikXO0jAxi"
 					data-action="LOGIN"></div>
 				<span class="error-text" id="e-captcha"></span> <input
-					class="login-element" type="submit" value="Login"
+					class="login-element" type="submit" value="Proceed"
 					style="margin-top: 20px;">
 			</form>
 			<br>
 			<p>
-				New User, <a href="signup" style="color: white; font-weight: bold;">Click
-					here to Sign up</a>
+				<a href="login" style="color: white; font-weight: bold;">Go back
+					to login</a>
 			</p>
 		</div>
 	</div>

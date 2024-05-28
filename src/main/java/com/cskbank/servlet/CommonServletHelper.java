@@ -8,15 +8,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.core.compiler.InvalidInputException;
+import org.json.JSONObject;
+
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
+import com.cskbank.exceptions.messages.InvalidInputMessage;
+import com.cskbank.exceptions.messages.ServletExceptionMessage;
 import com.cskbank.filters.Parameters;
 import com.cskbank.handlers.ReCAPTCHAHandler;
+import com.cskbank.modules.Account;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.OTP;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.modules.UserRecord.Type;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
@@ -24,6 +33,7 @@ import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.MailGenerationUtil;
+import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -389,11 +399,15 @@ class CommonServletHelper {
 			currentPage = 1;
 		}
 		try {
+			List<Transaction> transactions;
+			Account account = null;
 			UserRecord user = ServletUtil.getUser(request);
 			if (user.getType() == UserRecord.Type.CUSTOMER) {
-				Services.customerOperations.getAccountDetails(accountNumber, user.getUserId());
+				account = Services.customerOperations.getAccountDetails(accountNumber, user.getUserId());
+			} else if (user.getType() == Type.EMPLOYEE || user.getType() == Type.ADMIN) {
+				account = Services.employeeOperations.getAccountDetails(accountNumber);
 			}
-			List<Transaction> transactions;
+
 			if (limitString.equals("custom")) {
 				String startDateString = request.getParameter(Parameters.STARTDATE.parameterName());
 				String endDateString = request.getParameter(Parameters.ENDDATE.parameterName());
@@ -402,7 +416,7 @@ class CommonServletHelper {
 				if (pageCount <= 0) {
 					pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, startDate, endDate);
 				}
-				transactions = Services.appOperations.getTransactionsOfAccount(accountNumber, currentPage, startDate,
+				transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, startDate,
 						endDate);
 				request.setAttribute("startDate", startDateString);
 				request.setAttribute("endDate", endDateString);
@@ -411,7 +425,7 @@ class CommonServletHelper {
 				if (pageCount <= 0) {
 					pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, limit);
 				}
-				transactions = Services.appOperations.getTransactionsOfAccount(accountNumber, currentPage, limit);
+				transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, limit);
 			}
 			request.setAttribute("limit", limitString);
 			request.setAttribute("pageCount", pageCount);
@@ -420,6 +434,7 @@ class CommonServletHelper {
 			request.setAttribute("transactions", transactions);
 			request.getRequestDispatcher("/WEB-INF/jsp/common/statement_view.jsp").forward(request, response);
 		} catch (AppException e) {
+			e.printStackTrace();
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("statement");
 		}
@@ -478,5 +493,103 @@ class CommonServletHelper {
 		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp");
 		dispatcher.forward(request, response);
+	}
+
+	public void passwordResetGetRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, ServletException, IOException {
+		String prHash = request.getParameter(Parameters.ID.parameterName());
+		prHash = prHash.replace(" ", "+");
+		try {
+			JSONObject json = new JSONObject(SecurityUtil.decryptCipher(prHash));
+			long timeout = json.getLong("timeout");
+
+			if (System.currentTimeMillis() > timeout) {
+				ServletUtil.session(request).setAttribute("error", "Reset Password Link Expired");
+				response.sendRedirect(ServletUtil.getLoginRedirect(request));
+				return;
+			} else {
+				request.getRequestDispatcher("/WEB-INF/jsp/common/reset_password_input.jsp").forward(request, response);
+				return;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AppException(ServletExceptionMessage.INVALID_OBJECT);
+		}
+	}
+
+	public void passwordResetRequestPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, ServletException, IOException {
+
+		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
+		String email = request.getParameter(Parameters.EMAIL.parameterName());
+
+		if (Services.appOperations.doesEmailBelongsToUser(userId, email)) {
+			JSONObject json = new JSONObject();
+			json.put("userId", userId);
+			json.put("timeout", System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION_MILLIS);
+
+			String prHash = SecurityUtil.encryptText(json.toString());
+			MailGenerationUtil.sendPasswordResetMail(email,
+					"https://localhost:8443" + ServletUtil.getRedirectContextURL(request, "app/rp?id=" + prHash));
+
+			AuditLog log = new AuditLog();
+			log.setUserId(userId);
+			log.setLogOperation(LogOperation.PASSWORD_RESET_MAIL);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Password reset mail has been sent to User(ID : " + userId + ")");
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
+
+			request.setAttribute("status", true);
+			request.setAttribute("message", "Password Reset Mail has been sent to your email");
+			request.setAttribute("redirect", "/CSKBankingApplication/login");
+
+			request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+			return;
+		} else {
+			throw new AppException(APIExceptionMessage.USER_EMAIL_INCORRECT);
+		}
+	}
+
+	public void passwordResetActionPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, ServletException, IOException {
+		String newPassword = request.getParameter(Parameters.NEWPASSWORD.parameterName());
+		String confirmPassword = request.getParameter(Parameters.CONFIRM_PASSWORD.parameterName());
+		String id = request.getParameter(Parameters.ID.parameterName());
+		id = id.replace(" ", "+");
+
+		try {
+			if (!newPassword.equals(confirmPassword)) {
+				throw new AppException(ServletExceptionMessage.PASSWORDS_DONT_MATCH);
+			}
+
+			JSONObject json = new JSONObject(SecurityUtil.decryptCipher(id));
+			long timeout = json.getLong("timeout");
+			if (System.currentTimeMillis() >= timeout) {
+				throw new AppException(ServletExceptionMessage.PASSWORD_RESET_LINK_EXPIRED);
+			}
+
+			int userId = json.getInt("userId");
+			if (Services.appOperations.resetPassword(userId, newPassword)) {
+				AuditLog log = new AuditLog();
+				log.setUserId(userId);
+				log.setLogOperation(LogOperation.RESET_PASSWORD);
+				log.setOperationStatus(OperationStatus.SUCCESS);
+				log.setDescription("User(ID : " + userId + ") has reset the password through email link");
+				log.setModifiedAtWithCurrentTime();
+				Services.auditLogService.log(log);
+
+				ServletUtil.session(request).setAttribute("error", "Password has been reset");
+				response.sendRedirect(ServletUtil.getLoginRedirect(request));
+			} else {
+				ServletUtil.session(request).setAttribute("error", "An error occured during password reset");
+				response.sendRedirect(ServletUtil.getRedirectContextURL(request, "app/rp?id=" + id));
+			}
+
+		} catch (Exception e) {
+			throw new AppException(e.getMessage());
+		}
+
 	}
 }

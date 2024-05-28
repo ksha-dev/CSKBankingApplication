@@ -10,6 +10,10 @@
 <head>
 <title>Transfer</title>
 <%@include file="../include/head.jsp"%>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/transaction.js"></script>
 </head>
 
 
@@ -17,48 +21,30 @@
 	<%@include file="../include/layout_header.jsp"%>
 	<h3 class="content-title">Transfer</h3>
 	<form action="authorization" class="container" method="post"
-		style="width: 50%;">
-		<!-- 
-		 <div
-			style="display: flex; flex-direction: row; width: 100%; justify-content: space-between;">
-			<div style="width: 49%;">
-		 -->
+		id="transaction-form" style="width: 50%;">
 		<div class="dual-element-row">
-			<label for="type">Transaction Type</label> <select name="type"
-				id="type" required>
+			<label>Transaction Type</label> <select name="type"
+				id="transactionType" required>
 				<option style="display: none" value="null">Select
 					Transaction Type</option>
 				<option value="<%=TransactionType.CREDIT%>">DEPOSIT</option>
 				<option value="<%=TransactionType.DEBIT%>">WITHDRAW</option>
 			</select>
 		</div>
+		<span id="e-transactionType" class="error-text"></span>
 		<div class="dual-element-row">
-			<label for="accountNumber">Account Number</label> <input
-				type="number" name="accountNumber"
-				placeholder="Enter Account Number" required>
+			<label>Account Number</label> <input id="accountNumber" type="number"
+				name="accountNumber" placeholder="Enter Account Number" required>
 		</div>
-		<!-- 
-			</div>
-			<div style="width: 49%;">
-			 -->
+		<span id="e-accountNumber" class="error-text"></span>
 		<div class="dual-element-row">
 			<label for="amount">Transaction Amount</label> <input type="number"
-				step=".01" name="amount" placeholder="Enter Amount"
+				id="amount" step=".01" name="amount" placeholder="Enter Amount"
 				inputmode="numeric" required>
 		</div>
-
-		<!-- 
-				  <div class="dual-element-row">
-					<label for="remarks">Remarks</label> <input type="text"
-						placeholder="Enter remarks" name="remarks" id="remarks" required>
-				</div>
-			</div>
-		</div>
-				 -->
-		<span id="error-message" style="color: red;"></span> <input
-			type="hidden" name="operation" value="authorize_transaction">
-		<input type="submit" style="margin-left: auto" value="Proceed"
-			class="dual-element-row" onclick="validateAccountSelection()">
+		<span id="e-amount" class="error-text"></span> <input type="hidden"
+			name="operation" value="authorize_transaction"> <input
+			type="submit" value="Proceed" class="dual-element-row">
 	</form>
 	<%@include file="../include/layout_footer.jsp"%>
 	<script>

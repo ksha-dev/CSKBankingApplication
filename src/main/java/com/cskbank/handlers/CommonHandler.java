@@ -10,6 +10,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.APIKey;
+import com.cskbank.modules.Account;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil;
@@ -46,19 +47,17 @@ public class CommonHandler {
 		return null;
 	}
 
-	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, TransactionHistoryLimit limit)
+	public List<Transaction> getTransactionsOfAccount(Account account, int pageNumber, TransactionHistoryLimit limit)
 			throws AppException {
-		ValidatorUtil.validatePositiveNumber(accountNumber);
+		ValidatorUtil.validateObject(account);
 		ValidatorUtil.validatePositiveNumber(pageNumber);
 		ValidatorUtil.validateObject(limit);
-
-		api.getAccountDetails(accountNumber);
-		return api.getTransactionsOfAccount(accountNumber, pageNumber, limit);
+		return api.getTransactionsOfAccount(account.getAccountNumber(), pageNumber, limit);
 	}
 
-	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber, long startDate, long endDate)
+	public List<Transaction> getTransactionsOfAccount(Account account, int pageNumber, long startDate, long endDate)
 			throws AppException {
-		ValidatorUtil.validatePositiveNumber(accountNumber);
+		ValidatorUtil.validateObject(account);
 		ValidatorUtil.validatePositiveNumber(pageNumber);
 
 		if (startDate > endDate) {
@@ -71,8 +70,7 @@ public class CommonHandler {
 			throw new AppException(ActivityExceptionMessages.INVALID_END_DATE);
 		}
 
-		api.getAccountDetails(accountNumber);
-		return api.getTransactionsOfAccount(accountNumber, pageNumber, startDate, endDate);
+		return api.getTransactionsOfAccount(account.getAccountNumber(), pageNumber, startDate, endDate);
 	}
 
 	public int getPageCountOfTransactions(long accountNumber, TransactionHistoryLimit limit) throws AppException {
@@ -100,6 +98,12 @@ public class CommonHandler {
 		}
 	}
 
+	public boolean resetPassword(int customerId, String newPassword) throws AppException {
+		ValidatorUtil.validateId(customerId);
+		ValidatorUtil.validatePassword(newPassword);
+		return api.resetPassword(customerId, newPassword);
+	}
+
 	public APIKey getAPIKey(String apiKeyValue) throws AppException {
 		ValidatorUtil.validateAPIKey(apiKeyValue);
 		return api.getAPIKey(apiKeyValue);
@@ -123,4 +127,12 @@ public class CommonHandler {
 		ValidatorUtil.validateEmail(email);
 		return api.doesEmailExist(email);
 	}
+
+	public boolean doesEmailBelongsToUser(int userId, String email) throws AppException {
+		ValidatorUtil.validateEmail(email);
+		ValidatorUtil.validateId(userId);
+
+		return api.doesEmailBelongToUser(userId, email);
+	}
+
 }

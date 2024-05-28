@@ -53,7 +53,6 @@ public class RequestFilter implements Filter {
 		res.setHeader("Expires", "0");
 
 		String url = req.getServletPath();
-
 		if (!url.startsWith("/static")) {
 			System.out.println(String.format("%20s | %16s | %5s | %-8s | %s",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")), req.getRemoteHost(),
@@ -63,7 +62,7 @@ public class RequestFilter implements Filter {
 		if (url.equals("/index.html")) {
 			req.getRequestDispatcher("index.html").forward(req, res);
 
-		} else if (url.equals("/login") || url.equals("/signup")) {
+		} else if (url.equals("/login") || url.equals("/signup") || url.equals("/reset_password")) {
 			chain.doFilter(req, res);
 
 		} else if (url.equals("/verification") && (req.getPathInfo() == null || req.getPathInfo() == "/resend")) {

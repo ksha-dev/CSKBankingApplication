@@ -18,6 +18,7 @@ import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
@@ -285,6 +286,16 @@ class EmployeeServletHelper {
 				log.setModifiedAt(newCustomer.getCreatedAt());
 				Services.auditLogService.log(log);
 
+				MailGenerationUtil.sendUserCreationMail(newCustomer);
+				log = new AuditLog();
+				log.setUserId(employee.getUserId());
+				log.setTargetId(newCustomer.getUserId());
+				log.setLogOperation(LogOperation.CUSTOMER_CREATION_MAIL);
+				log.setOperationStatus(OperationStatus.SUCCESS);
+				log.setDescription("Customer Creation mail was sent to Customer(ID : " + employee.getUserId() + ")");
+				log.setModifiedAtWithCurrentTime();
+				Services.auditLogService.log(log);
+
 			} else if (customerType.equals("existing")) {
 				int customerId = ServletUtil.getSessionObject(request, "customerId");
 				newAccount = Services.employeeOperations.createAccountForExistingCustomer(customerId, accountType,
@@ -381,4 +392,61 @@ class EmployeeServletHelper {
 		request.setAttribute("redirect", "branch_accounts");
 		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
 	}
+
+	public void authorizeFreezeAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
+		long accountNumber = ConvertorUtil
+				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
+		try {
+			Services.employeeOperations.getUnclosedAccountDetails(accountNumber);
+			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
+			ServletUtil.session(request).setAttribute("redirect", "process_freeze_account");
+			response.sendRedirect("authorization");
+		} catch (AppException e) {
+			ServletUtil.session(request).setAttribute("error", e.getMessage());
+			response.sendRedirect(employee.getType() == UserRecord.Type.ADMIN ? "accounts" : "branch_accounts");
+		}
+	}
+
+	public void processFreezeAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
+			throws AppException, IOException, ServletException {
+		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
+		String pin = request.getParameter(Parameters.PIN.parameterName());
+		long accountNumber = ServletUtil.getSessionObject(request, "accountNumber");
+		try {
+			Account account = Services.employeeOperations.freezeAccount(accountNumber, employee.getUserId(), pin);
+			request.setAttribute("status", true);
+			request.setAttribute("message", "Account (Acc/No : " + accountNumber + ") has been successfully frozen");
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(employee.getUserId());
+			log.setTargetId(account.getUserId());
+			log.setLogOperation(LogOperation.CLOSE_ACCOUNT);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Account(Acc/No : " + account.getAccountNumber() + ") was frozen by "
+					+ employee.getType() + "(ID : " + employee.getUserId() + ")");
+			log.setModifiedAt(account.getModifiedAt());
+			Services.auditLogService.log(log);
+
+		} catch (AppException e) {
+			request.setAttribute("status", false);
+			request.setAttribute("message", e.getMessage());
+
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(employee.getUserId());
+			log.setLogOperation(LogOperation.CLOSE_ACCOUNT);
+			log.setOperationStatus(OperationStatus.FAILURE);
+			log.setDescription("Account(Acc/No : " + accountNumber + ") freeze failed " + employee.getType() + "(ID : "
+					+ employee.getUserId() + ") - " + e.getMessage());
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
+
+		}
+		request.setAttribute("redirect", "branch_accounts");
+		request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp").forward(request, response);
+	}
+
 }

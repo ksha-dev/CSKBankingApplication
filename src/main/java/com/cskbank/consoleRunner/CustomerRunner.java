@@ -110,8 +110,8 @@ class CustomerRunner {
 							throw new IllegalArgumentException("Invalid Transaction history Limit");
 						}
 						while (!isTransactionListObtained) {
-							List<Transaction> transactions = (appOperation.getTransactionsOfAccount(accountNumber,
-									pageNumber, limit));
+							List<Transaction> transactions = (appOperation
+									.getTransactionsOfAccount(accounts.get(accountNumber), pageNumber, limit));
 							LoggingUtil.logTransactionsList(transactions);
 							if (transactions.size() == ConstantsUtil.LIST_LIMIT) {
 								log.info("Enter 1 to go to next page (or) 0 to exit : ");
@@ -261,8 +261,8 @@ class CustomerRunner {
 						accountNumber = InputUtil.getPositiveLong();
 					}
 					if (accounts.containsKey(accountNumber)) {
-						List<Transaction> transactions = (appOperation.getTransactionsOfAccount(accountNumber, 1,
-								TransactionHistoryLimit.RECENT));
+						List<Transaction> transactions = (appOperation.getTransactionsOfAccount(
+								accounts.get(accountNumber), 1, TransactionHistoryLimit.RECENT));
 						LoggingUtil.logTransactionsList(transactions);
 
 					} else {

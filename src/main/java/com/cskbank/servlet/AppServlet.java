@@ -37,16 +37,38 @@ public class AppServlet extends HttpServlet {
 				if (!adminPostController(request, response, path)) {
 					employeePostController(request, response, path);
 				}
-			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
-				homeRedirect(response, ServletUtil.getUser(request).getType());
-			} else if (path.equals("/login")) {
-				new CommonServletHelper().loginPostRequest(request, response);
-			} else if (path.equals("/signup")) {
-				new CommonServletHelper().signupPostRequest(request, response);
-			} else if (path.equals("/verification")) {
-				new CommonServletHelper().verificationPostRequest(request, response);
 			} else {
-				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
+				switch (path) {
+				case "/customer":
+				case "/employee":
+				case "/admin":
+					homeRedirect(response, ServletUtil.getUser(request).getType());
+					break;
+
+				case "/login":
+					new CommonServletHelper().loginPostRequest(request, response);
+					break;
+
+				case "/signup":
+					new CommonServletHelper().signupPostRequest(request, response);
+					break;
+
+				case "/verification":
+					new CommonServletHelper().verificationPostRequest(request, response);
+					break;
+
+				case "/reset_password":
+					new CommonServletHelper().passwordResetRequestPostRequest(request, response);
+					break;
+
+				case "/complete_reset_password":
+					new CommonServletHelper().passwordResetActionPostRequest(request, response);
+					break;
+
+				default:
+					request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
+					break;
+				}
 			}
 		} catch (AppException e) {
 			ServletUtil.redirectError(request, response, e);
@@ -72,14 +94,31 @@ public class AppServlet extends HttpServlet {
 				if (!adminGetController(request, response, path)) {
 					employeeGetController(request, response, path);
 				}
-			} else if (path.equals("/customer") || path.equals("/employee") || path.equals("/admin")) {
-				homeRedirect(response, ServletUtil.getUser(request).getType());
-			} else if (path.equals("/verification")) {
-				new CommonServletHelper().verificationGetRequest(request, response);
-			} else if (path.equals("/resend")) {
-				new CommonServletHelper().resendGetRequest(request, response);
 			} else {
-				request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
+				switch (path) {
+				case "/customer":
+				case "/employee":
+				case "/admin":
+					homeRedirect(response, ServletUtil.getUser(request).getType());
+					break;
+
+				case "/verification":
+					new CommonServletHelper().verificationGetRequest(request, response);
+					break;
+
+				case "/resend":
+					new CommonServletHelper().resendGetRequest(request, response);
+					break;
+
+				case "/rp":
+					new CommonServletHelper().passwordResetGetRequest(request, response);
+					break;
+
+				default:
+					request.getRequestDispatcher("/static/html/page_not_found.html").forward(request, response);
+					break;
+
+				}
 			}
 
 		} catch (AppException e) {
@@ -309,6 +348,14 @@ public class AppServlet extends HttpServlet {
 
 			case "process_close_account":
 				employeeMethods.processCloseAccountPostRequest(request, response);
+				break;
+
+			case "authorize_freeze_account":
+				employeeMethods.authorizeFreezeAccountPostRequest(request, response);
+				break;
+
+			case "process_freeze_account":
+				employeeMethods.processFreezeAccountPostRequest(request, response);
 				break;
 
 			default:

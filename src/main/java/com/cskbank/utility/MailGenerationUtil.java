@@ -76,7 +76,28 @@ public class MailGenerationUtil {
 				+ "Please follow the instructions to login to our application." + "\n\nUser ID : " + user.getUserId()
 				+ "\nPassword : <First 4 letters of your first name>@<Date of birth in MMDD format>"
 				+ "\nExample : If your name is Ramesh and you were born on August 20, your password will be Rame@0820"
+				+ "\n\nAn authorization PIN has been set for your account and it is the last 4 digits of your phone number\n"
 				+ "\n\nLogin URL : https://localhost:8443/CSKBankingApplication/login" + "\n\nTeam CSKBank.";
 		return sendMail(user.getEmail(), subject, bodyText);
+	}
+
+	public static boolean sendUserCreationMail(UserRecord user) throws AppException {
+		String subject = "CSK Bank - User Registration";
+		String bodyText = "Hello " + user.getFirstName()
+				+ ",\n\nThank you for signing up with CSK Bank. Your user record has been created. "
+				+ "Please follow the instructions to login to our application." + "\n\nUser ID : " + user.getUserId()
+				+ "\nPassword : <First 4 letters of your first name>@<Date of birth in MMDD format>"
+				+ "\nExample : If your name is Ramesh and you were born on August 20, your password will be Rame@0820"
+				+ "\n\nAn authorization PIN has been set for your account and it is the last 4 digits of your phone number\n"
+				+ "\n\nLogin URL : https://localhost:8443/CSKBankingApplication/login \n\nTeam CSKBank.";
+		return sendMail(user.getEmail(), subject, bodyText);
+	}
+
+	public static boolean sendPasswordResetMail(String receipientEmail, String link) throws AppException {
+		ValidatorUtil.validateEmail(receipientEmail);
+		ValidatorUtil.validateObject(link);
+		String subject = "CSK Bank - Password Reset";
+		String bodyText = "This is you password reset link:\n\n" + link;
+		return sendMail(receipientEmail, subject, bodyText);
 	}
 }

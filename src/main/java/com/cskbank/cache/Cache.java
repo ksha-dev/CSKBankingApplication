@@ -25,7 +25,8 @@ public abstract class Cache<K, V> {
 	@SuppressWarnings("unchecked")
 	public final V fetchData(K key) throws AppException {
 		try {
-			return (V) UserAPI.class.getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api, key);
+			return (V) api.getClass().getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api,
+					key);
 		} catch (InvocationTargetException me) {
 			throw new AppException(me.getCause().getMessage());
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {

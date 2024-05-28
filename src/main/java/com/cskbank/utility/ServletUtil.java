@@ -95,6 +95,7 @@ public class ServletUtil {
 		case PASSWORD:
 		case OLDPASSWORD:
 		case NEWPASSWORD:
+		case CONFIRM_PASSWORD:
 			ValidatorUtil.validatePassword(parameterValue);
 			break;
 
@@ -114,6 +115,8 @@ public class ServletUtil {
 		case ADDRESS:
 		case ORGNAME:
 		case REASON:
+		case ID:
+		case RECAPTCHA_RESPONSE:
 			ValidatorUtil.validateObject(parameterValue);
 			break;
 

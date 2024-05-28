@@ -65,6 +65,7 @@ public class AdminHandler {
 		ValidatorUtil.validatePIN(pin);
 
 		if (api.userConfimration(adminId, pin)) {
+			employee.setStatus(Status.ACTIVE);
 			employee.setCreatedAt(System.currentTimeMillis());
 			employee.setModifiedBy(adminId);
 			return api.createEmployee(employee);

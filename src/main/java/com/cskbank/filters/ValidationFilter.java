@@ -78,8 +78,26 @@ public class ValidationFilter implements Filter {
 						break;
 
 					case "/verification":
-						if (req.getMethod() == "POST") {
+						if (req.getMethod().equals("POST")) {
 							ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.OTP));
+						}
+						break;
+
+					case "/reset_password":
+						if (req.getMethod().equals("POST")) {
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.USERID, Parameters.EMAIL));
+						}
+						break;
+
+					case "/rp":
+						ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ID));
+						break;
+
+					case "/complete_reset_password":
+						if (req.getMethod().equals("POST")) {
+							ServletUtil.checkRequiredParameters(parameters,
+									List.of(Parameters.NEWPASSWORD, Parameters.CONFIRM_PASSWORD, Parameters.ID));
 						}
 						break;
 
@@ -166,6 +184,7 @@ public class ValidationFilter implements Filter {
 								}
 								break;
 
+							case "authorize_freeze_account":
 							case "authorize_close_account":
 								ServletUtil.checkRequiredParameters(parameters, List.of(Parameters.ACCOUNTNUMBER));
 								break;

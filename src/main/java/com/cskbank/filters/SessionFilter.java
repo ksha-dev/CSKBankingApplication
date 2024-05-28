@@ -178,6 +178,7 @@ public class SessionFilter implements Filter {
 			verificationCheck(request);
 			throw new SessionFilterException(ServletUtil.getRedirectContextURL(request, "app/" + controller), true);
 
+		case "reset_password":
 		case "login":
 		case "signup": {
 			if (unverifiedUser != null) {
@@ -222,15 +223,17 @@ public class SessionFilter implements Filter {
 			if (path == null || path == "/") {
 				throw new SessionFilterException(ServletUtil.getLoginRedirect(request), true);
 			}
-
 			switch (path) {
 			case "/verification":
 			case "/resend":
 				verificationCheck(request);
 				break;
 
+			case "/reset_password":
 			case "/login":
 			case "/signup":
+			case "/rp":
+			case "/complete_reset_password":
 				break;
 
 			default:

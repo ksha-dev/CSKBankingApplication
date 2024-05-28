@@ -140,7 +140,8 @@ class EmployeeRunner {
 							throw new AppException("Invalid Transaction history Limit");
 						}
 						while (!isListObtained) {
-							List<Transaction> transactions = appOperations.getTransactionsOfAccount(accountNumber,
+							List<Transaction> transactions = appOperations.getTransactionsOfAccount(
+									operations.getAccountDetails(accountNumber),
 									pageNumber, limit);
 							LoggingUtil.logTransactionsList(transactions);
 							if (transactions.size() == ConstantsUtil.LIST_LIMIT) {

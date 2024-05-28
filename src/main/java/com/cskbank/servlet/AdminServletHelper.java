@@ -18,6 +18,7 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
@@ -185,6 +186,16 @@ class AdminServletHelper {
 			log.setModifiedAt(employee.getCreatedAt());
 			Services.auditLogService.log(log);
 
+			MailGenerationUtil.sendUserCreationMail(employee);
+			log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(employee.getUserId());
+			log.setLogOperation(LogOperation.EMPLOYEE_CREATION_MAIL);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Employee Creation mail was sent to Employee(ID : " + employee.getUserId() + ")");
+			log.setModifiedAt(employee.getCreatedAt());
+			Services.auditLogService.log(log);
+
 		} catch (AppException e) {
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
@@ -194,7 +205,8 @@ class AdminServletHelper {
 			log.setUserId(admin.getUserId());
 			log.setLogOperation(LogOperation.CREATE_EMPLOYEE);
 			log.setOperationStatus(OperationStatus.FAILURE);
-			log.setDescription("Employee creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
+			log.setDescription("Employee creation or mail generation failed [Admin ID : " + admin.getUserId() + "] - "
+					+ e.getMessage());
 			log.setModifiedAtWithCurrentTime();
 			Services.auditLogService.log(log);
 		}

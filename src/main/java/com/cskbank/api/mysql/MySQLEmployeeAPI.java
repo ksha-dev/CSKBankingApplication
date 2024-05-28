@@ -257,7 +257,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 					.convertToTwoDecimals(depositTransaction.getTransactedAmount() + transactionAccount.getBalance()));
 			transactionAccount.setModifiedBy(depositTransaction.getModifiedBy());
 			transactionAccount.setModifiedAt(depositTransaction.getCreatedAt());
-			MySQLAPIUtil.updateBalanceInAccount(transactionAccount);
+			MySQLAPIUtil.updateBalanceInAccount(transactionAccount, true);
 
 			depositTransaction.setClosingBalance(transactionAccount.getBalance());
 			MySQLAPIUtil.createSenderTransactionRecord(depositTransaction);
@@ -281,7 +281,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			transactionAccount.setLastTransactedAt(withdrawTransaction.getCreatedAt());
 			transactionAccount.setBalance(withdrawTransaction.getClosingBalance());
 
-			if (!MySQLAPIUtil.updateBalanceInAccount(transactionAccount)) {
+			if (!MySQLAPIUtil.updateBalanceInAccount(transactionAccount, false)) {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
 
@@ -357,6 +357,56 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new AppException(APIExceptionMessage.USER_STATUS_CHANGE_FAILED, "Status : " + user.getStatus());
+		}
+	}
+
+	@Override
+	public Account getClosedAccountDetails(Long accountNumber) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectColumn(Column.ALL);
+		queryBuilder.fromSchema(Schemas.ACCOUNTS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.ACCOUNT_NUMBER);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			try (ResultSet result = statement.executeQuery()) {
+				if (result.next()) {
+					return MySQLConversionUtil.convertToAccount(result);
+				} else {
+					throw new AppException(APIExceptionMessage.ACCOUNT_RECORD_NOT_FOUND);
+				}
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean isAccountClosed(long accountNumber) throws AppException {
+		ValidatorUtil.validateId(accountNumber);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.selectCount(Schemas.ACCOUNTS);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.ACCOUNT_NUMBER);
+		queryBuilder.and();
+		queryBuilder.columnEquals(Column.STATUS);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setLong(1, accountNumber);
+			statement.setInt(2, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, Status.CLOSED.toString()));
+			try (ResultSet result = statement.executeQuery()) {
+				return result.next() && result.getInt(1) == 1;
+			}
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
 		}
 	}
 }

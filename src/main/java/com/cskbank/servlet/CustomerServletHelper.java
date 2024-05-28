@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.exceptions.messages.ServletExceptionMessage;
 import com.cskbank.filters.Parameters;
@@ -24,6 +25,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
+import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
@@ -76,9 +78,18 @@ class CustomerServletHelper {
 
 			ValidatorUtil.validateAmount(amount);
 
+			Account senderAccount = Services.customerOperations.getAccountDetails(viewer_account_number,
+					customer.getUserId());
+			if (senderAccount.getStatus() == Status.FROZEN) {
+				throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
+			}
+
+			if (senderAccount.getStatus() == Status.CLOSED) {
+				throw new AppException(APIExceptionMessage.ACCOUNT_CLOSED);
+			}
+
 			Transaction transaction = new Transaction();
-			transaction.setViewerAccountNumber(Services.customerOperations
-					.getAccountDetails(viewer_account_number, customer.getUserId()).getAccountNumber());
+			transaction.setViewerAccountNumber(senderAccount.getAccountNumber());
 			transaction.setTransactedAccountNumber(transacted_account_number);
 			transaction.setTransactedAmount(amount);
 			transaction.setRemarks(remarks);

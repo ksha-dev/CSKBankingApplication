@@ -8,7 +8,10 @@
 <meta charset="UTF-8">
 <title>Add Employee</title>
 <%@include file="../include/head.jsp"%>
-
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../static/script/validator.js"></script>
+<script src="../../static/script/add_employee.js"></script>
 </head>
 <body>
 	<%@include file="../include/layout_header.jsp"%>
@@ -17,7 +20,8 @@
 		document.getElementById('a-employees').href = '#';
 	</script>
 	<h3 class="content-title">Add Employee</h3>
-	<form action="authorization" style="width: auto;" method="post">
+	<form action="authorization" style="width: auto;" method="post"
+		id="add-employee-form">
 
 		<div class="container" style="flex-direction: column;">
 			<h3 class="profile-element">Employee Details</h3>
@@ -26,34 +30,37 @@
 				style="display: flex; flex-direction: row; width: 100%; justify-content: space-between;">
 				<div style="width: 50%; padding-right: 50px;">
 					<div class="dual-element-row">
-						<label for="firstName">First Name</label> <input type="text"
-							name="firstName" placeholder="Enter First Name"
-							pattern="^[a-zA-Z]{3,}" required>
+						<label>First Name</label> <input type="text" id="firstName"
+							name="firstName" placeholder="Enter First Name" required>
 					</div>
+					<span id="e-firstName" class="error-text"></span>
+
 					<div class="dual-element-row">
 						<label for="lastName">Last Name</label> <input type="text"
-							name="lastName" placeholder="Enter Last Name" required>
+							id="lastName" name="lastName" placeholder="Enter Last Name"
+							required>
 					</div>
+					<span id="e-lastName" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="dob">Date of Birth</label> <input type="date" id="dob"
-							name="dateOfBirth"
+						<label for="dob">Date of Birth</label> <input type="date"
+							id="dateOfBirth" name="dateOfBirth"
 							max="<%=ConvertorUtil.formatToUTCDate(System.currentTimeMillis())%>"
 							required>
 					</div>
+					<span id="e-dateOfBirth" class="error-text"></span>
 
 					<div class="dual-element-row">
 						<label for="gender">Gender</label> <select name="gender"
 							id="gender" required>
 							<option value=null style="display: none;">Select</option>
 							<%
-							for (Gender gender : Gender.values()) {
-							%>
-							<option value="<%=gender%>"><%=gender%></option>
-							<%
-							}
+							for (Gender gender : Gender.values())
+								out.print("<option value='" + gender + "'>" + gender + "</option>");
 							%>
 						</select>
 					</div>
+					<span id="e-gender" class="error-text"></span>
 
 					<div class="dual-element-row">
 						<label for="role">Role</label> <select name="role" id="role"
@@ -62,63 +69,46 @@
 							<option value="<%=UserRecord.Type.EMPLOYEE%>"><%=UserRecord.Type.EMPLOYEE%></option>
 							<option value="<%=UserRecord.Type.ADMIN%>"><%=UserRecord.Type.ADMIN%></option>
 						</select>
-
 					</div>
+					<span id="e-role" class="error-text"></span>
 				</div>
 
 				<div style="width: 50%;">
 					<div class="dual-element-row">
-						<label for="address">Address</label required> <input type="text"
+						<label>Address</label> <input type="text" id="address"
 							placeHolder="Enter Address" name="address" required>
 					</div>
+					<span id="e-address" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="mobile">Mobile</label> <input type="number"
-							name="mobile" placeholder="Enter Mobile Number"
-							pattern="[7-8]\\d{9}" required>
+						<label>Phone</label> <input type="number" id="phone" name="phone"
+							placeholder="Enter Phone Number" required>
 					</div>
+					<span id="e-phone" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="email">Email ID</label> <input type="email"
+						<label>Email ID</label> <input type="email" id="email"
 							name="email" placeholder="Enter Email ID" required>
 					</div>
+					<span id="e-email" class="error-text"></span>
+
 					<div class="dual-element-row">
-						<label for="branchId">Branch ID</label> <input type="number"
-							name="branchId" placeholder="Enter Branch ID" required>
+						<label>Branch ID</label> <input type="number" name="branchId"
+							id="branchId" placeholder="Enter Branch ID" required>
 					</div>
+					<span id="e-branchId" class="error-text"></span>
+
 				</div>
 			</div>
-			<span id="error" style="color: red"></span>
 		</div>
 
 		<input type="hidden" value="authorize_add_employee" name="operation">
 		<button id="submit-button"
-			style="margin-left: auto; margin-right: 50px;" type="submit"
-			onclick="validateDropDowns()">Finish</button>
+			style="margin-left: auto; margin-right: 50px;" type="submit">Finish</button>
 	</form>
 
 	</div>
 	</section>
-
-	<script>
-		function validateDropDowns() {
-			const gender = document.getElementById('gender').value;
-			const role = document.getElementById('role').value;
-			const dob = document.getElementById('dob').value;
-			const error = document.getElementById('error');
-			error.textContent = "";
-			if (gender === "null") {
-				error.textContent = 'Please select a gender';
-				event.preventDefault();
-			}
-			if (role === "null") {
-				error.textContent = 'Please select the role of the employee';
-				event.preventDefault();
-			}
-			if (dob === "") {
-				error.textContent = 'Please enter date of birth';
-				event.preventDefault();
-			}
-		}
-	</script>
 </body>
 
 </html>
