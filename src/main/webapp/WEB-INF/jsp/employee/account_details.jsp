@@ -23,14 +23,16 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 <body style="width: 100%;">
 	<%@include file="../include/layout_header.jsp"%>
 	<script>
-		document.getElementById('li-<%=user.getType() == Type.ADMIN ? "accounts'" : "branch_accounts'"%>
-		).style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
-		document.getElementById('a-branch_accounts').href = '#';
+		if(fileName !== "search") {
+			document.getElementById('li-<%=user.getType() == Type.ADMIN ? "accounts'" : "branch_accounts'"%>
+			).style = "border-left: 5px solid #fff; background: #0d1117; color: white;";
+			document.getElementById('a-branch_accounts').href = '#';
+		}
 	</script>
 	<div
 		style="display: flex; justify-content: space-between; margin-right: 50px; align-items: center;">
 		<button style="z-index: 0;" type="button"
-			onclick="location.href='<%=(user.getType() == Type.ADMIN) ? "accounts" : "branch_accounts"%>'">
+			onclick="history.back()">
 			<i style="padding-right: 10px;" class="material-icons">arrow_back</i>Back
 		</button>
 	</div>

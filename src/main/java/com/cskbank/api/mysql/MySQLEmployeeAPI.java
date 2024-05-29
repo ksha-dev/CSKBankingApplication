@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+
 import com.cskbank.api.EmployeeAPI;
 import com.cskbank.api.mysql.MySQLQuery.Column;
 import com.cskbank.api.mysql.MySQLQuery.Schemas;
@@ -53,35 +55,61 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		}
 	}
 
+	private void updateSecureUserData(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.update(Schemas.USERS);
+		queryBuilder.setColumn(Column.DATE_OF_BIRTH);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.PHONE);
+		queryBuilder.separator();
+		queryBuilder.columnEquals(Column.EMAIL);
+		queryBuilder.where();
+		queryBuilder.columnEquals(Column.USER_ID);
+		queryBuilder.end();
+
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			SecretKey key = SecurityUtil.getSecretKey(user);
+			statement.setString(1, SecurityUtil.encryptText(user.getDateOfBirth() + "", key));
+			statement.setString(2, SecurityUtil.encryptText(user.getPhone() + "", key));
+			statement.setString(3, SecurityUtil.encryptText(user.getEmail()));
+			statement.setInt(4, user.getUserId());
+
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new AppException(e.getMessage());
+		}
+	}
+
 	protected void createUserRecord(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.insertInto(Schemas.USERS);
-		queryBuilder.insertColumns(List.of(Column.FIRST_NAME, Column.LAST_NAME, Column.DATE_OF_BIRTH, Column.GENDER,
-				Column.ADDRESS, Column.PHONE, Column.EMAIL, Column.TYPE, Column.STATUS, Column.CREATED_AT,
-				Column.MODIFIED_BY, Column.MODIFIED_AT));
+		queryBuilder.insertColumns(List.of(Column.FIRST_NAME, Column.LAST_NAME, Column.GENDER, Column.ADDRESS,
+				Column.TYPE, Column.STATUS, Column.CREATED_AT, Column.MODIFIED_BY, Column.MODIFIED_AT));
 		queryBuilder.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection()
 				.prepareStatement(queryBuilder.getQuery(), Statement.RETURN_GENERATED_KEYS)) {
+
 			statement.setString(1, user.getFirstName());
 			statement.setString(2, user.getLastName());
-			statement.setLong(3, user.getDateOfBirth());
-			statement.setInt(4, MySQLAPIUtil.getIdFromConstantValue(Schemas.GENDER, user.getGender().toString()));
-			statement.setString(5, user.getAddress());
-			statement.setLong(6, user.getPhone());
-			statement.setString(7, user.getEmail());
-			statement.setInt(8, MySQLAPIUtil.getIdFromConstantValue(Schemas.USER_TYPES, user.getType().toString()));
-			statement.setInt(9, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, user.getStatus().toString()));
-			statement.setLong(10, user.getCreatedAt());
-			statement.setInt(11, user.getModifiedBy());
-			statement.setObject(12, null);
+			statement.setInt(3, MySQLAPIUtil.getIdFromConstantValue(Schemas.GENDER, user.getGender().toString()));
+			statement.setString(4, user.getAddress());
+			statement.setInt(5, MySQLAPIUtil.getIdFromConstantValue(Schemas.USER_TYPES, user.getType().toString()));
+			statement.setInt(6, MySQLAPIUtil.getIdFromConstantValue(Schemas.STATUS, user.getStatus().toString()));
+			statement.setLong(7, user.getCreatedAt());
+			statement.setInt(8, user.getModifiedBy());
+			statement.setObject(9, null);
 
 			statement.executeUpdate();
-			try (ResultSet key = statement.getGeneratedKeys()) {
-				if (key.next()) {
-					user.setUserId(key.getInt(1));
+			try (ResultSet result = statement.getGeneratedKeys()) {
+				if (result.next()) {
+					user.setUserId(result.getInt(1));
+					updateSecureUserData(user);
 					createCredentialRecord(user);
 				} else {
 					throw new AppException(APIExceptionMessage.USER_CREATION_FAILED);
@@ -105,9 +133,11 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 			try (PreparedStatement statement = ServerConnection.getServerConnection()
 					.prepareStatement(queryBuilder.getQuery())) {
+				SecretKey key = SecurityUtil.getSecretKey(customer);
+
 				statement.setInt(1, customer.getUserId());
-				statement.setLong(2, customer.getAadhaarNumber());
-				statement.setString(3, customer.getPanNumber());
+				statement.setString(2, SecurityUtil.encryptText(customer.getAadhaarNumber() + "", key));
+				statement.setString(3, SecurityUtil.encryptText(customer.getPanNumber(), key));
 
 				System.out.println(statement);
 

@@ -1,4 +1,0 @@
-#Thu May 02 15:52:22 IST 2024
-password=password
-userName=1
-url=url1

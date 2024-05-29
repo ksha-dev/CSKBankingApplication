@@ -38,10 +38,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 			<thead>
 				<tr>
 					<td>Employee ID</td>
+					<td>First Name</td>
+					<td>Last</td>
+					<td>Role</td>
 					<td>Branch ID</td>
-					<td>Employee Name</td>
-					<td>Phone</td>
-					<td>Email</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -51,10 +51,10 @@ int currentPage = (int) request.getAttribute("currentPage");
 				%>
 				<tr>
 					<td><%=employee.getUserId()%></td>
+					<td><%=employee.getFirstName()%></td>
+					<td><%=employee.getLastName()%></td>
+					<td><%=employee.getType()%></td>
 					<td><%=employee.getBranchId()%></td>
-					<td><%=employee.getFirstName()%> <%=employee.getLastName()%></td>
-					<td><%=employee.getPhone()%></td>
-					<td><%=employee.getEmail()%></td>
 					<td>
 						<form action="employee_details" method="post">
 							<input type="hidden" name="userId"

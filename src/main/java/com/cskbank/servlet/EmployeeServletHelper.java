@@ -115,7 +115,7 @@ class EmployeeServletHelper {
 				CustomerRecord customer = Services.employeeOperations.getCustomerRecord(account.getUserId());
 				request.setAttribute("account", account);
 				request.setAttribute("customer", customer);
-				request.getRequestDispatcher("/WEB-INF/jsp/employee/search_account.jsp").forward(request, response);
+				request.getRequestDispatcher("/WEB-INF/jsp/employee/account_details.jsp").forward(request, response);
 
 				// Log
 				AuditLog log = new AuditLog();

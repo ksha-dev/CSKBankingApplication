@@ -53,7 +53,7 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Date of Birth</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(customer.getDateOfBirth())%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenDate(customer.getDateOfBirth())%></h4>
 				</div>
 				<div id="status">
 					<div class="dual-element-row">
@@ -69,11 +69,11 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 			<div style="width: 100%;">
 				<div class="dual-element-row">
 					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=customer.getPhone()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenPhone(customer.getPhone())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Email</p>
-					<h4 class="profile-element"><%=customer.getEmail()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenEmail(customer.getEmail())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Address</p>
@@ -81,11 +81,11 @@ CustomerRecord customer = (CustomerRecord) request.getAttribute("customer");
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">Aadhar</p>
-					<h4 class="profile-element"><%=customer.getAadhaarNumber()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenAadhar(customer.getAadhaarNumber())%></h4>
 				</div>
 				<div class="dual-element-row">
 					<p class="profile-element">PAN</p>
-					<h4 class="profile-element"><%=customer.getPanNumber()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenPAN(customer.getPanNumber())%></h4>
 				</div>
 			</div>
 		</div>

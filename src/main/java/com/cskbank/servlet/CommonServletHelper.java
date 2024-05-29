@@ -39,7 +39,7 @@ import com.cskbank.utility.ValidatorUtil;
 
 class CommonServletHelper {
 
-	public UserRecord loginPostRequest(HttpServletRequest request, HttpServletResponse response)
+	public void loginPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, ServletException, IOException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
@@ -88,10 +88,6 @@ class CommonServletHelper {
 				Services.auditLogService.log(log);
 			}
 		} catch (AppException e) {
-			e.printStackTrace();
-			request.getSession(false).setAttribute("error", e.getMessage());
-			response.sendRedirect(request.getContextPath() + "/login");
-
 			// Log
 			AuditLog log = new AuditLog();
 			log.setUserId(userId);
@@ -100,8 +96,9 @@ class CommonServletHelper {
 			log.setDescription("User(ID : " + userId + ") login failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
 			Services.auditLogService.log(log);
+
+			throw e;
 		}
-		return user;
 	}
 
 	private void sendMailIfOTPAbsent(UserRecord user) throws AppException {
@@ -185,10 +182,6 @@ class CommonServletHelper {
 			// Log
 
 		} catch (AppException e) {
-			e.printStackTrace();
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect(request.getContextPath() + "/signup");
-
 			AuditLog log = new AuditLog();
 			log.setUserId(1);
 			log.setLogOperation(LogOperation.CREATE_CUSTOMER_AT_SIGNUP);
@@ -196,6 +189,8 @@ class CommonServletHelper {
 			log.setDescription("Cannot create new customer. Reason : " + e.getMessage());
 			log.setModifiedAt(System.currentTimeMillis());
 			Services.auditLogService.log(log);
+
+			throw e;
 		}
 	}
 
@@ -398,46 +393,40 @@ class CommonServletHelper {
 		if (pageCount < currentPage) {
 			currentPage = 1;
 		}
-		try {
-			List<Transaction> transactions;
-			Account account = null;
-			UserRecord user = ServletUtil.getUser(request);
-			if (user.getType() == UserRecord.Type.CUSTOMER) {
-				account = Services.customerOperations.getAccountDetails(accountNumber, user.getUserId());
-			} else if (user.getType() == Type.EMPLOYEE || user.getType() == Type.ADMIN) {
-				account = Services.employeeOperations.getAccountDetails(accountNumber);
-			}
 
-			if (limitString.equals("custom")) {
-				String startDateString = request.getParameter(Parameters.STARTDATE.parameterName());
-				String endDateString = request.getParameter(Parameters.ENDDATE.parameterName());
-				long startDate = ConvertorUtil.dateStringToMillis(startDateString);
-				long endDate = ConvertorUtil.dateStringToMillisWithCurrentTime(endDateString);
-				if (pageCount <= 0) {
-					pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, startDate, endDate);
-				}
-				transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, startDate,
-						endDate);
-				request.setAttribute("startDate", startDateString);
-				request.setAttribute("endDate", endDateString);
-			} else {
-				TransactionHistoryLimit limit = TransactionHistoryLimit.convertStringToEnum(limitString);
-				if (pageCount <= 0) {
-					pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, limit);
-				}
-				transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, limit);
-			}
-			request.setAttribute("limit", limitString);
-			request.setAttribute("pageCount", pageCount);
-			request.setAttribute("currentPage", currentPage);
-			request.setAttribute("accountNumber", accountNumber);
-			request.setAttribute("transactions", transactions);
-			request.getRequestDispatcher("/WEB-INF/jsp/common/statement_view.jsp").forward(request, response);
-		} catch (AppException e) {
-			e.printStackTrace();
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("statement");
+		List<Transaction> transactions;
+		Account account = null;
+		UserRecord user = ServletUtil.getUser(request);
+		if (user.getType() == UserRecord.Type.CUSTOMER) {
+			account = Services.customerOperations.getAccountDetails(accountNumber, user.getUserId());
+		} else if (user.getType() == Type.EMPLOYEE || user.getType() == Type.ADMIN) {
+			account = Services.employeeOperations.getAccountDetails(accountNumber);
 		}
+
+		if (limitString.equals("custom")) {
+			String startDateString = request.getParameter(Parameters.STARTDATE.parameterName());
+			String endDateString = request.getParameter(Parameters.ENDDATE.parameterName());
+			long startDate = ConvertorUtil.dateStringToMillis(startDateString);
+			long endDate = ConvertorUtil.dateStringToMillisWithCurrentTime(endDateString);
+			if (pageCount <= 0) {
+				pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, startDate, endDate);
+			}
+			transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, startDate, endDate);
+			request.setAttribute("startDate", startDateString);
+			request.setAttribute("endDate", endDateString);
+		} else {
+			TransactionHistoryLimit limit = TransactionHistoryLimit.convertStringToEnum(limitString);
+			if (pageCount <= 0) {
+				pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, limit);
+			}
+			transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, limit);
+		}
+		request.setAttribute("limit", limitString);
+		request.setAttribute("pageCount", pageCount);
+		request.setAttribute("currentPage", currentPage);
+		request.setAttribute("accountNumber", accountNumber);
+		request.setAttribute("transactions", transactions);
+		request.getRequestDispatcher("/WEB-INF/jsp/common/statement_view.jsp").forward(request, response);
 	}
 
 	public void passwordChangeAuthorizationPostRequest(HttpServletRequest request, HttpServletResponse response)

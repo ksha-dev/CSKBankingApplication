@@ -131,7 +131,7 @@ class MySQLAPIUtil {
 		}
 	}
 
-	static CustomerRecord getCustomerRecord(int userId) throws AppException {
+	static CustomerRecord getCustomerRecord(int userId, long createdAt) throws AppException {
 		ValidatorUtil.validateId(userId);
 		MySQLQuery queryBuilder = new MySQLQuery();
 		queryBuilder.selectColumn(Column.ALL);
@@ -145,7 +145,7 @@ class MySQLAPIUtil {
 			customerStatement.setInt(1, userId);
 			try (ResultSet customerResult = customerStatement.executeQuery()) {
 				if (customerResult.next()) {
-					return MySQLConversionUtil.convertToCustomerRecord(customerResult);
+					return MySQLConversionUtil.convertToCustomerRecord(customerResult, createdAt);
 				} else {
 					throw new AppException(APIExceptionMessage.CUSTOMER_RECORD_NOT_FOUND);
 				}
@@ -194,7 +194,8 @@ class MySQLAPIUtil {
 			statement.setInt(1, userRecord.getUserId());
 			try (ResultSet record = statement.executeQuery()) {
 				if (record.next()) {
-					MySQLConversionUtil.updateUserRecord(record, userRecord);
+					MySQLConversionUtil.updateUserRecord(record, record.getLong(Column.CREATED_AT.toString()),
+							userRecord);
 				} else {
 					throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 				}

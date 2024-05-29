@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
@@ -19,6 +23,8 @@ import com.cskbank.utility.ValidatorUtil;
 public class AppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger servletLogger = LogManager.getLogger(AppServlet.class);
 
 	public AppServlet() throws AppException {
 		Services.initialize();
@@ -71,6 +77,7 @@ public class AppServlet extends HttpServlet {
 				}
 			}
 		} catch (AppException e) {
+			servletLogger.log(Level.ERROR, e.getMessage(), e);
 			ServletUtil.redirectError(request, response, e);
 		}
 	}
@@ -122,6 +129,7 @@ public class AppServlet extends HttpServlet {
 			}
 
 		} catch (AppException e) {
+			servletLogger.log(Level.ERROR, e.getMessage(), e);
 			ServletUtil.redirectError(request, response, e);
 		}
 	}

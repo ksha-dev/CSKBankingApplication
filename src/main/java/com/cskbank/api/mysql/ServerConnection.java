@@ -45,7 +45,7 @@ public class ServerConnection {
 		}
 	}
 
-	static void startTransaction() throws AppException {
+	public static void startTransaction() throws AppException {
 		try {
 			getServerConnection().setAutoCommit(false);
 		} catch (SQLException e) {
@@ -53,7 +53,7 @@ public class ServerConnection {
 		}
 	}
 
-	static void endTransaction() throws AppException {
+	public static void endTransaction() throws AppException {
 		try {
 			getServerConnection().commit();
 			getServerConnection().setAutoCommit(true);
@@ -62,7 +62,7 @@ public class ServerConnection {
 		}
 	}
 
-	static void reverseTransaction() throws AppException {
+	public static void reverseTransaction() throws AppException {
 		try {
 			getServerConnection().rollback();
 		} catch (SQLException e) {

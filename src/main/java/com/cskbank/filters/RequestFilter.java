@@ -14,6 +14,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.UserRecord;
 
@@ -22,6 +26,8 @@ import com.cskbank.modules.UserRecord;
  */
 @WebFilter("/FilterServlet")
 public class RequestFilter implements Filter {
+
+	private static Logger requestLogger = LogManager.getLogger(RequestFilter.class);
 
 	/**
 	 * Default constructor.
@@ -54,9 +60,9 @@ public class RequestFilter implements Filter {
 
 		String url = req.getServletPath();
 		if (!url.startsWith("/static")) {
-			System.out.println(String.format("%20s | %16s | %5s | %-8s | %s",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")), req.getRemoteHost(),
-					req.getMethod(), req.getServletPath(), req.getPathInfo()));
+			requestLogger.log(Level.INFO, String.format("%s | %s | %s | %s", req.getRemoteHost(), req.getMethod(),
+					req.getServletPath(), req.getPathInfo()));
+
 		}
 
 		if (url.equals("/index.html")) {

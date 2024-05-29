@@ -3,6 +3,8 @@ package com.cskbank.api.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.crypto.SecretKey;
+
 import com.cskbank.api.mysql.MySQLQuery.Schemas;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
@@ -16,6 +18,7 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -33,30 +36,37 @@ public class MySQLConversionUtil {
 		return employeeRecord;
 	}
 
-	static CustomerRecord convertToCustomerRecord(ResultSet record) throws AppException {
+	static CustomerRecord convertToCustomerRecord(ResultSet record, long createdAt) throws AppException {
 		ValidatorUtil.validateObject(record);
 		CustomerRecord customerRecord = new CustomerRecord();
 		try {
 			customerRecord.setUserId(record.getInt(1));
-			customerRecord.setAadhaarNumber(record.getLong(2));
-			customerRecord.setPanNumber(record.getString(3));
+
+			SecretKey key = SecurityUtil.getSecreteKey(customerRecord.getUserId(), createdAt);
+
+			customerRecord.setAadhaarNumber(
+					ConvertorUtil.convertStringToLong(SecurityUtil.decryptCipher(record.getString(2), key)));
+			customerRecord.setPanNumber(SecurityUtil.decryptCipher(record.getString(3), key));
 		} catch (SQLException e) {
 		}
 		return customerRecord;
 	}
 
-	static void updateUserRecord(ResultSet record, UserRecord user) throws AppException {
+	static void updateUserRecord(ResultSet record, long createdAt, UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(record);
 		ValidatorUtil.validateObject(user);
 		try {
 			user.setUserId(record.getInt(1));
+			SecretKey key = SecurityUtil.getSecreteKey(user.getUserId(), createdAt);
+
 			user.setFirstName(record.getString(2));
 			user.setLastName(record.getString(3));
-			user.setDateOfBirth(record.getLong(4));
+			user.setDateOfBirth(
+					ConvertorUtil.convertStringToLong(SecurityUtil.decryptCipher(record.getString(4), key)));
 			user.setGender(MySQLAPIUtil.getConstantFromId(Schemas.GENDER, record.getInt(5)));
 			user.setAddress(record.getString(6));
-			user.setPhone(record.getLong(7));
-			user.setEmail(record.getString(8));
+			user.setPhone(ConvertorUtil.convertStringToLong(SecurityUtil.decryptCipher(record.getString(7), key)));
+			user.setEmail(SecurityUtil.decryptCipher(record.getString(8)));
 			user.setType(MySQLAPIUtil.getConstantFromId(Schemas.USER_TYPES, record.getInt(9)));
 			user.setStatus(MySQLAPIUtil.getConstantFromId(Schemas.STATUS, record.getInt(10)));
 			user.setCreatedAt(record.getLong(11));

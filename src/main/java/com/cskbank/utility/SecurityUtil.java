@@ -46,7 +46,7 @@ public class SecurityUtil {
 		return SecurityUtil.getRandomString(API_KEY_LENGTH);
 	}
 
-	static String getRandomString(int length) {
+	public static String getRandomString(int length) {
 		Random random = new Random();
 		StringBuilder sb = new StringBuilder(length);
 
@@ -120,7 +120,10 @@ public class SecurityUtil {
 
 	public static SecretKey getSecretKey(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
-		return new SecretKeySpec(
-				String.format("%016d", ((user.getCreatedAt() * user.getUserId()) % (10 ^ 16))).getBytes(), ALGORITHM);
+		return getSecreteKey(user.getUserId(), user.getCreatedAt());
+	}
+
+	public static SecretKey getSecreteKey(int userId, long createdAt) throws AppException {
+		return new SecretKeySpec(String.format("%016d", ((createdAt * userId) % (10 ^ 16))).getBytes(), ALGORITHM);
 	}
 }

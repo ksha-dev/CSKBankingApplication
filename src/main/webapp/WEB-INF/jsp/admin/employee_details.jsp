@@ -44,7 +44,7 @@ EmployeeRecord employee = (EmployeeRecord) request.getAttribute("employee");
 
 				<div class="dual-element-row">
 					<p class="profile-element">Date of Birth</p>
-					<h4 class="profile-element"><%=ConvertorUtil.formatToDate(employee.getDateOfBirth())%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenDate(employee.getDateOfBirth())%></h4>
 				</div>
 			</div>
 
@@ -74,12 +74,12 @@ EmployeeRecord employee = (EmployeeRecord) request.getAttribute("employee");
 
 				<div class="dual-element-row">
 					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=employee.getPhone()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenDate(employee.getPhone())%></h4>
 				</div>
 
 				<div class="dual-element-row">
 					<p class="profile-element">Email ID</p>
-					<h4 class="profile-element"><%=employee.getEmail()%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenEmail(employee.getEmail())%></h4>
 				</div>
 			</div>
 		</div>

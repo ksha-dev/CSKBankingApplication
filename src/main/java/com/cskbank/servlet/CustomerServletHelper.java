@@ -53,61 +53,56 @@ class CustomerServletHelper {
 	}
 
 	public void authorizeTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		try {
-			CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
+			throws IOException, ServletException, AppException {
 
-			long viewer_account_number = ConvertorUtil
-					.convertStringToLong(request.getParameter(Parameters.FROMACCOUNT.parameterName()));
-			long transacted_account_number = ConvertorUtil
-					.convertStringToLong(request.getParameter(Parameters.TOACCOUNT.parameterName()));
-			if (viewer_account_number == transacted_account_number) {
-				throw new AppException(ActivityExceptionMessages.CANNOT_TRANSFER_TO_SAME_ACCOUNT);
-			}
-			double amount = ConvertorUtil
-					.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
+		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 
-			String transferWithinBankString = request.getParameter(Parameters.TRANSFERWITHINBANK.parameterName());
-			if (transferWithinBankString != null && !transferWithinBankString.equals("on")) {
-				throw new AppException("Invalid Identifier Obtained : Transfer Within Bank");
-			}
-
-			boolean transferWithinBank = !Objects.isNull(transferWithinBankString);
-//			String ifsc = request.getParameter(Parameters.IFSC.parameterName());
-			String remarks = request.getParameter(Parameters.REMARKS.parameterName());
-
-			ValidatorUtil.validateAmount(amount);
-
-			Account senderAccount = Services.customerOperations.getAccountDetails(viewer_account_number,
-					customer.getUserId());
-			if (senderAccount.getStatus() == Status.FROZEN) {
-				throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
-			}
-
-			if (senderAccount.getStatus() == Status.CLOSED) {
-				throw new AppException(APIExceptionMessage.ACCOUNT_CLOSED);
-			}
-
-			Transaction transaction = new Transaction();
-			transaction.setViewerAccountNumber(senderAccount.getAccountNumber());
-			transaction.setTransactedAccountNumber(transacted_account_number);
-			transaction.setTransactedAmount(amount);
-			transaction.setRemarks(remarks);
-			transaction.setUserId(customer.getUserId());
-			if (transferWithinBank) {
-				Services.employeeOperations.getAccountDetails(transacted_account_number);
-				transaction.setTransferWithinBank();
-			} else {
-				transaction.setTransferOutsideBank();
-			}
-
-			ServletUtil.session(request).setAttribute("transaction", transaction);
-			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("transfer");
+		long viewer_account_number = ConvertorUtil
+				.convertStringToLong(request.getParameter(Parameters.FROMACCOUNT.parameterName()));
+		long transacted_account_number = ConvertorUtil
+				.convertStringToLong(request.getParameter(Parameters.TOACCOUNT.parameterName()));
+		if (viewer_account_number == transacted_account_number) {
+			throw new AppException(ActivityExceptionMessages.CANNOT_TRANSFER_TO_SAME_ACCOUNT);
 		}
+		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
+
+		String transferWithinBankString = request.getParameter(Parameters.TRANSFERWITHINBANK.parameterName());
+		if (transferWithinBankString != null && !transferWithinBankString.equals("on")) {
+			throw new AppException("Invalid Identifier Obtained : Transfer Within Bank");
+		}
+
+		boolean transferWithinBank = !Objects.isNull(transferWithinBankString);
+//			String ifsc = request.getParameter(Parameters.IFSC.parameterName());
+		String remarks = request.getParameter(Parameters.REMARKS.parameterName());
+
+		ValidatorUtil.validateAmount(amount);
+
+		Account senderAccount = Services.customerOperations.getAccountDetails(viewer_account_number,
+				customer.getUserId());
+		if (senderAccount.getStatus() == Status.FROZEN) {
+			throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
+		}
+
+		if (senderAccount.getStatus() == Status.CLOSED) {
+			throw new AppException(APIExceptionMessage.ACCOUNT_CLOSED);
+		}
+
+		Transaction transaction = new Transaction();
+		transaction.setViewerAccountNumber(senderAccount.getAccountNumber());
+		transaction.setTransactedAccountNumber(transacted_account_number);
+		transaction.setTransactedAmount(amount);
+		transaction.setRemarks(remarks);
+		transaction.setUserId(customer.getUserId());
+		if (transferWithinBank) {
+			Services.employeeOperations.getAccountDetails(transacted_account_number);
+			transaction.setTransferWithinBank();
+		} else {
+			transaction.setTransferOutsideBank();
+		}
+
+		ServletUtil.session(request).setAttribute("transaction", transaction);
+		ServletUtil.session(request).setAttribute("redirect", "process_transaction");
+		response.sendRedirect("authorization");
 	}
 
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -162,35 +157,30 @@ class CustomerServletHelper {
 
 	public void authorizeProfileUpdatePostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		try {
-			String oldAddress = request.getParameter("old_address");
-			String newAddress = request.getParameter("new_address");
-			String oldEmail = request.getParameter("old_email");
-			String newEmail = request.getParameter("new_email");
-			boolean addressChangeNeeded = !oldAddress.equals(newAddress);
-			boolean emailChangeNeeded = !oldEmail.equals(newEmail);
-			if (!addressChangeNeeded && !emailChangeNeeded) {
-				ServletUtil.session(request).setAttribute("error", "No change was detected");
-				response.sendRedirect("profile");
-				return;
-			} else {
-				List<ModifiableField> fields = new ArrayList<>();
-				if (addressChangeNeeded) {
-					request.getSession(false).setAttribute("address", newAddress);
-					fields.add(ModifiableField.ADDRESS);
-				}
-				if (emailChangeNeeded) {
-					request.getSession(false).setAttribute("email", newEmail);
-					fields.add(ModifiableField.EMAIL);
-				}
-				request.getSession(false).setAttribute("fields", fields);
-			}
-			ServletUtil.session(request).setAttribute("redirect", "process_profile_update");
-			response.sendRedirect("authorization");
-		} catch (Exception e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
+		String oldAddress = request.getParameter("old_address");
+		String newAddress = request.getParameter("new_address");
+		String oldEmail = request.getParameter("old_email");
+		String newEmail = request.getParameter("new_email");
+		boolean addressChangeNeeded = !oldAddress.equals(newAddress);
+		boolean emailChangeNeeded = !oldEmail.equals(newEmail);
+		if (!addressChangeNeeded && !emailChangeNeeded) {
+			ServletUtil.session(request).setAttribute("error", "No change was detected");
 			response.sendRedirect("profile");
+			return;
+		} else {
+			List<ModifiableField> fields = new ArrayList<>();
+			if (addressChangeNeeded) {
+				request.getSession(false).setAttribute("address", newAddress);
+				fields.add(ModifiableField.ADDRESS);
+			}
+			if (emailChangeNeeded) {
+				request.getSession(false).setAttribute("email", newEmail);
+				fields.add(ModifiableField.EMAIL);
+			}
+			request.getSession(false).setAttribute("fields", fields);
 		}
+		ServletUtil.session(request).setAttribute("redirect", "process_profile_update");
+		response.sendRedirect("authorization");
 	}
 
 	public void processProfileUpdatePostRequest(HttpServletRequest request, HttpServletResponse response)

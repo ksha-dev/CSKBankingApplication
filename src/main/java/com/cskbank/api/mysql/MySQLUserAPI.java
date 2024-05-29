@@ -120,18 +120,19 @@ public class MySQLUserAPI implements UserAPI {
 			try (ResultSet record = statement.executeQuery()) {
 				if (record.next()) {
 					UserRecord user = null;
+					long createdAt = record.getLong(Column.CREATED_AT.toString());
 					UserRecord.Type type = UserRecord.Type.convertStringToEnum(
 							MySQLAPIUtil.getConstantFromId(Schemas.USER_TYPES, record.getInt(Column.TYPE.toString())));
 					switch (type) {
 					case CUSTOMER:
-						user = MySQLAPIUtil.getCustomerRecord(userId);
+						user = MySQLAPIUtil.getCustomerRecord(userId, createdAt);
 						break;
 					case ADMIN:
 					case EMPLOYEE:
 						user = MySQLAPIUtil.getEmployeeRecord(userId);
 						break;
 					}
-					MySQLConversionUtil.updateUserRecord(record, user);
+					MySQLConversionUtil.updateUserRecord(record, createdAt, user);
 					return user;
 				} else {
 					throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
@@ -665,7 +666,7 @@ public class MySQLUserAPI implements UserAPI {
 		query.end();
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
-			statement.setString(1, email);
+			statement.setString(1, SecurityUtil.encryptText(email));
 
 			try (ResultSet result = statement.executeQuery()) {
 				if (result.next()) {
@@ -694,7 +695,7 @@ public class MySQLUserAPI implements UserAPI {
 
 		try (PreparedStatement statement = ServerConnection.getServerConnection().prepareStatement(query.getQuery())) {
 			statement.setInt(1, userId);
-			statement.setString(2, email);
+			statement.setString(2, SecurityUtil.encryptText(email));
 
 			try (ResultSet result = statement.executeQuery()) {
 				if (result.next()) {
