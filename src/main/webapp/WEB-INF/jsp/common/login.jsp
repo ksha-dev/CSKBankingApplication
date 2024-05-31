@@ -56,7 +56,7 @@ if (error != null) {
 				<label>Human Verification</label>
 				<div class="g-recaptcha" data-theme="dark" id="captcha"
 					style="margin: 10px 0px"
-					data-sitekey="6Lfk5-YpAAAAAI5tbo0SdcZFcNTX1FVikXO0jAxi"
+					data-sitekey="6LeyIuYpAAAAABrOOV8oTgPY0BXUAwbq1FXoIPtf"
 					data-action="LOGIN"></div>
 				<span class="error-text" id="e-captcha"></span> <input
 					class="login-element" type="submit" value="Login"

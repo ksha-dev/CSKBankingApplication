@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
+	<regexes>
+		<regex name="phone" value="[7-9]\\d{9}" />
+		<regex name="firstName" value="[A-Za-z]{4,}" />
+		<regex name="lastName" value="[A-Za-z]{1,}" />
+		<regex name="userId" value="^[1-9][0-9]*$" />
+		<regex name="password"
+			value="((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%]).{8,20})" />
+		<regex name="g-recaptcha-response" value="[A-Za-z0-9\-_]+" />
+
+		<regex name="user" value="(customer|admin|employee)" />
+	</regexes>
+</security>

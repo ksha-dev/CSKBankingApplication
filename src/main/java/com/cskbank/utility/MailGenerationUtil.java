@@ -2,8 +2,10 @@ package com.cskbank.utility;
 
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -12,12 +14,20 @@ import javax.mail.internet.MimeMessage;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.OTP;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.servlet.Services;
 
 public class MailGenerationUtil {
 
 	private static final String FROM = "no-reply@cskbank.in";
 	private static final Properties HOST_PROPERTIES = new Properties();
+	private static final String USER_NAME = "";
+	private static final String PASSWORD = "";
+
+	public static final Authenticator AUTH = new Authenticator() {
+		@Override
+		protected PasswordAuthentication getPasswordAuthentication() {
+			return new PasswordAuthentication(USER_NAME, PASSWORD);
+		}
+	};
 
 	static {
 		HOST_PROPERTIES.put("mail.smtp.auth", "false");
@@ -26,7 +36,7 @@ public class MailGenerationUtil {
 		HOST_PROPERTIES.put("mail.smtp.port", "25");
 	}
 
-	private static final Session MESSAGE_SESSION_TEST = Session.getInstance(HOST_PROPERTIES);
+	private static final Session MAIL_SESSION = Session.getInstance(HOST_PROPERTIES);
 
 	public static synchronized boolean sendMail(String receipientEmail, String subject, String bodyText)
 			throws AppException {
@@ -34,7 +44,7 @@ public class MailGenerationUtil {
 		ValidatorUtil.validateObject(subject);
 		ValidatorUtil.validateObject(bodyText);
 		try {
-			Message message = new MimeMessage(MESSAGE_SESSION_TEST);
+			Message message = new MimeMessage(MAIL_SESSION);
 			message.setFrom(new InternetAddress(FROM));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(receipientEmail));
 			message.setSubject(subject);

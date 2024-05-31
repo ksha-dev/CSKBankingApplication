@@ -23,7 +23,8 @@ public class CaptchaHandler {
 	public static String getCaptchaImageByteString() {
 		String captchaEncodedString = "";
 		try {
-			Captcha captcha = new Captcha.Builder(200, 50).addText(() -> getCaptchaString())
+			Captcha captcha = new Captcha.Builder(200, 50).addText(
+					() -> getCaptchaString())
 					.addBackground(new GradiatedBackgroundProducer()).addNoise(new CurvedLineNoiseProducer())
 					.addBorder().build();
 			BufferedImage image = captcha.getImage();

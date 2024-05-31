@@ -80,6 +80,8 @@ public class RequestFilter implements Filter {
 		} else if (url.equals("/app") || url.equals("/api")) {
 			chain.doFilter(req, res);
 
+		} else if (url.equals("/error")) {
+			req.getRequestDispatcher("/WEB-INF/jsp/common/error.jsp");
 		} else {
 			req.getRequestDispatcher("/static/html/page_not_found.html").forward(req, res);
 		}
