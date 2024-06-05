@@ -2,14 +2,27 @@
 <security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
 	<regexes>
-		<regex name="phone" value="[7-9]\\d{9}" />
+		<!-- Parameter Patterns -->
+		<regex name="id" value="[1-9][0-9]*" />
+		<regex name="posNum" value="[0-9]+" />
+		<regex name="date" value="\d{4}-\d{2}-\d{2}" />
+		<regex name="phone" value="[7-9]\d{9}" />
+		<regex name="accountNumber" value="[1-9]\d{10,}" />
+		<regex name="otp" value="[1-9]\d{5}"/>
+		<regex name="aadhaar" value="[2-9]\d{11}"/>
+		<regex name="pan" value="[A-Z]{3}[ABCFGHLJPT][A-Z]\d{4}[A-Z]"/>
+
 		<regex name="firstName" value="[A-Za-z]{4,}" />
 		<regex name="lastName" value="[A-Za-z]{1,}" />
-		<regex name="userId" value="^[1-9][0-9]*$" />
-		<regex name="password"
-			value="((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%]).{8,20})" />
+		<regex name="password" value="((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%]).{8,20})" />
 		<regex name="g-recaptcha-response" value="[A-Za-z0-9\-_]+" />
+		<regex name="text" value="[a-zA-z_]+" />
+		<regex name="generalValue" value="[a-zA-Z0-9!_+-@^#$*%\s]*"/>
+		<regex name="email" value="[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-z]{2,}+"/>
+		<regex name="cipher" value="[A-Za-z0-9+=/\s]*"/>
 
+		<!-- URL Patterns -->
 		<regex name="user" value="(customer|admin|employee)" />
+		<regex name="employee" value="(employee|admin)" />
 	</regexes>
 </security>

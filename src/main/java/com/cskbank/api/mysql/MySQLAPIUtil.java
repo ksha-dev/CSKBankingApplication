@@ -51,7 +51,7 @@ class MySQLAPIUtil {
 				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ class MySQLAPIUtil {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -127,7 +127,7 @@ class MySQLAPIUtil {
 			int response = statement.executeUpdate();
 			return response == 1;
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -151,7 +151,7 @@ class MySQLAPIUtil {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -176,7 +176,7 @@ class MySQLAPIUtil {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -201,7 +201,7 @@ class MySQLAPIUtil {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 

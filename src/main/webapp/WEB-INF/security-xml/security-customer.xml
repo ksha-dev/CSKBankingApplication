@@ -3,10 +3,7 @@
 	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
 	<urls prefix="/app/customer">
 		<url path="/home" method="get"></url>
-		<url path="/account" method="get"></url>
-		<url path="/statement" method="get"></url>
 		<url path="/transfer" method="get"></url>
-		<url path="/change_password" method="get"></url>
-
+		<url path="/account" method="get" />
 	</urls>
 </security>

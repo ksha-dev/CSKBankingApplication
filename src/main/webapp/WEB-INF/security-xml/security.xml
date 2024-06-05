@@ -2,22 +2,12 @@
 <security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
 	<urls>
-		<url path="/static/[a-z]+/[a-z]+\.[a-z]+" csrf="false"></url>
-		<url path="/" method="get,post" csrf="false" />
-		<url path="/login" method="get" csrf="false" />
-		<url path="/app/login" method="post" csrf="false">
-			<param name="userId" regex="userId" />
-			<param name="password" regex="password" />
-			<param name="g-recaptcha-response" regex="g-recaptcha-response"
-				max-len="2048" />
-		</url>
-
-		<url path="/app/${user}/logout" method="get"></url>
-		<url path="/app/${user}/statement" method="get" url-type="dynamic"></url>
-		<url path="/app/${user}/statement" method="post"
-			url-type="dynamic">
-			<param name="currentPage" regex="userId" />
-			<param name="pageCount" regex="userId" />
-		</url>
+		<!-- Static Paths -->
+		<url path="/static/[a-z]+/[a-z_]+\.[a-z]+" />
+		<url path="/" method="get,post" />
+		<url path="/login" method="get" authentication="required" />
+		<url path="/verification" method="get" />
+		<url path="/reset_password" method="get" />
+		<url path="/signup" method="get" />
 	</urls>
 </security>

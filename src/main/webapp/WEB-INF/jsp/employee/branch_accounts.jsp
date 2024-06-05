@@ -53,7 +53,7 @@ int currentPage = (int) request.getAttribute("currentPage");
 		if (user.getType() == UserRecord.Type.EMPLOYEE) {
 		%>
 		<form action="account_details">
-			<input type="number" name="account_number"
+			<input type="number" name="accountNumber"
 				placeholder="Search account number" style="margin-right: 50px"
 				required="required">
 		</form>

@@ -7,7 +7,8 @@
 <head>
 <title>Status</title>
 <%@include file="../include/head.jsp"%>
-<link rel="stylesheet" href="../static/css/styles.css">
+<link rel="stylesheet"
+	href="/CSKBankingApplication/static/css/styles.css">
 </head>
 
 <body>

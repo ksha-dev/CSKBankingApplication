@@ -68,7 +68,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -139,7 +139,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -169,7 +169,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 		return accounts;
 	}
@@ -210,7 +210,7 @@ public class MySQLUserAPI implements UserAPI {
 				return transactions;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -245,7 +245,7 @@ public class MySQLUserAPI implements UserAPI {
 				return transactions;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -276,7 +276,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -502,7 +502,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -532,7 +532,7 @@ public class MySQLUserAPI implements UserAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 

@@ -16,19 +16,16 @@ import com.cskbank.api.mysql.MySQLQuery.Schemas;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.Account;
-import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
-import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil;
+import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.Status;
-import com.cskbank.utility.ConstantsUtil.TransactionType;
 
 public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
@@ -51,7 +48,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 			statement.executeUpdate();
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -79,7 +76,11 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 
 			statement.executeUpdate();
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			e.printStackTrace();
+			System.out.println(e.getErrorCode());
+			System.out.println(e.getSQLState());
+			System.out.println(e.getLocalizedMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -116,7 +117,9 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			e.printStackTrace();
+			System.out.println(e.getErrorCode());
+			throw new AppException(e);
 		}
 	}
 
@@ -151,7 +154,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			}
 		} catch (SQLException e) {
 			ServerConnection.reverseTransaction();
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -216,7 +219,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			throw new AppException(APIExceptionMessage.ACCOUNT_CREATION_FAILED);
 		} catch (SQLException e) {
 			ServerConnection.reverseTransaction();
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -245,7 +248,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 		return accounts;
 	}
@@ -272,7 +275,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -412,7 +415,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -436,7 +439,7 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 				return result.next() && result.getInt(1) == 1;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 }

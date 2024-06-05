@@ -52,7 +52,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 			}
 		} catch (SQLException e) {
 			ServerConnection.reverseTransaction();
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				throw new AppException(APIExceptionMessage.IFSC_CODE_UPDATE_FAILED);
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -149,7 +149,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 			updateBrachIFSC(branchId);
 			return branchId;
 		} catch (AppException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 
 	}
@@ -186,7 +186,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				throw new AppException(APIExceptionMessage.UPDATE_FAILED);
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -212,7 +212,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				return branch;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				return accounts;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -324,7 +324,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -377,7 +377,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				}
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 
@@ -401,7 +401,7 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 				return apiKeys;
 			}
 		} catch (SQLException e) {
-			throw new AppException(e.getMessage());
+			throw new AppException(e);
 		}
 	}
 

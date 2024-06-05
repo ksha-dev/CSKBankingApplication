@@ -454,9 +454,7 @@ class CommonServletHelper {
 
 		try {
 			Services.appOperations.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
-			request.setAttribute("status", true);
-			request.setAttribute("message", "New password has been updated<br>Click Finish to Logout");
-			request.setAttribute("redirect", "logout");
+			ServletUtil.session(request).invalidate();
 
 			// Log
 			AuditLog log = new AuditLog();
@@ -466,11 +464,10 @@ class CommonServletHelper {
 			log.setDescription(user.getType() + "(ID : " + user.getUserId() + ") has changed the password");
 			log.setModifiedAtWithCurrentTime();
 			Services.auditLogService.log(log);
-		} catch (AppException e) {
-			request.setAttribute("status", false);
-			request.setAttribute("message", e.getMessage());
-			request.setAttribute("redirect", "change_password");
 
+			request.getSession(true).setAttribute("error", "Password has been changed.");
+		} catch (AppException e) {
+			ServletUtil.session(request).setAttribute("error", "Cannot change password : " + e.getMessage());
 			// Log
 			AuditLog log = new AuditLog();
 			log.setUserId(user.getUserId());
@@ -480,8 +477,7 @@ class CommonServletHelper {
 			log.setModifiedAtWithCurrentTime();
 			Services.auditLogService.log(log);
 		}
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/common/transaction_status.jsp");
-		dispatcher.forward(request, response);
+		response.sendRedirect(ServletUtil.getLoginRedirect(request));
 	}
 
 	public void passwordResetGetRequest(HttpServletRequest request, HttpServletResponse response)

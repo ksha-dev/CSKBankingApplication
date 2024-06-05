@@ -32,6 +32,7 @@ public class MySQLConversionUtil {
 			employeeRecord.setUserId(record.getInt(1));
 			employeeRecord.setBranchId(record.getInt(2));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return employeeRecord;
 	}
@@ -48,6 +49,7 @@ public class MySQLConversionUtil {
 					ConvertorUtil.convertStringToLong(SecurityUtil.decryptCipher(record.getString(2), key)));
 			customerRecord.setPanNumber(SecurityUtil.decryptCipher(record.getString(3), key));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return customerRecord;
 	}
@@ -73,6 +75,7 @@ public class MySQLConversionUtil {
 			user.setModifiedBy(record.getInt(12));
 			user.setModifiedAt(record.getLong(13));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 	}
 
@@ -92,6 +95,7 @@ public class MySQLConversionUtil {
 			account.setModifiedBy(accountRS.getInt(10));
 			account.setModifiedAt(accountRS.getLong(11));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return account;
 	}
@@ -114,6 +118,7 @@ public class MySQLConversionUtil {
 			transaction.setModifiedBy(transactionRS.getInt(11));
 			transaction.setModifiedAt(transactionRS.getLong(12));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return transaction;
 	}
@@ -132,6 +137,7 @@ public class MySQLConversionUtil {
 			branch.setModifiedBy(branchRS.getInt(8));
 			branch.setModifiedAt(branchRS.getLong(9));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return branch;
 	}
@@ -148,6 +154,7 @@ public class MySQLConversionUtil {
 			apiKey.setIsActive(apiKeyRS.getBoolean(6));
 			apiKey.setModifiedAt(apiKeyRS.getLong(7));
 		} catch (SQLException e) {
+			throw new AppException(e);
 		}
 		return apiKey;
 	}
