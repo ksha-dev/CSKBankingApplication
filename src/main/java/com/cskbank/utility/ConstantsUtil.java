@@ -2,12 +2,13 @@ package com.cskbank.utility;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.catalina.User;
+import java.util.logging.Logger;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
+import com.zoho.logs.common.util.logging.LoggerUtil;
+import com.zoho.logs.common.util.logging.ZLoggerHandler;
 
 public class ConstantsUtil {
 
@@ -199,4 +200,5 @@ public class ConstantsUtil {
 	public static final long EXPIRY_DURATION_SECONDS = 300;
 	public static final long EXPIRY_DURATION_MILLIS = EXPIRY_DURATION_SECONDS * 1000;
 
+	public static final Logger LOGGER = LoggerUtil.getConsoleLogger();
 }

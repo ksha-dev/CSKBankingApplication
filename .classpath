@@ -12,7 +12,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="properties"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -34,6 +33,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/main/webapp/WEB-INF/lib"/>
+	<classpathentry kind="src" path="properties"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -85,5 +85,12 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/zsec-eventpojos.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/zsecpiidetector.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/zs-urlvalidator.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/javacsv.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-api-2.20.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-core-2.20.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-slf4j-impl-2.20.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/logagent.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/reload4j-1.2.24.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/slf4j-api-1.7.36.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

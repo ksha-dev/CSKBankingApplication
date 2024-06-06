@@ -1,8 +1,8 @@
 package com.cskbank.filters;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,12 +14,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.cskbank.exceptions.AppException;
-import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil;
+import com.zoho.logs.logclient.v2.LogAPI;
+import com.zoho.logs.logclient.v2.json.ZLMap;
 
 /**
  * Servlet Filter implementation class FilterServlet
@@ -27,15 +25,12 @@ import com.cskbank.modules.UserRecord;
 @WebFilter("/FilterServlet")
 public class RequestFilter implements Filter {
 
-	private static Logger requestLogger = LogManager.getLogger(RequestFilter.class);
-
 	/**
 	 * Default constructor.
 	 * 
 	 * @throws AppException
 	 */
 	public RequestFilter() {
-
 	}
 
 	/**
@@ -60,9 +55,10 @@ public class RequestFilter implements Filter {
 
 		String url = req.getServletPath();
 		if (!url.startsWith("/static")) {
-			requestLogger.log(Level.INFO, String.format("%s | %s | %s | %s", req.getRemoteHost(), req.getMethod(),
+			ZLMap map = new ZLMap();
+			map.put("url", String.format("%s | %s | %s | %s", req.getRemoteHost(), req.getMethod(),
 					req.getServletPath(), req.getPathInfo()));
-
+			LogAPI.log("requestURL", map);
 		}
 
 		if (url.equals("/index.html")) {

@@ -5,17 +5,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.cskbank.api.UserAPI;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.AuditLog;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class AuditHandler {
 
-	private Logger logger = LogManager.getLogger();
 	private ExecutorService auditLogExecutor;
 	private UserAPI api;
 
@@ -33,9 +30,9 @@ public class AuditHandler {
 		ValidatorUtil.validateObject(auditLog.getOperationStatus());
 		ValidatorUtil.validateObject(auditLog.getDescription());
 
-		logger.info(String.format("[USER-%d][TARGET-%d][OP-%s][STAT-%s][DES-%s]", auditLog.getUserId(),
-				auditLog.getTargetId(), auditLog.getLogOperation(), auditLog.getOperationStatus(),
-				auditLog.getDescription()));
+//		ConstantsUtil.DEFAULT_LOGGER.info(String.format("[USER-%d][TARGET-%d][OP-%s][STAT-%s][DES-%s]",
+//				auditLog.getUserId(), auditLog.getTargetId(), auditLog.getLogOperation(), auditLog.getOperationStatus(),
+//				auditLog.getDescription()));
 
 		auditLogExecutor.execute(auditRunnable(auditLog));
 

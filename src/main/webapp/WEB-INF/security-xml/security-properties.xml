@@ -5,6 +5,8 @@
 		<property name="csrf.cookie.name" value="_cf" />
 		<property name="csrf.param.name" value="cf" />
 		<property name="use.iam" value="false" />
-		<property name="log.inputstream" value="false" />
+		<property name="log.inputstream" value="true" />
+		<property name="secret.request.param.names"
+			value="password,g-recaptcha-response,oldPassword,newPassword,confirmpassword,cipher,dateOfBirth,phone,email,aadhaar,pan,pin" />
 	</properties>
 </security>
