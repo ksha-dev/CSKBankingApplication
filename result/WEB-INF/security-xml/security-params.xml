@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
+	<param-groups>
+		<param-group name="statement">
+			<param name="accountNumber" regex="accountNumber" min-len="11" max-len="16"/>
+			<param name="transactionLimit" regex="text" min-len="6" max-len="11"/>
+			<param name="startDate" regex="date" allow-empty="true" min-len="10" max-len="10"/>
+			<param name="endDate" regex="date" allow-empty="true" min-len="10" max-len="10"/>
+		</param-group>
+
+		<param-group name="pagination">
+			<param name="currentPage" regex="id" max-len="1"/>
+			<param name="pageCount" regex="posNum" max-len="1"/>
+		</param-group>
+
+		<param-group name="login">
+			<param name="userId" regex="id" min-len="1" max-len="16"/>
+			<param name="password" regex="password" min-len="8" max-len="20"/>
+			<param name="g-recaptcha-response" regex="g-recaptcha-response" min-len="1024" max-len="2048" />
+		</param-group>
+		
+		<param-group name="reset_password">
+			<param name="userId" regex="id" min-len="1" max-len="16"/>
+			<param name="email" regex="email" min-len="5" max-len="50"/>
+			<param name="g-recaptcha-response" regex="g-recaptcha-response"  min-len="1024" max-len="2048" />
+		</param-group>
+		
+		<param-group name="complete_reset_password">
+			<param name="newPassword" regex="password" min-len="8" max-len="20"/>
+			<param name="confirmPassword" regex="password" min-len="8" max-len="20"/>
+			<param name="id" regex="cipher" max-len="256"/>
+		</param-group>
+		
+		<param-group name="signup">
+			<param name="firstName" regex="firstName" min-len="4" max-len="30"/>
+			<param name="lastName" regex="lastName" min-len="1" max-len="20"/>
+			<param name="dateOfBirth" regex="date" min-len="10" max-len="10"/>
+			<param name="phone" regex="phone" min-len="10" max-len="10"/>
+			<param name="gender" regex="text" min-len="4" max-len="6"/>
+			<param name="email" regex="email" min-len="5" max-len="50"/>
+			<param name="address" regex="text" min-len="5" max-len="255"/>
+			<param name="aadhaar" regex="aadhaar" min-len="12" max-len="12"/>
+			<param name="pan" regex="pan" min-len="10" max-len="10"/>
+			<param name="g-recaptcha-response" regex="g-recaptcha-response"  min-len="1024" max-len="2048" />
+		</param-group>
+	</param-groups>
+</security>
