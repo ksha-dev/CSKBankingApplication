@@ -18,7 +18,7 @@
 		<javac destdir="${result.dir}/WEB-INF/classes">
 			<src path="${java.src.dir}" />
 			<src path="${webapp.dir}/WEB-INF/lib" />
-			<src path="/home/sharan-pt-7373/.m2/repositories"/>
+			<src path="/home/sharan-pt-7373/.m2/repository"/>
 		</javac>
 	</target>
 

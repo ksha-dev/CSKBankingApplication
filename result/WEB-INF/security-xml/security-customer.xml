@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
-	<urls prefix="/app/customer">
-		<url path="/home" method="get"></url>
-		<url path="/transfer" method="get"></url>
-		<url path="/account" method="get" />
-	</urls>
-</security>
