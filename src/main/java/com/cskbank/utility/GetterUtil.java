@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import com.cskbank.exceptions.AppException;
 
 public class GetterUtil {
@@ -15,7 +13,7 @@ public class GetterUtil {
 
 	public static Properties loadProperties(String propertiesName) throws AppException {
 		Properties properties = new Properties();
-		try (InputStream input = PropertiesUtil.class.getClassLoader().getResourceAsStream(propertiesName)) {
+		try (InputStream input = GetterUtil.class.getClassLoader().getResourceAsStream(propertiesName)) {
 			if (input == null) {
 				throw new AppException("Unable to load redirects.properties");
 			}

@@ -1,0 +1,4 @@
+     [exec] Result: 2
+     [exec] Result: 2
+     [echo] ExitValue from the task is : 2
+

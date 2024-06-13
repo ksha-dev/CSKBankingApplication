@@ -91,5 +91,6 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/logagent.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/reload4j-1.2.24.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/slf4j-api-1.7.36.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,6 +1,8 @@
 package com.cskbank.utility;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,6 +18,8 @@ import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.zoho.logs.logclient.v2.LogAPI;
+import com.zoho.logs.logclient.v2.json.ZLMap;
 
 public class ServletUtil {
 
@@ -174,8 +178,13 @@ public class ServletUtil {
 	}
 
 	public static void redirectError(HttpServletRequest request, HttpServletResponse response,
-			AppException appException) {
+			AppException appException) throws IOException {
 		try {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			appException.printStackTrace(pw);
+			LogAPI.log("access",
+					new ZLMap().put("message", appException.getMessage()).put("stacktrace", sw.toString()));
 			GetterUtil.loadRedirectURLProperties();
 			String requestURL = request.getServletPath() + request.getPathInfo();
 			if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
@@ -188,7 +197,11 @@ public class ServletUtil {
 			request.getSession(false).setAttribute("error", appException.getMessage());
 			response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			LogAPI.log("access", new ZLMap().put("message", e.getMessage()).put("stacktrace", sw.toString()));
+			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
 		}
 	}
 }

@@ -1,26 +1,26 @@
+<%@page import="com.cskbank.exceptions.AppException"%>
 <%@page import="org.json.JSONObject"%>
 <%@ page import="com.adventnet.iam.security.IAMSecurityException"%>
 <%@ page import="com.adventnet.iam.security.*"%>
 <%@ page isErrorPage="true"%>
 <%
-IAMSecurityException ex = (IAMSecurityException) request.getAttribute(IAMSecurityException.class.getName());
-Exception exp = (ServletException) request.getAttribute(ServletException.class.getName());
-String errorCode = null;
-if (ex != null && (errorCode = ex.getErrorCode()) != null) {
+IAMSecurityException iamExp = (IAMSecurityException) request.getAttribute(IAMSecurityException.class.getName());
+AppException appExp = (AppException) request.getAttribute(AppException.class.getName());
+ServletException exp = (ServletException) request.getAttribute(ServletException.class.getName());
 %>
 <html>
 <body>
 	<b>CSKBANK | Server error occured. Please try again after sometime</b>
-	<p><%=(exp != null) ? exp.getMessage() : ""%></p>
-	<p><%=(ex != null) ? ex.getMessage() : ""%></p>
-	<p>
-		<%
-		if (ex != null)
-			ex.printStackTrace();
-		%>
-	</p>
+	<%
+	if (iamExp != null) {
+		out.print("<p>" + iamExp.getMessage() + "<br>" + iamExp.getErrorCode() + "</p>");
+	}
+	if (appExp != null) {
+		out.print("<p>" + appExp.getMessage() + "</p>");
+	}
+	if (exp != null) {
+		out.print("<p>" + exp.getMessage() + "</p>");
+	}
+	%>
 </body>
 </html>
-<%
-}
-%>

@@ -1,1 +1,7 @@
 /target/
+/logs/
+/bin/logs/
+/temp/
+/output/
+/build/buildlogs/
+/build/hg_utils/
