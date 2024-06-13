@@ -1,10 +1,11 @@
 package com.cskbank.utility;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import com.cskbank.exceptions.AppException;
 
@@ -12,19 +13,23 @@ public class GetterUtil {
 
 	private static Properties redirectURLProperties = null;
 
-	public static Properties getProperties(String path, String fileName) throws AppException {
-		Properties returnProps = new Properties();
-		try (BufferedReader reader = new BufferedReader(new FileReader(path + "/" + fileName))) {
-			returnProps.load(reader);
-			return returnProps;
-		} catch (IOException e) {
+	public static Properties loadProperties(String propertiesName) throws AppException {
+		Properties properties = new Properties();
+		try (InputStream input = PropertiesUtil.class.getClassLoader().getResourceAsStream(propertiesName)) {
+			if (input == null) {
+				throw new AppException("Unable to load redirects.properties");
+			}
+			properties.load(input);
+			return properties;
+		} catch (IOException ex) {
+			ex.printStackTrace();
 			throw new AppException("Cannot load Properties");
+
 		}
 	}
 
 	public static void loadRedirectURLProperties() throws AppException {
-		redirectURLProperties = getProperties(System.getProperty("project.location") + "/properties",
-				"redirects.properties");
+		redirectURLProperties = loadProperties("redirects.properties");
 	}
 
 	public static String getRedirectURL(String requestURL) {

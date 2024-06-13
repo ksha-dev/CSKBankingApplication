@@ -8,6 +8,7 @@ function submitValidation(e) {
 	action = e;
 	userIdCheck();
 	emailCheck();
+	captchaCheck();
 }
 
 document.addEventListener('DOMContentLoaded', () => initialize());

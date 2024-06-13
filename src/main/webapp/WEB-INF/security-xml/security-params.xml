@@ -15,15 +15,15 @@
 		</param-group>
 
 		<param-group name="login">
-			<param name="userId" regex="id" min-len="1" max-len="16"/>
-			<param name="password" regex="password" min-len="8" max-len="20"/>
-			<param name="g-recaptcha-response" regex="g-recaptcha-response" min-len="1024" max-len="2048" />
+			<param name="userId" regex="id" min-len="1" max-len="16" min-occurrences="1"/>
+			<param name="password" regex="password" min-len="8" max-len="20" min-occurrences="1"/>
+			<param name="g-recaptcha-response" regex="g-recaptcha-response" min-len="1024" max-len="2048" min-occurrences="1" />
 		</param-group>
 		
 		<param-group name="reset_password">
-			<param name="userId" regex="id" min-len="1" max-len="16"/>
-			<param name="email" regex="email" min-len="5" max-len="50"/>
-			<param name="g-recaptcha-response" regex="g-recaptcha-response"  min-len="1024" max-len="2048" />
+			<param name="userId" regex="id" min-len="1" max-len="16" min-occurrences="1"/>
+			<param name="email" regex="email" min-len="5" max-len="50" min-occurrences="1"/>
+			<param name="g-recaptcha-response" regex="g-recaptcha-response"  min-len="1024" max-len="2048" min-occurrences="1" />
 		</param-group>
 		
 		<param-group name="complete_reset_password">

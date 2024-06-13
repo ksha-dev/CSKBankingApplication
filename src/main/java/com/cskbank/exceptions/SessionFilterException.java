@@ -5,7 +5,6 @@ public class SessionFilterException extends Exception {
 	private String url;
 	private boolean redirect;
 	private boolean showError = false;
-	private boolean continueFilter = false;
 
 	public SessionFilterException(String message, String url, boolean redirect) {
 		super(message);
@@ -22,7 +21,6 @@ public class SessionFilterException extends Exception {
 
 	public SessionFilterException() {
 		super();
-		this.continueFilter = true;
 	}
 
 	public boolean isRedirect() {

@@ -67,7 +67,7 @@ public class MySQLUserAPI implements UserAPI {
 					throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 				}
 			}
-		} catch (Throwable e) {
+		} catch (SQLException e) {
 			throw new AppException(e);
 		}
 	}
