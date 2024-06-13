@@ -1,0 +1,67 @@
+
+JAVA_HOME   : /usr/lib/jvm/java-11-openjdk-amd64
+SERVER_HOME : /home/sharan-pt-7373/Documents/GitHub/CSKBank_Mickey
+DATE        : Thursday 13 June 2024 12:04:20 PM IST
+
+wrapper  | Failed to read from stdin.  Bad file descriptor
+wrapper  | JVM did not exit on request, termination requested.
+wrapper  | --> Wrapper Started as Console
+wrapper  | Java Service Wrapper Professional Edition 64-bit 3.5.51
+wrapper  |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+wrapper  |     http://wrapper.tanukisoftware.com
+wrapper  |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+wrapper  | 
+wrapper  | Launching a JVM...
+jvm 1    | WrapperManager: Initializing...
+jvm 1    | Starting Server from location: /home/sharan-pt-7373/Documents/GitHub/CSKBank_Mickey
+jvm 1    | Free edition...
+jvm 1    | 
+jvm 1    | Modules already Populated
+jvm 1    | 
+jvm 1    |      ModulePreStartProcess :: Persistence::DBAUDIT[ STARTED ]
+jvm 1    | Persistence                                       [ LOADED ]
+jvm 1    |      ModulePostStartProcess:: Persistence::DBAUDIT[ STARTED ]
+jvm 1    | Audit                                             [ LOADED ]
+jvm 1    | Authentication                                    [ LOADED ]
+jvm 1    | Authorization                                     [ LOADED ]
+jvm 1    | CustomView                                        [ LOADED ]
+jvm 1    | TaskEngine                                        [ LOADED ]
+jvm 1    | Tomcat                                            [ LOADED ]
+jvm 1    | ClientFramework                                   [ LOADED ]
+jvm 1    | ClientComponents                                  [ LOADED ]
+jvm 1    | 
+jvm 1    | Creating Services
+jvm 1    | CacheService                                      [ CREATED ]
+jvm 1    | PatchUpdaterService                               [ CREATED ]
+jvm 1    | AuthenticationService                             [ CREATED ]
+jvm 1    | AuthorizationService                              [ CREATED ]
+jvm 1    | TaskEngineService                                 [ CREATED ]
+jvm 1    | WebService                                        [ CREATED ]
+jvm 1    | TemplateService                                   [ CREATED ]
+jvm 1    | TableTemplateService                              [ CREATED ]
+jvm 1    | 
+jvm 1    | Starting Services
+jvm 1    | CacheService                                      [ STARTED ]
+jvm 1    | PatchUpdaterService                               [ STARTED ]
+jvm 1    | AuthenticationService                             [ STARTED ]
+jvm 1    | AuthorizationService                              [ STARTED ]
+jvm 1    | TaskEngineService                                 [ STARTED ]
+jvm 1    | WARNING: An illegal reflective access operation has occurred
+jvm 1    | WARNING: Illegal reflective access by com.zoho.logs.common.util.ReflectionUtil (file:/home/sharan-pt-7373/Documents/GitHub/CSKBank_Mickey/webapps/CSKBank_1.0/WEB-INF/lib/logagent.jar) to field java.lang.reflect.Field.modifiers
+jvm 1    | WARNING: Please consider reporting this to the maintainers of com.zoho.logs.common.util.ReflectionUtil
+jvm 1    | WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+jvm 1    | WARNING: All illegal access operations will be denied in a future release
+jvm 1    | WebService                                        [ STARTED ]
+jvm 1    | TemplateService                                   [ STARTED ]
+jvm 1    | TableTemplateService                              [ STARTED ]
+jvm 1    | 
+jvm 1    | Server started in :: [15900 ms]
+jvm 1    | 
+jvm 1    | Connect to: [ http://localhost:8080 ]
+wrapper  | INT trapped.  Shutting down.
+wrapper  | INT trapped.  Forcing immediate shutdown.
+wrapper  | INT trapped.  Shutting down.
+wrapper  | JVM received a signal SIGKILL (9).
+wrapper  | JVM process is gone.
+wrapper  | JVM exited after being requested to terminate.
+wrapper  | <-- Wrapper Stopped

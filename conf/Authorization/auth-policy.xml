@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Id$ -->
+<auth-policy>
+	<!-- Read All Tables Role -->
+	<AaaRole role_id="AaaRole:role_id:0" name="ReadAllTables"
+		service_id="System" description="Kind of users who have permission to read all tables" />
+	<AaaPermission permission_id="AaaPermission:permission_id:0"
+		permission_name="readAllTables" service_id="System">
+		<AaaTablePermission table_name="*" access_type="R" />
+	</AaaPermission>
+	<AaaAce permission_id="AaaPermission:permission_id:0" role_id="AaaRole:role_id:0"
+		env_criteria="ALL" expiry_time="0" exclude="false" evaluationorder="0" />
+
+	<!-- Access All Tables Role -->
+	<AaaRole role_id="AaaRole:role_id:1" name="AccessAllTables"
+		service_id="System"
+		description="Kind of users who have permission to access  entries in all tables" />
+	<AaaPermission permission_id="AaaPermission:permission_id:1"
+		permission_name="accessAllTables" service_id="System">
+		<AaaTablePermission table_name="*" access_type="CRUD" />
+	</AaaPermission>
+	<AaaAce permission_id="AaaPermission:permission_id:1" role_id="AaaRole:role_id:1"
+		env_criteria="ALL" expiry_time="0" exclude="false" evaluationorder="0" />
+
+	<!-- AccessAllMethods Role -->
+	<AaaRole role_id="AaaRole:role_id:2" name="AccessAllMethods"
+		service_id="System"
+		description="Kind of users who have permission to invoke all methods on all EJBs" />
+	<AaaPermission permission_id="AaaPermission:permission_id:2"
+		permission_name="accessAllMethods" service_id="System">
+		<AaaMethodPermission bean_name="*" method_name="*" />
+	</AaaPermission>
+	<AaaAce permission_id="AaaPermission:permission_id:2" role_id="AaaRole:role_id:2"
+		env_criteria="ALL" expiry_time="0" exclude="false" evaluationorder="0" />
+
+	<!-- Role to Account mapping -->
+	<AaaAuthorizedRoles>
+		<AaaAuthorizedRole account_id="admin/System"
+			role_id="AaaRole:role_id:1" />
+		<AaaAuthorizedRole account_id="admin/System"
+			role_id="AaaRole:role_id:2" />
+		<AaaAuthorizedRole account_id="guest/System"
+			role_id="AaaRole:role_id:0" />
+		<AaaAuthorizedRole account_id="guest/System"
+			role_id="AaaRole:role_id:2" />
+	</AaaAuthorizedRoles>
+
+</auth-policy>

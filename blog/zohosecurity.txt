@@ -1,0 +1,11 @@
+Module=ZOHOSECURITY
+SourceCoLabel=M2_32_PATCH
+BuildDate=May_07_2024
+BuildTime=12:04:49
+#BuildLabel=M2_32_PATCH_May_07_2024
+build-timestamp= 1715063727
+StaticVersion=
+Current_Build_Url=https://build.zohocorp.com/zoho/zohosecurity/webhost/M2_32_PATCH/May_07_2024
+Source_Changeset=d11bf5850f49fa878b0819efe98e85130e3d24d4
+Build_Comment=
+BuildLabel=ZOHOSECURITY_M2_32_6

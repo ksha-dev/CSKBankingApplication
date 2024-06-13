@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="zohoprmsorgzaid" account_name="ZohoPRM Service Org">
+		<IAMAccountDomain domain="zohoprmsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="connectcommunitysorgzaid" account_name="ConnectCommunity Service Org">
+		<IAMAccountDomain domain="connectcommunitysorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="mecommunitysorgzaid" account_name="MECommunity Service Org">
+		<IAMAccountDomain domain="mecommunitysorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="marketingautomationsorgzaid" account_name="MarketingAutomation Service Org">
+		<IAMAccountDomain domain="marketingautomationsorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

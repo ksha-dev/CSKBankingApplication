@@ -1,0 +1,60 @@
+#$Id: $
+# Configuration Sample Format :
+# ``` 
+#   - resource_name: {{ResourceName in PascalCase}} (Mandatory)
+#     identifier: {{identifier}}.
+#     path: "users/:zuid". Customize REST API Path. default : {resource}/:{identifier}
+#     downloadable: Boolean.
+#     multipart: Boolean.
+#     derived: Boolean.
+#     resources: {{SubResources}
+#     access_control: {{false}} || {{Map}}
+#       {{method}}:  # (get | post | put | delete)
+#         roles: {{Role Name}}. # Single or Comma seprated User Role. Allowed to perform this operation. 
+#                                 If `ServiceAdmin` configured its parent Roles such as SuperAdmin, Admin can also perform the action based on the weigtage of the role. 
+#         role_hierarchy: {{Boolean}} # Don't consider Parent roles hierarchy, Verify given set of Roles alone.
+#         password: {{Boolean}} # Default is false. If you required authentication check, give true.
+# ```
+---
+api_server_url: "http://localhost:8080"
+
+prefix_uri: "accounts/p"
+
+base_uri: "relogin"
+
+versions: "v1"
+ 
+handlers_package: "com.zoho.accounts.internal.signin"
+
+icresturi_handler_api: "com.zoho.accounts.webclient.authorization.ICRESTUriHandlerImpl"
+
+resources:
+ #Reauth via Primary and Secondary Authentication
+  - resource_name: PrimaryReauth
+    identifier: zuid
+    path: "/primary/:zuid"
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: PasswordReauth
+        path: "/password"
+        fields: password
+        access_control: false
+      - resource_name: OTPReauth
+        identifier: eloginid
+        path: "/otp/:eloginid"
+        fields: code
+        access_control: false
+      - resource_name: DeviceReauth
+        identifier: deviceid
+        path: "/device/:deviceid"
+        fields: code
+        access_control: false
+      - resource_name: SAMLReauth
+        identifier: authdomain
+        fields: loginId
+        access_control: false
+      - resource_name: PasskeyReauth
+        identifier: passkey_name
+        path: "/passkey/:passkey_name"
+        access_control: false

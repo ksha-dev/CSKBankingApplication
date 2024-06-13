@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TZ824L8Y37.com.zoho.iamlogin","3QZ6UJB6QX.com.zoho.inhouse.oneauth"
+        ],
+        "components": [
+          {
+            "/": "/qrsignin/*",
+            "?": {
+              "code": "?*"
+            },
+            "comment": "Matches any URL with a path that starts with qrsignin and that has query param with name code"
+          }
+        ]
+      }
+    ]
+  }
+}

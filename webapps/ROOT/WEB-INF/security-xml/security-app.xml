@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
+	<urls>
+		<!-- Application Paths - Common -->
+		<!-- Without Parameters -->
+		<url path="/app/signup" />
+		<url path="/app/verification" method="get" />
+		<url path="/app/resend" method="get" />
+
+		<!-- With Parameters -->
+		<url path="/app/verification" method="post"><param name="otp" regex="otp" /></url>
+		<url path="/app/login" method="post"><param-group name="login" /></url>
+		<url path="/app/signup" method="post"><param-group name="signup" /></url>
+		<url path="/app/reset_password" method="post"><param-group name="reset_password"/></url>
+		<url path="/app/rp"><param name="id" regex="cipher" max-len="256"/></url>
+		<url path="/app/complete_reset_password" method="post"><param-group name="complete_reset_password"/></url>
+
+		<!-- User URLs -->
+		<!-- Without Parameters -->
+		<url path="/app/${user}/logout" method="get" />
+		<url path="/app/${user}/authorization" method="get" />
+		<url path="/app/${user}/profile" method="get" />
+		<url path="/app/${user}/profile_edit" method="get" />
+		<url path="/app/${user}/change_password" method="get" />
+
+		<!-- With Parameters -->
+		<url path="/app/${user}/statement" method="get"><extraparam regex="accountNumber" limit="1" /></url>
+		<url path="/app/${user}/account_details" method="get"><param name="accountNumber" regex="accountNumber" /></url>
+		<url path="/app/${user}/statement" method="post"><param-group name="statement" />
+			<param-group name="pagination" /></url>
+		<url path="/app/${user}/authorization" method="post"><param name="opertaion" regex="text" />
+			<extraparam regex="generalValue" limit="20" /></url>
+	</urls>
+</security>

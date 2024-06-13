@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="keptosorgzaid" account_name="Kepto Service Org">
+		<IAMAccountDomain domain="keptosorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="delivcentralsorgzaid" account_name="DelivCentral Service Org">
+		<IAMAccountDomain domain="delivcentralsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="projectsplussorgzaid" account_name="ProjectsPlus Service Org">
+		<IAMAccountDomain domain="projectsplussorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="platformaisorgzaid" account_name="PlatformAI Service Org">
+		<IAMAccountDomain domain="platformaisorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="zbdaassorgzaid" account_name="ZBDAAS Service Org">
+		<IAMAccountDomain domain="zbdaassorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="zvideosorgzaid" account_name="ZVideo Service Org">
+		<IAMAccountDomain domain="zvideosorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

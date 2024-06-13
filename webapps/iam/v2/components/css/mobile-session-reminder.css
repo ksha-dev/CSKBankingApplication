@@ -1,0 +1,1262 @@
+/*$Id$*/
+
+.deviceicon-vivo .path1:before {
+  content: "\e900";
+  color: rgb(105, 105, 105);
+}
+.deviceicon-vivo .path2:before {
+  content: "\e901";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-vivo .path3:before {
+  content: "\e902";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(270deg, #FFE68B -0.09%, #3A8A9B 99.89%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-vivo .path4:before {
+  content: "\e903";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-vivo .path5:before {
+  content: "\e904";
+  margin-left: -1em;
+  color: rgb(105, 105, 105);
+}
+.deviceicon-vivo .path6:before {
+  content: "\e905";
+  margin-left: -1em;
+  color: rgb(105, 105, 105);
+}
+.deviceicon-redmi .path1:before {
+  content: "\e906";
+  color: rgb(61, 61, 61);
+}
+.deviceicon-redmi .path2:before {
+  content: "\e907";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-redmi .path3:before {
+  content: "\e908";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-redmi .path4:before {
+  content: "\e909";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-redmi .path5:before {
+  content: "\e90a";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-redmi .path6:before {
+  content: "\e90b";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-pixel .path1:before {
+  content: "\e90c";
+  color: rgb(82, 82, 82);
+}
+.deviceicon-pixel .path2:before {
+  content: "\e90d";
+  margin-left: -1em;
+  color: rgb(82, 82, 82);
+}
+.deviceicon-pixel .path3:before {
+  content: "\e90e";
+  margin-left: -1em;
+  color: rgb(82, 82, 82);
+}
+.deviceicon-pixel .path4:before {
+  content: "\e90f";
+  margin-left: -1em;
+  color: rgb(3, 3, 3);
+}
+.deviceicon-pixel .path5:before {
+  content: "\e910";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(90deg, #D33C5F 37.61%, #FDC266 103.24%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-pixel .path6:before {
+  content: "\e911";
+  margin-left: -1em;
+  color: rgb(3, 3, 3);
+}
+.deviceicon-oppo .path1:before {
+  content: "\e912";
+  color: rgb(67, 67, 67);
+}
+.deviceicon-oppo .path2:before {
+  content: "\e913";
+  margin-left: -1em;
+  color: rgb(67, 67, 67);
+}
+.deviceicon-oppo .path3:before {
+  content: "\e914";
+  margin-left: -1em;
+  color: rgb(67, 67, 67);
+}
+.deviceicon-oppo .path4:before {
+  content: "\e915";
+  margin-left: -1em;
+  color: rgb(67, 67, 67);
+}
+.deviceicon-oppo .path5:before {
+  content: "\e916";
+  margin-left: -1em;
+  color: rgb(116, 116, 116);
+}
+.deviceicon-oppo .path6:before {
+  content: "\e917";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-oppo .path7:before {
+  content: "\e918";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(270deg, #FEBCC0 0.06%, #5C2C76 99.95%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-oppo .path8:before {
+  content: "\e919";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone-13 .path1:before {
+  content: "\e91a";
+  color: rgb(57, 57, 57);
+}
+.deviceicon-iphone-13 .path2:before {
+  content: "\e91b";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone-13 .path3:before {
+  content: "\e91c";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone-13 .path4:before {
+  content: "\e91d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone .path1:before {
+  content: "\e91e";
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone .path2:before {
+  content: "\e91f";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone .path3:before {
+  content: "\e920";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone .path4:before {
+  content: "\e921";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone .path5:before {
+  content: "\e922";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone .path6:before {
+  content: "\e923";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone .path7:before {
+  content: "\e924";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone .path8:before {
+  content: "\e925";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-samsung .path1:before {
+  content: "\e926";
+  color: rgb(54, 54, 54);
+}
+.deviceicon-samsung .path2:before {
+  content: "\e927";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-samsung .path3:before {
+  content: "\e928";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(90deg, #796CF9 49.54%, #96F6F9 100.12%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-samsung .path4:before {
+  content: "\e929";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-samsung .path5:before {
+  content: "\e92a";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-oneplus .path1:before {
+  content: "\e92b";
+  color: rgb(64, 64, 64);
+}
+.deviceicon-oneplus .path2:before {
+  content: "\e92c";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-oneplus .path3:before {
+  content: "\e92d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(270deg, #67E1D7 1.02%, #3078BE 56.02%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-oneplus .path4:before {
+  content: "\e92e";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-oneplus .path5:before {
+  content: "\e92f";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-oneplus .path6:before {
+  content: "\e930";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-oneplus .path7:before {
+  content: "\e931";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-samsungtab .path1:before {
+  content: "\e932";
+  color: rgb(54, 54, 54);
+}
+.deviceicon-samsungtab .path2:before {
+  content: "\e933";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-samsungtab .path3:before {
+  content: "\e934";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(338.9deg, #E43E3E -0.08%, #FFF1C4 101.71%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-samsungtab .path4:before {
+  content: "\e935";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-samsungtab .path5:before {
+  content: "\e936";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-samsungtab .path6:before {
+  content: "\e937";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-ipad .path1:before {
+  content: "\e938";
+  color: rgb(54, 54, 54);
+}
+.deviceicon-ipad .path2:before {
+  content: "\e939";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-ipad .path3:before {
+  content: "\e93a";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-ipad .path4:before {
+  content: "\e93b";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-ipad .path5:before {
+  content: "\e93c";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-ipad .path6:before {
+  content: "\e93d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(158.21deg, #31CCDB 7.76%, #1CBE78 100.06%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-ipad .path7:before {
+  content: "\e93e";
+  margin-left: -1em;
+  color: rgb(34, 34, 34);
+}
+.deviceicon-lenovo .path1:before {
+  content: "\e93f";
+  color: rgb(60, 65, 91);
+}
+.deviceicon-lenovo .path2:before {
+  content: "\e940";
+  margin-left: -1em;
+  color: rgb(46, 46, 46);
+}
+.deviceicon-lenovo .path3:before {
+  content: "\e941";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-lenovo .path4:before {
+  content: "\e942";
+  margin-left: -1em;
+  color: rgb(40, 46, 65);
+}
+.deviceicon-lenovo .path5:before {
+  content: "\e943";
+  margin-left: -1em;
+  color: rgb(101, 108, 147);
+}
+.deviceicon-lenovo .path6:before {
+  content: "\e944";
+  margin-left: -1em;
+  color: rgb(101, 108, 147);
+}
+.deviceicon-dell .path1:before {
+  content: "\e945";
+  color: rgb(121, 121, 121);
+}
+.deviceicon-dell .path2:before {
+  content: "\e946";
+  margin-left: -1em;
+  color: rgb(83, 83, 83);
+}
+.deviceicon-dell .path3:before {
+  content: "\e947";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-dell .path4:before {
+  content: "\e948";
+  margin-left: -1em;
+  color: rgb(49, 49, 49);
+}
+.deviceicon-macbook .path1:before {
+  content: "\e949";
+  color: rgb(14, 14, 14);
+}
+.deviceicon-macbook .path2:before {
+  content: "\e94a";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-macbook .path3:before {
+  content: "\e94b";
+  margin-left: -1em;
+  color: rgb(14, 14, 14);
+}
+.deviceicon-macbook .path4:before {
+  content: "\e94c";
+  margin-left: -1em;
+  color: rgb(209, 209, 209);
+}
+.deviceicon-macbook .path5:before {
+  content: "\e94d";
+  margin-left: -1em;
+  color: rgb(247, 247, 247);
+}
+.deviceicon-macbook .path6:before {
+  content: "\e94e";
+  margin-left: -1em;
+  color: rgb(176, 176, 176);
+}
+.deviceicon-macbook .path7:before {
+  content: "\e94f";
+  margin-left: -1em;
+  color: rgb(176, 176, 176);
+}
+.deviceicon-windowsphone_uk .path1:before {
+  content: "\e950";
+  color: rgb(64, 64, 64);
+}
+.deviceicon-windowsphone_uk .path2:before {
+  content: "\e951";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-windowsphone_uk .path3:before {
+  content: "\e952";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-windowsphone_uk .path4:before {
+  content: "\e953";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-windowsphone_uk .path5:before {
+  content: "\e954";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-windowsphone_uk .path6:before {
+  content: "\e955";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-windowsphone_uk .path7:before {
+  content: "\e956";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-windowsphone_uk .path8:before {
+  content: "\e957";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+.deviceicon-android_uk .path1:before {
+  content: "\e958";
+  color: rgb(64, 64, 64);
+}
+.deviceicon-android_uk .path2:before {
+  content: "\e959";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-android_uk .path3:before {
+  content: "\e95a";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-android_uk .path4:before {
+  content: "\e95b";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-android_uk .path5:before {
+  content: "\e95c";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-android_uk .path6:before {
+  content: "\e95d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-android_uk .path7:before {
+  content: "\e95e";
+  margin-left: -1em;
+  color: rgb(61, 61, 61);
+}
+.deviceicon-android_uk .path8:before {
+  content: "\e95f";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+.deviceicon-iphone_uk .path1:before {
+  content: "\e960";
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone_uk .path2:before {
+  content: "\e961";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone_uk .path3:before {
+  content: "\e962";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone_uk .path4:before {
+  content: "\e963";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone_uk .path5:before {
+  content: "\e964";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone_uk .path6:before {
+  content: "\e965";
+  margin-left: -1em;
+  color: rgb(112, 112, 112);
+}
+.deviceicon-iphone_uk .path7:before {
+  content: "\e966";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-iphone_uk .path8:before {
+  content: "\e967";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-iphone_uk .path9:before {
+  content: "\e968";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+.deviceicon-mobile_uk .path1:before {
+  content: "\e969";
+  color: rgb(64, 64, 64);
+}
+.deviceicon-mobile_uk .path2:before {
+  content: "\e96a";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-mobile_uk .path3:before {
+  content: "\e96b";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(0deg, #0D1232 0%, #384288 96.88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-mobile_uk .path4:before {
+  content: "\e96c";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-mobile_uk .path5:before {
+  content: "\e96d";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-mobile_uk .path6:before {
+  content: "\e96e";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.deviceicon-mobile_uk .path7:before {
+  content: "\e96f";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-androidtablet_uk .path1:before {
+  content: "\e970";
+  color: rgb(54, 54, 54);
+}
+.deviceicon-androidtablet_uk .path2:before {
+  content: "\e971";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.deviceicon-androidtablet_uk .path3:before {
+  content: "\e972";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(0deg, #0D1232 0%, #384288 96.88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-androidtablet_uk .path4:before {
+  content: "\e973";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-androidtablet_uk .path5:before {
+  content: "\e974";
+  margin-left: -1em;
+  color: rgb(54, 54, 54);
+}
+.deviceicon-androidtablet_uk .path6:before {
+  content: "\e975";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+.deviceicon-osunknown_uk .path1:before {
+  content: "\e976";
+  color: rgb(121, 121, 121);
+}
+.deviceicon-osunknown_uk .path2:before {
+  content: "\e977";
+  margin-left: -1em;
+  color: rgb(83, 83, 83);
+}
+.deviceicon-osunknown_uk .path3:before {
+  content: "\e978";
+  margin-left: -1em;
+  color: rgb(49, 49, 49);
+}
+.deviceicon-osunknown_uk .path4:before {
+  content: "\e979";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-linux_uk .path1:before {
+  content: "\e97a";
+  color: rgb(121, 121, 121);
+}
+.deviceicon-linux_uk .path2:before {
+  content: "\e97b";
+  margin-left: -1em;
+  color: rgb(83, 83, 83);
+}
+.deviceicon-linux_uk .path3:before {
+  content: "\e97c";
+  margin-left: -1em;
+  color: rgb(49, 49, 49);
+}
+.deviceicon-linux_uk .path4:before {
+  content: "\e97d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-linux_uk .path5:before {
+  content: "\e97e";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.deviceicon-windows_uk .path1:before {
+  content: "\e97f";
+  color: rgb(121, 121, 121);
+}
+.deviceicon-windows_uk .path2:before {
+  content: "\e980";
+  margin-left: -1em;
+  color: rgb(83, 83, 83);
+}
+.deviceicon-windows_uk .path3:before {
+  content: "\e981";
+  margin-left: -1em;
+  color: rgb(49, 49, 49);
+}
+.deviceicon-windows_uk .path4:before {
+  content: "\e982";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-windows_uk .path5:before {
+  content: "\e983";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+.deviceicon-macbook_uk .path1:before {
+  content: "\e984";
+  color: rgb(209, 209, 209);
+}
+.deviceicon-macbook_uk .path2:before {
+  content: "\e985";
+  margin-left: -1em;
+  color: rgb(247, 247, 247);
+}
+.deviceicon-macbook_uk .path3:before {
+  content: "\e986";
+  margin-left: -1em;
+  color: rgb(176, 176, 176);
+}
+.deviceicon-macbook_uk .path4:before {
+  content: "\e987";
+  margin-left: -1em;
+  color: rgb(176, 176, 176);
+}
+.deviceicon-macbook_uk .path5:before {
+  content: "\e988";
+  margin-left: -1em;
+  color: rgb(14, 14, 14);
+}
+.deviceicon-macbook_uk .path6:before {
+  content: "\e989";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  background: -webkit-linear-gradient(180deg, #384288 0%, #0D1232 97.4%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.deviceicon-macbook_uk .path7:before {
+  content: "\e98a";
+  margin-left: -1em;
+  color: rgb(14, 14, 14);
+}
+.deviceicon-macbook_uk .path8:before {
+  content: "\e98b";
+  margin-left: -1em;
+  color: rgb(227, 227, 227);
+}
+
+
+
+
+
+.session_parent{
+    text-align: center;
+    overflow: hidden;
+}
+#session_update{
+	padding: 20px 25px;
+}
+.logo_parent{
+    font-size: 20px;
+    font-weight: 400;
+    align-items: center;
+	display: flex;
+	width: max-content;
+	gap: 10px;
+	margin: auto;
+}
+.session_title{
+    letter-spacing: 0px;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 30px;
+    transition: margin 0.2s ease-in-out;
+}
+.session_desc{
+    font-size: 14px;
+    margin-top: 20px;
+    line-height: 24px;
+}
+.canvas_board{
+    transform: rotate(90deg);
+    margin: 20px 10px 20px 12px;
+}
+.canvas_area{
+    margin-top:30px;
+    display:flex;
+    border: 1px solid #D8D8D8;
+    border-radius: 6px;
+    text-align: left;
+}
+.session_count{
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 30px;
+    letter-spacing: 0px;
+}
+.remaining_count{
+    margin-top: 6px;
+    font-size: 13px;
+    color: #F45B5B;
+    font-weight: 500;
+}
+.btn {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    height: 44px;
+    border-radius: 4px;
+    letter-spacing: .5px;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    border: none;
+    margin: auto;
+    margin-bottom: 30px;
+    transition: all .2s ease-in-out;
+    background-color: #1389E3;
+    color: #fff;
+    margin-top: 30px;
+}
+.btn:disabled{
+		opacity: 0.6;
+}
+.do_later{
+    color: #1389E3;
+    cursor: pointer;
+    letter-spacing: 0px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.device_div{
+    width: 100%;
+    height: auto;
+    text-align: left;
+    padding: 17px 0px;
+}
+.device_pic{
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+    color: #000;
+    font-size: 36px;
+    box-sizing: border-box;
+    line-height: 50px;
+    text-align: center;
+}
+.device_details{
+    display: inline-block;
+    padding: 5px 0px;
+}
+.device_name{
+    display: block;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 18px;
+    color: #000000;
+opacity: 0.8;
+}
+.device_time{
+    display: inline-block;
+    font-size: 12px;
+    color: #777 !important;
+    margin-top: 5px;
+}
+.checckbox_container {
+    display: inline-block;
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: left;
+    letter-spacing: 0px;
+    color: #9f9f9f;
+    font-size: 14px;
+}
+#session_list_parent .checckbox_container{
+		padding: 5px 28px;
+		float: left;
+		width: 80%;
+}
+#session_list_parent{
+		overflow-y: scroll;
+}
+#darkBlur{
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	background-color: #000000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	visibility: hidden;
+	transition: 0.3s;
+}
+.checckbox_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.checkmark {
+    position: absolute;
+    top: -2px;
+    left: 0px;
+    height: 18px;
+    width: 18px;
+    background: transparent;
+    border: 1px solid #9f9fa0;
+    border-radius: 5px;
+}
+#session_list_parent .checkmark{
+		margin-top: 8px;
+}
+.checckbox_container:hover input ~ .checkmark {
+    background: transparent;
+    border: 1px solid #9f9fa0;
+}
+.checckbox_container input:checked ~ .checkmark {
+    background: #4CD042 0% 0% no-repeat padding-box;
+    border: 1px solid #4CD042;
+}
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.checckbox_container input:checked ~ .checkmark:after {
+    display: block;
+}
+.checckbox_container .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 3px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.session_manage{
+    text-align: left;
+    background: #F8F8F8 0% 0% no-repeat;
+    padding: 17px;
+}
+.device_set{
+    text-align: right;
+    letter-spacing: 0px;
+    color: #9f9f9f;
+    font-size: 14px;
+    float: right;
+}
+.session_recommand{
+    padding: 8px 17px;
+    background: #FFF8D9 0% 0% no-repeat padding-box;
+    text-align: left;
+    display: flex;
+	align-items: center;
+	gap: 7px;
+}
+  .esc_mark {
+      height: 18px;
+      min-width: 18px;
+      background: transparent linear-gradient(180deg, #E69200 0%, #F8B644 100%) 0% 0% no-repeat padding-box;
+      border-radius: 50%;
+      display: inline-block;
+      font-size: 14px;
+      color: #fff;
+      padding: 1px;
+      box-sizing: border-box;
+      text-align: center;
+  }
+  .esc_mark:before {
+      content:'\0021';
+  }
+  .session_note{
+      font-size: 12px;
+  }
+  .device_div .checkmark{
+      top: 12px;
+   }
+   .back_option{
+   	height: 44px;
+   	margin-top: 30px;
+   	padding: 12px 0px;
+	box-sizing: border-box;
+   }
+   .back_option,.dlt_btn{
+   	width: 50%;
+   	float: left;
+   	margin-top:20px;
+   	margin-bottom: 20px;
+   }
+   .appicon{
+   	display: inline-flex !important;
+   }
+   #sessionlist{
+   	visibility: hidden;
+   }
+   .transitionClass{
+   	overflow: hidden;
+   	transition: height 0.5s ease-in-out;
+   }
+   .device_div{
+   	margin: 0px 17px;
+   }
+   #continueoption{
+		width: 100%;
+		 height: auto;
+		 position: fixed;
+		 bottom: -200px;
+		 padding: 0px 20px;
+		 box-sizing: border-box;
+		 border-top : 1px solid #f0f0f0;
+		 transition: all 0.3s ease-in-out;
+		 background: #fff;
+   }
+   .back_option{
+   	color: #1389e3;
+   	font-size: 14px;
+	font-weight: 600;
+   }
+#primary_info{   	
+	 height: auto;
+	 position: fixed;
+	 padding: 0px 20px;
+	 box-sizing: border-box;
+	 border-top : 1px solid #f0f0f0;
+	 transition: all 0.3s ease-in-out;
+	 background: #fff;
+	 box-shadow: 0px 0px 0px 1px #00000029;
+	 border-radius: 16px 16px 0px 0px;
+	 text-align: left;
+	 line-height: 24px;
+	 bottom: -500px;
+	 padding-top: 20px;
+	 z-index: 2;
+	 opacity: 0;
+}
+.primary_title{
+   	 margin-top: 28px;
+	 font-size: 16px;
+	 font-weight: 600;
+}
+.primary_desc{
+	 margin-top: 16px;
+	 font-size: 14px;	
+}
+.primary_con{
+	 margin: 16px 0px 50px 0px;
+	 font-size: 14px;
+	 color: #E56000;	
+}
+.close_icon {
+	 display: inline-block;
+	 height: 30px;
+	 width: 30px;
+	 background-color: #F4F4F4;
+	 border-radius: 50%;
+	 background-size: 60px;
+	 float: right;
+	 position: relative;
+	 cursor: pointer;
+	 margin: 0px;
+}
+.close_icon:before, .close_icon:after {
+	position: absolute;
+	left: 14px;
+	top: 9px;
+	content: ' ';
+	height: 10px;
+	width: 2px;
+	background-color: #ABABAB;
+	transform: rotate(315deg);
+}
+.close_icon:after {
+    transform: rotate(-135deg);
+}
+..device_opt{
+    height: 9px;    
+    border-left: 1px solid;
+    margin-left: 5px;
+}
+.device_cont{
+    color: #0BB700 !important;
+    margin-left: 3px;
+}
+.info_icon{
+  		transform: rotate(180deg);
+  		height: 14px;
+  		min-width: 14px;
+  		font-size: 10px;
+  		margin-left: 3px;
+  		background: transparent;
+  		border: 1px solid #cccccc;
+}
+.info_icon::before{
+	color: #cccccc;
+	font-size: 9px;
+	padding: 1px;
+}
+.primaryDevice .checkmark{
+	opacity: 0.5;
+}
+.primarydesc{
+	color: #E56000;
+}
+.Errormsg{
+	display: block;
+	margin: auto;
+	height: auto;
+	min-width: 200px;
+	width: fit-content;
+	width: -moz-fit-content;
+	max-width:600px;
+	background-color: #032239;
+	border-radius: 6px;
+	position: fixed;
+	top: -100px;
+	left: 0px;
+	right: 0px;
+	transition: all .2s ease;
+	padding: 0px 20px;
+	z-index:2;
+	display:flex;
+	align-items: center;
+	max-width: 400px !important;
+       padding: 0px;
+       min-width: 300px;
+}
+.error_icon{
+	background-color: #FF676F;	
+}
+.error_icon:before, .error_icon:after {
+    position: absolute;
+    left: 9px;
+    top: 5px;
+    content: ' ';
+    height: 10px;
+    width: 2px;
+    background-color: #FFFFFF;
+}
+.error_icon:before {
+  transform: rotate(45deg);
+}
+.error_icon:after {
+  transform: rotate(-45deg);
+}
+.error_icon{
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	background-color: #22C856;
+	border-radius: 50%;
+	background-size: 60px;
+	margin: 15px;
+	float: left;
+	position: relative;
+}
+.error_message{
+    max-width: 300px;
+   	width: 75%;
+	display: inline-block;
+	font-size: 14px;
+	color: #fff;
+	line-height: 18px;
+	margin: 16px 0px;
+	margin-right: 20px;
+}
+.primaryDevice .device_time{font-size: 10px;}
+/* Dark Mode */
+@media (prefers-color-scheme: dark){
+	body{
+		background-color: #121212;
+		color: #fff;
+	}
+	.canvas_area{
+		border-color: #444444;
+		background-color: #222222;
+	}
+	.canvas_board{background-color: #222222 !important}
+	.session_manage, #session_list_parent{background-color: #222222}
+	.session_recommand{
+		color: #000;
+	}
+	.checckbox_container, .checckbox_container span{color: #fff}
+	#continueoption{background-color: #121212; border-color: #121212}
+	.back_option, .do_later{color: #93D0FF}
+	.remaining_count{color: #FF7C7C}
+}
+
+@media only screen and (max-width: 600px) and (prefers-color-scheme: dark){
+	#primary_info{background-color: #000000;border: none; box-shadow: 0px 3px 8px #666666;}
+	.primary_desc{opacity: 0.6}
+	.close_icon:hover{background-color: #F2F0F0}
+	.close_icon{background-color: #222222}
+	
+}
+
+/* WEB UI */
+@media only screen and (min-width: 600px) {
+	#session_update{
+		margin-top: 40px;
+	}
+	.canvas_area, .session_desc, .web_button_div{
+		max-width: 400px;
+		margin: 20px auto 0px auto;
+	}
+	.session_desc{max-width: 512px}
+	.web_button_div{display: flex}
+	.btn{width: 168px; margin: 0px}
+	.do_later{margin: 0px 20px 0px auto; line-height: 40px}
+	#sessionlist{
+		width: 595px;
+		margin: auto;
+		border-radius: 6px;
+	}
+	.session_manage, .session_recommand{
+		border-left: 1px solid #d5d5d5;
+		border-right: 1px solid #d5d5d5;
+	}
+	.session_manage{border-top: 1px solid #e2e2e2; border-radius: 6px 6px 0px 0px}
+	#session_list_parent{
+		border: 1px solid #d5d5d5;
+		border-top: none;
+		border-radius: 0px 0px 6px 6px;
+		height: 380px;
+		display: grid;
+		grid-template-columns: 50% 50%;
+	}
+	#continueoption{
+		 width: 100%;
+		 height: auto;
+		 position: relative;
+		 bottom: 0px;
+		 padding: 0px 20px;
+		 box-sizing: border-box;
+		 border-top : none;
+		 transition: all 0.3s ease-in-out;
+		 background: #fff;
+   }
+   	#session_list_parent .checckbox_container{
+		width: auto;
+	}
+	.back_option{float: right; width: 75px; cursor: pointer}
+	.dlt_btn{float: left; margin:20px 20px 20px -20px}
+	#primary_info{
+		 height: 230px;
+		 position: absolute;
+		 border-top : 1px solid #f0f0f0;
+		 border-radius: 16px;
+		 top: -300px;
+		 left: calc(50% - 200px);
+		 width: 400px;
+		 z-index: 2;
+	}
+}
+
+/* WEB UI DARK MODE */
+@media  only screen and (min-width: 600px) and (prefers-color-scheme: dark)  {
+	.session_manage, #session_list_parent{
+		background-color: #222222;
+		border-color: #444444;
+	}
+	.session_recommand{
+		color: #000;
+	}
+	.primary_desc, #primary_info, .primary_title{color: #000}
+}
+
+

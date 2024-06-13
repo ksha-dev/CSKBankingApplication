@@ -1,0 +1,9 @@
+<!--Bean created for OAuthAuthentication-->
+<beans>
+
+    <Bean bean_id="Bean:bean_id:OAuthBean" bean_name="OAuthBean" module_id="Authentication"
+          classname="com.zoho.authentication.oauth.OAuthBeanImpl" transaction_type="1">
+    </Bean>
+
+
+</beans>

@@ -1,0 +1,155 @@
+# $Id: $
+# Configuration Sample Format :
+# ``` 
+#   - resource_name: {{ResourceName in PascalCase}} (Mandatory)
+#     identifier: {{identifier}}.
+#     path: "users/:zuid". Customize REST API Path. default : {resource}/:{identifier}  
+#     downloadable: Boolean.
+#     multipart: Boolean.
+#     derived: Boolean.
+#     resources: {{SubResources}
+#     access_control: {{false}} || {{Map}}
+#       {{method}}:  # (get | post | put | delete)
+#         roles: {{Role Name}}. # Single or Comma seprated User Role. Allowed to perform this operation. 
+#                                 If `ServiceAdmin` configured its parent Roles such as SuperAdmin, Admin can also perform the action based on the weigtage of the role. 
+#         role_hierarchy: {{Boolean}} # Don't consider Parent roles hierarchy, Verify given set of Roles alone. 
+#         password: {{Boolean}} # Default is false. If you required authentication check, give true.
+# ```
+---
+api_server_url: "http://localhost:8080"
+
+base_uri: "oauthapp"
+
+versions: "v1"
+
+handlers_package: "com.zoho.accounts.internal.oauth2.oauthapp.handlers"
+
+icresturi_handler_api: "com.zoho.accounts.internal.oauth2.oauthapp.authorization.OAuthAppAuthorization"
+
+default_access_control:
+  post:
+    roles: admin
+  get:
+    roles: user
+  put:
+    roles: admin
+  delete:
+    roles: admin
+
+resources:
+  #VERIFYINSTALL
+  - resource_name: VerifyInstall
+    path: "/verify/:clientid"
+    identifier: clientid
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: Init
+        derived: true
+        access_control:
+          post:
+            roles: device
+      - resource_name: Poll
+        derived: true
+        access_control:
+          post:
+            roles: device
+      - resource_name: InternalVerify
+        derived: true
+        access_control:
+          post:
+            roles: device
+  #MANAGE APPS
+  - resource_name: ManageApp
+    path: "/manage/:clientid"
+    identifier: clientid
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: Device
+        identifier: zid
+        virtual_identifier: self
+        derived: true
+        access_control:
+          post:
+            roles: device
+        resources:
+          - resource_name: DeviceApplication
+            path: "/app/:appid"
+            identifier: appid
+            access_control:
+              get:
+                roles: device
+              put:
+                roles: device
+              delete:
+                roles: device
+      - resource_name: CloneMobileSession
+        path: "/clonemobilesession/:sessionId"
+        identifier: sessionId
+        access_control:
+          get:
+            roles: device
+          post:
+            roles: device
+          put:
+            roles: device
+          delete:
+            roles: device
+  #OIDC APP
+  - resource_name: OIDCApp
+    identifier: orgType
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: Manage
+        path: "/manage"
+        identifier: zid
+        resource_exist: false
+        access_control: false
+        resources:
+          - resource_name: OrgOAuthClientCreation
+            path: "/createorgclient"
+            access_control:
+              post:
+                roles: device
+          - resource_name: ManageOIDCApp
+            path: "/app"
+            identifier: appId
+            access_control:
+              post:
+                roles: device
+              put:
+                roles: device
+            resources:
+              - resource_name: ManageOIDCClient
+                path: "/client"
+                identifier: clientId
+                access_control:
+                  post:
+                    roles: device
+                  put: 
+                    roles: device
+                  delete: 
+                    roles: device
+                resources:
+                  - resource_name: ManageRedirectUrl
+                    path: "/redirecturl"
+                    identifier: redirecturl
+                    access_control:
+                      post:
+                        roles: device
+                      put:
+                        roles: device
+                      delete:
+                        roles: device
+                  - resource_name: ManageJSDomains
+                    path: "/jsdomain"
+                    identifier: domainurl
+                    access_control:
+                      post:
+                        roles: device
+                      put:
+                        roles: device
+                      delete:
+                        roles: device

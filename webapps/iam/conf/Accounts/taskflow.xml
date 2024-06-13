@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schedules>   
+    <Schedule schedule_id="Schedule:schedule_id:2" schedule_name="TokenPairCleanerJobSchedule">
+    	<Calendar unit_of_time="hours" time_of_day="16" repeat_frequency="daily"/>
+    </Schedule>  
+        
+        <TaskEngine_Task task_id="TaskEngine_Task:task_id:2" task_name="TokenPairCleanerJobTask" class_name="com.zoho.accounts.scheduler.TokenPairCleanerJob">
+                <Scheduled_Task schedule_id="Schedule:schedule_id:2">
+                        <Task_Input instance_id="Task_Input:instance_id:2"/>
+                </Scheduled_Task>
+        </TaskEngine_Task>
+</schedules>

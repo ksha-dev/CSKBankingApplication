@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
+	<urls prefix="/app/${employee}">
+		<!-- URLs without parameters -->
+		<url path="/home" method="get" />
+		<url path="/transaction" method="get" />
+		<url path="/open_account" method="get" />
+		<url path="/search" method="get" />
+
+		<!-- URLs with parameters -->
+		<url path="/branch_accounts" method="get"><extraparam regex="id" limit="1" /></url>
+		<url path="/branch_accounts" method="post"><param-group name="pagination" />
+			<extraparam regex="id" limit="1" /></url>
+		<url path="/search" method="post"><param name="searchBy" regex="text" />
+			<param name="searchValue" regex="id" /></url>
+	</urls>
+</security>

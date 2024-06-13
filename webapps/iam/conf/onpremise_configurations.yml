@@ -1,0 +1,26 @@
+aaaserver:
+  system.configurations:
+    partneraccount.defaultname: Zoho
+    partneraccount.defaultdomain: zoho.com
+    partner.name: Zoho
+    trusted.domain.pattern: .*
+    trusted.cssdomain.pattern: .*
+    iam.server.url: http://localhost:8080
+    smtp.username: smtp-username
+    smtp.password: smtp-password
+    mail.smtp.host: smtp
+    mail.smtp.port: 25
+    mail.smtp.from: admin@1532345zaop53647321.com
+    admin.emailid: admin@1532345zaop53647321.com
+    support.emailid: admin@1532345zaop53647321.com
+    smtp.auth.enable: true
+    block.emaildomain: '@zaop.com'
+    abuse.emailid:  admin@1532345zaop53647321.com
+    support.help.link: www.zoho.com
+    send.iam3.mail.templates: zaop
+    accounts.query.set.distinct: true
+    alert.picker: admin@1532345zaop53647321.com
+    notify.email: admin@1532345zaop53647321.com
+    replyto.emailid: admin@1532345zaop53647321.com
+    assignuser.domaincheck.enabled: false
+  url: http://localhost:8080

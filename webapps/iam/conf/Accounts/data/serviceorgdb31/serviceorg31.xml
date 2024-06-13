@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="whiteboardsorgzaid" account_name="Whiteboard Service Org">
+		<IAMAccountDomain domain="whiteboardsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="primeumwebsorgzaid" account_name="PrimeumWeb Service Org">
+		<IAMAccountDomain domain="primeumwebsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="ziahubsorgzaid" account_name="ZiaHub Service Org">
+		<IAMAccountDomain domain="ziahubsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="hacksawsorgzaid" account_name="HackSaw Service Org">
+		<IAMAccountDomain domain="hacksawsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="financeintegrationservicesorgzaid" account_name="FinanceIntegrationService Service Org">
+		<IAMAccountDomain domain="financeintegrationservicesorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

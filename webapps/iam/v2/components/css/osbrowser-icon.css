@@ -1,0 +1,181 @@
+/*$Id$*/
+@font-face {
+	font-family: 'OSBrowser';
+    src: url('../images/fonts/OSBrowser.eot');
+    src: url('../images/fonts/OSBrowser.eot') format('embedded-opentype'),
+         url('../images/fonts/OSBrowser.woff2') format('woff2'),
+         url('../images/fonts/OSBrowser.woff') format('woff'),
+         url('..//images/fonts/OSBrowser.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="osbrowser-"],
+[class*="osbrowser-"] {
+    font-family: 'OSBrowser' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+        .osbrowser-osx:before {
+            content: "\e9a8";
+        }
+        .osbrowser-safari .path1:before {
+            content: "\e900";
+            color: rgb(255, 255, 255);
+        }
+        .osbrowser-safari .path2:before {
+            content: "\e901";
+            margin-left: -1em;
+            color: rgb(0, 140, 255);
+        }
+        .osbrowser-safari .path3:before {
+            content: "\e902";
+            margin-left: -1em;
+            color: rgb(255, 255, 255);
+        }
+        .osbrowser-safari .path4:before {
+            content: "\e903";
+            margin-left: -1em;
+            color: rgb(255, 81, 80);
+        }
+        .osbrowser-safari .path5:before {
+            content: "\e904";
+            margin-left: -1em;
+            color: rgb(241, 241, 241);
+        }
+        .osbrowser-windows:before {
+            content: "\e905";
+            color: #0078d4;
+        }
+        .osbrowser-linux:before {
+            content: "\e906";
+            color: #e7561f;
+        }
+        .osbrowser-android:before {
+            content: "\e907";
+            color: #3ddc84;
+        }
+        .osbrowser-opera .path1:before {
+            content: "\e908";
+            color: rgb(243, 11, 29);
+        }
+        .osbrowser-opera .path2:before {
+            content: "\e909";
+            margin-left: -1em;
+            color: rgb(216, 33, 33);
+        }
+        .osbrowser-microsoftedge .path1:before {
+            content: "\e90a";
+            color: rgb(36, 86, 153);
+        }
+        .osbrowser-microsoftedge .path2:before {
+            content: "\e90b";
+            margin-left: -1em;
+            color: rgb(48, 112, 185);
+        }
+        .osbrowser-microsoftedge .path3:before {
+            content: "\e90c";
+            margin-left: -1em;
+            color: rgb(114, 210, 150);
+        }
+        .osbrowser-internetexplorer:before {
+            content: "\e90d";
+            color: #1fbbee;
+        }
+        .osbrowser-googlechrome .path1:before {
+            content: "\e90e";
+            color: rgb(217, 48, 37);
+        }
+        .osbrowser-googlechrome .path2:before {
+            content: "\e90f";
+            margin-left: -1em;
+            color: rgb(30, 142, 62);
+        }
+        .osbrowser-googlechrome .path3:before {
+            content: "\e910";
+            margin-left: -1em;
+            color: rgb(252, 201, 52);
+        }
+        .osbrowser-googlechrome .path4:before {
+            content: "\e911";
+            margin-left: -1em;
+            color: rgb(255, 255, 255);
+        }
+        .osbrowser-googlechrome .path5:before {
+            content: "\e912";
+            margin-left: -1em;
+            color: rgb(26, 115, 232);
+        }
+        .osbrowser-firefox .path1:before {
+            content: "\e913";
+            color: rgb(56, 120, 243);
+        }
+        .osbrowser-firefox .path2:before {
+            content: "\e914";
+            margin-left: -1em;
+            color: rgb(255, 64, 3);
+        }
+        .osbrowser-firefox .path3:before {
+            content: "\e915";
+            margin-left: -1em;
+            color: rgb(255, 222, 69);
+        }
+        .osbrowser-browserunknown .path1:before {
+            content: "\e916";
+            color: rgb(30, 30, 30);
+        }
+        .osbrowser-browserunknown .path2:before {
+            content: "\e917";
+            margin-left: -1em;
+            color: rgb(215, 215, 215);
+        }
+        .osbrowser-browserunknown .path3:before {
+            content: "\e918";
+            margin-left: -1em;
+            color: rgb(233, 233, 233);
+        }
+        .osbrowser-browserunknown .path4:before {
+            content: "\e919";
+            margin-left: -1em;
+            color: rgb(233, 233, 233);
+        }
+        .osbrowser-osunknown .path1:before {
+            content: "\e997";
+            color: rgb(255, 113, 113);
+        }
+        .osbrowser-osunknown .path2:before {
+            content: "\e998";
+            margin-left: -1em;
+            color: rgb(255, 255, 255);
+        }
+        .osbrowser-ulaa .path1:before {
+            content: "\e91a";
+            color: rgb(2, 201, 0);
+        }
+        .osbrowser-ulaa .path2:before {
+            content: "\e91b";
+            margin-left: -1em;
+            color: rgb(1, 126, 255);
+        }
+        .osbrowser-ulaa .path3:before {
+            content: "\e91c";
+            margin-left: -1em;
+            color: rgb(6, 164, 238);
+        }
+        .osbrowser-ulaa .path4:before {
+            content: "\e91d";
+            margin-left: -1em;
+            color: rgb(255, 216, 0);
+        }
+        .osbrowser-ulaa .path5:before {
+            content: "\e91e";
+            margin-left: -1em;
+            color: rgb(255, 53, 2);
+        }

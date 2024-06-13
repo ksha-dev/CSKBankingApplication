@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+
+<IAMRoleAccessCheck ROLE="IAMPartnerAdmin">
+	<IAMRoleResourceMappings RESOURCE="account" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+</IAMRoleAccessCheck>
+<IAMRoleAccessCheck ROLE="SuperAdmin">
+	<IAMRoleResourceMappings RESOURCE="account" OPERATIONS_ALLOWED="PUT|DELETE"/>
+</IAMRoleAccessCheck>
+<IAMRoleAccessCheck ROLE="OrgAdmin">
+	<IAMRoleResourceMappings RESOURCE="account" OPERATIONS_ALLOWED="PUT|DELETE"/>
+</IAMRoleAccessCheck>
+<IAMRoleAccessCheck ROLE="SelfUser">
+	<IAMRoleResourceMappings RESOURCE="accountmember" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+	<IAMRoleResourceMappings RESOURCE="appaccountmember" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+	<IAMRoleResourceMappings RESOURCE="groupmember" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+	<IAMRoleResourceMappings RESOURCE="user" OPERATIONS_ALLOWED="PUT|DELETE"/>
+</IAMRoleAccessCheck>
+<IAMRoleAccessCheck ROLE="NoUser">
+	<IAMRoleResourceMappings RESOURCE="account" OPERATIONS_ALLOWED="POST" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="accountattribute" OPERATIONS_ALLOWED="POST|PUT|DELETE" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="accountjoinrequests" OPERATIONS_ALLOWED="POST|DELETE" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="accountmember" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+	<IAMRoleResourceMappings RESOURCE="appaccountlicense" OPERATIONS_ALLOWED="*" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="appkeystore" OPERATIONS_ALLOWED="POST|PUT" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="approle" OPERATIONS_ALLOWED="*" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="captcha" OPERATIONS_ALLOWED="*" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="configuration" OPERATIONS_ALLOWED="POST|PUT" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="digest" OPERATIONS_ALLOWED="DELETE" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="invitation" OPERATIONS_ALLOWED="DELETE|PUT"/>
+	<IAMRoleResourceMappings RESOURCE="license" OPERATIONS_ALLOWED="*" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="policy" OPERATIONS_ALLOWED="POST|PUT|DELETE" INHERIT_ALLOWED="false"/>
+	<IAMRoleResourceMappings RESOURCE="usercustomfield" OPERATIONS_ALLOWED="POST|PUT|DELETE"/>
+</IAMRoleAccessCheck>
+
+</IAMAccounts>

@@ -1,0 +1,160 @@
+configFiles:
+   - appacc-clients-servlet.yml
+security-regexes:
+   - security-webclient-regex.xml
+url_prefix : 
+   path : /accounts/p/[0-9]+(-[0-9]+)?
+   is_regex : true
+servlet-mappings :
+   ZohoSignIn :
+     servlet-class : com.zoho.accounts.webclient.servlet.Signin
+     servlet-paths :
+         - servlet-path :
+              path : /signin
+              is_regex : false
+   ZohoMultiDCSignin :
+     servlet-class : com.zoho.accounts.webclient.servlet.MultiDCSignin
+     servlet-paths :
+         - servlet-path :
+              path : /multidc/(origindc|clonedc)/signin
+              is_regex : true
+   WebSignin :
+     servlet-class : com.zoho.accounts.webclient.servlet.WebLogin
+     servlet-paths :
+         - servlet-path :
+              path : /weblogin
+              is_regex : false
+   SignUpLoad :
+     servlet-class : com.zoho.accounts.servlet.SignupAction
+     servlet-paths :
+         - servlet-path :
+              path : /register/script
+              is_regex : false
+   SignUpSession :
+     servlet-class : com.zoho.accounts.servlet.SignupAction
+     servlet-paths :
+         - servlet-path :
+              path : /register/session
+              is_regex : false
+   SignUpRegister :
+     servlet-class : com.zoho.accounts.servlet.SignupAction
+     servlet-paths :
+         - servlet-path :
+              path : /register
+              is_regex : false
+   GetIPLocation :
+     servlet-class : com.zoho.accounts.external.PublicAPIs
+     servlet-paths :
+         - servlet-path :
+              path : /accounts/public/api/locate
+              is_regex : false
+   AccountRecovery :
+     servlet-class : com.zoho.accounts.webclient.servlet.AccountRecovery
+     servlet-paths :
+         - servlet-path :
+              path : (/recovery)?/password
+              is_regex : true
+   ResetIp :
+     servlet-class : com.zoho.accounts.webclient.servlet.AccountRecovery
+     servlet-paths :
+         - servlet-path :
+              path : /resetip
+              is_regex : true
+   Invitation :
+     servlet-class : com.zoho.accounts.webclient.servlet.PortalInvitation
+     servlet-paths :
+         - servlet-path :
+              path : /pconfirm
+              is_regex : false
+   JWTSignin :
+     servlet-class : com.zoho.accounts.internal.signin.jwt.JWTSignInResponse
+     servlet-paths :
+         - servlet-path :
+              path : /signin/jwt/[0-9a-zA-Z]+(/[a-zA-Z0-9\-\.\_]+)?
+              is_regex : true
+   IDPClientRequest :
+     servlet-class : com.zoho.accounts.webclient.servlet.PortalIDPRequest
+     servlet-paths :
+         - servlet-path :
+              path : /clientidprequest
+              is_regex : false
+   IDPClientCallBack :
+     servlet-class : com.zoho.accounts.webclient.servlet.PortalIDPCallBack
+     servlet-paths :
+         - servlet-path :
+              path : /accounts/pfs/[0-9]+/clientidpcallback
+              is_regex : true
+   IDPIntermediatePage :
+     servlet-class : com.zoho.accounts.webclient.servlet.PortalIDPIntermediate
+     servlet-paths :
+         - servlet-path :
+              path : /clientidpmanage
+              is_regex : false
+   AccountsIndex :
+     servlet-class : com.zoho.accounts.webclient.servlet.AccountsIndex
+     servlet-paths :
+         - servlet-path :
+              path : /home
+              is_regex : false
+   AnnouncementServlet :
+     servlet-class : com.zoho.accounts.internal.announcement.AnnouncementServlet
+     servlet-paths :
+         - servlet-path :
+              path : /(announcement|preannouncement)/[a-zA-Z\-]+(/next)?
+              is_regex : true
+   MultiSAMLAuthRequest :
+     servlet-class : com.adventnet.iam.saml.SAMLAuthRequestServlet
+     servlet-paths :
+         - servlet-path :
+              path : /samlauthrequest/(${ZID}|${domain-name})(/${ciphertext})?
+              is_regex : true
+   MultiSAMLAuthResponse :
+     servlet-class : com.zoho.accounts.internal.saml.SAMLAuthResponseServlet
+     servlet-paths :
+         - servlet-path :
+              path : /signin/samlsp/${ZID}(/${ciphertext})?
+              is_regex : true
+   MultiSAMLLogoutRequest :
+     servlet-class : com.zoho.accounts.internal.saml.SAMLLogoutRequestServlet
+     servlet-paths :
+         - servlet-path :
+              path : /logout/samlsp/${ZID}(/${ciphertext})?
+              is_regex : true
+   Logout :
+     servlet-class : com.zoho.accounts.servlet.SignoutServlet
+     servlet-paths :
+         - servlet-path :
+              path : /logout
+              is_regex : false
+   ErrorMsgsNew :
+     servlet-class : com.zoho.accounts.webclient.servlet.ErrorMsgNew
+     servlet-paths :
+         - servlet-path :
+              path : /accounts-msgs
+              is_regex : false
+   PreviewSignin :
+     servlet-class : com.zoho.accounts.webclient.servlet.Signin
+     servlet-paths :
+         - servlet-path :
+              path : /preview/signin
+              is_regex : false
+   PreviewAccountRecovery :
+     servlet-class : com.zoho.accounts.webclient.servlet.AccountRecovery
+     servlet-paths :
+         - servlet-path :
+              path : /preview/password
+              is_regex : false
+   UserAction :
+     servlet-class : com.adventnet.iam.servlet.UserAction
+     servlet-paths :
+         - servlet-path :
+              path : /u/unauth/info
+              is_regex : false
+
+#   OneAuthAndroidDownload :
+#     servlet-class : com.zoho.accounts.servlet.OneAuthAndroidDownload
+#     servlet-paths :
+#         - servlet-path :
+#              path : /Downloads/android
+#              is_regex : false      
+#         

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="earsorgzaid" account_name="EAR Service Org">
+		<IAMAccountDomain domain="earsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="sreappsorgzaid" account_name="SREAPP Service Org">
+		<IAMAccountDomain domain="sreappsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="acciosorgzaid" account_name="Accio Service Org">
+		<IAMAccountDomain domain="acciosorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="zecuresorgzaid" account_name="ZeCURE Service Org">
+		<IAMAccountDomain domain="zecuresorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

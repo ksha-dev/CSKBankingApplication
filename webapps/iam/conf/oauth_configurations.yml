@@ -1,0 +1,64 @@
+# Kindly check this document https://intranet.wiki.zoho.com/accounts/Onpremise-OAuth-Configurations.html and make the changes as required.
+#aaaserver:
+  #client_details:
+    #Device-client:
+      #created_by: 2
+      #client_id: 1004.3X24TPC3Z0I6Y53V14D3I246SN93M
+      #client_secret: 095e7295bf7eae9918e40b67366b3aa66206ff65f9
+      #client_type: 6
+      #client_domain: https://sample
+      #redirect_urls: https://sample/callback
+      #zid_type: 1
+      #zid: system
+    #Server-client:
+      #created_by: 2
+      #client_id: 1000.XSX8GXXR8QZNBRC3GF1DEMXJL9DR7
+      #client_secret: 5347e655e881625be9dcd26c5e0fe8a0346517ebe9
+      #client_type: 1
+      #client_domain: https://sample
+      #redirect_urls: https://sample/callback,https://dummy/callback
+      #zid_type: 1
+      #zid: system
+  #oauthscopes:
+    #profile: - scope name
+      #type: 2 scope type
+      #operations: READ,CREATE,UPDATE,DELETE - all the operations needed 
+      #READ: read user profile data - description of read operation
+      #CREATE: to add user profile data - description of create operation
+      #UPDATE: update user profile data - description of update operation
+      #create + update if create and update is described should support 
+      #CREATE-UPDATE: description
+      #DELETE: delete user profile data
+      #create update delete - if these three are used provide description for write
+      #WRITE: description
+      #all if all operations are used
+      #ALL: to some
+    #fullaccess:
+      #type: 4
+      #operations: READ,CREATE,UPDATE,DELETE,ALL
+      #READ: READ
+      #ALL: ALL
+      #DELETE: DELETE
+      #CREATE: CREATE
+      #UPDATE: UPDATE
+  #for group scopes(type=4), subscopes have to be written as comma separated values under subscopes
+  #for the respective group scope
+  #subscopes:
+    #fullaccess: metadata,modeling,data,usermanagement
+  #oauthmobileapp:
+    #app1:
+      #serviceName: ZohoCreator
+      #mobileAppName: ZohoCreator
+      #package_name: com.zoho.creator.a
+      #client_type: 1
+      #app_type: 0
+      #url_scheme: creatorappIOS://
+      #client_id: client.creatorapp
+    #app2:
+      #serviceName: ZohoCreator
+      #mobileAppName: ZohoCreator
+      #package_name: com.zoho.creator.android
+      #client_type: 1
+      #app_type: 1
+      #url_scheme: creatorapp://
+      #client_id: client.creatorandroid

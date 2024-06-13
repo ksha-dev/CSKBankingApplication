@@ -1,0 +1,14 @@
+#
+# List of providers and their preference orders (see above):
+#
+security.provider.1=org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider C:DEFRND[HMACSHA512];HYBRID;ENABLE{ALL}
+security.provider.2=org.bouncycastle.jsse.provider.BouncyCastleJsseProvider fips:BCFIPS
+security.provider.3=sun.security.rsa.SunRsaSign
+security.provider.4=sun.security.provider.Sun
+security.provider.5=sun.security.ec.SunEC
+security.provider.6=com.sun.net.ssl.internal.ssl.Provider
+
+
+ssl.KeyManagerFactory.algorithm=PKIX
+ssl.TrustManagerFactory.algorithm=PKIX
+

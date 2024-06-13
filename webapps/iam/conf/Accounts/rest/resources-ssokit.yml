@@ -1,0 +1,58 @@
+---
+api_server_url: "http://localhost:8080"
+
+base_uri: "ssokit"
+
+versions: "v1"
+ 
+handlers_package: "com.zoho.accounts.ssokit.handlers"
+
+icresturi_handler_api: "com.zoho.accounts.ssokit.authorization.ICRESTUriHandlerImpl"
+
+
+resources:
+ #SSOKIT signin and signup
+  - resource_name: LoginId
+    identifier: login_id
+    access_control:
+       post:
+        roles: sso
+       put:
+        roles: sso,temp_token
+    resources:
+      - resource_name: Verify
+        derived: true
+        access_control:
+          put:
+           roles: sso,temp_token
+  - resource_name: User
+    identifier: zuid
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: Mobile
+        identifier: mobile
+        access_control: false
+      - resource_name: Profile
+        derived: true
+        access_control: false
+      - resource_name: CloseAccount
+        identifier: account_id
+        access_control: false
+      - resource_name: OTP
+        identifier: mobile
+        access_control: false
+  #SSOKit captcha
+  - resource_name: Captcha
+    identifier: digest
+    access_control: false
+  #SSOKit QRCode Authentication
+  - resource_name: QRCode
+    access_control:
+       post:
+        roles: device_client
+  - resource_name: SigninApprove
+    identifier: token
+    access_control:
+       post:
+        roles: sso

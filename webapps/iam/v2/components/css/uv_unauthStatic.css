@@ -1,0 +1,44 @@
+/*$Id$*/
+/*.leading_icon.select_icon{display:none !important;}*/
+.select_container--country_implement ~ input{text-indent:10px;}
+.select_container--domain_select{width:auto !important;}
+.selectbox--domain_select{border:none;background:#f8f8f8;border-radius:none!important;}
+.select_container--domain_select:hover{border:none !important;}
+.selectbox--focus{border:none;}
+.removedomain{padding-left: 18px;padding-right: 18px;}
+.selectbox--focus{border: 1px solid #DDDDDD !important;}
+.errorborder.selectbox--focus{border:2px solid #ff8484 !important}
+.select_input--Mobile{text-align:center;}
+.selectbox--domain_select{border:none !important;}
+.select_container--Mobile{margin:auto !important;}
+.icon-Mobile:before {
+  content: "\e90a";
+  margin-right:5px;
+}
+.selectbox--Mobile:hover{broder:1px solid #DCDCDC !important;}
+.selectbox--Mobile .basic_selectbox:focus{border-color:#CECECE !important;}
+/* DARKMODE */
+.darkmode .selectbox_options_container, .darkmode .selectbox_options_container ul li{background-color:#44454F;}
+.darkmode ::selection{color: #e1e1e1; background-color: #1e81b0}
+.darkmode .selectbox_options_container{box-shadow:none;border:1px solid #44454F;}
+.darkmode .selectbox_options .option__highlighted, .darkmode .selectbox_options li:hover{background:#0004 !important;}
+.darkmode .option p, .darkmode .option p~div{color:#CECECE;}
+.darkmode .dropdown_header,.darkmode .selectbox_options{background:#44454F;}
+.darkmode .selectbox_search{background:#2F303B;}
+.darkmode ::-webkit-scrollbar-track {
+  background: #44454F; 
+}
+.darkmode ::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+.darkmode .selectbox--Mobile{background-color:#44454F;}
+.darkmode .selected_option p,.darkmode .selected_option span{color: #00A7FF;}
+.darkmode .removedomain p{
+	color:#EC5555;
+}
+.darkmode .selectbox--focus{border: 1px solid #595A62 !important;}
+.darkmode .selectbox--domain_select{border:none !important;background:transparent !important;}
+.darkmode .domainselect{color:#e2e2e2;}
+.darkmode .select_search_input{background:transparent !important;}
+.darkmode .select_input--Mobile{color:#CECECE;}
+.darkmode .selectbox--Mobile .basic_selectbox:focus{border-color:#CECECE !important;}

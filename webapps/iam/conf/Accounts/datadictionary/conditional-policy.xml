@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<!-- $Id $ -->
+<!DOCTYPE data-dictionary SYSTEM "../dtd/cs-dd.dtd">
+<data-dictionary name="Accounts">
+	<table name="IAMConditionalPolicy" display-name="ConditionalPolicy">
+        <description>Routing Policy</description>
+        <columns>
+            <column name="ACCOUNT_AUTO_ID">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="CONDITIONAL_AUTO_ID">
+                <data-type>BIGINT</data-type>
+                <nullable>false</nullable>
+                <uniquevalue-generation>
+                    <generator-name>IAMConditionalPolicy.CONDITIONAL_AUTO_ID</generator-name>
+                    <generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+                </uniquevalue-generation>
+            </column>
+            <column name="CONDITION_ID">
+                <description>Unique Identifier of the conditional access</description>
+                <data-type>CHAR</data-type>
+                <max-size>100</max-size>
+                <nullable>false</nullable>
+            </column>
+           <column name="DISPLAY_NAME">
+				<description>Name of the conditional access to be displayed</description>
+                <data-type>CHAR</data-type>
+                <max-size>100</max-size>
+                <nullable>false</nullable>
+            </column>
+            <column name="IS_ENABLED">
+                <description>To enable/disable the conditional access</description>
+                <data-type>BOOLEAN</data-type>
+                <default-value>true</default-value>
+            </column>
+            <column name="ACCESS_CONTROL">
+            	<description>Access Control to allow/allow_with_mfa/deny session</description>
+                <data-type>TINYINT</data-type>
+                <default-value>0</default-value>
+            </column>
+            <column name="ALLOWED_MFA_MODES">
+				<description>Allowed MFA Auth modes in Bitset value</description>
+                <data-type>CHAR</data-type>
+                <max-size>250</max-size>
+            </column>
+            <column name="ALLOWED_CLIENTS">
+				<description>Allowed client (webclient, mailclient) in Bitset value</description>
+                <data-type>CHAR</data-type>
+                <max-size>250</max-size>
+            </column>
+            <column name="MFA_LIFETIME">
+            	<description>Life time of the MFA sessions on the trust this browser </description>
+                <data-type>INTEGER</data-type>
+                <default-value>0</default-value>
+            </column>
+            <column name="CONDITION_MATCH">
+				<description>Condition Matches ALL or ANY</description>
+                <data-type>TINYINT</data-type>
+                <default-value>0</default-value>
+            </column>            
+            <column name="APPLIES_TO">
+            	<description>Assign to everyone or specific group</description>
+                <data-type>TINYINT</data-type>
+                <default-value>0</default-value>
+            </column>
+            <column name="CREATED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="MODIFIED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+        </columns>
+        <primary-key name="IAMConditionalPolicy_PK">
+            <primary-key-column>CONDITIONAL_AUTO_ID</primary-key-column>
+        </primary-key>
+        <foreign-keys>
+            <foreign-key name="IAMConditionalPolicy_FK" reference-table-name="IAMAccount">
+                <fk-columns>
+                    <fk-column>
+                        <fk-local-column>ACCOUNT_AUTO_ID</fk-local-column>
+                        <fk-reference-column>ACCOUNT_AUTO_ID</fk-reference-column>
+                    </fk-column>
+                </fk-columns>
+                <fk-constraints>ON-DELETE-CASCADE</fk-constraints>
+            </foreign-key>
+        </foreign-keys>
+        <unique-keys>
+			<unique-key name="IAMConditionalPolicy_UK1">
+				<unique-key-column>ACCOUNT_AUTO_ID</unique-key-column>
+				<unique-key-column>CONDITION_ID</unique-key-column>
+			</unique-key>
+			<unique-key name="IAMConditionalPolicy_UK2">
+				<unique-key-column>ACCOUNT_AUTO_ID</unique-key-column>
+				<unique-key-column>DISPLAY_NAME</unique-key-column>
+			</unique-key>
+		</unique-keys>
+    </table>
+    <table name="IAMConditionalUser" display-name="ConditionalUser">
+        <description>User/Group to configured on ConditionalPolicy</description>
+        <columns>
+            <column name="CONDITIONAL_AUTO_ID">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="CONDITIONAL_USER_AUTO_ID">
+                <data-type>BIGINT</data-type>
+                <nullable>false</nullable>
+                <uniquevalue-generation>
+                    <generator-name>IAMConditionalUser.CONDITIONAL_USER_AUTO_ID</generator-name>
+                    <generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+                </uniquevalue-generation>
+            </column>
+            <column name="ZID">
+                <description>User ZUID/ GROUP ZGID</description>
+                <data-type>CHAR</data-type>
+                <max-size>100</max-size>
+                <nullable>false</nullable>
+                <allowed-values>
+                    <pattern>&zid;</pattern>
+                </allowed-values>
+            </column>
+            <column name="ZID_TYPE">
+                <description>User, Group</description>
+                <data-type>TINYINT</data-type>
+                <default-value>1</default-value>
+                <allowed-values>
+                    <value>1</value>
+                    <value>2</value>
+                </allowed-values>
+            </column>
+           	<column name="IS_EXCLUDED">
+            	<description>To exclude user/group from this policy</description>
+                <data-type>BOOLEAN</data-type>
+                <default-value>false</default-value>
+            </column>
+            <column name="CREATED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="MODIFIED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+        </columns>
+        <primary-key name="IAMConditionalUser_PK">
+            <primary-key-column>CONDITIONAL_USER_AUTO_ID</primary-key-column>
+        </primary-key>
+        <foreign-keys>
+            <foreign-key name="IAMConditionalUser_FK" reference-table-name="IAMConditionalPolicy">
+                <fk-columns>
+                    <fk-column>
+                        <fk-local-column>CONDITIONAL_AUTO_ID</fk-local-column>
+                        <fk-reference-column>CONDITIONAL_AUTO_ID</fk-reference-column>
+                    </fk-column>
+                </fk-columns>
+                <fk-constraints>ON-DELETE-CASCADE</fk-constraints>
+            </foreign-key>
+        </foreign-keys>
+        <unique-keys>
+        	<unique-key name="IAMConditionalUser_UK">
+            	<unique-key-column>CONDITIONAL_AUTO_ID</unique-key-column>
+            	<unique-key-column>ZID</unique-key-column>
+        	</unique-key>
+        </unique-keys>
+    </table>
+    <table name="IAMConditionalAccess" display-name="ConditionalAccess">
+        <description>Routing Policy</description>
+        <columns>
+            <column name="CONDITIONAL_AUTO_ID">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="CONDITIONAL_ACCESS_AUTO_ID">
+                <data-type>BIGINT</data-type>
+                <nullable>false</nullable>
+                <uniquevalue-generation>
+                    <generator-name>IAMConditionalAccess.CONDITIONAL_ACCESS_AUTO_ID</generator-name>
+                    <generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+                </uniquevalue-generation>
+            </column>
+            <column name="CONDITION_TYPE">
+                <description>Condition Types</description>
+                <data-type>TINYINT</data-type>
+                <default-value>1</default-value>
+            </column>
+            <column name="CONDITION_CRITERIA">
+                <description>Condition Criteria</description>
+                <data-type>TINYINT</data-type>
+                <default-value>1</default-value>
+            </column>
+           	<column name="CONDITION_VALUE">
+            	<description>Condition value</description>
+                <data-type>CHAR</data-type>
+                <max-size>500</max-size>
+            </column>
+            <column name="CREATED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="MODIFIED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+        </columns>
+        <primary-key name="IAMConditionalAccess_PK">
+            <primary-key-column>CONDITIONAL_ACCESS_AUTO_ID</primary-key-column>
+        </primary-key>
+        <foreign-keys>
+            <foreign-key name="IAMConditionalAccess_FK" reference-table-name="IAMConditionalPolicy">
+                <fk-columns>
+                    <fk-column>
+                        <fk-local-column>CONDITIONAL_AUTO_ID</fk-local-column>
+                        <fk-reference-column>CONDITIONAL_AUTO_ID</fk-reference-column>
+                    </fk-column>
+                </fk-columns>
+                <fk-constraints>ON-DELETE-CASCADE</fk-constraints>
+            </foreign-key>
+        </foreign-keys>
+        <unique-keys>
+        	<unique-key name="IAMConditionalAccess_UK">
+            	<unique-key-column>CONDITIONAL_AUTO_ID</unique-key-column>
+            	<unique-key-column>CONDITION_TYPE</unique-key-column>
+        	</unique-key>
+        </unique-keys>
+    </table>
+    <table name="IAMAccountIPAddress" display-name="IpAddress">
+        <description>IP based authentication. Using this users  access can be restricted from a certain range of IP Addresses</description>
+        <columns>
+            <column name="ACCOUNT_AUTO_ID">
+                <data-type>BIGINT</data-type>
+                <nullable>false</nullable>
+            </column>
+            <column name="IP_AUTO_ID">
+                <data-type>BIGINT</data-type>
+                <nullable>false</nullable>
+                <uniquevalue-generation>
+                    <generator-name>IAMAccountIPAddress.IP_AUTO_ID</generator-name>
+                    <generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+                </uniquevalue-generation>
+            </column>
+            <column name="IP_ID">
+                <description>Unique representation of ip range.</description>
+                <data-type>CHAR</data-type>
+                <max-size>100</max-size>
+                <nullable>false</nullable>
+            </column>
+            <column name="IP_NAME">
+                <description>Name of the IP / IP Range. Ex: Chennai Office, US Office, IAN Network, etc</description>
+                <data-type>CHAR</data-type>
+                <max-size>100</max-size>
+            </column>
+            <column name="FROM_IP">
+                <description>From IP Address of the range.</description>
+                <data-type>CHAR</data-type>
+                <max-size>50</max-size>
+                <nullable>false</nullable>
+                <allowed-values>
+                    <pattern>&ipaddress;</pattern>
+                </allowed-values>
+            </column>
+            <column name="TO_IP">
+                <description>To IP Address of the range. In case of single IP Address, this column will be null.</description>
+                <data-type>CHAR</data-type>
+                <max-size>50</max-size>
+                <allowed-values>
+                    <pattern>&ipaddress;</pattern>
+                </allowed-values>
+            </column>
+            <column name="CREATED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+            <column name="MODIFIED_TIME">
+                <data-type>BIGINT</data-type>
+            </column>
+        </columns>
+        <primary-key name="IAMAccountIPAddress_PK">
+            <primary-key-column>IP_AUTO_ID</primary-key-column>
+        </primary-key>
+        <foreign-keys>
+            <foreign-key name="IAMAccountIPAddress_FK" reference-table-name="IAMAccount" >
+                <fk-columns>
+                    <fk-column>
+                        <fk-local-column>ACCOUNT_AUTO_ID</fk-local-column>
+                        <fk-reference-column>ACCOUNT_AUTO_ID</fk-reference-column>
+                    </fk-column>
+                </fk-columns>
+                <fk-constraints>ON-DELETE-CASCADE</fk-constraints>
+            </foreign-key>
+        </foreign-keys>
+        <unique-keys>
+	        <unique-key name="IAMAccountIPAddress_UK">
+	            <unique-key-column>ACCOUNT_AUTO_ID</unique-key-column>
+	            <unique-key-column>FROM_IP</unique-key-column>
+	            <unique-key-column>IP_ID</unique-key-column>
+	        </unique-key>
+        </unique-keys>
+    </table>
+</data-dictionary>

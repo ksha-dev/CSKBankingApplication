@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+    <urls>
+    	<url path="/clientoauth/v2/[a-z0-9]+/auth" authentication="required" url-type="dynamic">
+    		 <param-group name="clientrequest"/>
+    		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/mobile/auth" authentication="required" url-type="dynamic" method="get">
+    		 <param-group name="clientrequest"/>
+    		 <param-group name="newloginparams"/> 
+    		 <param name="flogout" type="boolean"/>
+    		 <param name="forcelogout" type="boolean"/>
+    		 <param name="hidetitle" type="boolean" />
+    		 <param name="hideidp" type="boolean" />
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/native/token" https="true" authentication="optional" url-type="dynamic" method="post" csrf="false">
+    		 <param-group name="clientrequest"/> 
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/default/mobile/auth" authentication="required" url-type="dynamic" method="get">
+    		 <param-group name="clientrequest"/> 
+    		 <param-group name="mobilerequest"/>
+    		 <param-group name="newloginparams"/>
+    		 <param name="flogout" type="boolean"/>
+    		 <param name="forcelogout" type="boolean"/>
+    		 <param name="hidetitle" type="boolean" />
+    		 <param name="hideidp" type="boolean" />
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/mobile/remote/auth" https="true" authentication="optional" url-type="dynamic"  method="post" csrf="false">
+    		 <param-group name="clientrequest"/>
+    		 <param name="user_token" regex="[0-9a-zA-Z_\-\%\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" max-len="-1" min-len="1" secret="true" />
+    		 <param name="jwt_token" regex="^(?:[A-Za-z0-9\.\-=+_])+$" max-len="-1" min-len="1" secret="true" />
+    		 <param name="orgtype" type="int"/>
+    	</url>
+
+    	<url path="/clientoauth/v2/[a-z0-9]+/approve" authentication="required" method="post" csrf="true" >
+    		 <param-group name="clientrequest"/>
+    		 <param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
+    		 <param name="is_ajax" type="boolean" />
+    		 <param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100"/>
+    		 <param name="implicitGranted" type="boolean" />
+    		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/reject" authentication="required" method="post" csrf="true" >
+    		<param-group name="clientrequest"/>
+    		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
+    		<param name="is_ajax" type="boolean" />
+    		<param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/token" authentication="optional" method="post" csrf="false" url-type="dynamic">
+    		<param-group name="clientrequest"/>
+    		<param name="access_token" regex="iamcleartextpattern" max-len="1000" secret="true"/> <!-- Temporary Config. To be removed -->
+    		<param name="user_token" regex="[0-9a-zA-Z_\-\%\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+"  max-len="-1" min-len="1" secret="true" /> <!-- Temporary Config. To be removed -->
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/token/revoke" authentication="optional" duration="20" https="true" threshold="40" lock-period="5" method="post,get" csrf="false">
+    		<param name="token" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true" />
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/remote/auth" authentication="optional" url-type="dynamic"  method="post" csrf="false">
+    		 <param-group name="clientrequest"/>
+    		 <param name="user_token" regex="[0-9a-zA-Z_\-\%\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+"  max-len="-1" min-len="1" secret="true" />
+    		 <param name="jwt_token" regex="^(?:[A-Za-z0-9\.\-=+_])+$" max-len="-1" min-len="1" secret="true" />
+    		 <param name="orgtype" type="int"/>
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/auth/refresh" description="To create accesstoken for implicit token flow" method="get" user="true" authentication="required">
+		<response disable-safe-headers="X-Frame-Options" />
+    		<param-group name="clientrequest"/> 
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/token/scopeenhance" authentication="optional" description="To create a temp token for scope enhancement" method="post" csrf="false">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	
+    	<url path="/clientoauth/v2/[a-z0-9]+/token/addextrascope" description="To update the scopes of refreshToken" method="get" authentication="optional">
+    		<param-group name="clientrequest"/>
+    		<param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
+    		<param name="logout" type="boolean"/>
+    		<param name="forcelogout" type="boolean"/>
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/authtooauth" authentication="optional" description="auth to oauth movement" method="post" csrf="false">
+    		<param-group name="clientrequest"/>
+    		<param-group name="mobilerequest"/>
+    		<param name="app_verify" regex="device_token" max-len="1000"/>
+    		<param name="authToken" regex="iamcleartextpattern" max-len="1000"/>
+    	</url>
+    	<url path="/clientoauth/v2/[a-z0-9]+/user/info" authentication="optional" oauthscope="profile" duration="1" threshold="10"  user="true" lock-period="5" description="to get profile information using Oauth token." operation-type="READ" method="post,get">
+    		<param name="token" regex="[0-9]+.[0-9A-Za-z]+.[0-9A-Za-z]+"/>
+    	</url>
+    	
+    	<!-- Client device oauth changes
+    		All requests should have authentication optional -->
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/code" authentication="optional" method="post">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/token" authentication="optional" method="post" csrf="false" description="to get response for the give device token.">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device" authentication="required" description="To show device verify code." method="get"/>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/verify"  authentication="required" method="post" https="true" csrf="true" description="To add scope to old refresh token.">
+    		 <param name="Vcode" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true" />
+    	</url>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/approve"  authentication="required" method="post" csrf="true">
+    		<param-group name="clientrequest"/>
+    		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/> 
+    		<param name="is_ajax" type="boolean" />
+    		<param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100" />
+    		 <param name= "Vcode" regex= "[A-Z0-9\-a-z]+" max-len= "20" />
+    		 <param name="applicationSelected" type="JSONObject" template="application"/>
+    	</url>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/reject"  authentication="required" method="post" csrf="true">
+    		<param-group name="clientrequest"/>
+    		<param name="is_ajax" type="boolean" />
+    		<param name= "Vcode" regex= "[A-Z0-9\-a-z]+" max-len= "20" />
+    	</url>
+    	<url path="/accounts/p/[a-z0-9]+/oauth/v3/device/setCode"  authentication="required" https="true" description="To redirect from device." method="get">
+    		 <param name="devcode" regex="iambase64" max-len="350" min-len="1" secret="true" />
+    		  <param name= "closebrswr" type= "boolean" />
+    	</url>
+       	
+       	<!-- New changes -->
+       	<url path="/accounts/op/[a-z0-9]+/oauth/v2/auth" authentication="required" url-type="dynamic">
+    		 <param-group name="clientrequest"/>
+    		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/mobile/auth" authentication="required" url-type="dynamic" method="get">
+    		 <param-group name="clientrequest"/>
+    		 <param-group name="newloginparams"/> 
+    		 <param name="flogout" type="boolean"/>
+    		 <param name="forcelogout" type="boolean"/>
+    		 <param name="hidetitle" type="boolean" />
+    		 <param name="hideidp" type="boolean" />
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/native/token" https="true" authentication="optional" url-type="dynamic" method="post" csrf="false">
+    		 <param-group name="clientrequest"/> 
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/default/mobile/auth" authentication="required" url-type="dynamic" method="get">
+    		 <param-group name="clientrequest"/> 
+    		 <param-group name="mobilerequest"/>
+    		 <param-group name="newloginparams"/>
+    		 <param name="flogout" type="boolean"/>
+    		 <param name="forcelogout" type="boolean"/>
+    		 <param name="hidetitle" type="boolean" />
+    		 <param name="hideidp" type="boolean" />
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/mobile/remote/auth" https="true" authentication="optional" url-type="dynamic"  method="post" csrf="false">
+    		 <param-group name="clientrequest"/>
+    		 <param name="user_token" regex="[0-9a-zA-Z_\-\%\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" max-len="-1" min-len="1" secret="true" />
+    		 <param name="jwt_token" regex="^(?:[A-Za-z0-9\.\-=+_])+$" max-len="-1" min-len="1" secret="true" />
+    		 <param name="orgtype" type="int"/>
+    	</url>
+
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/approve" authentication="required" method="post" csrf="true" >
+    		 <param-group name="clientrequest"/>
+    		 <param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
+    		 <param name="is_ajax" type="boolean" />
+    		 <param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100"/>
+    		 <param name="implicitGranted" type="boolean" />
+    		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/reject" authentication="required" method="post" csrf="true" >
+    		<param-group name="clientrequest"/>
+    		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
+    		<param name="is_ajax" type="boolean" />
+    		<param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/token" authentication="optional" method="post" csrf="false" url-type="dynamic">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/token/revoke" authentication="optional" duration="20" https="true" threshold="40" lock-period="5" method="post,get" csrf="false">
+    		<param name="token" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true" />
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/remote/auth" authentication="optional" url-type="dynamic"  method="post" csrf="false">
+    		 <param-group name="clientrequest"/>
+    		 <param name="user_token" regex="[0-9a-zA-Z_\-\%\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+"  max-len="-1" min-len="1" secret="true" />
+    		 <param name="jwt_token" regex="^(?:[A-Za-z0-9\.\-=+_])+$" max-len="-1" min-len="1" secret="true" />
+    		 <param name="orgtype" type="int"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/auth/refresh"  description="To create accesstoken for implicit token flow" method="get" user="true" authentication="required">
+		<response disable-safe-headers="X-Frame-Options" />
+    		<param-group name="clientrequest"/> 
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/token/scopeenhance" authentication="optional" description="To create a temp token for scope enhancement" method="post" csrf="false">
+    		<param-group name="clientrequest"/>
+    		<param-group name="mobilerequest"/>
+    	</url>
+    	
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/token/addextrascope" authentication="optional" description="To update the scopes of refreshToken" method="get">
+    		<param-group name="clientrequest"/>
+    		<param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
+    		<param name="logout" type="boolean"/>
+    		<param name="forcelogout" type="boolean"/>
+    		<param name="app_verifier" regex="device_token" max-len="1000"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/authtooauth" authentication="optional" description="auth to oauth movement" method="post" csrf="false">
+    		<param-group name="clientrequest"/>
+    		<param-group name="mobilerequest"/>
+    		<param name="app_verify" regex="device_token" max-len="1000"/>
+    		<param name="authToken" regex="iamcleartextpattern" max-len="1000"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v2/user/info" authentication="optional" oauthscope="profile" duration="1" threshold="10"  user="true" lock-period="5" description="to get profile information using Oauth token." operation-type="READ" method="post,get">
+    		<param name="token" regex="[0-9]+.[0-9A-Za-z]+.[0-9A-Za-z]+"/>
+    	</url>
+    	
+    	<!-- Client device oauth changes
+    		All requests should have authentication optional -->
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/code" authentication="optional" method="post">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/token" authentication="optional" method="post" csrf="false" description="to get response for the give device token.">
+    		<param-group name="clientrequest"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device" authentication="required" description="To show device verify code." method="get"/>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/verify"  authentication="required" method="post" https="true" csrf="true" description="To add scope to old refresh token.">
+    		 <param name="Vcode" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true" />
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/approve"  authentication="required" method="post" csrf="true">
+    		<param-group name="clientrequest"/>
+    		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/> 
+    		<param name="is_ajax" type="boolean" />
+    		<param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100" />
+    		 <param name= "Vcode" regex= "[A-Z0-9\-a-z]+" max-len= "20" />
+    		 <param name="applicationSelected" type="JSONObject" template="application"/>
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/reject"  authentication="required" method="post" csrf="true">
+    		<param-group name="clientrequest"/>
+    		<param name="is_ajax" type="boolean" />
+    		<param name= "Vcode" regex= "[A-Z0-9\-a-z]+" max-len= "20" />
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/v3/device/setCode"  authentication="required" https="true" description="To redirect from device." method="get">
+    		 <param name="devcode" regex="iambase64" max-len="350" min-len="1" secret="true" />
+    		  <param name= "closebrswr" type= "boolean" />
+    	</url>
+    	<url path="/accounts/op/[a-z0-9]+/oauth/backChannel/logout" authentication="optional" https="true" description="To remove corresponding session when IDP gets logged out" method="POST">
+    		 <param name="logout_token" regex="jwt" max-len="10000" />
+    	</url>
+    </urls>
+</security>

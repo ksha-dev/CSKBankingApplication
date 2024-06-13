@@ -1,0 +1,2 @@
+AaaPassword.PASSWORD.pii = MASK
+AaaPassword.ALGORITHM.defaultvalue = SHA-256

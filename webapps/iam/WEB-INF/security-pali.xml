@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	<urls>
+		<url path="/api/v2/validate" internal="true" scoped-services="PaliConnect,ZAsk,PaliIDE" description="Validates the request and returns user object">
+	    	<param name="servicedomain" regex="domain" />
+	    	<param name="ipaddress" regex="ipaddress" />
+	    	<param name="useragent" regex=".+?[/\s][\d.]+" max-len="200"/>
+	    	<param name="clientzaid" max-len="100" regex="iamcleartextpattern" />
+	    	<param name="orgtype" type="int" />
+    	</url>
+    	<url path="/api/v2/configuration/${servicename}" internal="true" scoped-services="PaliConnect,ZAsk,PaliIDE" description="Returns the Service Configuration"/>
+    	<url path="/api/v2/validate/temporary" internal="true" scoped-services="PaliConnect,ZAsk,PaliIDE" description="Validates the temp ticket and returns tokenpair for the domain">
+    		<param name="servicedomain" regex="domain" />
+    		<param name="ipaddress" regex="ipaddress" />
+	    	<param name="useragent" regex=".+?[/\s][\d.]+" max-len="200"/>
+	    	<param name="clientzaid" regex="iamcleartextpattern" max-len="100"/>
+    	</url>
+	</urls>
+</security>

@@ -1,0 +1,28 @@
+url_prefix : 
+   path : /oauthapp/[a-zA-Z0-9\-]+
+   is_regex : true
+servlet-mappings :
+   OAuthOrgClientCreation :
+     servlet-class : com.zoho.accounts.internal.oauth2.servlet.OrgClientCreation
+     servlet-paths :
+         - servlet-path :
+              path : /oauthclient/register
+              is_regex : false
+   WellKnownRegistry :
+     servlet-class : com.zoho.accounts.actions.oauth2.OIDCDiscovery
+     servlet-paths :
+         - servlet-path :
+              path : /.well-known/openid-configuration
+              is_regex : false
+   OIDCKeys :
+     servlet-class : com.zoho.accounts.internal.oauth2.servlet.OIDCKeys
+     servlet-paths :
+         - servlet-path :
+              path : /oauth/v2/keys
+              is_regex : false
+   OIDCUserInfo :
+     servlet-class : com.zoho.accounts.internal.oauth2.servlet.OIDCUserInfo
+     servlet-paths :
+         - servlet-path :
+              path : /oauth/v2/userinfo
+              is_regex : false

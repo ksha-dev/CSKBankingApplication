@@ -1,0 +1,10 @@
+Module=MICKEYLITE
+SourceCoLabel=MICKEYLITE_4420
+BuildDate=May_31_2024
+BuildTime=13:09:26
+BuildLabel=MICKEYLITE_4420_May_31_2024_1
+build-timestamp= 1717141218
+StaticVersion=
+Current_Build_Url=https://build.zohocorp.com/framework/mickeylite/webhost/MICKEYLITE_4420/May_31_2024_1
+Source_Changeset=a7d2d051452af17e94aabe96a259597315c72d52
+Build_Comment=https://build.zohocorp.com/tp/components/ci/MICKEYLITE_BRANCH/May_17_2024/tp_components.zip

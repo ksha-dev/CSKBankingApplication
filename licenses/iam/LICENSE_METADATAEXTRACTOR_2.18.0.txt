@@ -1,0 +1,25 @@
+
+    <licenses>
+        <license>
+            <name>The  ↑ Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/drewnoakes/metadata-extractor.git</connection>
+        <developerConnection>scm:git:git@github.com:drewnoakes/metadata-extractor.git</developerConnection>
+        <url>https://github.com/drewnoakes/metadata-extractor</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>drewnoakes</id>
+            <name>Drew Noakes</name>
+            <url>https://drewnoakes.com</url>
+        </developer>
+    </developers>
+
+
+

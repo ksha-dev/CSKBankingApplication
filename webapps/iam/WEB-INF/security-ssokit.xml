@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	<urls>
+		<!-- Enable only for arattai setup
+
+		<url path="/ssokit/v1/loginid/${newdevicetok}/verify" method="put" url-type="dynamic" duration="1" threshold="3" lock-period="30" description="verify code and allow signin/signup">
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="sso_loginid_verify_json" max-len="-1" />
+		</url>
+
+		<url path="/ssokit/v1/loginid/${ciphertext_or_email}" method="post,put" url-type="dynamic" duration="1" threshold="3" lock-period="30" description="send verification code" >
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="sso_loginid_json" max-len="-1" />
+		</url>
+
+		<url path="/ssokit/v1/user/self/profile" method="put" authentication="required" csrf="false" oauthscope="profile" operation-type="UPDATE" duration="1" threshold="10"  user="true" lock-period="5" description="To update user profile">
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="sso_profile_json" max-len="-1" />
+		</url>
+
+		<url path="/ssokit/v1/user/self/closeaccount" method="post" authentication="required" csrf="false" oauthscope="closeaccount" operation-type="CREATE" duration="1" threshold="10"  user="true" lock-period="5" description="Verify user to close the account" >
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="ssokit_close_account_json" max-len="-1" />
+		</url>
+
+		<url path="/ssokit/v1/user/self/closeaccount/${iambase64}" method="put" url-type="dynamic" authentication="required" csrf="false" oauthscope="closeaccount" operation-type="UPDATE" duration="1" threshold="10"  user="true" lock-period="5" description="To close user account" >
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="ssokit_close_account_json" max-len="-1" />
+		</url>
+		
+		<url path="/ssokit/v1/user/self/otp" method="post" sl_auth="oauth_required" api="true" csrf="false" duration="1" threshold="10"  user="true" lock-period="5" description="Verify user via OTP" >
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="verifyotp_json" max-len="-1" />
+		</url>
+		
+		<url path="/ssokit/v1/user/self/otp/${iambase64}" method="put" url-type="dynamic" sl_auth="oauth_required" api="true" csrf="false" duration="1" threshold="10" user="true" lock-period="5" description="Verify user via OTP" >
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="verifyotp_json" max-len="-1" />
+		</url>
+
+
+		<url path="/weblogin" method="get" authentication="optional" description="new weblogin signin using qr code">
+			<param name="serviceurl" regex="serviceurl" max-len="50000" />
+			<param name="servicename" regex="servicename" />
+		</url>
+
+		Enable only for arattai setup -->
+
+		<!-- Zoho Mail Team Requirement -->	
+		<url path="/ssokit/v1/user/self/mobile" method="post" csrf="false" authentication="required" oauthscope="mobilerecovery" operation-type="CREATE" description="To send OTP SMS">
+			<inputstream type="JSONObject" template="ssokit_mobile_json" max-len="-1"/>
+		</url>
+
+       <url path="/ssokit/v1/user/self/mobile/${iambase64}" method="put" url-type="multiple" csrf="false" authentication="required" oauthscope="mobilerecovery" operation-type="UPDATE" description="Verify recovery mobile number">
+			<throttles key="url.path+user.zuid" window="ROLLING" scope="APPSERVER">
+				<throttle duration="15m" threshold="10" lock-period="30m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="ssokit_mobile_json" max-len="-1" />
+       </url>
+       
+		<!-- SSOKit Captcha Support -->
+		<url path="/ssokit/v1/captcha/${digest_in_url}" method="get">
+		</url>
+		
+		<url path="/ssokit/v1/captcha" method="post">
+			<inputstream type="JSONObject" template="sso_captcha_json" max-len="-1" />
+		</url>
+
+		<!-- TV Authentication Urls -->
+		<url path="/ssokit/v1/qrcode" method="post" csrf="false" description="To generate QRCode">
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="ssokit_qrcode_json" max-len="-1" />
+		</url>
+		<url path="/ssokit/v1/signinapprove/${newdevicetok}" method="post" url-type="dynamic" csrf="false" authentication="required" oauthscope="device" operation-type="UPDATE" description="To verify and grant by updating status and to provide oauthconsent based on resourcetype">
+			<param-group name="clientrequest"/>
+			<inputstream type="JSONObject" template="ssokit_signinapprove_json" max-len="-1" />
+		</url>
+	</urls>
+
+	<jsontemplates>
+		<jsontemplate name="sso_loginid_json">
+			<key name="loginid" type="JSONObject" template="sso_loginid_format" max-len="-1" />
+		</jsontemplate>
+
+		<jsontemplate name="sso_loginid_format">
+			<key name="country_code" regex="country" />
+			<key name="tos" type="boolean" />
+			<key name="cdigest" regex="digest" max-len="512" />
+			<key name="captcha" regex="hipstring" max-len="10" />
+			<key name="servicename" regex="servicename" />
+		</jsontemplate>
+
+		<jsontemplate name="sso_loginid_verify_json">
+			<key name="verify" type="JSONObject" template="sso_loginid_verify_format" max-len="-1" />
+		</jsontemplate>
+
+		<jsontemplate name="sso_loginid_verify_format">
+			<key name="ver_code" secret="true" regex="code" min-occurrences="1" />
+			<key name="mode" regex="[01234]{2}"/>
+			<key name="ss_id" regex="device_token" xss="antisamyfilter" max-len="1000" />
+			<key name="redirect_uri" regex="serviceurl" max-len="1000" />
+			<key name="scopes" type="JSONArray" template="client_scope" max-len="-1" array-size="1-100" />
+			<key name="tos" type="boolean" />
+		</jsontemplate>
+
+		<jsontemplate name="sso_profile_json">
+			<key name="profile" type="JSONObject" template="sso_profile_format" max-len="-1" />
+		</jsontemplate>
+
+		<jsontemplate name="sso_profile_format">
+			<key name="first_name" regex="iamcleartextpattern" min-len="1" />
+			<key name="last_name" regex="iamcleartextpattern" />
+			<key name="display_name" regex="iamcleartextpattern" max-len="50" />
+		</jsontemplate>
+
+		<jsontemplate name="ssokit_mobile_json">
+			<key name="mobile" type="JSONObject" template="ssokit_mobile_format" max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="ssokit_mobile_format">
+			<key name="mobile" regex="phone_numbers"/>
+			<key name="country_code" regex="^[A-Z]+$"/>
+			<key name="screen_name" type="boolean"/>
+			<key name="update_msname" type="boolean"/>
+			<key name="code" regex="[0-9]{7}" secret="true"/>
+			<key name="is_resend" type="boolean"/>
+			<key name="otp_type" regex="iamcleartextpattern"/>
+		</jsontemplate>
+
+		<jsontemplate name="ssokit_close_account_json">
+			<key name="closeaccount"  type="JSONObject" template="ssokit_mobile_format" max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="verifyotp_json">
+			<key name="otp"  type="JSONObject" template="ssokit_mobile_format" max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="sso_captcha_json">
+			<key name="captcha" template="sso_captcha_template" type="JSONObject" max-len="-1" ></key>
+		</jsontemplate>
+		<jsontemplate name="sso_captcha_template">
+			<key name="cdigest" regex="digest" max-len="500" min-occurrences="1" ></key>  <!-- Remove existing captcha digest before reloading-->
+			<key name="usecase" regex="iamcleartextpattern" max-len="50" min-occurrences="1" ></key>
+			<key name="servicename" regex="servicename" />
+		</jsontemplate>
+
+		<jsontemplate name="ssokit_qrcode_json">
+			<key name="qrcode" type="JSONObject" template="qrcode_template" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="qrcode_template">
+			<key name="qr_type" type="int" />
+		</jsontemplate>
+		<jsontemplate name="ssokit_signinapprove_json">
+			<key name="signinapprove" type="JSONObject" template="signin_approve_template" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="signin_approve_template">
+			<key name="status" type="int" />
+			<key name="approve_type" type="int" min-occurrences="1" />
+		</jsontemplate>
+		<jsontemplate name="client_scope">
+			 <value regex="scope"/>
+		</jsontemplate>
+	</jsontemplates>
+	<regexes>
+		<regex name="scope" value="^[\w\/,\.]+$"/>
+ 	</regexes>
+</security>

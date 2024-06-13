@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="27.092" height="26.929" viewBox="0 0 27.092 26.929">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.573" y1="0.312" x2="-0.257" y2="1.972" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffce71"/>
+      <stop offset="1" stop-color="#ffd688"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.594" y1="0.245" x2="-0.621" y2="2.031" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffce71"/>
+      <stop offset="1" stop-color="#aa781c"/>
+    </linearGradient>
+  </defs>
+  <g id="Yubikey" transform="translate(21.142 -2.4) rotate(45)">
+    <path id="Path_67" data-name="Path 67" d="M0,0H11.578V12.3H0Z" transform="translate(0 11.809)" fill="url(#linear-gradient)"/>
+    <path id="Rectangle_365" data-name="Rectangle 365" d="M1,0H3.835a1,1,0,0,1,1,1V4.463a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V1A1,1,0,0,1,1,0Z" transform="translate(3.022 0.372)" fill="#757572"/>
+    <path id="Rectangle_366" data-name="Rectangle 366" d="M1,0H3.835a1,1,0,0,1,1,1V4.463a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V1A1,1,0,0,1,1,0Z" transform="translate(3.766 0.372)" fill="#797976"/>
+    <path id="Rectangle_367" data-name="Rectangle 367" d="M1,0H3.835a1,1,0,0,1,1,1V4.463a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V1A1,1,0,0,1,1,0Z" transform="translate(3.394 0.372)" fill="#b2b2ac"/>
+    <rect id="Rectangle_368" data-name="Rectangle 368" width="0.372" height="3.463" rx="0.186" transform="translate(7.857 1.041)" fill="#fff"/>
+    <path id="Subtraction_120" data-name="Subtraction 120" d="M9.578,23.156H2a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0H9.578a2,2,0,0,1,2,2V21.155A2,2,0,0,1,9.578,23.156ZM5.789,18.815a1.447,1.447,0,1,0,1.447,1.447A1.449,1.449,0,0,0,5.789,18.815Zm0-10.855a3.618,3.618,0,1,0,3.618,3.618A3.622,3.622,0,0,0,5.789,7.96Z" transform="translate(0 6.743)" fill="#22211e"/>
+    <path id="Middle_line" data-name="Middle line" d="M1,0H6.236a1,1,0,0,1,1,1V2.239a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V1A1,1,0,0,1,1,0Z" transform="translate(2.197 4.504)" fill="#2f2b29"/>
+    <circle id="Upper_yellow_circle" data-name="Upper yellow circle" cx="3.681" cy="3.681" r="3.681" transform="translate(3.615 13.514) rotate(20)" fill="url(#linear-gradient-2)"/>
+    <rect id="Rectangle_374" data-name="Rectangle 374" width="4.463" height="0.372" rx="0.186" transform="translate(3.952 0)" fill="#fec"/>
+  </g>
+</svg>

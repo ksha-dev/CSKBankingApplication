@@ -1,0 +1,8 @@
+_CUSTOM_FIELDS
+- _zl_process_id=74443 _zl_received_time=1718260478525 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:38:525" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /index.html | null" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260483683 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:43:683" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /login | null" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260483701 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:43:701" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /login | null" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260497275 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:57:275" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | POST | /app | /login" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260497486 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:57:486" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /app | /admin/home" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260497499 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:04:57:499" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /app | /admin/employees" account=sharan-pt-7373
+- _zl_process_id=74443 _zl_received_time=1718260629676 logtype=requestURL orgname=CSKBankingApplication "_zl_timestamp=13-06-2024 12:07:09:676" service=ZohoLogs _zl_host=127.0.0.1 "url=0:0:0:0:0:0:0:1 | GET | /index.html | null" account=sharan-pt-7373
