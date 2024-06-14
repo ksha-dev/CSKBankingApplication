@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
 import com.zoho.logs.common.util.logging.LoggerUtil;
-import com.zoho.logs.common.util.logging.ZLoggerHandler;
 
 public class ConstantsUtil {
 
@@ -57,7 +55,7 @@ public class ConstantsUtil {
 	}
 
 	public static enum PersistanceIdentifier {
-		MySQL
+		MySQL, Mickey
 	}
 
 	public static enum ModifiableField {

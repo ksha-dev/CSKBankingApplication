@@ -1,0 +1,30 @@
+Fri Jun 14 20:34:54 IST 2024  [debug] AvalonLogSystem initialized using logfile 'velocity.log'
+Fri Jun 14 20:34:54 IST 2024   [info] ************************************************************** 
+Fri Jun 14 20:34:54 IST 2024   [info] Starting Jakarta Velocity v1.3.1
+Fri Jun 14 20:34:54 IST 2024   [info] RuntimeInstance initializing.
+Fri Jun 14 20:34:54 IST 2024   [info] Default Properties File: org/apache/velocity/runtime/defaults/velocity.properties
+Fri Jun 14 20:34:54 IST 2024   [info] Trying to use logger class org.apache.velocity.runtime.log.AvalonLogSystem
+Fri Jun 14 20:34:54 IST 2024   [info] Using logger class org.apache.velocity.runtime.log.AvalonLogSystem
+Fri Jun 14 20:34:54 IST 2024   [info] Default ResourceManager initializing. (class org.apache.velocity.runtime.resource.ResourceManagerImpl)
+Fri Jun 14 20:34:54 IST 2024   [info] Resource Loader Instantiated: test.DDTemplateFileLoader
+Fri Jun 14 20:34:54 IST 2024   [info] ResourceCache : initialized. (class org.apache.velocity.runtime.resource.ResourceCacheImpl)
+Fri Jun 14 20:34:54 IST 2024   [info] Default ResourceManager initialization complete.
+Fri Jun 14 20:34:54 IST 2024   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+Fri Jun 14 20:34:54 IST 2024   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+Fri Jun 14 20:34:54 IST 2024   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+Fri Jun 14 20:34:54 IST 2024   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+Fri Jun 14 20:34:54 IST 2024   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+Fri Jun 14 20:34:54 IST 2024   [info] Created: 20 parsers.
+Fri Jun 14 20:34:54 IST 2024   [info] Velocimacro : initialization starting.
+Fri Jun 14 20:34:54 IST 2024   [info] Velocimacro : adding VMs from VM library template : VM_global_library.vm
+Fri Jun 14 20:34:54 IST 2024  [error] ResourceManager : unable to find resource 'VM_global_library.vm' in any resource loader.
+Fri Jun 14 20:34:54 IST 2024   [info] Velocimacro : error using  VM library template VM_global_library.vm : org.apache.velocity.exception.ResourceNotFoundException: Unable to find resource 'VM_global_library.vm'
+Fri Jun 14 20:34:54 IST 2024   [info] Velocimacro :  VM library template macro registration complete.
+Fri Jun 14 20:34:54 IST 2024   [info] Velocimacro : allowInline = true : VMs can be defined inline in templates
+Fri Jun 14 20:34:55 IST 2024   [info] Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+Fri Jun 14 20:34:55 IST 2024   [info] Velocimacro : allowInlineLocal = false : VMs defined inline will be  global in scope if allowed.
+Fri Jun 14 20:34:55 IST 2024   [info] Velocimacro : messages on  : VM system will output logging messages
+Fri Jun 14 20:34:55 IST 2024   [info] Velocimacro : autoload off  : VM system will not automatically reload global library macros
+Fri Jun 14 20:34:55 IST 2024   [info] Velocimacro : initialization complete.
+Fri Jun 14 20:34:55 IST 2024   [info] Velocity successfully started.
+Fri Jun 14 20:34:55 IST 2024   [info] ResourceManager : found /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/build/..//ddtool/temp/build_tools/conf/ClassTemplate.vtl with loader test.DDTemplateFileLoader

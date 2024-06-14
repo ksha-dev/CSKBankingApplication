@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE data-dictionary SYSTEM "data-dictionary.dtd">
-<data-dictionary name="CSKBankDatabase">
+<data-dictionary name="CSKBank">
 
 	<!-- User Table -->
 	<table name="User">
