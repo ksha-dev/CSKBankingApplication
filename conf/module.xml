@@ -10,5 +10,6 @@
     <Module moduleorder="75" modulename="TaskEngine" modulehierarchy="2"/>
     <Module moduleorder="90" modulename="Tomcat" modulehierarchy="2"/>
     <Module moduleorder="100" modulename="ClientFramework" modulehierarchy="4" />
-    <Module moduleorder="110" modulename="ClientComponents" modulehierarchy="5"/>
+    <Module moduleorder="110" modulename="ClientComponents" modulehierarchy="5"/> 
+    <Module moduleorder="120" modulename="CSKBankDatabase" modulehierarchy="6" />
 </modules>
