@@ -10,21 +10,20 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.Account;
-import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.MailGenerationUtil;
-import com.cskbank.utility.ServletUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.MailGenerationUtil;
+import com.cskbank.utility.ServletUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 class EmployeeServletHelper {
 
@@ -217,8 +216,8 @@ class EmployeeServletHelper {
 
 	public void authorizeOpenAccount(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
-		Account.AccountType accountType = Account.AccountType
-				.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
+		Account.AccountType accountType = ConvertorUtil.convertToEnum(Account.AccountType.class,
+				request.getParameter(Parameters.TYPE.parameterName()));
 		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
 		String customerType = request.getParameter(Parameters.CUSTOMERTYPE.parameterName());
 		try {

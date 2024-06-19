@@ -48,7 +48,7 @@ public interface UserAPI {
 
 	public Account getAccountDetails(Long accountNumber) throws AppException;
 
-	public Transaction transferAmount(Transaction transaction, boolean isTransferOutsideBank) throws AppException;
+	public Transaction transferAmount(Transaction transaction, boolean transferWithinBank) throws AppException;
 
 	// Transaction
 	public List<Transaction> getTransactionsOfAccount(long accountNumber, int pageNumber,

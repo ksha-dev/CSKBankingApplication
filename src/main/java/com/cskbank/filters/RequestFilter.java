@@ -44,7 +44,7 @@ public class RequestFilter implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;	
+		HttpServletResponse res = (HttpServletResponse) response;
 
 		res.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
 		res.setHeader("pragma", "no-cache");
@@ -75,6 +75,8 @@ public class RequestFilter implements Filter {
 
 		} else if (url.equals("/error")) {
 			req.getRequestDispatcher("/WEB-INF/jsp/common/error.jsp");
+		} else if (url.equals("/migration") && req.getPathInfo() != null) {
+			req.getRequestDispatcher("/WEB-INF/jsp/migration/" + req.getPathInfo() + ".jsp");
 		} else {
 			req.getRequestDispatcher("/static/html/page_not_found.html").forward(req, res);
 		}

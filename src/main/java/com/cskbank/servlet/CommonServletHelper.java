@@ -45,7 +45,10 @@ class CommonServletHelper {
 		UserRecord user = null;
 		try {
 //			ReCAPTCHAHandler.reCAPTCHAVerfication(token);
+			Services.adminOperations.getPageCountOfBranches();
+
 			user = Services.appOperations.getUser(userId, password);
+
 			if (user.getStatus() == Status.VERIFICATION) {
 				ServletUtil.session(request).setAttribute("unverified_user", user);
 				response.sendRedirect(request.getContextPath() + "/verification");

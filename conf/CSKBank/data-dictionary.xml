@@ -111,7 +111,7 @@
 				<max-size>10</max-size>
 				<nullable>false</nullable>
 				<allowed-values>
-					<pattern>^[A-Z]{3}[ABCFGHLJPT][A-Z]\\d{4}[A-Z]$</pattern>
+					<pattern>^[A-Z]{3}[ABCFGHLJPT][A-Z]\d{4}[A-Z]$</pattern>
 				</allowed-values>
 			</column>
 		</columns>

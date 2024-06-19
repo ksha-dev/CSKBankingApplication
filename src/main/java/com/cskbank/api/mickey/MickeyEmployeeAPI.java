@@ -2,6 +2,8 @@ package com.cskbank.api.mickey;
 
 import java.util.Map;
 
+import javax.transaction.TransactionManager;
+
 import com.adventnet.cskbank.CREDENTIAL;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.USER;
@@ -70,19 +72,29 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 	public int createCustomer(CustomerRecord customer) throws AppException {
 		ValidatorUtil.validateObject(customer);
 
-		createUserRecord(customer);
-
-		Row newCustomerRow = new Row(CUSTOMER.TABLE);
-		newCustomerRow.set(CUSTOMER.USER_ID, customer.getUserId());
-		newCustomerRow.set(CUSTOMER.AADHAAR, customer.getAadhaarNumber());
-		newCustomerRow.set(CUSTOMER.PAN, customer.getPanNumber());
+		TransactionManager transactionManager = DataAccess.getTransactionManager();
 
 		try {
+			transactionManager.begin();
+			createUserRecord(customer);
+
+			Row newCustomerRow = new Row(CUSTOMER.TABLE);
+			newCustomerRow.set(CUSTOMER.USER_ID, customer.getUserId());
+			newCustomerRow.set(CUSTOMER.AADHAAR, customer.getAadhaarNumber());
+			newCustomerRow.set(CUSTOMER.PAN, customer.getPanNumber());
+
 			DataObject newCustomerDO = new WritableDataObject();
 			newCustomerDO.addRow(newCustomerRow);
 			newCustomerDO = DataAccess.add(newCustomerDO);
+
+			transactionManager.commit();
 			return customer.getUserId();
-		} catch (DataAccessException e) {
+		} catch (Exception e) {
+			try {
+				transactionManager.rollback();
+			} catch (Exception e1) {
+				e.initCause(e1);
+			}
 			throw new AppException(e);
 		}
 	}
