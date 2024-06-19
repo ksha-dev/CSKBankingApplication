@@ -2,28 +2,25 @@ package com.cskbank.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.Branch;
-import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.MailGenerationUtil;
-import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.MailGenerationUtil;
+import com.cskbank.utility.ServletUtil;
 
 class AdminServletHelper {
 
@@ -131,9 +128,8 @@ class AdminServletHelper {
 			} else {
 				return false;
 			}
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("search");
+		} catch (Exception e) {
+			throw new AppException(e);
 		}
 		return true;
 	}

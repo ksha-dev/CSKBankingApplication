@@ -47,4 +47,12 @@ class LRUCache<K, V> extends Cache<K, V> {
 		cacheKeyOrder.clear();
 	}
 
+	@Override
+	public void remove(K key) {
+		if (cacheKeyOrder.contains(key)) {
+			cacheKeyOrder.remove(key);
+			cacheData.remove(key);
+		}
+	}
+
 }

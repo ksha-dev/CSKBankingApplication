@@ -9,6 +9,6 @@
 		<url path="/verification" method="get" />
 		<url path="/reset_password" method="get" />
 		<url path="/signup" method="get" />
-		<url path="/migration/[A-Za-z_]{5,10}" method="get" />
+		<url path="/migration/runMigration" method="get" />
 	</urls>
 </security>

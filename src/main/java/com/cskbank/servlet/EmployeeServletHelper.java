@@ -317,7 +317,7 @@ class EmployeeServletHelper {
 			log.setModifiedAt(newAccount.getCreatedAt());
 			Services.auditLogService.log(log);
 
-		} catch (AppException e) {
+		} catch (Exception e) {
 			request.setAttribute("status", false);
 			request.setAttribute("redirect", "open_account");
 			request.setAttribute("message", e.getMessage());

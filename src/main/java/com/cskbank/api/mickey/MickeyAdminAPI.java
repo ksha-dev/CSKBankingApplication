@@ -108,7 +108,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			transactionManager.begin();
 			DataObject newUserDO = new WritableDataObject();
 			newUserDO.addRow(branchRow);
-			branch.setBrachId(DataAccess.add(newUserDO).getFirstRow(USER.TABLE).getInt(USER.USER_ID));
+			branch.setBrachId(DataAccess.add(newUserDO).getFirstRow(BRANCH.TABLE).getInt(BRANCH.BRANCH_ID));
 
 			UpdateQuery ifscUpdate = new UpdateQueryImpl(BRANCH.TABLE);
 			ifscUpdate.setCriteria(new Criteria(Column.getColumn(BRANCH.TABLE, BRANCH.BRANCH_ID), branch.getBranchId(),

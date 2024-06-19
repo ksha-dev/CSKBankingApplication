@@ -38,8 +38,7 @@ EmployeeRecord employee = (EmployeeRecord) request.getAttribute("employee");
 
 				<div class="dual-element-row">
 					<p class="profile-element">Employee Name</p>
-					<h4 class="profile-element"><%=employee.getFirstName()%>
-						<%=employee.getLastName()%></h4>
+					<h4 class="profile-element"><%=employee.getFirstName() + " " + employee.getLastName()%></h4>
 				</div>
 
 				<div class="dual-element-row">

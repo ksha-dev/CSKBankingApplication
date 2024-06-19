@@ -4,17 +4,27 @@ import java.util.Map;
 
 import javax.transaction.TransactionManager;
 
+import com.adventnet.cskbank.ACCOUNT;
+import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CREDENTIAL;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.USER;
+import com.adventnet.ds.query.Column;
+import com.adventnet.ds.query.Criteria;
+import com.adventnet.ds.query.QueryConstants;
+import com.adventnet.ds.query.UpdateQuery;
+import com.adventnet.ds.query.UpdateQueryImpl;
 import com.adventnet.persistence.DataAccess;
 import com.adventnet.persistence.DataAccessException;
 import com.adventnet.persistence.DataObject;
 import com.adventnet.persistence.Row;
 import com.adventnet.persistence.WritableDataObject;
 import com.cskbank.api.EmployeeAPI;
+import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.Account;
+import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
@@ -101,14 +111,57 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 
 	@Override
 	public UserRecord changeUserStatus(UserRecord user) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateObject(user);
+
+		UpdateQuery statusUpdateQuery = new UpdateQueryImpl(USER.TABLE);
+		statusUpdateQuery.setCriteria(
+				new Criteria(Column.getColumn(USER.TABLE, USER.USER_ID), user.getUserId(), QueryConstants.EQUAL));
+		statusUpdateQuery.setUpdateColumn(USER.STATUS, user.getStatus().getStatusID());
+		statusUpdateQuery.setUpdateColumn(USER.MODIFIED_BY, user.getModifiedBy());
+		statusUpdateQuery.setUpdateColumn(USER.MODIFIED_AT, user.getModifiedAt());
+		try {
+			DataAccess.update(statusUpdateQuery);
+			return user;
+		} catch (DataAccessException e) {
+			throw new AppException(APIExceptionMessage.STATUS_UPDATE_FAILED, e);
+		}
 	}
 
 	@Override
 	public long createAccount(Account account) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		ValidatorUtil.validateObject(account);
+
+		try {
+			Branch branch = getBranchDetails(account.getBranchId());
+			branch.setAccountsCount(branch.getAccountsCount() + 1);
+			account.setAccountNumber(
+					Long.parseLong(String.format("%d%010d", branch.getBranchId(), branch.getAccountsCount())));
+
+			Row accountRow = new Row(ACCOUNT.TABLE);
+			accountRow.set(ACCOUNT.ACCOUNT_NUMBER, account.getAccountNumber());
+			accountRow.set(ACCOUNT.USER_ID, account.getUserId());
+			accountRow.set(ACCOUNT.BRANCH_ID, account.getBranchId());
+			accountRow.set(ACCOUNT.TYPE, account.getAccountType().getTypeID());
+			accountRow.set(ACCOUNT.CREATED_AT, account.getCreatedAt());
+			accountRow.set(ACCOUNT.MODIFIED_BY, account.getModifiedBy());
+
+			DataObject dataObject = new WritableDataObject();
+			dataObject.addRow(accountRow);
+			DataAccess.add(dataObject);
+
+			UpdateQuery accountsCountUpdate = new UpdateQueryImpl(BRANCH.TABLE);
+			accountsCountUpdate.setCriteria(new Criteria(Column.getColumn(BRANCH.TABLE, BRANCH.BRANCH_ID),
+					branch.getBranchId(), QueryConstants.EQUAL));
+			accountsCountUpdate.setUpdateColumn(BRANCH.ACCOUNTS_COUNT, branch.getAccountsCount());
+			accountsCountUpdate.setUpdateColumn(BRANCH.MODIFIED_BY, account.getModifiedBy());
+			accountsCountUpdate.setUpdateColumn(BRANCH.MODIFIED_AT, account.getModifiedAt());
+			DataAccess.update(accountsCountUpdate);
+
+			CachePool.getBranchCache().remove(branch.getBranchId());
+			return account.getAccountNumber();
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.ACCOUNT_CREATION_FAILED, e);
+		}
 	}
 
 	@Override

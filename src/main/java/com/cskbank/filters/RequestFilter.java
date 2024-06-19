@@ -75,8 +75,8 @@ public class RequestFilter implements Filter {
 
 		} else if (url.equals("/error")) {
 			req.getRequestDispatcher("/WEB-INF/jsp/common/error.jsp");
-		} else if (url.equals("/migration") && req.getPathInfo() != null) {
-			req.getRequestDispatcher("/WEB-INF/jsp/migration/" + req.getPathInfo() + ".jsp");
+		} else if (url.equals("/migration/runMigration")) {
+			req.getRequestDispatcher("/WEB-INF/jsp/migration/runMigration.jsp").forward(req, res);
 		} else {
 			req.getRequestDispatcher("/static/html/page_not_found.html").forward(req, res);
 		}

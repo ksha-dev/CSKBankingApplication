@@ -71,4 +71,13 @@ class RedisCache<K, V> extends Cache<K, V> {
 		}
 		return returnObject;
 	}
+
+	@Override
+	public void remove(K key) {
+		byte[] keyBytes = (moduleName + key).getBytes();
+		if (jedis.exists(keyBytes)) {
+			jedis.del(keyBytes);
+		}
+
+	}
 }

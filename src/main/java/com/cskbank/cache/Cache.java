@@ -39,4 +39,6 @@ public abstract class Cache<K, V> {
 		put(key, value);
 		return value;
 	}
+
+	public abstract void remove(K key);
 }

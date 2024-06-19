@@ -41,14 +41,10 @@ class CommonServletHelper {
 			throws AppException, ServletException, IOException {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
-//		String token = request.getParameter(Parameters.RECAPTCHA.parameterName());
 		UserRecord user = null;
 		try {
-//			ReCAPTCHAHandler.reCAPTCHAVerfication(token);
 			Services.adminOperations.getPageCountOfBranches();
-
 			user = Services.appOperations.getUser(userId, password);
-
 			if (user.getStatus() == Status.VERIFICATION) {
 				ServletUtil.session(request).setAttribute("unverified_user", user);
 				response.sendRedirect(request.getContextPath() + "/verification");

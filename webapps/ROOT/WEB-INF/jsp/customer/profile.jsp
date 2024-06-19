@@ -39,8 +39,7 @@ CustomerRecord customer = (CustomerRecord) request.getSession().getAttribute("us
 
 				<div class="dual-element-row">
 					<p class="profile-element">Customer Name</p>
-					<h4 class="profile-element"><%=customer.getFirstName()%>
-						<%=customer.getLastName()%></h4>
+					<h4 class="profile-element"><%=customer.getFirstName() + " " + customer.getLastName()%></h4>
 				</div>
 
 				<div class="dual-element-row">

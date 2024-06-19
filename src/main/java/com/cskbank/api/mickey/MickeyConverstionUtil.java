@@ -96,6 +96,7 @@ class MickeyConverstionUtil {
 		branch.setEmail(branchRow.getString(BRANCH.EMAIL));
 		branch.setPhone(branchRow.getLong(BRANCH.PHONE));
 		branch.setAccountsCount(branchRow.getLong(BRANCH.ACCOUNTS_COUNT));
+		branch.setIfscCode(branchRow.getString(BRANCH.IFSC_CODE));
 		branch.setCreatedAt(branchRow.getLong(BRANCH.CREATED_AT));
 		branch.setModifiedBy(branchRow.getInt(BRANCH.MODIFIED_BY));
 		branch.setModifiedAt(branchRow.getLong(BRANCH.MODIFIED_AT));
