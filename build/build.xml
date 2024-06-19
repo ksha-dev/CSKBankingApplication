@@ -19,16 +19,16 @@
 	        <isset property="trim_val"/>
 	    </not>
 	    <then>
-	        <loadfile property="trim_val" srcfile="ddtools.properties">
+	        <loadfile property="trim_val" srcfile="ant.properties">
 	            <filterchain>
 	              <trim/>
 	            </filterchain>
 	        </loadfile>
-	        <echo message="${trim_val}" file="ddtools.properties"/>
+	        <echo message="${trim_val}" file="ant.properties"/>
 	    </then>
 	</if>
 
-    <property file="ddtools.properties"/>
+    <property file="ant.properties"/>
                                                                                                         
 <!-- ============================================================================
        CALLING PRECHECK TASK

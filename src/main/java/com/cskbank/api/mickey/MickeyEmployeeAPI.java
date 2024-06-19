@@ -2,19 +2,89 @@ package com.cskbank.api.mickey;
 
 import java.util.Map;
 
+import com.adventnet.cskbank.CREDENTIAL;
+import com.adventnet.cskbank.CUSTOMER;
+import com.adventnet.cskbank.USER;
+import com.adventnet.persistence.DataAccess;
+import com.adventnet.persistence.DataAccessException;
+import com.adventnet.persistence.DataObject;
+import com.adventnet.persistence.Row;
+import com.adventnet.persistence.WritableDataObject;
 import com.cskbank.api.EmployeeAPI;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.SecurityUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 
+	private void createCredentialRecord(UserRecord user) throws AppException {
+		ValidatorUtil.validatePositiveNumber(user.getUserId());
+
+		Row newCredentialRow = new Row(CREDENTIAL.TABLE);
+		newCredentialRow.set(CREDENTIAL.USER_ID, user.getUserId());
+		newCredentialRow.set(CREDENTIAL.PASSWORD, SecurityUtil.passwordGenerator(user));
+		newCredentialRow.set(CREDENTIAL.PIN, SecurityUtil.generatePIN(user));
+		newCredentialRow.set(CREDENTIAL.CREATED_AT, user.getCreatedAt());
+		newCredentialRow.set(CREDENTIAL.MODIFIED_BY, user.getModifiedBy());
+
+		try {
+			DataObject newCredentialDO = new WritableDataObject();
+			newCredentialDO.addRow(newCredentialRow);
+			DataAccess.add(newCredentialDO);
+		} catch (DataAccessException e) {
+			throw new AppException(e);
+		}
+	}
+
+	protected void createUserRecord(UserRecord user) throws AppException {
+		ValidatorUtil.validateObject(user);
+
+		Row newUserRow = new Row(USER.TABLE);
+		newUserRow.set(USER.FIRST_NAME, user.getFirstName());
+		newUserRow.set(USER.LAST_NAME, user.getLastName());
+		newUserRow.set(USER.GENDER, user.getGender().getGenderID());
+		newUserRow.set(USER.DOB, user.getDateOfBirth());
+		newUserRow.set(USER.ADDRESS, user.getAddress());
+		newUserRow.set(USER.PHONE, user.getPhone());
+		newUserRow.set(USER.EMAIL, user.getEmail());
+		newUserRow.set(USER.TYPE, user.getType().getTypeID());
+		newUserRow.set(USER.STATUS, user.getStatus().getStatusID());
+		newUserRow.set(USER.CREATED_AT, user.getCreatedAt());
+		newUserRow.set(USER.MODIFIED_BY, user.getModifiedBy());
+
+		try {
+			DataObject newUserDO = new WritableDataObject();
+			newUserDO.addRow(newUserRow);
+			user.setUserId(DataAccess.add(newUserDO).getFirstRow(USER.TABLE).getInt(USER.USER_ID));
+			createCredentialRecord(user);
+		} catch (DataAccessException e) {
+			throw new AppException(e);
+		}
+	}
+
 	@Override
 	public int createCustomer(CustomerRecord customer) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		ValidatorUtil.validateObject(customer);
+
+		createUserRecord(customer);
+
+		Row newCustomerRow = new Row(CUSTOMER.TABLE);
+		newCustomerRow.set(CUSTOMER.USER_ID, customer.getUserId());
+		newCustomerRow.set(CUSTOMER.AADHAAR, customer.getAadhaarNumber());
+		newCustomerRow.set(CUSTOMER.PAN, customer.getPanNumber());
+
+		try {
+			DataObject newCustomerDO = new WritableDataObject();
+			newCustomerDO.addRow(newCustomerRow);
+			newCustomerDO = DataAccess.add(newCustomerDO);
+			return customer.getUserId();
+		} catch (DataAccessException e) {
+			throw new AppException(e);
+		}
 	}
 
 	@Override

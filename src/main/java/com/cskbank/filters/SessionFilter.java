@@ -79,7 +79,8 @@ public class SessionFilter implements Filter {
 
 	public void sessionCheck(HttpServletRequest request) throws IOException, SessionFilterException {
 		if (request.getSession(false) == null) {
-			throw new SessionFilterException(ServletUtil.getRedirectContextURL(request, "login"), true);
+			throw new SessionFilterException("Session Expired", ServletUtil.getRedirectContextURL(request, "login"),
+					true);
 		}
 	}
 

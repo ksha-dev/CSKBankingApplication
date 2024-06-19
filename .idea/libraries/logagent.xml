@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="logagent">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/jar/logsclient/logclient/lib/logagent.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

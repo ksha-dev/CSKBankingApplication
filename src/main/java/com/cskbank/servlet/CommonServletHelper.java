@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.cskbank.api.mickey.MickeyUserAPI;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
@@ -21,6 +22,7 @@ import com.cskbank.modules.OTP;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
+import com.cskbank.test.MickeyLiteTest;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.LogOperation;
@@ -44,7 +46,6 @@ class CommonServletHelper {
 		try {
 //			ReCAPTCHAHandler.reCAPTCHAVerfication(token);
 			user = Services.appOperations.getUser(userId, password);
-
 			if (user.getStatus() == Status.VERIFICATION) {
 				ServletUtil.session(request).setAttribute("unverified_user", user);
 				response.sendRedirect(request.getContextPath() + "/verification");
@@ -92,6 +93,8 @@ class CommonServletHelper {
 			log.setDescription("User(ID : " + userId + ") login failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
 			Services.auditLogService.log(log);
+
+			ServletUtil.session(request).setAttribute(AppException.class.getName(), e);
 
 			throw e;
 		}

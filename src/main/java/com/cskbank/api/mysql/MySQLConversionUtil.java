@@ -7,7 +7,6 @@ import javax.crypto.SecretKey;
 
 import com.cskbank.api.mysql.MySQLQuery.Schemas;
 import com.cskbank.exceptions.AppException;
-import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
@@ -15,14 +14,11 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
-import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.SecurityUtil;
-import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
-public class MySQLConversionUtil {
+class MySQLConversionUtil {
 
 	// CONVERSIONS
 	static EmployeeRecord convertToEmployeeRecord(ResultSet record) throws AppException {

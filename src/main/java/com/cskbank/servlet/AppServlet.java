@@ -1,8 +1,6 @@
 package com.cskbank.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,11 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.zoho.logs.logclient.v2.LogAPI;
-import com.zoho.logs.logclient.v2.json.ZLMap;
 
 public class AppServlet extends HttpServlet {
 
@@ -73,7 +68,6 @@ public class AppServlet extends HttpServlet {
 				}
 			}
 		} catch (AppException e) {
-//			ConstantsUtil.DEFAULT_LOGGER.log(Level.ERROR, e.getMessage(), e);
 			ServletUtil.redirectError(request, response, e);
 		}
 	}

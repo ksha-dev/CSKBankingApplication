@@ -183,6 +183,9 @@ public class ServletUtil {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			appException.printStackTrace(pw);
+			if (appException.getCause() != null) {
+				appException.getCause().printStackTrace(pw);
+			}
 			LogAPI.log("access",
 					new ZLMap().put("message", appException.getMessage()).put("stacktrace", sw.toString()));
 			GetterUtil.loadRedirectURLProperties();

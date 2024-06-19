@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3bed5984-57ca-4234-b583-b68a9f99bad4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/CSKBankingApplication.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/logagent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/.jsdtscope" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/.jsdtscope" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.m2e.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.component" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.component" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.jsdt.ui.superType.container" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.jsdt.ui.superType.container" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.jsdt.ui.superType.name" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.jsdt.ui.superType.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.validation.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/digest.sh" beforeDir="false" afterPath="$PROJECT_DIR$/bin/digest.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/nohup.out" beforeDir="false" afterPath="$PROJECT_DIR$/bin/nohup.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/ant.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/ant.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build/build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/ddtools.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/ddtools.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/findbugs_jars.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/findbugs_jars.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/generate_war.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/generate_war.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/precheck.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/precheck.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/velocity.log" beforeDir="false" afterPath="$PROJECT_DIR$/build/velocity.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/database_params.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conf/database_params.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/wrapper_linux.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conf/wrapper_linux.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/api/UserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/api/UserAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mickey/MickeyUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mickey/MickeyUserAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/MySQLConversionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/MySQLConversionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/MySQLUserAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/MySQLUserAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/ServerConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/api/mysql/ServerConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/exceptions/AppException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/exceptions/AppException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/filters/RequestFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/filters/RequestFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/filters/SessionFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/filters/SessionFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/handlers/CommonHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/handlers/CommonHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/modules/UserRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/modules/UserRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/AppServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/AppServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/CommonServletHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/CommonServletHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/servlet/Services.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/utility/ConstantsUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/utility/ConstantsUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cskbank/utility/ServletUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cskbank/utility/ServletUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/error.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/error.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/reset_password.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/reset_password.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/reset_password_input.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/reset_password_input.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/signup.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/signup.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/verification.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/common/verification.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/cskbank-dbo.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/cskbank-dbo.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/security-xml/security-params.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/security-xml/security-params.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/error.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/error.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/reset_password.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/reset_password.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/reset_password_input.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/reset_password_input.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/signup.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/signup.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/verification.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/jsp/common/verification.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/security-xml/security-params.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webapps/ROOT/WEB-INF/security-xml/security-params.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/admin/employees_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/admin/employees_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/admin/employees_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/admin/employees_jsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/change_005fpassword_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/change_005fpassword_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/change_005fpassword_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/change_005fpassword_jsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/error_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/error_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/error_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/error_jsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/login_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/login_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/login_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/login_jsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/statement_005fselect_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/statement_005fselect_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/statement_005fselect_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/common/statement_005fselect_jsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/customer/accounts_jsp.class" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/customer/accounts_jsp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/customer/accounts_jsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/work/Catalina/localhost/ROOT/org/apache/jsp/WEB_002dINF/jsp/customer/accounts_jsp.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2i2uaOPcLmxSZMryuvGAROfb4xT" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Remote JVM Debug.Mickey Debug.executor": "Debug",
+    "Remote JVM Debug.Mickey.executor": "Debug",
+    "Remote JVM Debug.MickeyCSKBank.executor": "Debug",
+    "Remote JVM Debug.Unnamed.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "mickey",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/lib",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Mickey" type="Remote">
+      <module name="CSKBankingApplication" />
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8787" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="8787" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3bed5984-57ca-4234-b583-b68a9f99bad4" name="Changes" comment="" />
+      <created>1718701056632</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1718701056632</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cskbank/handlers/CommonHandler.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

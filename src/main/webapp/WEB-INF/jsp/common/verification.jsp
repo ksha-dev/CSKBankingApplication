@@ -18,14 +18,11 @@ response.setHeader("Expires", "0");
 <title>OTP Verification | CSK Bank</title>
 <link rel="stylesheet" href="../static/css/styles.css">
 <script src="../static/script/script.js"></script>
-<script>
 <%String error = (String) request.getSession(false).getAttribute("error");
 if (error != null) {
-	request.getSession(false).removeAttribute("error");%>
-	errorMessage('<%=error%>');
-<%}%>
-	
-</script>
+	request.getSession(false).removeAttribute("error");
+	out.print("<script>errorMessage('" + error + "')</script>");
+}%>
 </head>
 
 <body class="login">

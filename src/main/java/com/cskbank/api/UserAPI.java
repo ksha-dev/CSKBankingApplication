@@ -3,8 +3,6 @@ package com.cskbank.api;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
@@ -12,9 +10,7 @@ import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
-import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 
 public interface UserAPI {

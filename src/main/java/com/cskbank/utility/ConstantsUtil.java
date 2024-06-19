@@ -1,7 +1,9 @@
 package com.cskbank.utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.cskbank.exceptions.AppException;
@@ -76,7 +78,26 @@ public class ConstantsUtil {
 			Status.BLOCKED);
 
 	public static enum Status {
-		ACTIVE, INACTIVE, CLOSED, FROZEN, BLOCKED, VERIFICATION;
+		ACTIVE(1), INACTIVE(2), CLOSED(3), FROZEN(4), BLOCKED(5), VERIFICATION(6);
+
+		private int statusID;
+
+		private Status(int statusID) {
+			this.statusID = statusID;
+		}
+
+		public int getStatusID() {
+			return this.statusID;
+		}
+
+		public static Status getStatus(int statusID) throws AppException {
+			for (Status status : Status.values()) {
+				if (status.statusID == statusID) {
+					return status;
+				}
+			}
+			throw new AppException(InvalidInputMessage.INVALID_IDENTIFIER);
+		}
 	}
 
 	public static enum TransactionType {
@@ -113,8 +134,26 @@ public class ConstantsUtil {
 	}
 
 	public static enum Gender {
-		MALE, FEMALE, OTHER;
+		MALE(1), FEMALE(2), OTHER(3);
 
+		private int genderID;
+
+		private Gender(int genderID) {
+			this.genderID = genderID;
+		}
+
+		public int getGenderID() {
+			return this.genderID;
+		}
+
+		public static Gender getGender(int genderID) throws AppException {
+			for (Gender gender : Gender.values()) {
+				if (gender.genderID == genderID) {
+					return gender;
+				}
+			}
+			throw new AppException(InvalidInputMessage.INVALID_GENDER);
+		}
 	}
 
 	public static enum TransactionHistoryLimit {

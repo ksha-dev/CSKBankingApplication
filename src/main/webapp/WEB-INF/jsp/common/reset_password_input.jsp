@@ -21,15 +21,11 @@ response.setHeader("Expires", "0");
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
-<script>
-	
 <%String error = (String) request.getSession(false).getAttribute("error");
 if (error != null) {
 	request.getSession(false).removeAttribute("error");
-	out.print("errorMessage('" + error + "')");
+	out.print("<script>errorMessage('" + error + "')</script>");
 }%>
-	
-</script>
 </head>
 
 <body class="login">
@@ -38,8 +34,8 @@ if (error != null) {
 			<h1 class="login-element">Reset Password</h1>
 			<p class="login-element" style="margin-bottom: 20px;">Enter your
 				User ID and respective Email ID</p>
-			<form action="complete_reset_password"
-				id="reset-password-input-form" method="post">
+			<form action="complete_reset_password" id="reset-password-input-form"
+				method="post">
 				<label style="margin-bottom: 10px;">New Password</label> <input
 					id="newPassword" type="password"
 					name="<%=Parameters.NEWPASSWORD.parameterName()%>"

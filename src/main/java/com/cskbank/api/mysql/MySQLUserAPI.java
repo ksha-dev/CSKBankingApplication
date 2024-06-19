@@ -121,7 +121,7 @@ public class MySQLUserAPI implements UserAPI {
 				if (record.next()) {
 					UserRecord user = null;
 					long createdAt = record.getLong(Column.CREATED_AT.toString());
-					UserRecord.Type type = UserRecord.Type.convertStringToEnum(
+					UserRecord.Type type = ConvertorUtil.convertToEnum(UserRecord.Type.class,
 							MySQLAPIUtil.getConstantFromId(Schemas.USER_TYPES, record.getInt(Column.TYPE.toString())));
 					switch (type) {
 					case CUSTOMER:

@@ -186,7 +186,6 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setLong(7, account.getCreatedAt());
 			statement.setInt(8, account.getModifiedBy());
 			ServerConnection.startTransaction();
-			System.out.println(statement);
 			if (statement.executeUpdate() == 1) {
 				branch.setModifiedBy(account.getModifiedBy());
 				branch.setModifiedAt(account.getModifiedAt());

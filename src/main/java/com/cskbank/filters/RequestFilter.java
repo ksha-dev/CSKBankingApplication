@@ -1,8 +1,6 @@
 package com.cskbank.filters;
 
 import java.io.IOException;
-import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.utility.ConstantsUtil;
 import com.zoho.logs.logclient.v2.LogAPI;
 import com.zoho.logs.logclient.v2.json.ZLMap;
 
@@ -47,7 +44,7 @@ public class RequestFilter implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
+		HttpServletResponse res = (HttpServletResponse) response;	
 
 		res.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
 		res.setHeader("pragma", "no-cache");

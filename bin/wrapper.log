@@ -1,0 +1,53 @@
+********************************************************************************
+* This is a Java Service Wrapper failover log file.
+*  Was unable to write to ../logs/wrapper.log.
+********************************************************************************
+
+STATUS | wrapper  | 2024/06/18 14:23:17 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/18 14:23:17 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/18 14:23:17 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/18 14:23:17 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/18 14:23:17 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/18 14:23:17 | 
+WARN   | wrapper  | 2024/06/18 14:23:17 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/18 14:23:17 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/18 14:23:17 | Launching a JVM...
+STATUS | wrapper  | 2024/06/18 16:31:30 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/18 16:31:30 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/18 16:31:30 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/18 16:31:30 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/18 16:31:30 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/18 16:31:30 | 
+WARN   | wrapper  | 2024/06/18 16:31:30 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/18 16:31:30 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/18 16:31:30 | Launching a JVM...
+STATUS | wrapper  | 2024/06/18 16:51:07 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/18 16:51:07 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/18 16:51:07 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/18 16:51:07 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/18 16:51:07 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/18 16:51:07 | 
+WARN   | wrapper  | 2024/06/18 16:51:07 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/18 16:51:07 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/18 16:51:07 | Launching a JVM...
+STATUS | wrapper  | 2024/06/18 16:55:29 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/18 16:55:29 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/18 16:55:29 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/18 16:55:29 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/18 16:55:29 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/18 16:55:29 | 
+WARN   | wrapper  | 2024/06/18 16:55:29 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/18 16:55:29 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/18 16:55:29 | Launching a JVM...
+STATUS | wrapper  | 2024/06/19 09:49:48 | INT trapped.  Shutting down.
+WARN   | wrapper  | 2024/06/19 09:49:48 | Unable to write to the configured log file: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/19 09:49:48 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/19 09:53:52 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/19 09:53:52 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/19 09:53:52 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/19 09:53:52 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/19 09:53:52 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/19 09:53:52 | 
+WARN   | wrapper  | 2024/06/19 09:53:52 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/19 09:53:52 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/19 09:53:52 | Launching a JVM...

@@ -21,15 +21,11 @@ response.setHeader("Expires", "0");
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
-<script>
-	
 <%String error = (String) request.getSession(false).getAttribute("error");
 if (error != null) {
 	request.getSession(false).removeAttribute("error");
-	out.print("errorMessage('" + error + "')");
+	out.print("<script>errorMessage('" + error + "')</script>");
 }%>
-	
-</script>
 </head>
 
 <body class="login">

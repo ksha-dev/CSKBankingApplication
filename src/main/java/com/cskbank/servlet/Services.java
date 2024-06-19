@@ -20,7 +20,7 @@ public class Services {
 	static CustomerHandler customerOperations;
 	static AdminHandler adminOperations;
 
-	private static final PersistanceIdentifier PERSISTANT_OBJECT = PersistanceIdentifier.MySQL;
+	private static final PersistanceIdentifier PERSISTANT_OBJECT = PersistanceIdentifier.Mickey;
 
 	public static synchronized void initialize() throws AppException {
 		if (appOperations == null)

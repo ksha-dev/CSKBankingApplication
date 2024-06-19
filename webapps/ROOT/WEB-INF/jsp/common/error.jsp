@@ -13,12 +13,16 @@ ServletException exp = (ServletException) request.getAttribute(ServletException.
 	<b>CSKBANK | Server error occured. Please try again after sometime</b>
 	<%
 	if (iamExp != null) {
+		out.print(iamExp);
 		out.print("<p>" + iamExp.getMessage() + "<br>" + iamExp.getErrorCode() + "</p>");
 	}
 	if (appExp != null) {
+		out.print(appExp);
+
 		out.print("<p>" + appExp.getMessage() + "</p>");
 	}
 	if (exp != null) {
+		out.print(exp);
 		out.print("<p>" + exp.getMessage() + "</p>");
 	}
 	%>
