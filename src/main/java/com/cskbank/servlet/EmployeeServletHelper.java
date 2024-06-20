@@ -90,73 +90,64 @@ class EmployeeServletHelper {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		String searchBy = request.getParameter(Parameters.SEARCHBY.parameterName());
 		String searchValue = request.getParameter(Parameters.SEARCHVALUE.parameterName());
-		try {
-			if (searchBy.equals("customerId")) {
-				int userId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("customer",
-						(CustomerRecord) Services.employeeOperations.getCustomerRecord(userId));
-				request.setAttribute("accounts", Services.employeeOperations.getAssociatedAccountsOfCustomer(userId));
-				request.getRequestDispatcher("/WEB-INF/jsp/employee/search_customer.jsp").forward(request, response);
 
-				// Log
-				AuditLog log = new AuditLog();
-				log.setUserId(employee.getUserId());
-				log.setTargetId(userId);
-				log.setLogOperation(LogOperation.VIEW_CUSTOMER);
-				log.setOperationStatus(OperationStatus.SUCCESS);
-				log.setDescription("Customer details (ID : " + userId + ") was searched and viewed by "
-						+ employee.getType() + " (ID :  " + employee.getUserId() + ")");
-				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+		if (searchBy.equals("customerId")) {
+			int userId = ConvertorUtil.convertStringToInteger(searchValue);
+			request.setAttribute("customer", (CustomerRecord) Services.employeeOperations.getCustomerRecord(userId));
+			request.setAttribute("accounts", Services.employeeOperations.getAssociatedAccountsOfCustomer(userId));
+			request.getRequestDispatcher("/WEB-INF/jsp/employee/search_customer.jsp").forward(request, response);
 
-			} else if (searchBy.equals("accountNumber")) {
-				long accountNumber = ConvertorUtil.convertStringToLong(searchValue);
-				Account account = Services.employeeOperations.getAccountDetails(accountNumber);
-				CustomerRecord customer = Services.employeeOperations.getCustomerRecord(account.getUserId());
-				request.setAttribute("account", account);
-				request.setAttribute("customer", customer);
-				request.getRequestDispatcher("/WEB-INF/jsp/employee/account_details.jsp").forward(request, response);
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(employee.getUserId());
+			log.setTargetId(userId);
+			log.setLogOperation(LogOperation.VIEW_CUSTOMER);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Customer details (ID : " + userId + ") was searched and viewed by " + employee.getType()
+					+ " (ID :  " + employee.getUserId() + ")");
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
 
-				// Log
-				AuditLog log = new AuditLog();
-				log.setUserId(employee.getUserId());
-				log.setLogOperation(LogOperation.VIEW_ACCOUNT);
-				log.setOperationStatus(OperationStatus.SUCCESS);
-				log.setDescription("Account details (ID : " + accountNumber + ") was searched and viewed by "
-						+ employee.getType() + " (ID :  " + employee.getUserId() + ")");
-				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+		} else if (searchBy.equals("accountNumber")) {
+			long accountNumber = ConvertorUtil.convertStringToLong(searchValue);
+			Account account = Services.employeeOperations.getAccountDetails(accountNumber);
+			CustomerRecord customer = Services.employeeOperations.getCustomerRecord(account.getUserId());
+			request.setAttribute("account", account);
+			request.setAttribute("customer", customer);
+			request.getRequestDispatcher("/WEB-INF/jsp/employee/account_details.jsp").forward(request, response);
 
-			} else {
-				throw new AppException("Invalid Search By Field Obtained");
-			}
-		} catch (Exception e) {
-			LogUtil.logException(e);
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("search");
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(employee.getUserId());
+			log.setLogOperation(LogOperation.VIEW_ACCOUNT);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Account details (ID : " + accountNumber + ") was searched and viewed by "
+					+ employee.getType() + " (ID :  " + employee.getUserId() + ")");
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
+
+		} else {
+			throw new AppException("Invalid Search By Field Obtained");
 		}
 	}
 
 	public void authorizeTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
-		try {
-			long accountNumber = ConvertorUtil
-					.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-			double amount = ConvertorUtil
-					.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
-			TransactionType type = TransactionType
-					.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
 
-			Services.employeeOperations.getAccountDetails(accountNumber);
-			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
-			ServletUtil.session(request).setAttribute("amount", amount);
-			ServletUtil.session(request).setAttribute("type", type);
-			ServletUtil.session(request).setAttribute("redirect", "process_transaction");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("transaction");
-		}
+		long accountNumber = ConvertorUtil
+				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
+		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
+		TransactionType type = TransactionType
+				.convertStringToEnum(request.getParameter(Parameters.TYPE.parameterName()));
+
+		Services.employeeOperations.getAccountDetails(accountNumber);
+		ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
+		ServletUtil.session(request).setAttribute("amount", amount);
+		ServletUtil.session(request).setAttribute("type", type);
+		ServletUtil.session(request).setAttribute("redirect", "process_transaction");
+		response.sendRedirect("authorization");
+
+		response.sendRedirect("transaction");
 	}
 
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -195,6 +186,8 @@ class EmployeeServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
+			LogUtil.logException(e);
+
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 			request.setAttribute("redirect", "transaction");
@@ -222,40 +215,36 @@ class EmployeeServletHelper {
 				request.getParameter(Parameters.TYPE.parameterName()));
 		double amount = ConvertorUtil.convertStringToDouble(request.getParameter(Parameters.AMOUNT.parameterName()));
 		String customerType = request.getParameter(Parameters.CUSTOMERTYPE.parameterName());
-		try {
-			if (customerType.equals("new")) {
-				CustomerRecord newCustomer = new CustomerRecord();
 
-				newCustomer.setFirstName(request.getParameter(Parameters.FIRSTNAME.parameterName()));
-				newCustomer.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
-				newCustomer.setDateOfBirth(
-						ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
-				newCustomer.setGender(ConvertorUtil.convertToEnum(Gender.class,
-						request.getParameter(Parameters.GENDER.parameterName())));
-				newCustomer.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
-				newCustomer.setPhone(
-						ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
-				newCustomer.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
-				newCustomer.setAadhaarNumber(
-						ConvertorUtil.convertStringToLong(request.getParameter(Parameters.AADHAAR.parameterName())));
-				newCustomer.setPanNumber(request.getParameter(Parameters.PAN.parameterName()));
+		if (customerType.equals("new")) {
+			CustomerRecord newCustomer = new CustomerRecord();
 
-				ServletUtil.session(request).setAttribute("newCustomer", newCustomer);
-			} else if (customerType.equals("existing")) {
-				int customerId = ConvertorUtil
-						.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
-				Services.employeeOperations.getCustomerRecord(customerId);
-				ServletUtil.session(request).setAttribute("customerId", customerId);
-			}
-			ServletUtil.session(request).setAttribute("accountType", accountType);
-			ServletUtil.session(request).setAttribute("amount", amount);
-			ServletUtil.session(request).setAttribute("customerType", customerType);
-			ServletUtil.session(request).setAttribute("redirect", "process_open_account");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("open_account");
+			newCustomer.setFirstName(request.getParameter(Parameters.FIRSTNAME.parameterName()));
+			newCustomer.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
+			newCustomer.setDateOfBirth(
+					ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
+			newCustomer.setGender(
+					ConvertorUtil.convertToEnum(Gender.class, request.getParameter(Parameters.GENDER.parameterName())));
+			newCustomer.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
+			newCustomer.setPhone(
+					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
+			newCustomer.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
+			newCustomer.setAadhaarNumber(
+					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.AADHAAR.parameterName())));
+			newCustomer.setPanNumber(request.getParameter(Parameters.PAN.parameterName()));
+
+			ServletUtil.session(request).setAttribute("newCustomer", newCustomer);
+		} else if (customerType.equals("existing")) {
+			int customerId = ConvertorUtil
+					.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
+			Services.employeeOperations.getCustomerRecord(customerId);
+			ServletUtil.session(request).setAttribute("customerId", customerId);
 		}
+		ServletUtil.session(request).setAttribute("accountType", accountType);
+		ServletUtil.session(request).setAttribute("amount", amount);
+		ServletUtil.session(request).setAttribute("customerType", customerType);
+		ServletUtil.session(request).setAttribute("redirect", "process_open_account");
+		response.sendRedirect("authorization");
 	}
 
 	public void processOpenAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -344,15 +333,11 @@ class EmployeeServletHelper {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		long accountNumber = ConvertorUtil
 				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-		try {
-			Services.employeeOperations.getAccountDetails(accountNumber);
-			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
-			ServletUtil.session(request).setAttribute("redirect", "process_close_account");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect(employee.getType() == UserRecord.Type.ADMIN ? "accounts" : "branch_accounts");
-		}
+
+		Services.employeeOperations.getAccountDetails(accountNumber);
+		ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
+		ServletUtil.session(request).setAttribute("redirect", "process_close_account");
+		response.sendRedirect("authorization");
 	}
 
 	public void processCloseAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -377,6 +362,8 @@ class EmployeeServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
+			LogUtil.logException(e);
+
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 
@@ -400,15 +387,11 @@ class EmployeeServletHelper {
 		EmployeeRecord employee = (EmployeeRecord) ServletUtil.getUser(request);
 		long accountNumber = ConvertorUtil
 				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-		try {
-			Services.employeeOperations.getUnclosedAccountDetails(accountNumber);
-			ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
-			ServletUtil.session(request).setAttribute("redirect", "process_freeze_account");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect(employee.getType() == UserRecord.Type.ADMIN ? "accounts" : "branch_accounts");
-		}
+
+		Services.employeeOperations.getUnclosedAccountDetails(accountNumber);
+		ServletUtil.session(request).setAttribute("accountNumber", accountNumber);
+		ServletUtil.session(request).setAttribute("redirect", "process_freeze_account");
+		response.sendRedirect("authorization");
 	}
 
 	public void processFreezeAccountPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -433,6 +416,8 @@ class EmployeeServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
+			LogUtil.logException(e);
+
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 

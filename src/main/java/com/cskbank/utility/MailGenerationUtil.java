@@ -99,7 +99,7 @@ public class MailGenerationUtil {
 				+ "\nPassword : <First 4 letters of your first name>@<Date of birth in MMDD format>"
 				+ "\nExample : If your name is Ramesh and you were born on August 20, your password will be Rame@0820"
 				+ "\n\nAn authorization PIN has been set for your account and it is the last 4 digits of your phone number\n"
-				+ "\n\nLogin URL : https://localhost:8443/CSKBankingApplication/login \n\nTeam CSKBank.";
+				+ "\n\nLogin URL : https://localhost:8443/login \n\nTeam CSKBank.";
 		return sendMail(user.getEmail(), subject, bodyText);
 	}
 

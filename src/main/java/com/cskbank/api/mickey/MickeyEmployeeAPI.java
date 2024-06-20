@@ -88,7 +88,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			user.setUserId(DataAccess.add(newUserDO).getFirstRow(USER.TABLE).getInt(USER.USER_ID));
 			createCredentialRecord(user);
 		} catch (DataAccessException e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.USER_CREATION_FAILED, e);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			} catch (Exception e1) {
 				e.initCause(e1);
 			}
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.CUSTOMER_CREATION_FAILED, e);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			}
 			return MickeyConverstionUtil.convertToAccount(accountRow);
 		} catch (Exception e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
 	}
 

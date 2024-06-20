@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public class MickeyUserAPI implements UserAPI {
 				throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED);
 			}
 		} catch (DataAccessException | IOException e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED, e);
 		}
 	}
 
@@ -115,7 +116,7 @@ public class MickeyUserAPI implements UserAPI {
 			}
 			return MickeyConverstionUtil.convertToCustomerRecord(customerRow);
 		} catch (DataAccessException e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
 	}
 
@@ -130,7 +131,7 @@ public class MickeyUserAPI implements UserAPI {
 			}
 			return MickeyConverstionUtil.convertToEmployeeRecord(employeeRow);
 		} catch (DataAccessException e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
 	}
 
@@ -168,7 +169,7 @@ public class MickeyUserAPI implements UserAPI {
 			return user;
 
 		} catch (Exception e) {
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
 	}
 
@@ -391,7 +392,7 @@ public class MickeyUserAPI implements UserAPI {
 			} catch (Exception e1) {
 				e.initCause(e1);
 			}
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.TRANSACTION_FAILED, e);
 		}
 	}
 
@@ -401,11 +402,43 @@ public class MickeyUserAPI implements UserAPI {
 
 		Criteria transactionsCriteria = new Criteria(new Column(TRANSACTION.TABLE, TRANSACTION.SENDER_ACCOUNT),
 				accountNumber, QueryConstants.EQUAL);
-		transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP), timeLimit.getDuration(),
-				QueryConstants.GREATER_EQUAL);
-		transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP),
-				System.currentTimeMillis(), QueryConstants.LESS_EQUAL);
-		return null;
+		if (timeLimit != TransactionHistoryLimit.RECENT) {
+			transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP),
+					timeLimit.getDuration(), QueryConstants.GREATER_EQUAL);
+			transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP),
+					System.currentTimeMillis(), QueryConstants.LESS_EQUAL);
+		}
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(TRANSACTION.TABLE));
+			query.addSortColumn(new SortColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP),
+					timeLimit != TransactionHistoryLimit.RECENT));
+			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
+			query.setCriteria(transactionsCriteria);
+
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TRANSACTION_ID));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.USER_ID));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.SENDER_ACCOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.RECEIVER_ACCOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.AMOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.CLOSING_BALANCE));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TYPE));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.REMARKS));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.CREATED_AT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.MODIFIED_BY));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.MODIFIED_AT));
+
+			Iterator<?> it = DataAccess.get(query).getRows(TRANSACTION.TABLE);
+			List<Transaction> transactions = new LinkedList<Transaction>();
+			while (it.hasNext()) {
+				Transaction transaction = MickeyConverstionUtil.convertToTransaction((Row) it.next());
+				transactions.add(transaction);
+			}
+			return transactions;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
+		}
 	}
 
 	@Override
@@ -426,9 +459,28 @@ public class MickeyUserAPI implements UserAPI {
 			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
 			query.setCriteria(transactionsCriteria);
 
-			return null;
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TRANSACTION_ID));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.USER_ID));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.SENDER_ACCOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.RECEIVER_ACCOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.AMOUNT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.CLOSING_BALANCE));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TYPE));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.REMARKS));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.CREATED_AT));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.MODIFIED_BY));
+			query.addSelectColumn(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.MODIFIED_AT));
+
+			Iterator<?> it = DataAccess.get(query).getRows(TRANSACTION.TABLE);
+			List<Transaction> transactions = new LinkedList<Transaction>();
+			while (it.hasNext()) {
+				Transaction transaction = MickeyConverstionUtil.convertToTransaction((Row) it.next());
+				transactions.add(transaction);
+			}
+			return transactions;
 		} catch (Exception e) {
-			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
 		}
 
 	}
@@ -539,7 +591,7 @@ public class MickeyUserAPI implements UserAPI {
 
 		try {
 			return MickeyConverstionUtil
-					.convertToAPIKey(DataAccess.get(APIKEY.TABLE, apiKeyRow).getFirstRow(APIKEY.TABLE/));
+					.convertToAPIKey(DataAccess.get(APIKEY.TABLE, apiKeyRow).getFirstRow(APIKEY.TABLE));
 		} catch (Exception e) {
 			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND, e);
 		}

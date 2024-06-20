@@ -19,6 +19,7 @@ import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.ServletUtil;
 
@@ -93,71 +94,63 @@ class AdminServletHelper {
 		String searchValue = request.getParameter(Parameters.SEARCHVALUE.parameterName());
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 
-		try {
-			if (searchBy.equals("employeeId")) {
-				int userId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("employee", (EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
-				request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
+		if (searchBy.equals("employeeId")) {
+			int userId = ConvertorUtil.convertStringToInteger(searchValue);
+			request.setAttribute("employee", (EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
+			request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
-				// Log
-				AuditLog log = new AuditLog();
-				log.setUserId(admin.getUserId());
-				log.setTargetId(userId);
-				log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
-				log.setOperationStatus(OperationStatus.SUCCESS);
-				log.setDescription("Employee details (ID : " + userId + ") was searched and viewed by Admin (ID :  "
-						+ admin.getUserId() + ")");
-				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setTargetId(userId);
+			log.setLogOperation(LogOperation.VIEW_EMPLOYEE);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Employee details (ID : " + userId + ") was searched and viewed by Admin (ID :  "
+					+ admin.getUserId() + ")");
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
 
-			} else if (searchBy.equals("branchId")) {
-				int branchId = ConvertorUtil.convertStringToInteger(searchValue);
-				request.setAttribute("branch", Services.adminOperations.getBranch(branchId));
-				request.getRequestDispatcher("/WEB-INF/jsp/admin/branch_details.jsp").forward(request, response);
+		} else if (searchBy.equals("branchId")) {
+			int branchId = ConvertorUtil.convertStringToInteger(searchValue);
+			request.setAttribute("branch", Services.adminOperations.getBranch(branchId));
+			request.getRequestDispatcher("/WEB-INF/jsp/admin/branch_details.jsp").forward(request, response);
 
-				// Log
-				AuditLog log = new AuditLog();
-				log.setUserId(admin.getUserId());
-				log.setLogOperation(LogOperation.VIEW_BRANCH);
-				log.setOperationStatus(OperationStatus.SUCCESS);
-				log.setDescription("Branch details (ID : " + branchId + ") was searched and viewed by Admin (ID :  "
-						+ admin.getUserId() + ")");
-				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+			// Log
+			AuditLog log = new AuditLog();
+			log.setUserId(admin.getUserId());
+			log.setLogOperation(LogOperation.VIEW_BRANCH);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("Branch details (ID : " + branchId + ") was searched and viewed by Admin (ID :  "
+					+ admin.getUserId() + ")");
+			log.setModifiedAtWithCurrentTime();
+			Services.auditLogService.log(log);
 
-			} else {
-				return false;
-			}
-		} catch (Exception e) {
-			throw new AppException(e);
+		} else {
+			return false;
 		}
 		return true;
 	}
 
 	public void authorizeAddEmployee(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		try {
-			EmployeeRecord employee = new EmployeeRecord();
-			employee.setFirstName(request.getParameter(Parameters.FIRSTNAME.parameterName()));
-			employee.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
-			employee.setDateOfBirth(
-					ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
-			employee.setGender(
-					ConvertorUtil.convertToEnum(Gender.class, request.getParameter(Parameters.GENDER.parameterName())));
-			employee.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
-			employee.setPhone(
-					ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
-			employee.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
-			employee.setType(request.getParameter(Parameters.ROLE.parameterName()));
-			employee.setBranchId(
-					ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.BRANCHID.parameterName())));
-			ServletUtil.session(request).setAttribute("employee", employee);
-			ServletUtil.session(request).setAttribute("redirect", "process_add_employee");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("employees");
-		}
+		EmployeeRecord employee = new EmployeeRecord();
+
+		employee.setFirstName(request.getParameter(Parameters.FIRSTNAME.parameterName()));
+		employee.setLastName(request.getParameter(Parameters.LASTNAME.parameterName()));
+		employee.setDateOfBirth(
+				ConvertorUtil.dateStringToMillis(request.getParameter(Parameters.DATEOFBIRTH.parameterName())));
+		employee.setGender(
+				ConvertorUtil.convertToEnum(Gender.class, request.getParameter(Parameters.GENDER.parameterName())));
+		employee.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
+		employee.setPhone(ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
+		employee.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
+		employee.setType(request.getParameter(Parameters.ROLE.parameterName()));
+		employee.setBranchId(
+				ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.BRANCHID.parameterName())));
+		ServletUtil.session(request).setAttribute("employee", employee);
+		ServletUtil.session(request).setAttribute("redirect", "process_add_employee");
+
+		response.sendRedirect("authorization");
 	}
 
 	public void processAddEmployeePostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -193,6 +186,7 @@ class AdminServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
+			LogUtil.logException(e);
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 
@@ -213,19 +207,14 @@ class AdminServletHelper {
 
 	public void authorizeAddBranch(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		try {
-			Branch branch = new Branch();
-			branch.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
-			branch.setPhone(ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
-			branch.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
+		Branch branch = new Branch();
+		branch.setAddress(request.getParameter(Parameters.ADDRESS.parameterName()));
+		branch.setPhone(ConvertorUtil.convertStringToLong(request.getParameter(Parameters.PHONE.parameterName())));
+		branch.setEmail(request.getParameter(Parameters.EMAIL.parameterName()));
 
-			ServletUtil.session(request).setAttribute("branch", branch);
-			ServletUtil.session(request).setAttribute("redirect", "process_add_branch");
-			response.sendRedirect("authorization");
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", e.getMessage());
-			response.sendRedirect("branches");
-		}
+		ServletUtil.session(request).setAttribute("branch", branch);
+		ServletUtil.session(request).setAttribute("redirect", "process_add_branch");
+		response.sendRedirect("authorization");
 	}
 
 	public void processAddBranchPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -252,7 +241,7 @@ class AdminServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
-			e.printStackTrace();
+			LogUtil.logException(e);
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 
@@ -362,6 +351,8 @@ class AdminServletHelper {
 			Services.auditLogService.log(log);
 			ServletUtil.session(request).setAttribute("error", "Status changed successfully");
 		} catch (AppException e) {
+			LogUtil.logException(e);
+
 			AuditLog log = new AuditLog();
 			log.setUserId(admin.getUserId());
 			log.setTargetId(userId);

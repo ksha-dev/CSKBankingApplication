@@ -30,6 +30,7 @@ import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ServletUtil;
@@ -84,7 +85,6 @@ class CommonServletHelper {
 				Services.auditLogService.log(log);
 			}
 		} catch (AppException e) {
-			// Log
 			AuditLog log = new AuditLog();
 			log.setUserId(userId);
 			log.setLogOperation(LogOperation.USER_LOGIN);
@@ -247,7 +247,6 @@ class CommonServletHelper {
 			Services.auditLogService.log(log);
 			ServletUtil.session(request).setAttribute("error", "OTP resent successfully");
 		}
-//		request.getRequestDispatcher("/WEB-INF/jsp/common/verification.jsp").forward(request, response);
 		response.sendRedirect(ServletUtil.getRedirectContextURL(request, "app/verification"));
 	}
 
@@ -259,27 +258,23 @@ class CommonServletHelper {
 			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
 			return;
 		}
-		try {
-			if (!Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
-				MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail());
+		if (!Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
+			MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail());
 
-				AuditLog log = new AuditLog();
-				log.setUserId(unverifiedUser.getUserId());
-				log.setTargetId(unverifiedUser.getUserId());
-				log.setLogOperation(LogOperation.OTP_SENT_TO_USER);
-				log.setOperationStatus(OperationStatus.SUCCESS);
-				log.setDescription("OTP not found. A new otp was generated and sent to Customer(ID : "
-						+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
-				log.setModifiedAt(System.currentTimeMillis());
-				Services.auditLogService.log(log);
+			AuditLog log = new AuditLog();
+			log.setUserId(unverifiedUser.getUserId());
+			log.setTargetId(unverifiedUser.getUserId());
+			log.setLogOperation(LogOperation.OTP_SENT_TO_USER);
+			log.setOperationStatus(OperationStatus.SUCCESS);
+			log.setDescription("OTP not found. A new otp was generated and sent to Customer(ID : "
+					+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
+			log.setModifiedAt(System.currentTimeMillis());
+			Services.auditLogService.log(log);
 
-				ServletUtil.session(request).setAttribute("error", "OTP sent to user's mail");
-			}
-			request.getRequestDispatcher("/WEB-INF/jsp/common/verification.jsp").forward(request, response);
-		} catch (AppException e) {
-			ServletUtil.session(request).setAttribute("error", "An error occured - " + e.getMessage());
-			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
+			ServletUtil.session(request).setAttribute("error", "OTP sent to user's mail");
 		}
+		request.getRequestDispatcher("/WEB-INF/jsp/common/verification.jsp").forward(request, response);
+		response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
 	}
 
 	public void verificationPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -438,6 +433,8 @@ class CommonServletHelper {
 			ServletUtil.session(request).setAttribute("redirect", "process_change_password");
 			response.sendRedirect("authorization");
 		} catch (AppException e) {
+			LogUtil.logException(e);
+
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("change_password");
 		}
@@ -496,7 +493,7 @@ class CommonServletHelper {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.logException(e);
 			throw new AppException(ServletExceptionMessage.INVALID_OBJECT);
 		}
 	}

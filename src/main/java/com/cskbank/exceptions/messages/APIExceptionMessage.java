@@ -5,6 +5,7 @@ public enum APIExceptionMessage {
 	CUSTOMER_RECORD_NOT_FOUND("The valid customer details for the user does not exist."),
 	EMPLOYEE_RECORD_NOT_FOUND("The valid employee details for the user does not exist."),
 	ACCOUNT_RECORD_NOT_FOUND("No account exists with the given account number."),
+	TRANSACTION_RECORD_NOT_FOUND("The transaction details for the specified ID is not available"),
 	USER_AUNTHENTICATION_FAILED("The credentials entered for the acount is incorrect. Please try again"),
 	NO_SERVER_CONNECTION("Unable to connect to server. Please try again after sometime. Sorry for the inconvenience"),
 	LOGGING_FAILED("An internal error occured during log operation"),

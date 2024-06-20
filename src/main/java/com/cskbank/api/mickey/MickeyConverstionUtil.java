@@ -5,6 +5,7 @@ import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.EMPLOYEE;
+import com.adventnet.cskbank.TRANSACTION;
 import com.adventnet.cskbank.USER;
 import com.adventnet.persistence.Row;
 
@@ -16,6 +17,7 @@ import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
+import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.Gender;
@@ -81,9 +83,6 @@ class MickeyConverstionUtil {
 		account.setModifiedAt(accountRow.getLong(ACCOUNT.MODIFIED_AT));
 		return account;
 	}
-//
-//	static Transaction convertToTransaction(DataObject tdo) throws AppException {
-//	}
 
 	static Branch convertToBranch(Row branchRow) throws AppException {
 		if (branchRow == null) {
@@ -100,6 +99,28 @@ class MickeyConverstionUtil {
 		branch.setModifiedBy(branchRow.getInt(BRANCH.MODIFIED_BY));
 		branch.setModifiedAt(branchRow.getLong(BRANCH.MODIFIED_AT));
 		return branch;
+	}
+
+	static Transaction convertToTransaction(Row transactionRow) throws AppException {
+		if (transactionRow == null) {
+			throw new AppException(APIExceptionMessage.TRANSACTION_RECORD_NOT_FOUND);
+		}
+		Transaction transaction = new Transaction();
+
+		transaction.setTransactionId(transactionRow.getLong(TRANSACTION.TRANSACTION_ID));
+		transaction.setUserId(transactionRow.getInt(TRANSACTION.USER_ID));
+		transaction.setViewerAccountNumber(transactionRow.getLong(TRANSACTION.SENDER_ACCOUNT));
+		transaction.setTransactedAccountNumber(transactionRow.getLong(TRANSACTION.RECEIVER_ACCOUNT));
+		transaction.setTransactedAmount(transactionRow.getBigDecimal(TRANSACTION.AMOUNT).doubleValue());
+		transaction.setClosingBalance(transactionRow.getBigDecimal(TRANSACTION.CLOSING_BALANCE).doubleValue());
+		transaction.setTimeStamp(transactionRow.getLong(TRANSACTION.TIME_STAMP));
+		transaction.setTransactionType(transactionRow.getInt(TRANSACTION.TYPE));
+		transaction.setRemarks(transactionRow.getString(TRANSACTION.REMARKS));
+		transaction.setCreatedAt(transactionRow.getLong(TRANSACTION.CREATED_AT));
+		transaction.setModifiedAt(transactionRow.getLong(TRANSACTION.MODIFIED_AT));
+		transaction.setModifiedBy(transactionRow.getInt(TRANSACTION.MODIFIED_BY));
+
+		return transaction;
 	}
 
 	static APIKey convertToAPIKey(Row apikeyRow) throws AppException {

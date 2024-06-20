@@ -70,7 +70,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			} catch (Exception e1) {
 				e.initCause(e1);
 			}
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.EMPLOYEE_CREATION_FAILED, e);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			} catch (Exception e2) {
 				e.initCause(e2);
 			}
-			throw new AppException(e);
+			throw new AppException(APIExceptionMessage.BRANCH_CREATION_FAILED, e);
 		}
 	}
 

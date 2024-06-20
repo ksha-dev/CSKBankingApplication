@@ -27,6 +27,7 @@ import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -136,7 +137,7 @@ class CustomerServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
-			e.printStackTrace();
+			LogUtil.logException(e);
 			request.setAttribute("status", false);
 			request.setAttribute("message", e.getMessage());
 
@@ -213,7 +214,7 @@ class CustomerServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (AppException e) {
-			e.printStackTrace();
+			LogUtil.logException(e);
 			request.setAttribute("status", false);
 			request.setAttribute("message", "An error occured. " + e.getMessage());
 
