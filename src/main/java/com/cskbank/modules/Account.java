@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
-import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
@@ -72,9 +71,8 @@ public class Account implements Serializable {
 		this.openingDate = openingDate;
 	}
 
-	public void setLastTransactedAt(long lastTransactionDateTime) throws AppException {
-		ValidatorUtil.validatePositiveNumber(lastTransactionDateTime);
-		this.lastTransactionAt = lastTransactionDateTime;
+	public void setLastTransactedAt(Long lastTransactionDateTime) throws AppException {
+		this.lastTransactionAt = lastTransactionDateTime == null ? 0 : lastTransactionDateTime;
 	}
 
 	public void setStatus(String status) throws AppException {

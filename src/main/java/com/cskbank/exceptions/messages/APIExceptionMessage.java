@@ -20,6 +20,8 @@ public enum APIExceptionMessage {
 	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
 
+	OPERATION_RESTRICTED("This action has been disabled by the organisation"),
+
 	API_KEY_NOT_FOUND("The API Key obtained is not valid or does not exist"),
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),
 	CANNOT_MODIFY_CLOSED_ACCOUNT_STATUS("The status of a closed account cannot be changed"),

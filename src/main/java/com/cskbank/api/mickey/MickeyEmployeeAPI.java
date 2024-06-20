@@ -1,7 +1,10 @@
 package com.cskbank.api.mickey;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
 import com.adventnet.cskbank.ACCOUNT;
@@ -9,9 +12,16 @@ import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CREDENTIAL;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.USER;
+import com.adventnet.db.api.RelationalAPI;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
+import com.adventnet.ds.query.DataSet;
 import com.adventnet.ds.query.QueryConstants;
+import com.adventnet.ds.query.Range;
+import com.adventnet.ds.query.SelectQuery;
+import com.adventnet.ds.query.SelectQueryImpl;
+import com.adventnet.ds.query.SortColumn;
+import com.adventnet.ds.query.Table;
 import com.adventnet.ds.query.UpdateQuery;
 import com.adventnet.ds.query.UpdateQueryImpl;
 import com.adventnet.persistence.DataAccess;
@@ -28,6 +38,10 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil;
+import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -131,7 +145,9 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 	public long createAccount(Account account) throws AppException {
 		ValidatorUtil.validateObject(account);
 
+		TransactionManager transactionManager = DataAccess.getTransactionManager();
 		try {
+			transactionManager.begin();
 			Branch branch = getBranchDetails(account.getBranchId());
 			branch.setAccountsCount(branch.getAccountsCount() + 1);
 			account.setAccountNumber(
@@ -142,6 +158,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			accountRow.set(ACCOUNT.USER_ID, account.getUserId());
 			accountRow.set(ACCOUNT.BRANCH_ID, account.getBranchId());
 			accountRow.set(ACCOUNT.TYPE, account.getAccountType().getTypeID());
+			accountRow.set(ACCOUNT.STATUS, Status.ACTIVE.getStatusID());
 			accountRow.set(ACCOUNT.CREATED_AT, account.getCreatedAt());
 			accountRow.set(ACCOUNT.MODIFIED_BY, account.getModifiedBy());
 
@@ -158,52 +175,197 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			DataAccess.update(accountsCountUpdate);
 
 			CachePool.getBranchCache().remove(branch.getBranchId());
+			transactionManager.commit();
 			return account.getAccountNumber();
 		} catch (Exception e) {
+			try {
+				transactionManager.rollback();
+			} catch (IllegalStateException | SecurityException | SystemException e1) {
+				e.initCause(e1);
+			}
 			throw new AppException(APIExceptionMessage.ACCOUNT_CREATION_FAILED, e);
 		}
 	}
 
 	@Override
 	public boolean changeAccountStatus(Account account) throws AppException {
-		// TODO Auto-generated method stub
-		return false;
+		ValidatorUtil.validateObject(account);
+
+		UpdateQuery accountStatusUpdate = new UpdateQueryImpl(ACCOUNT.TABLE);
+		accountStatusUpdate.setCriteria(new Criteria(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER),
+				account.getAccountNumber(), QueryConstants.EQUAL));
+		accountStatusUpdate.setUpdateColumn(ACCOUNT.STATUS, account.getStatus().getStatusID());
+		accountStatusUpdate.setUpdateColumn(ACCOUNT.MODIFIED_BY, account.getModifiedBy());
+		accountStatusUpdate.setUpdateColumn(ACCOUNT.MODIFIED_AT, account.getModifiedAt());
+
+		try {
+			DataAccess.update(accountStatusUpdate);
+			return true;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.STATUS_UPDATE_FAILED, e);
+		}
 	}
 
 	@Override
 	public int getNumberOfPagesOfAccountsInBranch(int branchId) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		ValidatorUtil.validateId(branchId);
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
+			query.addSelectColumn(new Column(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER).count());
+			query.setCriteria(
+					new Criteria(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BRANCH_ID), branchId, QueryConstants.EQUAL));
+
+			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
+					RelationalAPI.getInstance().getConnection());
+			if (dataset.next()) {
+				return GetterUtil.getPageCount((int) dataset.getValue(1));
+			} else {
+				throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+			}
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
+		}
 	}
 
 	@Override
 	public Map<Long, Account> viewAccountsInBranch(int branchID, int pageNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateId(branchID);
+		ValidatorUtil.validateId(pageNumber);
+
+		Criteria branchAccountsCriteria = new Criteria(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BRANCH_ID), branchID,
+				QueryConstants.EQUAL);
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
+			query.setCriteria(branchAccountsCriteria);
+			query.addSortColumn(new SortColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER), false));
+			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
+
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.USER_ID));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BRANCH_ID));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.TYPE));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.STATUS));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.LAST_TRANSACTED_AT));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BALANCE));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.CREATED_AT));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.MODIFIED_BY));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.MODIFIED_AT));
+
+			Iterator<?> it = DataAccess.get(query).getRows(ACCOUNT.TABLE);
+			Map<Long, Account> accounts = new LinkedHashMap<Long, Account>();
+			while (it.hasNext()) {
+				Account account = MickeyConverstionUtil.convertToAccount((Row) it.next());
+				accounts.put(account.getAccountNumber(), account);
+			}
+			return accounts;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
 	public Account getClosedAccountDetails(Long accountNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateId(accountNumber);
+		Criteria whereCondition = new Criteria(new Column(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER), accountNumber,
+				QueryConstants.EQUAL);
+
+		try {
+			Row accountRow = DataAccess.get(ACCOUNT.TABLE, whereCondition).getFirstRow(ACCOUNT.TABLE);
+			if (ValidatorUtil.isObjectNull(accountRow)) {
+				throw new AppException(APIExceptionMessage.ACCOUNT_RECORD_NOT_FOUND);
+			}
+			return MickeyConverstionUtil.convertToAccount(accountRow);
+		} catch (Exception e) {
+			throw new AppException(e);
+		}
 	}
 
 	@Override
 	public boolean isAccountClosed(long accountNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return false;
+		Criteria closeAccountCriteria = new Criteria(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER),
+				accountNumber, QueryConstants.EQUAL);
+		closeAccountCriteria.and(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.STATUS), Status.CLOSED.getStatusID(),
+				QueryConstants.EQUAL);
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
+			query.setCriteria(closeAccountCriteria);
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER).count());
+
+			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
+					RelationalAPI.getInstance().getConnection());
+			if (dataset.next()) {
+				return (int) dataset.getValue(1) == 1;
+			} else
+				throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS);
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
 	public long depositAmount(Transaction depositTransaction) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		ValidatorUtil.validateObject(depositTransaction);
+
+		TransactionManager transactionManager = DataAccess.getTransactionManager();
+
+		try {
+			transactionManager.begin();
+			Account transactionAccount = getAccountDetails(depositTransaction.getViewerAccountNumber());
+			transactionAccount.setBalance(ConvertorUtil
+					.convertToTwoDecimals(depositTransaction.getTransactedAmount() + transactionAccount.getBalance()));
+			transactionAccount.setModifiedBy(depositTransaction.getModifiedBy());
+			transactionAccount.setModifiedAt(depositTransaction.getCreatedAt());
+			transactionAccount.setLastTransactedAt(depositTransaction.getCreatedAt());
+
+			MickeyAPIUtil.updateBalanceInAccount(transactionAccount, true);
+
+			depositTransaction.setClosingBalance(transactionAccount.getBalance());
+			MickeyAPIUtil.createSenderTransactionRecord(depositTransaction);
+			transactionManager.commit();
+
+			return depositTransaction.getTransactionId();
+		} catch (Exception e) {
+			try {
+				transactionManager.rollback();
+			} catch (IllegalStateException | SecurityException | SystemException e1) {
+				e.initCause(e1);
+			}
+			throw new AppException(APIExceptionMessage.TRANSACTION_FAILED, e);
+		}
 	}
 
 	@Override
 	public long withdrawAmount(Transaction withdrawTransaction) throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		ValidatorUtil.validateObject(withdrawTransaction);
+
+		TransactionManager transactionManager = DataAccess.getTransactionManager();
+
+		try {
+			transactionManager.begin();
+			Account transactionAccount = getAccountDetails(withdrawTransaction.getViewerAccountNumber());
+			transactionAccount.setModifiedBy(withdrawTransaction.getModifiedBy());
+			transactionAccount.setModifiedAt(withdrawTransaction.getCreatedAt());
+			transactionAccount.setLastTransactedAt(withdrawTransaction.getCreatedAt());
+			transactionAccount.setBalance(withdrawTransaction.getClosingBalance());
+
+			if (!MickeyAPIUtil.updateBalanceInAccount(transactionAccount, false)) {
+				throw new AppException(APIExceptionMessage.TRANSACTION_FAILED);
+			}
+
+			MickeyAPIUtil.createSenderTransactionRecord(withdrawTransaction);
+			transactionManager.commit();
+			return withdrawTransaction.getTransactionId();
+		} catch (Exception e) {
+			try {
+				transactionManager.rollback();
+			} catch (IllegalStateException | SecurityException | SystemException e1) {
+				e.initCause(e1);
+			}
+			throw new AppException(APIExceptionMessage.TRANSACTION_FAILED, e);
+		}
 	}
 
 }

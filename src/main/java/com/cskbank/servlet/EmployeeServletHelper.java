@@ -21,6 +21,7 @@ import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.MailGenerationUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
@@ -129,7 +130,8 @@ class EmployeeServletHelper {
 			} else {
 				throw new AppException("Invalid Search By Field Obtained");
 			}
-		} catch (AppException e) {
+		} catch (Exception e) {
+			LogUtil.logException(e);
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 			response.sendRedirect("search");
 		}
@@ -318,6 +320,7 @@ class EmployeeServletHelper {
 			Services.auditLogService.log(log);
 
 		} catch (Exception e) {
+			LogUtil.logException(e);
 			request.setAttribute("status", false);
 			request.setAttribute("redirect", "open_account");
 			request.setAttribute("message", e.getMessage());

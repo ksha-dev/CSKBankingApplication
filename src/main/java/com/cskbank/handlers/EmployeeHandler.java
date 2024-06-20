@@ -144,7 +144,7 @@ public class EmployeeHandler {
 		System.out.println(ConvertorUtil.convertToTwoDecimals(amount));
 
 		EmployeeRecord employee = getEmployeeRecord(employeeId);
-		Account transactionAccount = getAccountDetails(accountNumber);
+		getAccountDetails(accountNumber);
 		if (api.userConfimration(employeeId, pin)) {
 			Transaction depositTransaction = new Transaction();
 			depositTransaction.setUserId(employeeId);
@@ -157,7 +157,7 @@ public class EmployeeHandler {
 			depositTransaction.setModifiedBy(employeeId);
 
 			api.depositAmount(depositTransaction);
-			CachePool.getAccountCache().refreshData(accountNumber);
+			CachePool.getAccountCache().remove(accountNumber);
 			return depositTransaction;
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);

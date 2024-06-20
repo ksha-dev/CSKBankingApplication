@@ -12,6 +12,7 @@ import javax.transaction.TransactionManager;
 import org.json.JSONObject;
 
 import com.adventnet.cskbank.ACCOUNT;
+import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.AUDITLOG;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CREDENTIAL;
@@ -317,6 +318,8 @@ public class MickeyUserAPI implements UserAPI {
 		ValidatorUtil.validateId(accountNumber);
 		Criteria whereCondition = new Criteria(new Column(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER), accountNumber,
 				QueryConstants.EQUAL);
+		whereCondition.and(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.STATUS), Status.CLOSED, QueryConstants.NOT_EQUAL);
+
 		try {
 			Row accountRow = DataAccess.get(ACCOUNT.TABLE, whereCondition).getFirstRow(ACCOUNT.TABLE);
 			if (ValidatorUtil.isObjectNull(accountRow)) {
@@ -398,6 +401,10 @@ public class MickeyUserAPI implements UserAPI {
 
 		Criteria transactionsCriteria = new Criteria(new Column(TRANSACTION.TABLE, TRANSACTION.SENDER_ACCOUNT),
 				accountNumber, QueryConstants.EQUAL);
+		transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP), timeLimit.getDuration(),
+				QueryConstants.GREATER_EQUAL);
+		transactionsCriteria.and(Column.getColumn(TRANSACTION.TABLE, TRANSACTION.TIME_STAMP),
+				System.currentTimeMillis(), QueryConstants.LESS_EQUAL);
 		return null;
 	}
 
@@ -511,20 +518,49 @@ public class MickeyUserAPI implements UserAPI {
 
 	@Override
 	public APIKey getAPIKey(int akId) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateId(akId);
+
+		Row apiKeyRow = new Row(APIKEY.TABLE);
+		apiKeyRow.set(APIKEY.AK_ID, akId);
+
+		try {
+			return MickeyConverstionUtil
+					.convertToAPIKey(DataAccess.get(APIKEY.TABLE, apiKeyRow).getFirstRow(APIKEY.TABLE));
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND, e);
+		}
 	}
 
 	@Override
-	public APIKey getAPIKey(String akId) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+	public APIKey getAPIKey(String apiKeyValue) throws AppException {
+		ValidatorUtil.validateAPIKey(apiKeyValue);
+		Row apiKeyRow = new Row(APIKEY.TABLE);
+		apiKeyRow.set(APIKEY.API_KEY, apiKeyValue);
+
+		try {
+			return MickeyConverstionUtil
+					.convertToAPIKey(DataAccess.get(APIKEY.TABLE, apiKeyRow).getFirstRow(APIKEY.TABLE/));
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND, e);
+		}
 	}
 
 	@Override
 	public APIKey invalidateApiKey(APIKey apiKey) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateObject(apiKey);
+
+		try {
+			UpdateQuery update = new UpdateQueryImpl(APIKEY.TABLE);
+			update.setCriteria(
+					new Criteria(Column.getColumn(APIKEY.TABLE, APIKEY.AK_ID), apiKey.getAkId(), QueryConstants.EQUAL));
+			update.setUpdateColumn(APIKEY.IS_ACTIVE, apiKey.getIsActive());
+			update.setUpdateColumn(APIKEY.MODIFIED_AT, apiKey.getModifiedAt());
+
+			DataAccess.update(update);
+			return apiKey;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
+		}
 	}
 
 }

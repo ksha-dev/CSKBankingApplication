@@ -40,8 +40,8 @@ public class APIKey {
 		this.validUntil = validUntil;
 	}
 
-	public void setModifiedAt(long modifiedAt) {
-		this.modifiedAt = modifiedAt;
+	public void setModifiedAt(Long modifiedAt) {
+		this.modifiedAt = modifiedAt == null ? 0 : modifiedAt;
 	}
 
 	public void setIsActive(boolean isActive) {

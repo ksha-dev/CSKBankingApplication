@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.cskbank.api.UserAPI;
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 
 public abstract class Cache<K, V> {
 	protected UserAPI api;
@@ -28,9 +29,9 @@ public abstract class Cache<K, V> {
 			return (V) api.getClass().getDeclaredMethod("get" + moduleName + "Details", key.getClass()).invoke(api,
 					key);
 		} catch (InvocationTargetException me) {
-			throw new AppException(me.getCause().getMessage());
+			throw new AppException(me);
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-			throw new AppException("Cache Failiure");
+			throw new AppException(ActivityExceptionMessages.FAILED_TO_LOAD_FROM_CACHE, e);
 		}
 	}
 

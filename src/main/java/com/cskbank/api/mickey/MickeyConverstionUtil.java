@@ -1,6 +1,7 @@
 package com.cskbank.api.mickey;
 
 import com.adventnet.cskbank.ACCOUNT;
+import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.EMPLOYEE;
@@ -9,6 +10,7 @@ import com.adventnet.persistence.Row;
 
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
+import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
@@ -72,7 +74,7 @@ class MickeyConverstionUtil {
 		account.setType(AccountType.getType(accountRow.getInt(ACCOUNT.TYPE)));
 		account.setOpeningDate(accountRow.getLong(ACCOUNT.CREATED_AT));
 		account.setLastTransactedAt(accountRow.getLong(ACCOUNT.LAST_TRANSACTED_AT));
-		account.setBalance(accountRow.getDouble(ACCOUNT.BALANCE));
+		account.setBalance(accountRow.getBigDecimal(ACCOUNT.BALANCE).doubleValue());
 		account.setStatus(Status.getStatus(accountRow.getInt(ACCOUNT.STATUS)));
 		account.setCreatedAt(accountRow.getLong(ACCOUNT.CREATED_AT));
 		account.setModifiedBy(accountRow.getInt(ACCOUNT.MODIFIED_BY));
@@ -81,9 +83,6 @@ class MickeyConverstionUtil {
 	}
 //
 //	static Transaction convertToTransaction(DataObject tdo) throws AppException {
-//	}
-
-//	static APIKey convertToAPIKey(DataObject apido) throws AppException {
 //	}
 
 	static Branch convertToBranch(Row branchRow) throws AppException {
@@ -103,4 +102,19 @@ class MickeyConverstionUtil {
 		return branch;
 	}
 
+	static APIKey convertToAPIKey(Row apikeyRow) throws AppException {
+		if (apikeyRow == null) {
+			throw new AppException(APIExceptionMessage.API_KEY_NOT_FOUND);
+		}
+		APIKey apiKey = new APIKey();
+
+		apiKey.setAkId(apikeyRow.getLong(APIKEY.AK_ID));
+		apiKey.setOrgName(apikeyRow.getString(APIKEY.ORG_NAME));
+		apiKey.setAPIKey(apikeyRow.getString(APIKEY.API_KEY));
+		apiKey.setCreatedAt(apikeyRow.getLong(APIKEY.CREATED_AT));
+		apiKey.setValidUntil(apikeyRow.getLong(APIKEY.VALID_UNTIL));
+		apiKey.setIsActive(apikeyRow.getBoolean(APIKEY.IS_ACTIVE));
+		apiKey.setModifiedAt(apikeyRow.getLong(APIKEY.MODIFIED_AT));
+		return apiKey;
+	}
 }

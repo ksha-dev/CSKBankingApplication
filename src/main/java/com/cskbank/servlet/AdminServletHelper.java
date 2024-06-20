@@ -308,20 +308,17 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int akId = Integer.parseInt(request.getParameter(Parameters.AKID.parameterName()));
-		try {
-			APIKey key = Services.adminOperations.invalidateAPIKey(akId);
-			// Log
-			AuditLog log = new AuditLog();
-			log.setUserId(admin.getUserId());
-			log.setLogOperation(LogOperation.INVALIDATE_API_KEY);
-			log.setOperationStatus(OperationStatus.SUCCESS);
-			log.setDescription(
-					"API Key (AK ID : " + akId + ") was invalidated  by Admin [Admin ID : " + admin.getUserId() + "]");
-			log.setModifiedAt(key.getModifiedAt());
-			Services.auditLogService.log(log);
-		} catch (AppException e) {
-			request.getSession(false).setAttribute("error", e.getMessage());
-		}
+		APIKey key = Services.adminOperations.invalidateAPIKey(akId);
+		// Log
+		AuditLog log = new AuditLog();
+		log.setUserId(admin.getUserId());
+		log.setLogOperation(LogOperation.INVALIDATE_API_KEY);
+		log.setOperationStatus(OperationStatus.SUCCESS);
+		log.setDescription(
+				"API Key (AK ID : " + akId + ") was invalidated  by Admin [Admin ID : " + admin.getUserId() + "]");
+		log.setModifiedAt(key.getModifiedAt());
+		Services.auditLogService.log(log);
+
 		response.sendRedirect("api_service");
 	}
 

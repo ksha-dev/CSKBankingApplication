@@ -5472,7 +5472,19 @@ DOWNLOAD DEPENDENCY BUILDS TARGET
                        </and>
                       </not>
                       <then>
-                        <loadfile property="temp" srcfile="${user.home}/.wgetrc">
+                        <if>
+			    <and>
+				    <isset property="${wgetrc_file}"/>
+				    <available file="${wgetrc_file}" />
+			    </and>
+			    <then>
+				<property name="wgetrcfile" value="${wgetrc_file}" />
+			    </then>
+			    <else>
+				<property name="wgetrcfile" value="${user.home}/.wgetrc" />
+			    </else>
+			</if>
+                        <loadfile property="temp" srcfile="${wgetrcfile}">
                          <filterchain>
                           <filterreader classname="org.apache.tools.ant.filters.HeadFilter">
                             <param name="lines" value="2" />
@@ -10734,9 +10746,21 @@ JSPCOMPILATION  TARGET
 =======================================================================================================-->
 <target name="wget_credentials">
 <if>
-    <available file="${user.home}/.wgetrc"/>
+    <and>
+    <isset property="${wgetrc_file}"/>
+    <available file="${wgetrc_file}" />
+    </and>
     <then>
-        <loadfile property="user_credentials" srcfile="${user.home}/.wgetrc">
+        <property name="wgetrcfile" value="${wgetrc_file}" />
+    </then>
+    <else>
+        <property name="wgetrcfile" value="${user.home}/.wgetrc" />
+    </else>
+</if>
+<if>
+    <available file="${wgetrcfile}"/>
+    <then>
+        <loadfile property="user_credentials" srcfile="${wgetrcfile}">
             <filterchain>
                 <filterreader classname="org.apache.tools.ant.filters.HeadFilter">
                     <param name="lines" value="2" />

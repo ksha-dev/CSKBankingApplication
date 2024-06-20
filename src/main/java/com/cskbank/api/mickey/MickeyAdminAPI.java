@@ -3,14 +3,16 @@ package com.cskbank.api.mickey;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.transaction.TransactionManager;
 
+import com.adventnet.cskbank.ACCOUNT;
+import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.EMPLOYEE;
-import com.adventnet.cskbank.USER;
 import com.adventnet.db.api.RelationalAPI;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
@@ -75,20 +77,47 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 	@Override
 	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value, int adminId)
 			throws AppException {
-		// TODO Auto-generated method stub
-		return false;
+		throw new AppException(APIExceptionMessage.OPERATION_RESTRICTED);
 	}
 
 	@Override
 	public Map<Integer, EmployeeRecord> getEmployees(int pageNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(EMPLOYEE.TABLE));
+			query.addSortColumn(new SortColumn(Column.getColumn(EMPLOYEE.TABLE, EMPLOYEE.USER_ID), true));
+			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
+			query.addSelectColumn(Column.getColumn(EMPLOYEE.TABLE, EMPLOYEE.USER_ID));
+			query.addSelectColumn(Column.getColumn(EMPLOYEE.TABLE, EMPLOYEE.BRANCH_ID));
+
+			Map<Integer, EmployeeRecord> employees = new LinkedHashMap<Integer, EmployeeRecord>();
+			Iterator<?> it = DataAccess.get(query).getRows(EMPLOYEE.TABLE);
+			while (it.hasNext()) {
+				EmployeeRecord employee = MickeyConverstionUtil.convertToEmployeeRecord((Row) it.next());
+				MickeyAPIUtil.updateUserRecord(employee);
+				employees.put(employee.getUserId(), employee);
+			}
+			return employees;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
 	public int getPageCountOfEmployees() throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(EMPLOYEE.TABLE));
+			query.addSelectColumn(Column.getColumn(EMPLOYEE.TABLE, EMPLOYEE.USER_ID).count());
+
+			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
+					RelationalAPI.getInstance().getConnection());
+			if (dataset.next()) {
+				return GetterUtil.getPageCount((int) dataset.getValue(1));
+			} else {
+				throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS);
+			}
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
@@ -129,8 +158,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 
 	@Override
 	public boolean updateBranchDetails(Branch branch, ModifiableField field, Object value) throws AppException {
-		// TODO Auto-generated method stub
-		return false;
+		throw new AppException(APIExceptionMessage.OPERATION_RESTRICTED);
 	}
 
 	@Override
@@ -179,32 +207,120 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 
 	@Override
 	public Map<Long, Account> viewAccountsInBank(int pageNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateId(pageNumber);
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
+			query.addSortColumn(new SortColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER), false));
+			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
+
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.USER_ID));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BRANCH_ID));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.TYPE));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.STATUS));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.LAST_TRANSACTED_AT));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BALANCE));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.CREATED_AT));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.MODIFIED_BY));
+			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.MODIFIED_AT));
+
+			Iterator<?> it = DataAccess.get(query).getRows(ACCOUNT.TABLE);
+			Map<Long, Account> accounts = new LinkedHashMap<Long, Account>();
+			while (it.hasNext()) {
+				Account account = MickeyConverstionUtil.convertToAccount((Row) it.next());
+				accounts.put(account.getAccountNumber(), account);
+			}
+			return accounts;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
 	public int getPageCountOfAccountsInBank() throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
+			query.addSelectColumn(new Column(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER).count());
+
+			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
+					RelationalAPI.getInstance().getConnection());
+			if (dataset.next()) {
+				return GetterUtil.getPageCount((int) dataset.getValue(1));
+			} else {
+				throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+			}
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
+		}
 	}
 
 	@Override
 	public int getPageCountOfAPIKeys() throws AppException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(APIKEY.TABLE));
+			query.addSelectColumn(new Column(APIKEY.TABLE, APIKEY.AK_ID).count());
+
+			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
+					RelationalAPI.getInstance().getConnection());
+			if (dataset.next()) {
+				return GetterUtil.getPageCount((int) dataset.getValue(1));
+			} else {
+				throw new AppException(APIExceptionMessage.UNKNOWN_ERROR);
+			}
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.UNKNOWN_ERROR, e);
+		}
 	}
 
 	@Override
 	public List<APIKey> getListOfAPIKeys(int pageNumber) throws AppException {
-		// TODO Auto-generated method stub
-		return null;
+		ValidatorUtil.validateId(pageNumber);
+
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(APIKEY.TABLE));
+			query.addSortColumn(new SortColumn(Column.getColumn(APIKEY.TABLE, APIKEY.CREATED_AT), false));
+			query.setRange(new Range(ConvertorUtil.convertPageToOffset(pageNumber), ConstantsUtil.LIST_LIMIT));
+
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.AK_ID));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.ORG_NAME));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.API_KEY));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.CREATED_AT));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.VALID_UNTIL));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.IS_ACTIVE));
+			query.addSelectColumn(Column.getColumn(APIKEY.TABLE, APIKEY.MODIFIED_AT));
+
+			Iterator<?> it = DataAccess.get(query).getRows(APIKEY.TABLE);
+			List<APIKey> apiKeys = new LinkedList<APIKey>();
+			while (it.hasNext()) {
+				APIKey apiKey = MickeyConverstionUtil.convertToAPIKey((Row) it.next());
+				apiKeys.add(apiKey);
+			}
+			return apiKeys;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
+		}
 	}
 
 	@Override
 	public boolean generateApiKey(APIKey apiKey) throws AppException {
-		// TODO Auto-generated method stub
-		return false;
+		ValidatorUtil.validateObject(apiKey);
+
+		Row apikeyRow = new Row(APIKEY.TABLE);
+		apikeyRow.set(APIKEY.ORG_NAME, apiKey.getOrgName());
+		apikeyRow.set(APIKEY.API_KEY, apiKey.getAPIKey());
+		apikeyRow.set(APIKEY.CREATED_AT, apiKey.getCreatedAt());
+		apikeyRow.set(APIKEY.VALID_UNTIL, apiKey.getValidUntil());
+		apikeyRow.set(APIKEY.IS_ACTIVE, true);
+
+		try {
+			DataObject dataObject = new WritableDataObject();
+			dataObject.addRow(apikeyRow);
+			apiKey.setAkId(DataAccess.add(dataObject).getFirstRow(APIKEY.TABLE).getLong(APIKEY.AK_ID));
+			return true;
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.API_GENERATION_FAILED, e);
+		}
 	}
 
 }
