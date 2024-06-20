@@ -17,7 +17,7 @@ import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.SessionFilterException;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.servlet.Services;
+import com.cskbank.servlet.HandlerObject;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ServletUtil;
 
@@ -32,8 +32,7 @@ public class SessionFilter implements Filter {
 	 * 
 	 * @throws AppException
 	 */
-	public SessionFilter() throws AppException {
-		Services.initialize();
+	public SessionFilter() {
 	}
 
 	/**

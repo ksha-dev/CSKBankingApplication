@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.servlet.Services;
+import com.cskbank.servlet.HandlerObject;
 
 /**
  * Servlet Filter implementation class SessionFilter
@@ -55,7 +55,7 @@ public class APIAuthenticationFilter implements Filter {
 		JSONObject responseContent = new JSONObject();
 		if (!Objects.isNull(apiKey)) {
 			try {
-				Services.appOperations.validateAPIKey(apiKey);
+				HandlerObject.commonHandler.validateAPIKey(apiKey);
 				chain.doFilter(req, res);
 			} catch (AppException e) {
 				responseContent.accumulate("status", "error");

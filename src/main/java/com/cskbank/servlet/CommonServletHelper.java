@@ -44,8 +44,8 @@ class CommonServletHelper {
 		String password = request.getParameter(Parameters.PASSWORD.parameterName());
 		UserRecord user = null;
 		try {
-			Services.adminOperations.getPageCountOfBranches();
-			user = Services.appOperations.getUser(userId, password);
+			HandlerObject.adminHandler.getPageCountOfBranches();
+			user = HandlerObject.commonHandler.getUser(userId, password);
 			if (user.getStatus() == Status.VERIFICATION) {
 				ServletUtil.session(request).setAttribute("unverified_user", user);
 				response.sendRedirect(request.getContextPath() + "/verification");
@@ -57,7 +57,7 @@ class CommonServletHelper {
 				log.setDescription(
 						"User(ID : " + userId + ") has logged in, yet to be verified. Redirected to verification page");
 				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+				HandlerObject.auditHandler.log(log);
 
 				sendMailIfOTPAbsent(user);
 
@@ -70,7 +70,7 @@ class CommonServletHelper {
 				log.setOperationStatus(OperationStatus.FAILURE);
 				log.setDescription("User(ID : " + userId + ") login failed - User has been blocked");
 				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+				HandlerObject.auditHandler.log(log);
 			} else {
 				ServletUtil.session(request).setAttribute("user", user);
 				response.sendRedirect(user.getType().toString().toLowerCase() + "/home");
@@ -82,7 +82,7 @@ class CommonServletHelper {
 				log.setOperationStatus(OperationStatus.SUCCESS);
 				log.setDescription(user.getType() + "(ID : " + userId + ") has successfully logged in");
 				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+				HandlerObject.auditHandler.log(log);
 			}
 		} catch (AppException e) {
 			AuditLog log = new AuditLog();
@@ -91,7 +91,7 @@ class CommonServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("User(ID : " + userId + ") login failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			ServletUtil.session(request).setAttribute(AppException.class.getName(), e);
 
@@ -101,7 +101,7 @@ class CommonServletHelper {
 
 	private void sendMailIfOTPAbsent(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
-		if (!Services.otpCache.isValidOTPPresent(user.getEmail())) {
+		if (!CachePool.getOTPCache().isValidOTPPresent(user.getEmail())) {
 			MailGenerationUtil.sendVerificationOTPMail(user.getEmail());
 
 			AuditLog log = new AuditLog();
@@ -112,14 +112,14 @@ class CommonServletHelper {
 			log.setDescription("OTP not found. A new otp was generated and sent to Customer(ID : " + user.getUserId()
 					+ ") - Email ID - " + user.getEmail());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 		}
 	}
 
 	public void signupPostRequest(HttpServletRequest request, HttpServletResponse response)
 			throws AppException, IOException, ServletException {
 		String email = request.getParameter(Parameters.EMAIL.parameterName());
-		if (Services.appOperations.doesEmailExist(email)) {
+		if (HandlerObject.commonHandler.doesEmailExist(email)) {
 			request.getSession().setAttribute("error", "User already exists with the given email address");
 			response.sendRedirect(request.getContextPath() + "/signup");
 			return;
@@ -142,7 +142,7 @@ class CommonServletHelper {
 			newCustomer.setPanNumber(request.getParameter(Parameters.PAN.parameterName()));
 			newCustomer.setStatus(Status.VERIFICATION);
 
-			Services.employeeOperations.createNewCustomerFromSignup(newCustomer);
+			HandlerObject.employeeHandler.createNewCustomerFromSignup(newCustomer);
 			ServletUtil.session(request).setAttribute("unverified_user", newCustomer);
 
 			AuditLog log = new AuditLog();
@@ -152,7 +152,7 @@ class CommonServletHelper {
 			log.setDescription("Customer(ID : " + newCustomer.getUserId()
 					+ ") was initiated at signup Admin(ID : 1) and OTP sent to email");
 			log.setModifiedAt(newCustomer.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			MailGenerationUtil.sendVerificationOTPMail(newCustomer.getEmail());
 			log = new AuditLog();
@@ -162,7 +162,7 @@ class CommonServletHelper {
 			log.setDescription("An otp was generated and sent to Customer(ID : " + newCustomer.getUserId()
 					+ ") - Email ID - " + email);
 			log.setModifiedAt(newCustomer.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			MailGenerationUtil.sendUserSignupMail(newCustomer);
 			log = new AuditLog();
@@ -172,7 +172,7 @@ class CommonServletHelper {
 			log.setDescription(
 					"Sign up email was sent to User(ID : " + newCustomer.getUserId() + ") - Email ID - " + email);
 			log.setModifiedAt(newCustomer.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			ServletUtil.session(request).setAttribute("error", "OTP Sent to Email");
 			request.getSession().setAttribute("verify_email", email);
@@ -186,7 +186,7 @@ class CommonServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("Cannot create new customer. Reason : " + e.getMessage());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			throw e;
 		}
@@ -201,11 +201,11 @@ class CommonServletHelper {
 			return;
 		}
 
-		if (Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
-			OTP currentOTP = Services.otpCache.getOTP(unverifiedUser.getEmail());
+		if (CachePool.getOTPCache().isValidOTPPresent(unverifiedUser.getEmail())) {
+			OTP currentOTP = CachePool.getOTPCache().getOTP(unverifiedUser.getEmail());
 			if (currentOTP.getRegenerationCount() < 1) {
 				currentOTP.remove();
-				Services.adminOperations.blockUser(unverifiedUser);
+				HandlerObject.adminHandler.blockUser(unverifiedUser);
 				long time = CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId()).getModifiedAt();
 				ServletUtil.session(request).removeAttribute("unverified_user");
 				request.getRequestDispatcher("/WEB-INF/jsp/common/blocked.jsp").forward(request, response);
@@ -217,7 +217,7 @@ class CommonServletHelper {
 				log.setDescription(
 						"User(ID : " + unverifiedUser.getUserId() + ") was blocked for regenerating OTP continuously");
 				log.setModifiedAt(time);
-				Services.auditLogService.log(log);
+				HandlerObject.auditHandler.log(log);
 				return;
 			}
 
@@ -231,7 +231,7 @@ class CommonServletHelper {
 			log.setDescription("OTP was resent to Customer(ID : " + unverifiedUser.getUserId() + ") - Email ID - "
 					+ unverifiedUser.getEmail() + ". Resends remaining : " + (currentOTP.getRegenerationCount() - 1));
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			ServletUtil.session(request).setAttribute("error", "OTP resent successfully");
 
 		} else {
@@ -244,7 +244,7 @@ class CommonServletHelper {
 			log.setDescription("OTP not found. An otp was generated at resend request Customer(ID : "
 					+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			ServletUtil.session(request).setAttribute("error", "OTP resent successfully");
 		}
 		response.sendRedirect(ServletUtil.getRedirectContextURL(request, "app/verification"));
@@ -258,7 +258,7 @@ class CommonServletHelper {
 			response.sendRedirect(ServletUtil.getRedirectContextURL(request, "login"));
 			return;
 		}
-		if (!Services.otpCache.isValidOTPPresent(unverifiedUser.getEmail())) {
+		if (!CachePool.getOTPCache().isValidOTPPresent(unverifiedUser.getEmail())) {
 			MailGenerationUtil.sendVerificationOTPMail(unverifiedUser.getEmail());
 
 			AuditLog log = new AuditLog();
@@ -269,7 +269,7 @@ class CommonServletHelper {
 			log.setDescription("OTP not found. A new otp was generated and sent to Customer(ID : "
 					+ unverifiedUser.getUserId() + ") - Email ID - " + unverifiedUser.getEmail());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			ServletUtil.session(request).setAttribute("error", "OTP sent to user's mail");
 		}
@@ -292,11 +292,11 @@ class CommonServletHelper {
 		ValidatorUtil.validateEmail(email);
 
 		sendMailIfOTPAbsent(unverifiedUser);
-		OTP otp = Services.otpCache.getOTP(email);
+		OTP otp = CachePool.getOTPCache().getOTP(email);
 
 		if (otp.getRegenerationCount() < 1 || otp.getRetryCount() < 1) {
-			Services.otpCache.removeOTP(otp.getEmail());
-			Services.adminOperations.blockUser(unverifiedUser);
+			CachePool.getOTPCache().removeOTP(otp.getEmail());
+			HandlerObject.adminHandler.blockUser(unverifiedUser);
 			long time = CachePool.getUserRecordCache().refreshData(unverifiedUser.getUserId()).getModifiedAt();
 			ServletUtil.session(request).removeAttribute("unverified_user");
 			request.getRequestDispatcher("/WEB-INF/jsp/common/blocked.jsp").forward(request, response);
@@ -308,12 +308,12 @@ class CommonServletHelper {
 			log.setDescription(
 					"User(ID : " + unverifiedUser.getUserId() + ") was blocked for entering wrong OTP continuously");
 			log.setModifiedAt(time);
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			return;
 		}
 
 		if (otp.isOTPExpired()) {
-			Services.otpCache.removeOTP(otp.getEmail());
+			CachePool.getOTPCache().removeOTP(otp.getEmail());
 			ServletUtil.session(request).setAttribute("error",
 					"Your OTP has expired. A new mail has been sent to your email. Please retry");
 
@@ -328,13 +328,13 @@ class CommonServletHelper {
 					"An otp was generated due to expired OTP and sent to Customer(ID : " + unverifiedUser.getUserId()
 							+ ") - Email ID - " + email + ". Regeneration remaining : " + otp.getRegenerationCount());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			return;
 		}
 
 		if (!otp.getOTP().equals(obtainedOTP)) {
 			otp.reduceRetryCount();
-			Services.otpCache.setOTP(otp);
+			CachePool.getOTPCache().setOTP(otp);
 			ServletUtil.session(request).setAttribute("error",
 					"OTP Entered is incorrect. Number of Attemps left : " + otp.getRetryCount());
 			request.getRequestDispatcher("/WEB-INF/jsp/common/verification.jsp").forward(request, response);
@@ -346,19 +346,19 @@ class CommonServletHelper {
 			log.setDescription("Wrong OTP Entered by Customer(ID : " + unverifiedUser.getUserId() + ") - Email ID - "
 					+ email + ". Remaining Retries : " + otp.getRetryCount());
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			return;
 		}
 
-		Services.otpCache.removeOTP(otp.getEmail());
-		Services.adminOperations.activateUserWithOTPVerification(unverifiedUser);
+		CachePool.getOTPCache().removeOTP(otp.getEmail());
+		HandlerObject.adminHandler.activateUserWithOTPVerification(unverifiedUser);
 		AuditLog log = new AuditLog();
 		log.setUserId(unverifiedUser.getUserId());
 		log.setLogOperation(LogOperation.USER_VERIFICATION);
 		log.setOperationStatus(OperationStatus.SUCCESS);
 		log.setDescription("User(ID : " + unverifiedUser.getUserId() + ") verification is successful");
 		log.setModifiedAt(System.currentTimeMillis());
-		Services.auditLogService.log(log);
+		HandlerObject.auditHandler.log(log);
 
 		ServletUtil.session(request).removeAttribute("unverified_user");
 		ServletUtil.session(request).setAttribute("user", unverifiedUser);
@@ -371,7 +371,7 @@ class CommonServletHelper {
 		log.setDescription(
 				unverifiedUser.getType() + "(ID : " + unverifiedUser.getUserId() + ") has successfully logged in");
 		log.setModifiedAtWithCurrentTime();
-		Services.auditLogService.log(log);
+		HandlerObject.auditHandler.log(log);
 	}
 
 	public void statementPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -391,9 +391,9 @@ class CommonServletHelper {
 		Account account = null;
 		UserRecord user = ServletUtil.getUser(request);
 		if (user.getType() == UserRecord.Type.CUSTOMER) {
-			account = Services.customerOperations.getAccountDetails(accountNumber, user.getUserId());
+			account = HandlerObject.customerHandler.getAccountDetails(accountNumber, user.getUserId());
 		} else if (user.getType() == Type.EMPLOYEE || user.getType() == Type.ADMIN) {
-			account = Services.employeeOperations.getAccountDetails(accountNumber);
+			account = HandlerObject.employeeHandler.getAccountDetails(accountNumber);
 		}
 
 		if (limitString.equals("custom")) {
@@ -402,17 +402,18 @@ class CommonServletHelper {
 			long startDate = ConvertorUtil.dateStringToMillis(startDateString);
 			long endDate = ConvertorUtil.dateStringToMillisWithCurrentTime(endDateString);
 			if (pageCount <= 0) {
-				pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, startDate, endDate);
+				pageCount = HandlerObject.commonHandler.getPageCountOfTransactions(accountNumber, startDate, endDate);
 			}
-			transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, startDate, endDate);
+			transactions = HandlerObject.commonHandler.getTransactionsOfAccount(account, currentPage, startDate,
+					endDate);
 			request.setAttribute("startDate", startDateString);
 			request.setAttribute("endDate", endDateString);
 		} else {
 			TransactionHistoryLimit limit = TransactionHistoryLimit.convertStringToEnum(limitString);
 			if (pageCount <= 0) {
-				pageCount = Services.appOperations.getPageCountOfTransactions(accountNumber, limit);
+				pageCount = HandlerObject.commonHandler.getPageCountOfTransactions(accountNumber, limit);
 			}
-			transactions = Services.appOperations.getTransactionsOfAccount(account, currentPage, limit);
+			transactions = HandlerObject.commonHandler.getTransactionsOfAccount(account, currentPage, limit);
 		}
 		request.setAttribute("limit", limitString);
 		request.setAttribute("pageCount", pageCount);
@@ -427,7 +428,7 @@ class CommonServletHelper {
 		String oldPassword = request.getParameter(Parameters.OLDPASSWORD.parameterName());
 		String newPassword = request.getParameter(Parameters.NEWPASSWORD.parameterName());
 		try {
-			Services.appOperations.getUser(ServletUtil.getUser(request).getUserId(), oldPassword);
+			HandlerObject.commonHandler.getUser(ServletUtil.getUser(request).getUserId(), oldPassword);
 			ServletUtil.session(request).setAttribute("oldPassword", oldPassword);
 			ServletUtil.session(request).setAttribute("newPassword", newPassword);
 			ServletUtil.session(request).setAttribute("redirect", "process_change_password");
@@ -448,7 +449,7 @@ class CommonServletHelper {
 		UserRecord user = ServletUtil.getUser(request);
 
 		try {
-			Services.appOperations.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
+			HandlerObject.commonHandler.updatePassword(user.getUserId(), oldPassword, newPassword, pin);
 			ServletUtil.session(request).invalidate();
 
 			// Log
@@ -458,7 +459,7 @@ class CommonServletHelper {
 			log.setOperationStatus(OperationStatus.SUCCESS);
 			log.setDescription(user.getType() + "(ID : " + user.getUserId() + ") has changed the password");
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			request.getSession(true).setAttribute("error", "Password has been changed.");
 		} catch (AppException e) {
@@ -470,7 +471,7 @@ class CommonServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("Password update failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 		}
 		response.sendRedirect(ServletUtil.getLoginRedirect(request));
 	}
@@ -504,7 +505,7 @@ class CommonServletHelper {
 		int userId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
 		String email = request.getParameter(Parameters.EMAIL.parameterName());
 
-		if (Services.appOperations.doesEmailBelongsToUser(userId, email)) {
+		if (HandlerObject.commonHandler.doesEmailBelongsToUser(userId, email)) {
 			JSONObject json = new JSONObject();
 			json.put("userId", userId);
 			json.put("timeout", System.currentTimeMillis() + ConstantsUtil.EXPIRY_DURATION_MILLIS);
@@ -519,7 +520,7 @@ class CommonServletHelper {
 			log.setOperationStatus(OperationStatus.SUCCESS);
 			log.setDescription("Password reset mail has been sent to User(ID : " + userId + ")");
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			request.setAttribute("status", true);
 			request.setAttribute("message", "Password Reset Mail has been sent to your email");
@@ -551,14 +552,14 @@ class CommonServletHelper {
 			}
 
 			int userId = json.getInt("userId");
-			if (Services.appOperations.resetPassword(userId, newPassword)) {
+			if (HandlerObject.commonHandler.resetPassword(userId, newPassword)) {
 				AuditLog log = new AuditLog();
 				log.setUserId(userId);
 				log.setLogOperation(LogOperation.RESET_PASSWORD);
 				log.setOperationStatus(OperationStatus.SUCCESS);
 				log.setDescription("User(ID : " + userId + ") has reset the password through email link");
 				log.setModifiedAtWithCurrentTime();
-				Services.auditLogService.log(log);
+				HandlerObject.auditHandler.log(log);
 
 				ServletUtil.session(request).setAttribute("error", "Password has been reset");
 				response.sendRedirect(ServletUtil.getLoginRedirect(request));

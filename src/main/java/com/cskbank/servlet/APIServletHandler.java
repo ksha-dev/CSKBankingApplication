@@ -27,11 +27,11 @@ public class APIServletHandler {
 		createBranch.setAddress(requestBody.getString("address"));
 		createBranch.setPhone(requestBody.getLong("phone"));
 		createBranch.setEmail(requestBody.getString("email"));
-		EmployeeRecord admin = Services.adminOperations.getEmployeeDetails(requestBody.getInt("adminId"));
+		EmployeeRecord admin = HandlerObject.adminHandler.getEmployeeDetails(requestBody.getInt("adminId"));
 		if (admin.getType() != UserRecord.Type.ADMIN) {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);
 		}
-		return Services.adminOperations.createBranch(createBranch, requestBody.getInt("adminId"),
+		return HandlerObject.adminHandler.createBranch(createBranch, requestBody.getInt("adminId"),
 				requestBody.getString("pin"));
 	}
 
@@ -39,7 +39,7 @@ public class APIServletHandler {
 			throws JSONException, AppException, IOException {
 		JSONObject requestBody = getRequestBody(request);
 		int userId = requestBody.getInt("userId");
-		return Services.appOperations.getUser(userId, requestBody.getString("password"));
+		return HandlerObject.commonHandler.getUser(userId, requestBody.getString("password"));
 	}
 
 	private static JSONObject getRequestBody(HttpServletRequest request) throws IOException {

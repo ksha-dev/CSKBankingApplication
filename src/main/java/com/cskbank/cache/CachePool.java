@@ -15,6 +15,8 @@ public class CachePool {
 	private static Cache<Long, Account> accountCache;
 	private static Cache<Integer, Branch> branchCache;
 
+	private static OTPCache otpCache;
+
 	public static enum CacheIdentifier {
 		Redis, LRU
 	}
@@ -30,6 +32,7 @@ public class CachePool {
 
 	@SuppressWarnings("unchecked")
 	public static void initializeCache(UserAPI userAPI, CacheIdentifier identifier) throws AppException {
+		otpCache = new OTPCache();
 		if (Objects.isNull(CachePool.userAPI)) {
 			synchronized (CachePool.class) {
 				if (Objects.isNull(CachePool.userAPI)) {
@@ -79,5 +82,9 @@ public class CachePool {
 		userRecordCache.clear();
 		accountCache.clear();
 		branchCache.clear();
+	}
+
+	public static OTPCache getOTPCache() {
+		return getOTPCache();
 	}
 }

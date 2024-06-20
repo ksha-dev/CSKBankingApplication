@@ -17,10 +17,6 @@ public class AppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public AppServlet() throws AppException {
-		Services.initialize();
-	}
-
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
 		try {

@@ -27,13 +27,13 @@ class AdminServletHelper {
 
 	public void accountsRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = Services.adminOperations.getPageCountOfAccountsInBank();
+		int pageCount = HandlerObject.adminHandler.getPageCountOfAccountsInBank();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("accounts", Services.adminOperations.viewAccountsInBank(currentPage));
+		request.setAttribute("accounts", HandlerObject.adminHandler.viewAccountsInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/accounts.jsp").forward(request, response);
@@ -41,13 +41,13 @@ class AdminServletHelper {
 
 	public void branchesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = Services.adminOperations.getPageCountOfBranches();
+		int pageCount = HandlerObject.adminHandler.getPageCountOfBranches();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("branches", Services.adminOperations.viewBrachesInBank(currentPage));
+		request.setAttribute("branches", HandlerObject.adminHandler.viewBrachesInBank(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/branches.jsp").forward(request, response);
@@ -56,16 +56,16 @@ class AdminServletHelper {
 	public void employeesRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
-		int pageCount = Services.adminOperations.getPageCountOfEmployees();
+		int pageCount = HandlerObject.adminHandler.getPageCountOfEmployees();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("employees", Services.adminOperations.getEmployees(currentPage));
+		request.setAttribute("employees", HandlerObject.adminHandler.getEmployees(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
-		request.setAttribute("branch", Services.adminOperations.getBranch(admin.getBranchId()));
+		request.setAttribute("branch", HandlerObject.adminHandler.getBranch(admin.getBranchId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/employees.jsp").forward(request, response);
 	}
 
@@ -73,7 +73,7 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int employeeId = ConvertorUtil.convertStringToInteger(request.getParameter(Parameters.USERID.parameterName()));
-		request.setAttribute("employee", Services.adminOperations.getEmployeeDetails(employeeId));
+		request.setAttribute("employee", HandlerObject.adminHandler.getEmployeeDetails(employeeId));
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 		// Log
@@ -85,7 +85,7 @@ class AdminServletHelper {
 		log.setDescription(
 				"Employee details (ID : " + employeeId + ") was viewed by Admin (ID :  " + admin.getUserId() + ")");
 		log.setModifiedAtWithCurrentTime();
-		Services.auditLogService.log(log);
+		HandlerObject.auditHandler.log(log);
 	}
 
 	public boolean searchPostRequest(HttpServletRequest request, HttpServletResponse response)
@@ -96,7 +96,7 @@ class AdminServletHelper {
 
 		if (searchBy.equals("employeeId")) {
 			int userId = ConvertorUtil.convertStringToInteger(searchValue);
-			request.setAttribute("employee", (EmployeeRecord) Services.adminOperations.getEmployeeDetails(userId));
+			request.setAttribute("employee", (EmployeeRecord) HandlerObject.adminHandler.getEmployeeDetails(userId));
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/employee_details.jsp").forward(request, response);
 
 			// Log
@@ -108,11 +108,11 @@ class AdminServletHelper {
 			log.setDescription("Employee details (ID : " + userId + ") was searched and viewed by Admin (ID :  "
 					+ admin.getUserId() + ")");
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} else if (searchBy.equals("branchId")) {
 			int branchId = ConvertorUtil.convertStringToInteger(searchValue);
-			request.setAttribute("branch", Services.adminOperations.getBranch(branchId));
+			request.setAttribute("branch", HandlerObject.adminHandler.getBranch(branchId));
 			request.getRequestDispatcher("/WEB-INF/jsp/admin/branch_details.jsp").forward(request, response);
 
 			// Log
@@ -123,7 +123,7 @@ class AdminServletHelper {
 			log.setDescription("Branch details (ID : " + branchId + ") was searched and viewed by Admin (ID :  "
 					+ admin.getUserId() + ")");
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} else {
 			return false;
@@ -159,7 +159,7 @@ class AdminServletHelper {
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 		try {
 			EmployeeRecord employee = ServletUtil.getSessionObject(request, "employee");
-			Services.adminOperations.createEmployee(employee, admin.getUserId(), pin);
+			HandlerObject.adminHandler.createEmployee(employee, admin.getUserId(), pin);
 
 			request.setAttribute("message", "New employee has been created<br>Employee ID : " + employee.getUserId());
 			request.setAttribute("status", true);
@@ -173,7 +173,7 @@ class AdminServletHelper {
 			log.setDescription("Employee (ID : " + employee.getUserId() + ") was created by Admin (ID : "
 					+ admin.getUserId() + ")");
 			log.setModifiedAt(employee.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 			MailGenerationUtil.sendUserCreationMail(employee);
 			log = new AuditLog();
@@ -183,7 +183,7 @@ class AdminServletHelper {
 			log.setOperationStatus(OperationStatus.SUCCESS);
 			log.setDescription("Employee Creation mail was sent to Employee(ID : " + employee.getUserId() + ")");
 			log.setModifiedAt(employee.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} catch (AppException e) {
 			LogUtil.logException(e);
@@ -198,7 +198,7 @@ class AdminServletHelper {
 			log.setDescription("Employee creation or mail generation failed [Admin ID : " + admin.getUserId() + "] - "
 					+ e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 		}
 		request.setAttribute("redirect", "employees");
 		request.setAttribute("operation", "add_employee");
@@ -224,7 +224,7 @@ class AdminServletHelper {
 
 		try {
 			Branch branch = ServletUtil.getSessionObject(request, "branch");
-			branch = Services.adminOperations.createBranch(branch, admin.getUserId(), pin);
+			branch = HandlerObject.adminHandler.createBranch(branch, admin.getUserId(), pin);
 
 			request.setAttribute("message",
 					"New Branch Record has been created<br>Branch ID : " + branch.getBranchId());
@@ -238,7 +238,7 @@ class AdminServletHelper {
 			log.setDescription("New Branch (ID : " + branch.getBranchId() + ") was created by Admin (ID : "
 					+ admin.getUserId() + ")");
 			log.setModifiedAt(branch.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} catch (AppException e) {
 			LogUtil.logException(e);
@@ -252,7 +252,7 @@ class AdminServletHelper {
 			log.setOperationStatus(OperationStatus.FAILURE);
 			log.setDescription("Branch creation failed [Admin ID : " + admin.getUserId() + "] - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 		}
 		request.setAttribute("redirect", "branches");
 		request.setAttribute("operation", "add_branch");
@@ -261,13 +261,13 @@ class AdminServletHelper {
 
 	public void apiServiceRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, AppException {
-		int pageCount = Services.adminOperations.getPageCountOfAPIKeys();
+		int pageCount = HandlerObject.adminHandler.getPageCountOfAPIKeys();
 		int currentPage = 1;
 		if (request.getMethod().equals("POST")) {
 			currentPage = ConvertorUtil
 					.convertStringToInteger(request.getParameter(Parameters.CURRENTPAGE.parameterName()));
 		}
-		request.setAttribute("apiKeys", Services.adminOperations.getListofApiKeys(currentPage));
+		request.setAttribute("apiKeys", HandlerObject.adminHandler.getListofApiKeys(currentPage));
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageCount", pageCount);
 		request.getRequestDispatcher("/WEB-INF/jsp/admin/api_service.jsp").forward(request, response);
@@ -277,7 +277,7 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		String orgName = request.getParameter(Parameters.ORGNAME.parameterName());
-		APIKey apikey = Services.adminOperations.generateAPIKey(orgName);
+		APIKey apikey = HandlerObject.adminHandler.generateAPIKey(orgName);
 		ServletUtil.session(request).setAttribute("error", "API Key generated<br>API Key ID : " + apikey.getAkId());
 
 		// Log
@@ -288,7 +288,7 @@ class AdminServletHelper {
 		log.setDescription("API Key (AK ID : " + apikey.getAkId() + ") was created for orgranisation : "
 				+ apikey.getOrgName() + " by Admin [Admin ID : " + admin.getUserId() + "]");
 		log.setModifiedAt(apikey.getCreatedAt());
-		Services.auditLogService.log(log);
+		HandlerObject.auditHandler.log(log);
 
 		response.sendRedirect("api_service");
 	}
@@ -297,7 +297,7 @@ class AdminServletHelper {
 			throws ServletException, IOException, AppException {
 		EmployeeRecord admin = (EmployeeRecord) ServletUtil.getUser(request);
 		int akId = Integer.parseInt(request.getParameter(Parameters.AKID.parameterName()));
-		APIKey key = Services.adminOperations.invalidateAPIKey(akId);
+		APIKey key = HandlerObject.adminHandler.invalidateAPIKey(akId);
 		// Log
 		AuditLog log = new AuditLog();
 		log.setUserId(admin.getUserId());
@@ -306,7 +306,7 @@ class AdminServletHelper {
 		log.setDescription(
 				"API Key (AK ID : " + akId + ") was invalidated  by Admin [Admin ID : " + admin.getUserId() + "]");
 		log.setModifiedAt(key.getModifiedAt());
-		Services.auditLogService.log(log);
+		HandlerObject.auditHandler.log(log);
 
 		response.sendRedirect("api_service");
 	}
@@ -318,7 +318,7 @@ class AdminServletHelper {
 				(request.getParameter(Parameters.STATUS.parameterName())));
 		String reason = request.getParameter(Parameters.REASON.parameterName());
 
-		if (Services.employeeOperations.getCustomerRecord(userId).getStatus() == status) {
+		if (HandlerObject.employeeHandler.getCustomerRecord(userId).getStatus() == status) {
 			throw new AppException(APIExceptionMessage.USER_STATUS_UNCHANGED);
 		}
 
@@ -339,7 +339,7 @@ class AdminServletHelper {
 		int userId = ServletUtil.getSessionObject(request, "userId");
 
 		try {
-			UserRecord user = Services.adminOperations.changeUserStatus(userId, status, reason, admin.getUserId(), pin);
+			UserRecord user = HandlerObject.adminHandler.changeUserStatus(userId, status, reason, admin.getUserId(), pin);
 			AuditLog log = new AuditLog();
 			log.setUserId(admin.getUserId());
 			log.setTargetId(userId);
@@ -348,7 +348,7 @@ class AdminServletHelper {
 			log.setDescription("Admin(ID : " + admin.getUserId() + ") has changed User(ID : " + user.getUserId()
 					+ ") status to " + status + ", Reason - " + reason);
 			log.setModifiedAt(user.getModifiedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			ServletUtil.session(request).setAttribute("error", "Status changed successfully");
 		} catch (AppException e) {
 			LogUtil.logException(e);
@@ -361,7 +361,7 @@ class AdminServletHelper {
 			log.setDescription("Admin(ID : " + admin.getUserId() + ") failed to changed User(ID : " + userId
 					+ ") status to " + status + ", Reason - " + reason);
 			log.setModifiedAt(System.currentTimeMillis());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 			ServletUtil.session(request).setAttribute("error", e.getMessage());
 		}
 		response.sendRedirect("search");

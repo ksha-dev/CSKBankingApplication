@@ -11,9 +11,9 @@ public class GetterUtil {
 
 	private static Properties redirectURLProperties = null;
 
-	public static Properties loadProperties(String propertiesName) throws AppException {
+	public static Properties loadPropertiesFile(String propertiesFileName) throws AppException {
 		Properties properties = new Properties();
-		try (InputStream input = GetterUtil.class.getClassLoader().getResourceAsStream(propertiesName)) {
+		try (InputStream input = GetterUtil.class.getClassLoader().getResourceAsStream(propertiesFileName)) {
 			if (input == null) {
 				throw new AppException("Unable to load redirects.properties");
 			}
@@ -27,7 +27,7 @@ public class GetterUtil {
 	}
 
 	public static void loadRedirectURLProperties() throws AppException {
-		redirectURLProperties = loadProperties("redirects.properties");
+		redirectURLProperties = loadPropertiesFile("redirects.properties");
 	}
 
 	public static String getRedirectURL(String requestURL) {

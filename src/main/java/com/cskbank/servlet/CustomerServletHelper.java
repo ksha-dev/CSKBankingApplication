@@ -37,7 +37,7 @@ class CustomerServletHelper {
 			throws ServletException, IOException, AppException {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		ValidatorUtil.validateObject(forwardFileName);
-		request.setAttribute("accounts", Services.customerOperations.getAssociatedAccounts(customer.getUserId()));
+		request.setAttribute("accounts", HandlerObject.customerHandler.getAssociatedAccounts(customer.getUserId()));
 		request.getRequestDispatcher("/WEB-INF/jsp/" + forwardFileName + ".jsp").forward(request, response);
 	}
 
@@ -46,8 +46,8 @@ class CustomerServletHelper {
 		CustomerRecord customer = (CustomerRecord) ServletUtil.getUser(request);
 		Long accountNumber = ConvertorUtil
 				.convertStringToLong(request.getParameter(Parameters.ACCOUNTNUMBER.parameterName()));
-		Account account = Services.customerOperations.getAccountDetails(accountNumber, customer.getUserId());
-		Branch branch = Services.customerOperations.getBranchDetailsOfAccount(account.getBranchId());
+		Account account = HandlerObject.customerHandler.getAccountDetails(accountNumber, customer.getUserId());
+		Branch branch = HandlerObject.customerHandler.getBranchDetailsOfAccount(account.getBranchId());
 		request.setAttribute("account", account);
 		request.setAttribute("branch", branch);
 		request.getRequestDispatcher("/WEB-INF/jsp/customer/account_details.jsp").forward(request, response);
@@ -78,7 +78,7 @@ class CustomerServletHelper {
 
 		ValidatorUtil.validateAmount(amount);
 
-		Account senderAccount = Services.customerOperations.getAccountDetails(viewer_account_number,
+		Account senderAccount = HandlerObject.customerHandler.getAccountDetails(viewer_account_number,
 				customer.getUserId());
 		if (senderAccount.getStatus() == Status.FROZEN) {
 			throw new AppException(APIExceptionMessage.ACCOUNT_FROZEN);
@@ -95,7 +95,7 @@ class CustomerServletHelper {
 		transaction.setRemarks(remarks);
 		transaction.setUserId(customer.getUserId());
 		if (transferWithinBank) {
-			Services.employeeOperations.getAccountDetails(transacted_account_number);
+			HandlerObject.employeeHandler.getAccountDetails(transacted_account_number);
 			transaction.setTransferWithinBank();
 		} else {
 			transaction.setTransferOutsideBank();
@@ -118,7 +118,7 @@ class CustomerServletHelper {
 		String pin = request.getParameter(Parameters.PIN.parameterName());
 
 		try {
-			Transaction completedTransaction = Services.customerOperations.tranferMoney(transaction,
+			Transaction completedTransaction = HandlerObject.customerHandler.tranferMoney(transaction,
 					transaction.getTransferWithinBank(), pin);
 			request.setAttribute("status", true);
 			request.setAttribute("message",
@@ -134,7 +134,7 @@ class CustomerServletHelper {
 					+ " from Account(Acc/No : " + transaction.getViewerAccountNumber() + ")" + " to Account(Acc/No : "
 					+ transaction.getTransactedAccountNumber() + ")");
 			log.setModifiedAt(completedTransaction.getCreatedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} catch (AppException e) {
 			LogUtil.logException(e);
@@ -149,7 +149,7 @@ class CustomerServletHelper {
 			log.setDescription(
 					"Transaction by Customer(ID : " + transaction.getUserId() + ") has failed - " + e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		}
 		request.setAttribute("redirect", "transfer");
@@ -194,9 +194,9 @@ class CustomerServletHelper {
 			for (ModifiableField field : fields) {
 				Object value = ServletUtil.session(request).getAttribute(field.toString().toLowerCase());
 				ServletUtil.session(request).removeAttribute(field.toString().toLowerCase());
-				Services.customerOperations.updateUserDetails(customerId, field, value, pin);
+				HandlerObject.customerHandler.updateUserDetails(customerId, field, value, pin);
 			}
-			user = Services.customerOperations.getCustomerRecord(customerId);
+			user = HandlerObject.customerHandler.getCustomerRecord(customerId);
 			ServletUtil.session(request).setAttribute("user", user);
 			ServletUtil.session(request).removeAttribute("fields");
 			request.setAttribute("status", true);
@@ -211,7 +211,7 @@ class CustomerServletHelper {
 			log.setDescription("Profile details " + user.getType() + "(ID : " + user.getUserId()
 					+ ") has been successfully updated");
 			log.setModifiedAt(user.getModifiedAt());
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		} catch (AppException e) {
 			LogUtil.logException(e);
@@ -226,7 +226,7 @@ class CustomerServletHelper {
 			log.setDescription("Profile details update for " + user.getType() + "(ID : " + customerId + ") failed - "
 					+ e.getMessage());
 			log.setModifiedAtWithCurrentTime();
-			Services.auditLogService.log(log);
+			HandlerObject.auditHandler.log(log);
 
 		}
 		request.setAttribute("redirect", "profile");
