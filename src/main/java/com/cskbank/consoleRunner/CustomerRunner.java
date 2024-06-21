@@ -15,11 +15,10 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
-import com.cskbank.utility.ConstantsUtil.TransactionType;
+import com.cskbank.utility.ValidatorUtil;
 
 class CustomerRunner {
 

@@ -1,0 +1,37 @@
+#portal_details, #portal_details th, #portal_details td {
+	border: 1px solid black;
+}
+
+#portal_details {
+	border-collapse: collapse;
+}
+
+#portal_details tr {
+	height: 30px;
+}
+
+#portal_details td {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.accbtn {
+    height:30px;
+    margin:0 auto;
+    padding-top:5px;
+    width:37%;
+}
+
+#portal_details {
+	
+	width:50%;
+	
+}
+
+.center_ele {
+	margin-left: 40%;
+}
+
+#err_div {
+	color: red;
+}

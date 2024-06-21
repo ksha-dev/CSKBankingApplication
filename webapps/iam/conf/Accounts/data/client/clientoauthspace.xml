@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IAMOAuthAppGroups>
+<IAMOAuthAppGroup OAUTH_APP_GROUP_AUTO_ID="999" OAUTH_APP_GROUP_ID="client" OAUTH_APP_GROUP_NAME="client" DESCRIPTION="Default client space" />
+
+</IAMOAuthAppGroups>

@@ -1,0 +1,495 @@
+/*$Id$*/
+
+[class^="icon-"], [class*=" icon-"] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'SignUp' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+[class^="icon2-"], [class*=" icon2-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'signinicon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  font-size:18px;
+   
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.zoho_logo{
+	height: 40px;
+	background: url('../images/newZoho_logo.svg') no-repeat transparent;
+	margin: 7% auto 30px auto;
+	width: 93px;
+}
+.invitationContainer{
+    margin: auto;
+    width: 618px;
+    box-shadow: 2px 4px 16px #00000014;
+    border: 1px solid #EAEAEA;
+    border-radius: 30px;
+}
+body .invitationContainer .invite_details {
+  display: block;
+  margin: 30px auto;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+body .invitationContainer .invite_details .org_Displaypicture {
+  display: block;
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  margin: auto;
+  margin-bottom: 10px;
+  background-color: #1389E3;
+  box-sizing: border-box;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+body .invitationContainer .invite_details .sorg_Displaypicture {
+  display: block;
+  height: 80px;
+  width: 80px;
+  margin: auto;
+  margin-bottom: 10px;
+  -webkit-transition:  all 0.3s ease;
+  -moz-transition:  all 0.3s ease;
+  -o-transition:  all 0.3s ease;
+  transition: all 0.3s ease;
+}
+body .invitationContainer .invite_details .org_icon {
+  display: block;
+  height: 80px;
+  width: 80px;
+  line-height: 80px;
+  color: #fff;
+  font-size: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: 50%;
+  position: relative;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+body .invitationContainer .invite_details .sorg_icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body .invitationContainer .invite_details .org_Name {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 24px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+body .invitationContainer .invite_details .Invitedby_Name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.5);
+}
+body .invitationContainer .invite_details .Invitedby_Name b {
+  color: black;
+}
+.org_icon{
+	width: 80px;
+	height: 80px;
+	margin: 30px auto 15px auto;
+	border: 2px solid #D8ECFC;
+	border-radius: 50%;
+}
+.org_displayName{
+	width: 100%;
+	text-align: center;
+	font-weight: 600;
+	margin: 15px auto 8px auto;
+	font-size: 16px;
+}
+.org_desc{
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+	margin: 8px auto 30px auto;
+}
+.org_desc span{font-weight: 500;}
+.desc_Container{
+	width: 100%;
+	padding: 40px;
+	border-top: 1px solid #EAEAEA;
+	box-sizing: border-box;
+}
+.desc_title{
+	width: 100%;
+	text-align: left;
+	font-weight: 600;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+.desc_desc{
+	width: 100%;
+	text-align: left;
+	font-size: 14px;
+}
+.orange_container{
+    width: auto;
+    background: #FFBD811A 0% 0% no-repeat padding-box;
+    border: 1px solid #F8D19B;
+    border-radius: 6px;
+    position: relative;
+    padding: 16px 16px 16px 24px;
+    box-sizing: border-box;
+    font-size: 12px;
+    margin: 20px auto 30px 0px;
+}
+.orange_container::before{
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 4px;
+    height: calc(100% - 16px);
+    background: #EF9C56 0% 0% no-repeat padding-box;
+    border-radius: 2px;
+}
+.orange_container a{font-weight: 500;color: #1389E3}
+button{
+	padding: 12px 30px;
+	border-radius: 4px;
+	box-shadow: none;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+}
+button:hover{cursor: pointer}
+.button_div{
+	display: inline-block;
+}
+.acceptBtn{
+	background: #1389E3;
+	color: #fff;
+}
+.rejectBtn{
+	border: 1px solid #CCCCCC;
+	color: #777777;
+	background: #fff;
+	margin-left: 20px;
+}
+/* tos */
+.tos_container {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 21px auto;
+}
+.tos_container .tos_check {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  left: 0px;
+  margin: 0px;
+  height: 16px;
+  top: 5px;
+  cursor: pointer;
+  width: 16px;
+}
+.tos_container .tos_check:checked ~ .auth_checkbox {
+  background-color: #138de3;
+  border-color: #138de3;
+}
+.tos_container .auth_checkbox {
+  float: left;
+  z-index: 0;
+  height: 12px;
+  width: 12px;
+  display: inline-block;
+  border: 1px SOLID #ccc;
+  top: 7px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+  box-sizing: content-box;
+}
+.tos_container .auth_checkbox .checkbox_tick {
+  display: block;
+  height: 3px;
+  width: 8px;
+  border-bottom: 2px solid #fff;
+  border-left: 2px solid #fff;
+  transform: rotate(-45deg);
+  margin: 2px 1px;
+}
+.tos_container a {
+  color: #0091FF;
+  text-decoration: none;
+}
+.tos_container label {
+  font-size: 13px;
+  color: #222222;
+  margin-left: 6px;
+  padding-top: 1px;
+  line-height: 26px;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* response */
+.responseContainer{
+    width: 620px;
+    height: auto;
+    box-shadow: 2px 4px 16px #00000014;
+    border: 1px solid #EAEAEA;
+    border-radius: 30px;
+    margin: auto;
+    box-sizing: border-box;
+    padding: 50px 40px 40px 40px ;
+}
+.responseContainer.success{
+    background: linear-gradient(180deg, #00f22018 0%, #FFFFFF14 45%, #FFFFFF14 100%);
+}
+.responseContainer.error{
+    background: linear-gradient(180deg, #f2000018 0%, #FFFFFF14 45%, #FFFFFF14 100%);
+}
+.responseIcon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: auto;
+    position: relative;
+}
+.success .responseIcon{
+    background-color: #4BBF5D;
+    box-shadow: inset -3px -3px 0px #089949;
+}
+.success .responseIcon::after{
+    content: '';
+    display: block;
+    height: 6px;
+    width: 16px;
+    border-bottom: 3px solid #fff;
+    border-left: 3px solid #fff;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 12px;
+    left: 11px;
+}
+.error .responseIcon{
+    background-color: #ff0000;
+    box-shadow: inset -3px -3px 0px #d00000;
+}
+.error .responseIcon::after, .error .responseIcon::before {
+    position: absolute;
+    left: 18px;
+    content: ' ';
+    height: 20px;
+    width: 3px;
+    background-color: #ffffff;
+    top: 9px;
+    border-radius: 1px;
+}
+.error .responseIcon::before {
+    transform: rotate(45deg);
+}
+.error .responseIcon::after {
+    transform: rotate(-45deg);
+}
+.responseHeader{
+	font-size: 20px;
+	font-weight: 500;
+	text-align: center;
+	margin: 16px auto 12px auto;
+}
+.responseDesc{
+	font-color: #000;
+	opacity: 0.8;
+	font-size: 14px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+.responseDesc span.responseDescEmail{
+	font-weight: 600;
+}
+button.responseBtn{
+	padding: 12px 30px;
+	background-color: #1389E3;
+	color: #fff;
+	font-size: 14px;
+	margin: auto;
+}
+.responseBtnDiv{
+	text-align: center;
+}
+/* Loader */
+.load-bg{
+	background-color: #FFFFFF;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 100;
+	opacity: 1;
+	transition: opacity .2s linear;
+	top: 0px;	}
+.darkmode .load-bg{background-color: #191A23}
+.load-fade{opacity: 0;}
+.basic-box-s {
+	display: block;
+	width: max-content;
+	height: max-content;
+	margin: auto;
+	position: relative;
+	top: 40%;	}
+.loadWithText .basic-box-s {top: 30%}
+.box-anim {animation: load-anim 2s cubic-bezier(0.83, -0.01, 0.22, 1) infinite;}
+@keyframes load-anim {0% {transform: rotate(0deg)} 10% {transform: rotate(-30deg)} 50%{transform: rotate(180deg)} 60%{transform: rotate(165deg)} 100% {transform: rotate(360deg)}}
+.path {stroke-dasharray: 150px; stroke-dashoffset: 150px;stroke-linecap: round;}
+.path1-anim {animation: stroke-anim1 4s cubic-bezier(0.83, -0.01, 0.22, 1) infinite;}
+.path2-anim {animation: stroke-anim2 4s cubic-bezier(0.83, -0.01, 0.22, 1) infinite;}
+.path3-anim {animation: stroke-anim3 4s cubic-bezier(0.83, -0.01, 0.22, 1) infinite;}
+.path4-anim {animation: stroke-anim4 4s cubic-bezier(0.83, -0.01, 0.22, 1) infinite;}
+@keyframes stroke-anim1 {0% {stroke-opacity: 1;stroke-dashoffset: 150px;} 3% {stroke-dashoffset: 150px;} 21%,25% {stroke-dashoffset: 0;} 50% {stroke-opacity: 1;} 100% {stroke-dashoffset: 0px;stroke-opacity: 0;}}
+@keyframes stroke-anim2 {0% {stroke-dashoffset: 150px;} 25% {stroke-opacity: 1;stroke-dashoffset: 150px;} 28% {stroke-dashoffset: 150px;} 46%,50% {stroke-dashoffset: 0px;} 75% {stroke-dashoffset: 0px; stroke-opacity: 1;} 100% {stroke-dashoffset: 0px; stroke-opacity: 0;}}
+@keyframes stroke-anim3 {0% {stroke-opacity: 0;stroke-dashoffset: 150px;} 49% {stroke-opacity: 0;} 50% {stroke-opacity: 1;stroke-dashoffset: 150px;} 53% {stroke-dashoffset: 150px} 71%,75% {stroke-dashoffset: 0;} 100% {stroke-dashoffset: 0;stroke-opacity: 1;}}
+@keyframes stroke-anim4 {0% {stroke-dashoffset: 150px;stroke-opacity: 0;} 74% {stroke-opacity: 1;} 75% {stroke-opacity: 1;stroke-dashoffset: 150px;} 78% {stroke-dashoffset: 150px} 96%,100% {stroke-dashoffset: 0}}
+.loadTextDiv{display: none;}
+.loadWithText .loadTextDiv{
+    position: absolute;
+    top: calc(30% + 60px);
+    width: 100%;
+    display: block;
+}
+.loadText{text-align: center;font-size: 16px;}
+/* top error */
+body .show_error {
+  top: 60px !important;
+}
+body #error_space {
+  position: fixed;
+  width: fit-content;
+  width: -moz-fit-content;
+  left: 0px;
+  right: 0px;
+  margin: auto;
+  display: inline-block;
+  padding: 10px 20px 10px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 37px;
+  color: white;
+  top: -100px;
+  z-index: 8;
+  transition: all 0.3s ease-in-out;
+}
+body #error_space .top_msg {
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 32px;
+  float: left;
+  margin: 0px 10px;
+}
+body #error_space .cross_mark {
+  position: relative;
+  background: #DA6161;
+  width: 32px;
+  height: 32px;
+  float: left;
+  padding: 10px 6px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: inline-block;
+}
+body #error_space .cross_mark_error:after, body #error_space .cross_mark_error:before {
+  content: "";
+  width: 20px;
+  position: absolute;
+  height: 3px;
+  top: 14px;
+  display: inline-block;
+  background: white;
+  border-radius: 1px;
+}
+body #error_space .cross_mark_error:after {
+  transform: rotate(45deg);
+}
+body #error_space .cross_mark_error:before {
+  transform: rotate(135deg);
+}
+body #error_space .cross_mark_success:after {
+  content: "";
+  width: 15px;
+  height: 5px;
+  display: inline-block;
+  transform: rotate(-45deg);
+  position: relative;
+  border-radius: 3px;
+  border: 3px solid white;
+  border-top: transparent;
+  border-right: transparent;
+  top: 0px;
+  left: 1px;
+}
+@media only screen and (max-width: 620px) {
+	body{margin: 0px}
+	.invitationContainer{
+		width: 100%;
+		border: none;
+		box-shadow: none;
+		border-top: 2px solid #eaeaea;
+	}
+	.responseContainer{
+		width: auto;
+		border: none;
+		border-top: 1px solid #EAEAEA;
+		box-shadow: none;
+	}
+	.responseDesc{
+		margin-bottom: 40px;
+	}
+	.zoho_logo{margin: 70px auto 45px auto}
+	.desc_Container{
+		border-radius: 30px;
+		border: 2px solid #eaeaea;
+	}
+	.acceptBtn{
+		margin-right: 10px;
+		margin-bottom: 10px;
+	}
+	.rejectBtn{
+		margin-left: 0px;
+		margin-top: 5px;
+	}
+	.tos_container label{line-height: 15px;}
+}

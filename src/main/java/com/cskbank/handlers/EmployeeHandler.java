@@ -3,27 +3,24 @@ package com.cskbank.handlers;
 import java.util.Map;
 
 import com.cskbank.api.EmployeeAPI;
-import com.cskbank.api.UserAPI;
 import com.cskbank.api.mysql.MySQLEmployeeAPI;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.Account;
-import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
+import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 public class EmployeeHandler {
 	private EmployeeAPI api = new MySQLEmployeeAPI();
@@ -144,7 +141,7 @@ public class EmployeeHandler {
 		System.out.println(ConvertorUtil.convertToTwoDecimals(amount));
 
 		EmployeeRecord employee = getEmployeeRecord(employeeId);
-		Account transactionAccount = getAccountDetails(accountNumber);
+		getAccountDetails(accountNumber);
 		if (api.userConfimration(employeeId, pin)) {
 			Transaction depositTransaction = new Transaction();
 			depositTransaction.setUserId(employeeId);
@@ -157,7 +154,7 @@ public class EmployeeHandler {
 			depositTransaction.setModifiedBy(employeeId);
 
 			api.depositAmount(depositTransaction);
-			CachePool.getAccountCache().refreshData(accountNumber);
+			CachePool.getAccountCache().remove(accountNumber);
 			return depositTransaction;
 		} else {
 			throw new AppException(ActivityExceptionMessages.USER_AUTHORIZATION_FAILED);

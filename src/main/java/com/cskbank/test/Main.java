@@ -7,13 +7,18 @@
 //
 package com.cskbank.test;
 
+import com.cskbank.cache.CachePool;
+import com.cskbank.cache.CachePool.CacheIdentifier;
 import com.cskbank.consoleRunner.AppRunner;
 import com.cskbank.exceptions.AppException;
-import com.cskbank.servlet.Services;
+import com.cskbank.servlet.HandlerObject;
+import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 
 public class Main {
 	public static void main(String[] args) throws AppException {
-		Services.initialize();
+		HandlerObject.initialize(PersistanceIdentifier.MySQL);
+		CachePool.initializeCache(HandlerObject.getCommonHandler().getUserAPI(), CacheIdentifier.LRU);
+
 		AppRunner.runConsoleApp();
 	}
 }

@@ -173,9 +173,10 @@ public class ServletUtil {
 
 	}
 
-	public static void redirectError(HttpServletRequest request, HttpServletResponse response,
-			AppException appException) {
+	public static void redirectError(HttpServletRequest request, HttpServletResponse response, Exception exception)
+			throws IOException {
 		try {
+			LogUtil.logException(exception);
 			GetterUtil.loadRedirectURLProperties();
 			String requestURL = request.getServletPath() + request.getPathInfo();
 			if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
@@ -185,10 +186,12 @@ public class ServletUtil {
 					requestURL = requestURL + "." + operation;
 				}
 			}
-			request.getSession(false).setAttribute("error", appException.getMessage());
+			request.getSession(false).setAttribute("error", exception instanceof AppException ? exception.getMessage()
+					: ServletExceptionMessage.ERROR_OCCURED.toString());
 			response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.logException(e);
+			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
 		}
 	}
 }

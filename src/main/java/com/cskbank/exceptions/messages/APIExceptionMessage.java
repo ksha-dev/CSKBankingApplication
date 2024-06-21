@@ -5,10 +5,12 @@ public enum APIExceptionMessage {
 	CUSTOMER_RECORD_NOT_FOUND("The valid customer details for the user does not exist."),
 	EMPLOYEE_RECORD_NOT_FOUND("The valid employee details for the user does not exist."),
 	ACCOUNT_RECORD_NOT_FOUND("No account exists with the given account number."),
+	TRANSACTION_RECORD_NOT_FOUND("The transaction details for the specified ID is not available"),
 	USER_AUNTHENTICATION_FAILED("The credentials entered for the acount is incorrect. Please try again"),
 	NO_SERVER_CONNECTION("Unable to connect to server. Please try again after sometime. Sorry for the inconvenience"),
 	LOGGING_FAILED("An internal error occured during log operation"),
-	EMAIL_CHECK_FAILED("Failed to check if user exists via Email Id"), USER_EMAIL_INCORRECT("Incorrect Email Address"),
+	EMAIL_CHECK_FAILED("Failed to check if user exists via Email Id"),
+	USER_EMAIL_INCORRECT("The User ID or Email address given does not exist or match"),
 
 	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),
@@ -19,6 +21,8 @@ public enum APIExceptionMessage {
 	ACCOUNT_CREATION_FAILED("Failed to create a new Account."), API_GENERATION_FAILED("Failed to generate API Key"),
 	CUSTOMER_CREATION_FAILED("Unable to create customer record at the moment"),
 	BRANCH_CREATION_FAILED("Failed to create Branch Record"),
+
+	OPERATION_RESTRICTED("This action has been disabled by the organisation"),
 
 	API_KEY_NOT_FOUND("The API Key obtained is not valid or does not exist"),
 	UNKNOWN_ERROR("An unexpected error occured. Please try again after sometime"),

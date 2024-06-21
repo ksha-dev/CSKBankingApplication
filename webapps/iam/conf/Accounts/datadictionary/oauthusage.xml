@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!-- $Id $ -->
+<!DOCTYPE data-dictionary SYSTEM "../dtd/cs-dd.dtd">
+<data-dictionary name="Accounts">
+	<table name="IAMOAuthClientUsageInfo" display-name="OAuthClientUsageInfo">
+		<description>
+			To monitor and delete inactive clients  
+		</description>
+        <columns>
+       	 	<column name="OAUTH_CLIENT_USAGE_INFO_AUTO_ID">
+				<data-type>BIGINT</data-type>
+				<uniquevalue-generation>
+					<generator-name>IAMOAuthClientUsageInfo.OAUTH_CLIENT_USAGE_INFO_AUTO_ID</generator-name>
+					<generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+				</uniquevalue-generation>
+			</column>
+            <column name="CLIENT_ZID">
+				<data-type>CHAR</data-type>
+				<max-size>50</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>&clientzid;</pattern>
+				</allowed-values>
+			</column>
+            <column name="LAST_ACTIVITY_TIMESTAMP">
+                <data-type>BIGINT</data-type>
+            </column>
+		</columns>
+        <primary-key name="IAMOAuthClientUsageInfo_PK">
+            <primary-key-column>OAUTH_CLIENT_USAGE_INFO_AUTO_ID</primary-key-column>
+        </primary-key>
+        <unique-keys>
+            <unique-key name="IAMOAuthClientUsageInfo_UK1">
+                <unique-key-column>CLIENT_ZID</unique-key-column>
+            </unique-key>
+        </unique-keys>
+        <indexes>
+            <index name="IAMOAuthClientUsageInfo_indx1">
+                <index-column>LAST_ACTIVITY_TIMESTAMP</index-column>
+            </index>
+        </indexes>
+    </table>
+    <table name="IAMOAuthTokenUsageInfo" display-name="OAuthTokenUsageInfo">
+    	<description>
+			To monitor and delete inactive RefreshTokens  
+		</description>
+        <columns>
+        	<column name="OAUTH_CLIENT_USAGE_INFO_AUTO_ID">
+				<data-type>BIGINT</data-type>
+			</column>
+        	<column name="OAUTH_TOKEN_USAGE_INFO_AUTO_ID">
+				<data-type>BIGINT</data-type>
+				<uniquevalue-generation>
+					<generator-name>IAMOAuthTokenUsageInfo.OAUTH_TOKEN_USAGE_INFO_AUTO_ID</generator-name>
+					<generator-class>com.zoho.accounts.internal.LongSequenceGenerator</generator-class>
+				</uniquevalue-generation>
+			</column>
+            <column name="REFRESH_TOKEN_REF_ID">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+			</column>
+            <column name="LAST_ACTIVITY_TIMESTAMP">
+                <data-type>BIGINT</data-type>
+            </column>
+		</columns>
+        <primary-key name="IAMOAuthTokenUsageInfo_PK">
+            <primary-key-column>OAUTH_TOKEN_USAGE_INFO_AUTO_ID</primary-key-column>
+        </primary-key>
+        <foreign-keys>
+			<foreign-key name="IAMOAuthTokenUsageInfo_FK" reference-table-name="IAMOAuthClientUsageInfo">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>OAUTH_CLIENT_USAGE_INFO_AUTO_ID</fk-local-column>
+						<fk-reference-column>OAUTH_CLIENT_USAGE_INFO_AUTO_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+				<fk-constraints>ON-DELETE-CASCADE</fk-constraints>
+			</foreign-key>
+		</foreign-keys>
+		 <unique-keys>
+            <unique-key name="IAMOAuthTokenUsageInfo_UK1">
+                <unique-key-column>REFRESH_TOKEN_REF_ID</unique-key-column>
+            </unique-key>
+        </unique-keys>
+        <indexes>
+            <index name="IAMOAuthTokenUsageInfo_indx1">
+                <index-column>LAST_ACTIVITY_TIMESTAMP</index-column>
+            </index>
+        </indexes>
+    </table>   
+</data-dictionary>

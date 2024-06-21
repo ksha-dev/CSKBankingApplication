@@ -75,8 +75,8 @@ public class Transaction {
 		this.modifiedBy = userId;
 	}
 
-	public void setModifiedAt(long dateTime) {
-		this.modifiedAt = dateTime;
+	public void setModifiedAt(Long dateTime) {
+		this.modifiedAt = dateTime == null ? 0 : dateTime;
 	}
 
 	public void setTransferWithinBank() {

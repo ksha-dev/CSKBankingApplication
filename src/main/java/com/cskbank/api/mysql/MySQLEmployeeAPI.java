@@ -84,7 +84,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		}
 	}
 
-	protected void createUserRecord(UserRecord user) throws AppException {
+	@Override
+	public void createUserRecord(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
 		MySQLQuery queryBuilder = new MySQLQuery();
@@ -186,7 +187,6 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 			statement.setLong(7, account.getCreatedAt());
 			statement.setInt(8, account.getModifiedBy());
 			ServerConnection.startTransaction();
-			System.out.println(statement);
 			if (statement.executeUpdate() == 1) {
 				branch.setModifiedBy(account.getModifiedBy());
 				branch.setModifiedAt(account.getModifiedAt());

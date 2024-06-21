@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!-- $Id$ -->
+<conf-files>
+	<ConfFile url="validation-files.xml"/>
+</conf-files>

@@ -7,21 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import com.cskbank.exceptions.AppException;
 import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ServletUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class AppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	public AppServlet() throws AppException {
-		Services.initialize();
-	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String path = request.getPathInfo();
@@ -69,8 +63,7 @@ public class AppServlet extends HttpServlet {
 					break;
 				}
 			}
-		} catch (AppException e) {
-//			ConstantsUtil.DEFAULT_LOGGER.log(Level.ERROR, e.getMessage(), e);
+		} catch (Exception e) {
 			ServletUtil.redirectError(request, response, e);
 		}
 	}
@@ -121,8 +114,7 @@ public class AppServlet extends HttpServlet {
 				}
 			}
 
-		} catch (AppException e) {
-//			ConstantsUtil.DEFAULT_LOGGER.log(Level.ERROR, e.getMessage(), e);
+		} catch (Exception e) {
 			ServletUtil.redirectError(request, response, e);
 		}
 	}

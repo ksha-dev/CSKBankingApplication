@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	<param-groups>
+   		<param-group name="uploadphotoapiparams">
+            <param name="API" type="boolean"/>
+            <param name="t" regex="user|org|group|partner|publicgroup|appaccount|serviceorg|samlorg"/>
+            <param name="fs" regex="favicon" />
+            <param name="ID" regex="ciphertext" max-len="500"/>
+            <param name="EID" regex="ciphertext" max-len="500"/>
+            <param name="pot" type="int" description="Photo Org Type. Parameted is exclusive for AppService Log." />
+            <param name="zoid" type="String" description="SAML appid for the apps under org" />
+            <param name="ParentZID" regex="ciphertext" max-len="500" />
+    	</param-group>
+    	<param-group name="iamapiparams">
+	        <param name="domain" regex="domain"/>
+	        <param name="rsreq" regex="plain_str"/>
+	        <param name="zaaid" type="long"/>
+	        <param name="zsoid" type="long"/>
+	        <param name="ot" type="int"/>
+	        <param name="sot" type="int"/>
+	    </param-group>
+	</param-groups>
+
+    <urls>
+    
+	<url path="/internal/invoke.jsp" authentication="required" roles="IAMAdmininistrator,SDAdmin,ClearCacheOperator" trusted="true" description="Clearing Cache for ips" csrf="true" method="post">
+	    <param name="csmode" type="boolean"/>
+	    <param name="ips" regex="cleartextpattern" split="," max-occurrences="80"/>
+	    <param name="usecases" regex="cleartextpattern"/>
+	</url>
+
+	<url path="/internal/mysql.jsp" authentication="required" roles="IAMAdmininistrator,LegalAdmin" trusted="true" https="true" description="Used to make mysql queries to IAM database">
+	    <param name="SELECT_SQL" regex="select_query" max-len="5000"/>
+	    <param name="MYSQL_HOST" regex="mysql_host" secret="true"/>
+	    <param name="Submit" regex="Execute"/>
+	</url>
+	<url path="/internal/clearcache.jsp" scoped-services="AaaServer,DLServer" internal="true" description="Clearing Cache">
+		    <param name="usecases" regex="cleartextpattern"/>
+	</url>
+	<url path="/internal/clearTemplateTableID.jsp" scoped-services="AaaServer" internal="true" description="Clearing template table ID"/>
+	
+	<url path="/internal/queueStatus.jsp" authentication="required" trusted="true" roles="IAMAdmininistrator,IAMAuditAdmin" description="showing current queue status"/>
+	
+	<url path="/internal/queueStatusInternal.jsp" scoped-services="AaaServer" internal="true" description="showing current queue status"/>
+
+	<url path="/internal/clearcacheconfig.jsp" operation-param="action" operation-value="clearall" authentication="required" roles="IAMAdmininistrator,ClearCacheOperator" trusted="true" description="Clearing cache configuration">
+		<param name="ips" regex="cleartextpattern" split="," max-occurrences="50"/>
+		<param name="pool" regex="plain_str"/>
+	</url>
+
+	<url path="/internal/clearcacheconfig.jsp" operation-param="action" operation-value="clear" internal="true" scoped-services="AaaServer" description="Clearing Cache">
+		<param name="pool" regex="plain_str"/>
+	</url>
+	
+    <url path="/internal/t.jsp" authentication="required" roles="IAMAdmininistrator,IAMMigAdmin" trusted="true" description="Added for temporary / emergency purposes.">
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    
+	<url path="/internal/sso.zp" internal="true" description="Third party authentication API" method="get,post" scoped-services="ZohoReports,ZohoSupport,ZohoSheet">
+            <param name="operation" regex="signin|signup"/>
+            <param name="login_name" regex="username"/>
+            <param name="full_name" regex="iamcleartextpattern"/>
+            <param name="apikey" regex="csapikey" secret="true" max-len="150"/>
+            <param name="email" regex="email"/>
+            <param name="responsetype" regex="html|json"/>
+            <param name="first" regex="iamcleartextpattern" />
+            <param name="last" regex="iamcleartextpattern" />
+            <param name="client" type="long" />
+            <param name="acpsecret" regex="iamticket" max-len="150" />
+            <param name="language" regex="language" />
+            <param name="country" regex="country" />
+            <param name="timezone" regex="timezone" />
+            <param name="redirecturl" regex="serviceurl" max-len="2000" />
+        </url>
+
+	<url path="/internal/ssop.zp" internal="true" scoped-services="ZohoReports,ZohoPayments" description="Third party authentication API with password based auth and accessed only via internal IP" method="get,post">
+            <param name="operation" regex="signin|signup|forgotpassword|changepassword"/>
+            <param name="login_name" regex="username"/>
+            <param name="full_name" regex="iamcleartextpattern"/>
+            <param name="password" regex="oldpassword" max-len="250"/>
+            <param name="apikey" regex="csapikey" secret="true" max-len="150"/>
+            <param name="email" regex="username_or_email"/>
+            <param name="DIGEST" regex="digest" max-len="500"/>
+            <param name="answer" regex="iamcleartextpattern" max-len="35"/>
+            <param name="client" type="long" />
+            <param name="acpsecret" regex="iamticket" max-len="200" />
+            <param name="language" regex="language" />
+            <param name="country" regex="country" />
+            <param name="timezone" regex="timezone" />
+            <param name="redirecturl" regex="serviceurl" max-len="2000" />
+            <param name="tid" regex="id" max-len="50" />
+        </url>
+        
+	<url path="/api/upload" method="post" csrf="false" authentication="optional" oauthscope="photoapi" org-oauthscope="photoapi" operation-type="UPDATE" description="Used to Upload USER/GROUP/ORG and Partner logo">
+	      	<param-group name="uploadphotoapiparams"/>
+	      	<param-group name="iamapiparams" />
+	      	<file content-type-name="image" name="myfile" max-size="10240" antivirus="true">
+			<filename regex="cleartext:removehtmlentities" max-len="150"/>
+		</file>
+	</url>
+	<url path="/api/photoupload" method="post" csrf="false" description="Used to Upload USER/GROUP/ORG and Partner logo">
+	      	<param-group name="uploadphotoapiparams"/>
+	      	<param-group name="iamapiparams" />
+			<file content-type-name="image" name="myfile" max-size="10240" antivirus="true">
+			<filename regex="cleartext:removehtmlentities" max-len="150"/>
+		</file>
+	</url>
+	<url path="/update/logo" method="post" csrf="false" authentication="optional" internal="true" scoped-services="ZohoContacts,ZohoProfile">
+		<param name="type" regex="numbers" max-len="5" min-occurrences="1"/>
+		<param name="zid" regex="numbers" max-len="20" min-occurrences="1"/>
+		<param name="isdel" regex="true|false" min-occurrences="1"/>
+	</url>
+        <url path="/internal/clearconfig.jsp" authentication="required" roles="IAMAdmininistrator" trusted="true" description="Clearing system configuration for app servers">
+            <param name="clearconfig" type="boolean"/>
+        </url>
+       
+        <url path="/internal/clusterstatus.jsp" authentication="required" roles="IAMAdmininistrator,IAMCacheAdmin" trusted="true" description="Shows the current status of the cache"/>
+        
+        <url path="/internal/refreshKafkaAudit.jsp" authentication="required" roles="IAMAdmininistrator" trusted="true" description="Refresh Kafka Producer for Audit for specified IPs">
+			<param name="ips" regex="cleartextpattern" split="," max-occurrences="50"/>
+		</url>
+
+		<url path="/internal/refreshKafkaAudit.jsp" operation-param="action" operation-value="clear" internal="true" scoped-services="AaaServer" description="Refresh Kafka Producer for Audit"/>
+		
+		<url path="/internal/closeaccount.jsp" authentication="required" roles="IAMAdmininistrator,IAMServiceAdmin,CloseAccountCoordinator" trusted="true" method="get">
+			<param name="type" regex="zuid|email"/>
+			<param name="value" type="String" max-len="100"/>
+			<param name="sname" regex="String"/>
+			<param name="dev_setup_url" regex="url_without_path"/>
+			<param name="panel" regex="precheck|serlist|userslist|closeacc"/>
+			<param name="requestId" regex="id"/>
+			<param name="handlerType" regex="simplestring" max-len="40"/>
+			<param name="zid" regex="id"/>
+			<param name="members" type="String"/>
+			<param name="refresh" type="boolean"/>
+		</url>
+		<url path="/internal/closeaccount.js" authentication="required" trusted="true" method="get"/>
+		<url path="/internal/closeaccount.css" authentication="required" trusted="true" method="get"/>
+		
+<!--  Api's For ZAC to our system-->
+	<url path="/zac/api/service" method="get" csrf="false" internal="true" description="To get service Blure print">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+         <param name="serviceName" regex="servicename"/>
+         <param name="isIAMService" type="boolean"/>
+	</url>
+	
+	<url path="/zac/api/service" method="post" csrf="false" internal="true" description="To add new service from Blure print">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+         <param name="serviceName" regex="servicename"/>
+         <param name="isIAMService" type="boolean"/>
+	</url>
+	<url path="/zac/api/service/privatekey" method="post" csrf="false" internal="true" description="To get security private key for new Services.">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+         <param name="serviceName" regex="servicename"/>
+         <param name="isIAMService" type="boolean"/>
+         <param name="keyType" regex="servicename"/>
+	</url>
+	<url path="/zac/api/service/privatekey/verify" method="post" csrf="false" internal="true" description="To verify private key for Zac.">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+         <param name="serviceName" regex="servicename"/>
+         <param name="isIAMService" type="boolean"/>
+	</url>
+	<url path="/zac/api/iam/data" method="get" csrf="false" internal="true" description="To get IAM Blure print like secret key">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+	</url>
+	<url path="/zac/api/cache/clear" method="get" csrf="false" internal="true" description="To get Clear Inmemory cache. Invoked from ZAC after service creation.">
+         <param name="Nonce" regex="([a-zA-Z0-9_-]+)"/>
+	</url>
+<!--  Api's For ZAC to our system ends-->	
+		
+		<url path="/security/api/service/publickey" internal="true" scoped-services="all" description="To get Service Public Key">
+		    <param name="serviceName" regex="servicename"/>
+		</url>
+	<url path="/interdc/v1/multidc/import" method="post" internal="true" scoped-services="DLServer" description="To initiate Multi-DC user import">
+		<inputstream type="JSONObject" template="multidc_import_json" max-len="100000"/>
+	</url>
+    </urls>
+    
+    <jsontemplates>
+    	<jsontemplate name="multidc_import_json">
+	    	<key name="multidcimport" type="JSONObject" template="multidc_import" max-len="100000"/>
+        </jsontemplate>
+    	<jsontemplate name="multidc_import">
+   			<key name="export_data" type="String" max-len="100000"/>
+        </jsontemplate>
+    </jsontemplates>
+
+    <regexes>
+		<regex name="uri" value="^[a-zA-Z0-9\/\.\-\_]+$"/>
+		<regex name="uri_with_param" value="^[a-zA-Z0-9\/\.\-\_=\?]+$"/>
+		<regex name="url_without_path" value="^((ht|f)tp(s?)\:\/\/[-.\w]*)?(\/?)(:[0-9]{4})?$"/>
+        <regex name="iprangestr" value="^[0-9\.\-]+$"/>
+        <regex name="mysql_host" value="^(jdbc\:mysql\:\/\/[\p{N}.]*)(\/)([\p{L}\p{M}\p{N}\-\.\?\,\:\'\/\\\+\*=&amp;%\$;#_@]*)$"/>
+        <regex name="select_query" value="^(SELECT|select)(?:[^;\']|(?:\'[^\'\n]+\'))+(LIMIT|limit)\s\d+;*$"/>
+    </regexes>
+</security>

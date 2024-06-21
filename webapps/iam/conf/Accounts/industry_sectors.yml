@@ -1,0 +1,349 @@
+
+## File contains Industry Sector and Industry Sub-Sector Details for loading in Privacy MYC Tab
+
+industries:
+  - name: Aerospace & Defence
+    identifier: 1
+  - name: Agriculture
+    identifier: 2
+    sub_sectors:
+       - name: Agricultural Services
+         identifier: 1
+       - name : Crops Production
+         identifier : 2
+       - name : Forestry
+         identifier : 3
+       - name : Livestock Production or Fishing/Hunting Related Activities
+         identifier : 4
+  - name: Art, Architecture & Design
+    identifier: 3
+  - name: Automotive
+    identifier: 4
+    sub_sectors:
+      - name: Automobile Dealers
+        identifier: 1
+      - name: Automobile Manufacturing
+        identifier: 2
+      - name: Automobile Industry
+        identifier: 3
+  - name: Banking
+    identifier: 5
+  - name: E-commerce
+    identifier: 6
+  - name: Education
+    identifier: 7
+    sub_sectors:
+      - name: Educational Services
+        identifier: 1
+      - name: Training or Academic Services
+        identifier: 2
+      - name: School Related Services
+        identifier: 3
+      - name: Library Related Services
+        identifier: 4
+      - name: College Related Services
+        identifier: 5
+  - name: Energy, Utilities & Resources
+    identifier: 8
+    sub_sectors:
+      - name: Electric/Sanitary/Gas and Pipelines Services
+        identifier: 1
+      - name: Electrical Equipment/Appliances Manufacturing and Dealers
+        identifier: 2
+      - name: Mining Related Services and Dealers
+        identifier: 3
+      - name: Oil/Gas Extraction Refining and Dealers
+        identifier: 4
+      - name: Gas/Steam/Air Supply and Petroleum Pipeline Services
+        identifier: 5
+      - name: Electicity Services
+        identifier: 6
+      - name: Water/Sanitary Services
+        identifier: 7
+      - name: Oil/Gas Extraction Services
+        identifier: 8
+      - name: Oil/Gas Dealers
+        identifier: 9
+      - name: Utilities
+        identifier: 10
+      - name: Mining Industries
+        identifier: 11
+  - name: Financial Services
+    identifier: 9
+    sub_sectors:
+      - name: Accounting Related Services
+        identifier: 1
+      - name: Financial Services
+        identifier: 2
+      - name: All Financial Services
+        identifier: 3
+      - name: Exchange/Stock Related Services
+        identifier: 4
+  - name: Food & Beverages
+    identifier: 10
+    sub_sectors:
+      - name: Food and Beverage Manufacturing
+        identifier: 1
+      - name: Food and Grocery Stores
+        identifier: 2
+      - name: Restaurants and Related Services
+        identifier: 3
+      - name: Alcohol Products Manufacturing and Dealers
+        identifier: 4
+      - name: Tobacco Products Manufacturing and Dealers
+        identifier: 5
+      - name: Food Manufacturing
+        identifier: 6
+      - name: Beverage Manufacturing
+        identifier: 7
+      - name: Food Industries
+        identifier: 8
+  - name: Government & Public Services
+    identifier: 11
+    sub_sectors:
+      - name: Public Administrative Services
+        identifier: 1
+  - name: Healthcare
+    identifier: 12
+    sub_sectors:
+      - name: Health Services
+        identifier: 1
+      - name: Veterinary Hospitals and Services
+        identifier: 2
+      - name: Health Care Services
+        identifier: 3
+      - name: Osteopathic
+        identifier: 4
+      - name: Dentist
+        identifier: 5
+      - name: Health Care Industries
+        identifier: 6
+  - name: HR & Related Services
+    identifier: 13
+    sub_sectors:
+      - name: Employment Agencies
+        identifier: 1
+  - name: Insurance
+    identifier: 14
+    sub_sectors:
+      - name: Insurance Services
+        identifier: 1
+  - name: IT Hardware & IT Related Services
+    identifier: 15
+    sub_sectors:
+      - name: Computer Programming Services
+        identifier: 1
+      - name: Electronics or Computer or Office equipments Manufacturing and Dealers
+        identifier: 2
+  - name: Manufacturing
+    identifier: 16
+    sub_sectors:
+      - name: Chemical Products Manufacturing and Dealers
+        identifier: 1
+      - name: Measuring Equipment Manufacturing and Dealers
+        identifier: 2
+      - name: Industrial and Commercial Machines Manufacturing and Dealers
+        identifier: 3
+      - name: Metal and Metal Products Manufacturing and Dealers
+        identifier: 4
+      - name: Miscellaneous Manufacturing and Related Activities
+        identifier: 5
+      - name: Paper Products Manufacturing and Dealers
+        identifier: 6
+      - name: Rubber/Leather and Miscellaneous Plastic Products Manufacturing and Dealers
+        identifier: 7
+      - name: Textile or Apparel Manufacturing
+        identifier: 8
+      - name: Tobacco and Alcoholic Products Manufacturing and Dealers
+        identifier: 9
+      - name: Transportation Equipment Manufacturing and Dealers
+        identifier: 10
+      - name: Wood and Furniture Manufacturing and Dealers
+        identifier: 11
+      - name: Apparel Manufacturing
+        identifier: 12
+      - name: Textile Manufacturing
+        identifier: 13
+      - name: Rubber/Plastics Products Manufacturing and Dealers
+        identifier: 14
+      - name: Leather and Leather Products Manufacturing and Dealers
+        identifier: 15
+      - name: Furniture Manufacturing and Dealers
+        identifier: 16
+      - name: Wood Products Manufacturing and Dealers
+        identifier: 17
+      - name: Miscellaneous Products Manufacturing and Dealers
+        identifier: 18
+      - name: Jewellery Products Manufacturing and Dealers
+        identifier: 19
+      - name: Sports/Entertainment Products Manufacturing and Dealers
+        identifier: 20
+      - name: Electronic Equipment Manufacturing and Dealers
+        identifier: 21
+      - name: Communication Equipment Manufacturing and Dealers
+        identifier: 22
+      - name: Glass Products Manufacturing and Dealers
+        identifier: 23
+      - name: Textile and Apparel Industries
+        identifier: 24
+      - name: Manufacturing Industries
+        identifier: 25
+  - name: Marketing & Advertising
+    identifier: 17
+  - name: Media & Entertainment
+    identifier: 18
+    sub_sectors:
+      - name: Arts/Entertainment and Recreation Related Services
+        identifier: 1
+      - name: Motion Pictures and Recording Related Industries
+        identifier: 2
+      - name: Theatres or Motion Picture Exhibition
+        identifier: 3
+      - name: Production or Distribution of Motion Picture
+        identifier: 4
+      - name: Arts/Entertainment and Recreational Places
+        identifier: 5
+      - name: Arts/Entertainment and Recreational Activities
+        identifier: 6
+      - name: Publishing and Printing Related Activities
+        identifier: 7
+      - name: Printing Related Services
+        identifier: 8
+      - name: Publishing/Book Selling Related Services
+        identifier: 9
+      - name: Publishing/Printing Related Activities
+        identifier: 10
+  - name: Non-Profit
+    identifier: 19
+    sub_sectors:
+      - name: Social Services
+        identifier: 1
+  - name: Other Orgs & Services
+    identifier: 20
+    sub_sectors:
+      - name: Engineering and Scientific Research Related Services
+        identifier: 1
+      - name : Taxi Transits
+        identifier: 2
+      - name : Membership Organizations
+        identifier: 3
+      - name : Other Services
+        identifier: 4
+
+  - name: Pharma & Life sciences
+    identifier: 21
+    sub_sectors:
+      - name: Drug Manufacturing and Drug Stores
+        identifier: 1
+      - name: Medical Equipment Manufacturing and Dealers
+        identifier: 2
+  - name: Professional Services - Non IT
+    identifier: 22
+    sub_sectors:
+      - name: Beauty shop/Barber shop and Beauty Supply Stores
+        identifier: 1
+      - name: Building Cleaning and Pest Control Services
+        identifier: 2
+      - name: Business Related Services
+        identifier: 3
+      - name: Day Care Services
+        identifier: 4
+      - name: Funeral Services and Crematories
+        identifier: 5
+      - name: Laundry/Cleaning and Garment Services
+        identifier: 6
+      - name: Legal Services
+        identifier: 7
+      - name: Personal Services
+        identifier: 8
+      - name: Photography/Art Design Related Services
+        identifier: 9
+      - name: Postal and Courier Services
+        identifier: 10
+      - name: Repair or Maintenance or Rental Related Services
+        identifier: 11
+      - name: Security Services
+        identifier: 12
+      - name: Beauty Shop
+        identifier: 13
+      - name: Barber Shop
+        identifier: 14
+      - name: Beauty Supply Store
+        identifier: 15
+      - name: Man Security Services
+        identifier: 16
+      - name: All Kind Of Personal Services
+        identifier: 17
+      - name: Automobile Rental/Repair Services and Parking
+        identifier: 18
+      - name: Automobile Rental Services
+        identifier: 19
+      - name: Automobile Repair/Parking Services
+        identifier: 20
+  - name: Real Estate & Construction
+    identifier: 23
+    sub_sectors:
+      - name: Construction and Related Activities
+        identifier: 1
+      - name: Lumber and Construction Material Dealers
+        identifier: 2
+      - name: Non-Metallic Mineral and Construction Material Manufacturing
+        identifier: 3
+      - name: Real Estate
+        identifier: 4
+      - name: Construction Industries
+        identifier: 5
+  - name: Retail
+    identifier: 24
+    sub_sectors:
+      - name: Retail Nurseries and Garden Supply Stores
+        identifier: 1
+      - name: Warehousing
+        identifier: 2
+      - name: Wholesale and Retail Dealers
+        identifier: 3
+      - name: Textile or Apparel Dealers and Stores
+        identifier: 4
+      - name: Shoe Store
+        identifier: 5
+  - name: Telecommunications
+    identifier: 25
+    sub_sectors:
+      - name: Communications
+        identifier: 1
+      - name: Radio/TV Communication
+        identifier: 2
+      - name: Telephone Communication
+        identifier: 3
+      - name: Communication Services
+        identifier: 4
+  - name: Transportation & Logistics
+    identifier: 26
+    sub_sectors:
+      - name: Air or Railroad or Water Transportation Services and Dealers
+        identifier: 1
+      - name: Transportation Related Services
+        identifier: 2
+      - name: Water Transportation Services and Dealers
+        identifier: 3
+      - name: Air Transportation Services and Dealers
+        identifier: 4
+      - name: Rail Road transportation Services and Dealers
+        identifier: 5
+      - name: Transportation/Warehousing and Postal Services
+        identifier: 6
+  - name: Travel & Hospitality
+    identifier: 27
+    sub_sectors:
+      - name: Hotels and Lodging Places
+        identifier: 1
+      - name: Taxi/Bus or Local Suburban Transits
+        identifier: 2
+      - name: Hotel and Motels
+        identifier: 3
+      - name: Lodge and Stay Places
+        identifier: 4
+      - name: Bus or Local Suburban Transits
+        identifier: 5
+      - name: Taxi Transits
+        identifier: 6

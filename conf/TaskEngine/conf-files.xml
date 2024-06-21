@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!-- $Id$ -->
+<conf-files>
+ 	<ConfFile url="service.xml" />
+	<ConfFile url="bean.xml" />
+	<ConfFile url="threadpools.xml" />
+	<ConfFile url="log-archive-task.xml" />
+	<ConfFile url="backup-schedule.xml"/>
+</conf-files>

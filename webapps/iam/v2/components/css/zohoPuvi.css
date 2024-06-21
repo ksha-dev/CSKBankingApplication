@@ -1,0 +1,51 @@
+/*$Id$*/
+@font-face {
+    font-family: 'ZohoPuvi';
+    src: url('../images/zohopuvi/zoho_puvi_regular.eot'); /* IE9 Compat Modes */
+    src: url('../images/zohopuvi/zoho_puvi_regular.eot') format('embedded-opentype'), /* IE6-IE8 */
+         url('../images/zohopuvi/zoho_puvi_regular.woff') format('woff'), /* Modern Browsers */
+         url('../images/zohopuvi/zoho_puvi_regular.ttf') format('truetype'); /* Safari, Android, iOS */
+         font-style: normal;
+    	 font-weight: 400;
+    	 text-rendering: optimizeLegibility;
+    	 font-display:swap;
+}
+@font-face {
+    font-family: 'ZohoPuvi';
+    src: url('../images/zohopuvi/zoho_puvi_medium.eot'); /* IE9 Compat Modes */
+    src: url('../images/zohopuvi/zoho_puvi_medium.eot') format('embedded-opentype'), /* IE6-IE8 */
+         url('../images/zohopuvi/zoho_puvi_medium.woff') format('woff'), /* Modern Browsers */
+         url('../images/zohopuvi/zoho_puvi_medium.ttf') format('truetype'); /* Safari, Android, iOS */
+             font-style: medium;
+    		 font-weight: 500;
+    		 font-display:swap;
+    		 text-rendering: optimizeLegibility;
+}
+@font-face {
+    font-family: 'ZohoPuvi';
+    src: url('../images/zohopuvi/zoho_puvi_semibold.eot'); /* IE9 Compat Modes */
+    src: url('../images/zohopuvi/zoho_puvi_semibold.eot') format('embedded-opentype'), /* IE6-IE8 */
+         url('../images/zohopuvi/zoho_puvi_semibold.woff') format('woff'), /* Modern Browsers */
+         url('../images/zohopuvi/zoho_puvi_semibold.ttf') format('truetype'); /* Safari, Android, iOS */
+         font-style: semi-bold;
+    	 font-weight: 600;
+    	 font-display:swap;
+    	 text-rendering: optimizeLegibility;
+}
+@font-face {
+    font-family: 'ZohoPuvi';
+    src: url('../images/zohopuvi/zoho_puvi_bold.eot'); /* IE9 Compat Modes */
+    src: url('../images/zohopuvi/zoho_puvi_bold.eot') format('embedded-opentype'), /* IE6-IE8 */
+         url('../images/zohopuvi/zoho_puvi_bold.woff') format('woff'), /* Modern Browsers */
+         url('../images/zohopuvi/zoho_puvi_bold.ttf') format('truetype'); /* Safari, Android, iOS */
+         font-style: bold;
+    	 font-weight: 700;
+    	 font-display:swap;
+    	 text-rendering: optimizeLegibility;
+}
+
+
+body {
+	font-family: 'ZohoPuvi', Georgia;
+	font-weight:400;
+}

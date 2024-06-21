@@ -1,0 +1,71 @@
+<!-- $Id: bean.xml,v 1.22 2007/03/30 10:20:12 saranbabu Exp $ -->
+<beans>
+
+    <Bean bean_id="Bean:bean_id:Persistence" bean_name="Persistence" module_id="Persistence" transaction_type="1" classname="com.adventnet.persistence.PersistenceBean">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:Persistence-NPI" order_no="2" incp_name="NPI" classname="com.adventnet.persistence.interceptor.NotificationPersistenceInterceptor"/>
+    </Bean>  
+
+    <Bean bean_id="Bean:bean_id:PersistenceLite"  bean_name="PersistenceLite" module_id="Persistence" classname="com.adventnet.persistence.PersistenceBean">
+    </Bean>
+    
+    <Bean bean_id="Bean:bean_id:Persistence-NT" bean_name="Persistence-NT" module_id="Persistence" transaction_type="2" classname="com.adventnet.persistence.PersistenceBean">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:Persistence-NT-NPI" order_no="2" incp_name="NPI" classname="com.adventnet.persistence.interceptor.NotificationPersistenceInterceptor"/>
+    </Bean>
+    
+    <Bean bean_id="Bean:bean_id:CachedPersistence" bean_name="CachedPersistence" module_id="Persistence" classname="com.adventnet.persistence.ReadOnlyPersistenceBean" transaction_type="3">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:CachedPersistence-CI" order_no="2" incp_name="CI"  classname="com.adventnet.persistence.interceptor.CacheInterceptor"/>
+    </Bean>
+    
+    <!-- NON AUTHORIZED BEANS -->
+    <Bean bean_id="Bean:bean_id:PurePersistence" bean_name="PurePersistence" module_id="Persistence" transaction_type="1" classname="com.adventnet.persistence.PersistenceBean">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:PurePersistence-NPI" order_no="1" incp_name="NPI" classname="com.adventnet.persistence.interceptor.NotificationPersistenceInterceptor"/>
+    </Bean>
+    
+    <Bean bean_id="Bean:bean_id:PurePersistenceLite" bean_name="PurePersistenceLite" module_id="Persistence" classname="com.adventnet.persistence.PersistenceBean">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:PurePersistenceLite-DAEI" order_no="1" incp_name="DAEI" classname="com.adventnet.persistence.interceptor.DAEInterceptor"/>
+    </Bean>
+    
+    <Bean bean_id="Bean:bean_id:PureCachedPersistence" bean_name="PureCachedPersistence" module_id="Persistence" classname="com.adventnet.persistence.ReadOnlyPersistenceBean" transaction_type="3">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:PureCachedPersistence-CI" order_no="1" incp_name="CI" classname="com.adventnet.persistence.interceptor.CacheInterceptor"/>
+    </Bean>
+
+    <Bean bean_id="Bean:bean_id:ReadOnlyPersistence" bean_name="ReadOnlyPersistence" module_id="Persistence" classname="com.adventnet.persistence.ReadOnlyPersistenceBean" transaction_type="3">
+    </Bean>
+
+    <Bean bean_id="Bean:bean_id:PureReadOnlyPersistence" bean_name="PureReadOnlyPersistence" module_id="Persistence" classname="com.adventnet.persistence.ReadOnlyPersistenceBean" transaction_type="3">
+    </Bean>
+    
+    <!-- Bean to persist RO data in file storage. Used only in Read Only Servers -->
+    <Bean bean_id="Bean:bean_id:ChronicleQueueBean" bean_name="ChronicleQueueBean" module_id="Persistence" classname="com.zoho.mickey.server.readonly.bean.ChronicleQueueBean" transaction_type="4">
+    </Bean>
+    
+    <!-- Bean to select and persist RO data. Used only in Read Only Servers -->
+    <Bean bean_id="Bean:bean_id:ReadOnlyServerBean" bean_name="ReadOnlyServerBean" module_id="Persistence" classname="com.zoho.mickey.server.readonly.bean.ReadOnlyServerBean" transaction_type="4">
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ROBean" property="ROBean" value="PureReadOnlyPersistence"/>
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:WOBean" property="WOBean" value="ChronicleQueueBean"/>
+    </Bean>
+    
+    <!-- wrapped persistence bean. Actual bean will be used based on the nature of server -->
+    <Bean bean_id="Bean:bean_id:WrappedPersistence" bean_name="WrappedPersistence" module_id="Persistence" classname="com.zoho.mickey.persistence.bean.WrappedPersistenceBean" transaction_type="4">
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ROServerBean" property="ROServerBean" value="ReadOnlyServerBean"/>
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ServerBean" property="ServerBean" value="Persistence"/>
+    </Bean>
+    
+    <!-- wrapped pure persistence bean. Actual bean will be used based on the nature of server -->
+    <Bean bean_id="Bean:bean_id:WrappedPurePersistence" bean_name="WrappedPurePersistence" module_id="Persistence" classname="com.zoho.mickey.persistence.bean.WrappedPersistenceBean" transaction_type="4">
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ROServerPureBean" property="ROServerBean" value="ReadOnlyServerBean"/>
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ServerPureBean" property="ServerBean" value="PurePersistence"/>
+    </Bean>
+    
+    <!-- wrapped cached persistence bean. Actual bean will be used based on the nature of server -->
+    <Bean bean_id="Bean:bean_id:WrappedCachePersistence" bean_name="WrappedCachePersistence" module_id="Persistence" classname="com.zoho.mickey.persistence.bean.WrappedCachePersistenceBean" transaction_type="4">
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ROCacheBean" property="ROServerBean" value="PureReadOnlyPersistence"/>
+        <BeanProperties beanprop_id="BeanProperties:beanprop_id:ServerCacheBean" property="ServerBean" value="PureCachedPersistence"/>
+    </Bean>
+    
+    <!-- Bean to persist data obtained specifically from Read Only servers -->
+    <Bean bean_id="Bean:bean_id:RODataPersistence" bean_name="RODataPersistence" module_id="Persistence" transaction_type="2" classname="com.adventnet.persistence.PersistenceBean">
+        <BeanInterceptor bean_incp_id="BeanInterceptor:bean_incp_id:RODataPersistence-NPI" order_no="1" incp_name="NPI" classname="com.zoho.mickey.server.readonly.bean.interceptor.RONotificationInterceptor"/>
+    </Bean>  
+    
+</beans>

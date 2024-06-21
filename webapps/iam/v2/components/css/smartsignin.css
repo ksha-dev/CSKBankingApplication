@@ -1,0 +1,401 @@
+/*$Id$*/
+@font-face {
+  font-family: 'signinicon';
+  src:  url('../images/fonts/signinicon.eot');
+  src:  url('../images/fonts/signinicon.eot') format('embedded-opentype'),
+    url('../images/fonts/signinicon.woff2') format('woff2'),
+    url('../images/fonts/signinicon.ttf') format('truetype'),
+    url('../images/fonts/signinicon.woff') format('woff'),
+    url('../images/fonts/signinicon.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'signinicon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+	margin: 0px;
+}
+html::-webkit-scrollbar{
+	display: none;
+}
+.bg_one {
+	display: block;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: url('../images/smartsigninbg.svg') transparent; 
+	background-size: auto 100%;
+	z-index: -1;
+}
+.signin_container {
+	display: block;
+	width: 920px;
+	min-height: 515px;
+	background-color: #fff;
+	box-shadow: 0px 2px 30px #ccc6;
+	margin: auto;
+	position: relative;
+	z-index: 1;
+	margin-top: 7%;
+	overflow: hidden;
+	border:1px solid #DBDBDB; 
+	border-radius: 8px;
+}
+.signin_box {
+	width: 500px;
+	min-height: 515px;
+	height: auto;
+	background: #fff;
+	box-sizing: border-box;
+	padding: 50px 50px;
+	transition: all .1s ease-in-out;
+	float: left;
+	overflow-y: auto;
+	display: table-cell;
+	border-right: 1px solid #DBDBDB;
+}
+.zoho_logo{
+	display: block;
+	height: 40px;
+	width: auto;
+	margin:auto;
+	background: url('../images/newZoho_logo.svg') no-repeat transparent;
+	background-size: auto 100%;
+	background-position: center;
+}
+
+.Site24x7{background-image: url("../images/apps/site24x7-logo.png")}
+
+.AlarmsOne{background-image: url("../images/apps/alarmsone.png")}
+
+.SDPOnDemand{background-image: url("../images/apps/SDPOnDemand.png")}
+
+.MDMOnDemand{background-image: url("../images/apps/MDMOnDemand.png")}
+
+.darkmode .MDMOnDemand{background-image: url("../images/apps/MDMOnDemand_dark.svg")}
+
+.ManageEngine {background-image: url("../images/apps/manageengine-logo.png")}
+
+.ZohoPOS{background-image: url("../images/apps/Zakya-logo.png")}
+
+.TrainerCentral{background-image: url("../images/apps/TrainerCentral.png")}
+
+.DesktopCentralCloud{background-image: url("../images/apps/Endpoint_Central_logo.gif")}
+
+.MEAplus{background-image: url("../images/apps/MEAPlus.svg")}
+
+.Vani, .RemoteBoard{background-image: url("../images/apps/Vani.svg")}
+
+.Nila{background-image: url("../images/apps/Nila.svg")}
+
+.portal_logo{
+	display: block;
+	height: 36px;
+	width: auto;
+	margin:auto;
+}
+.signin_head {
+	display: block;
+	font-size: 20px;
+	font-weight: 600;
+	margin-top:24px;
+	margin-bottom: 24px;
+	line-height: 30px;
+	transition: all .1s ease-in-out;
+	text-align: center;
+}
+.restrict_desc a{
+	text-decoration: none;
+	color:#159AFF;
+}
+.verify_qr{
+	width:400px;
+	margin-bottom:5%;
+}
+.qrcodecontainer{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+	height:224px;
+	border:4px solid #4E5BBE;
+	border-radius: 16px;
+	box-sizing: border-box;
+	overflow: hidden;
+	transition:0.3s ease-in-out;
+}
+.wh100
+{
+	height: 204px;
+	width:204px;
+	margin:-6px;
+}
+.gobacktoemail{
+	text-align: center;
+	width: auto;
+	margin: auto;
+	padding: 20px 30px 0px 30px;
+	cursor:pointer;
+	color: #159AFF;
+    line-height: 16px;
+    font-weight: 500;
+    font-size: 16px;
+}
+.rightside_box {
+	width: 420px;
+	height: auto;
+	box-sizing: border-box;
+	padding: 40px 40px 10px 40px;
+	background-color: #fff;
+	display:table-cell;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.scanqrtitle{
+	font-size: 14px;
+	text-align: center;
+	margin-top:6%;
+	margin: 24px 10% 32px 10%;
+	width: 80%;
+	line-height: 20px;
+}
+.smartsignintitle{
+	font-weight: 500;
+	font-size:14px;
+	padding-bottom: 10px;
+}
+.smartsigincontent1,.smartsigincontent2,.smartsigincontent3{
+	font-size:14px;
+	line-height: 24px;
+	padding-bottom: 5px;
+}
+.smartsigninheader{
+	margin-top:35px;
+	font-size: 13px;
+}
+.oneauthslider{ 
+	margin-bottom:20px;
+}
+.oneauthcontainer{
+	display: block;
+	margin: auto;
+	height: 300px;
+}
+.qr-reload-container{display: none; position:absolute;margin-left: 125px;margin-top:76px;text-align: center; z-index: 1}
+.flexC{
+	display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.show-reload-btn {display: flex;}
+.qr-reload-btn,.smartsign-initial-loading{
+	color: #fff;
+	background-color: #4E5BBE;
+	border-radius: 12px;
+	border: 4px solid #ffffff;
+	cursor: pointer;
+	box-sizing: border-box;
+	opacity:100%;
+}
+.reload-content{
+	width: 150px;
+	height: 48px;
+}
+.smartsign-initial-loading{
+	display:inline-block; 
+	position:relative;
+	height:48px;
+	width:48px;
+	padding:5px;
+	z-index:2;
+	cursor: default;
+	border-radius:50px;
+}
+.smartsign-initial-loading-position{
+	position:absolute;
+	margin-top:76px;
+	margin-left:175px;
+}
+@keyframes rotate {
+    from{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(360deg);
+    }
+} 
+#qr_loading_animation{
+	animation:rotate 1s infinite linear;
+} 
+.icon-Reload:before {
+  content: "\e912";
+}
+.icon-Denied:before {
+  content: "\e974";
+  font-size:80px;
+  color:#D8454F;
+}
+.qr-reload-icon{font-size: 30px;}
+.qr-reload-txt{color: #fff;font-size: 14px;text-align: left;}
+.zoho_logo_position_center {
+	background-position: center;
+	margin-top: 30px;
+}
+/* restrict signin handling */
+#restrict_signin, #restrict_oneauth_signin{
+	display: none;
+}
+.restrict_head{
+	text-align: center;
+	margin-top: 20px;
+}
+.restrict_icon{
+    display: block;
+    width:fit-content;
+    margin: auto;
+    margin-top: 24px;
+}
+.restrict_desc{
+	margin-top: 20px;
+	text-align:center;
+	line-height: 30px;
+}
+.Restrict_btn {
+	margin-top:32px;
+}
+.mod_container{
+	width:500px;
+}
+.line {
+	background-color: #f1f1f1;
+	width: 100%;
+	height: 2px;
+	border-radius: 1px;
+	margin-bottom: 10px;
+	position: relative;
+}
+.line_con{
+	position: absolute;
+    top: -8px;
+    text-align: center;
+    width: 100%;
+    margin: auto;
+}
+.line_con span{
+	background: #fff;
+	color: #707070;
+	font-size: 14px;
+}
+.darkmode .bg_one{
+	background: #191A23;
+}
+.darkmode .zoho_logo{
+	background-image: url("../images/newZoho_logo_dark.svg");
+}
+.darkmode,.darkmode .signin_container,.darkmode .signin_box, .darkmode .rightside_box{
+	background: #2F303B;
+}
+.darkmode .textbox{
+	background: #FFFFFF 0.5;
+}
+.darkmode .signin_container{
+	box-shadow: none;
+	border: 2px solid #3E3F49;
+	border-radius: 4px;
+}
+.darkmode .signin_box{
+	border-right: 2px solid #3E3F49;
+}
+.darkmode .smartsigninbutton{
+	background: linear-gradient(180deg, #5368FF 0%, #4C5BCC 100%);
+}
+.darkmode .smartsigninbutton:hover{
+	background: linear-gradient(180deg, #2939AA 0%, #00108B 100%);
+}
+.darkmode,.darkmode input{
+	color: #CECECE;
+}
+.darkmode .qrcodecontainer{
+	background: #ffffff;
+}
+.darkmode .line_con span{
+	color: #9E9E9E;
+	background: #2F303B;
+	font-size: 14px;
+}
+.darkmode .line{
+	background-color: #3E3F49;
+}
+.darkmode .line_con{
+	background-color: transparent;
+}
+.expand_qr,.cancel_qr{
+	display:flex;
+	justify-content:center;
+}
+.expand_qr{margin-top:-2px;}
+.cancel_qr{margin-top:-4px;}
+.expand_qr span,.cancel_qr span{
+	letter-spacing: 0.12px;
+	font-weight:600;
+	font-size:12px;
+	color: #000000;
+	opacity:0.4;
+	cursor:pointer;
+	transition:0.3s ease-in-out;
+}
+.qrcodecontainer:hover .expand_qr span{opacity:1;transition:0.3s ease-in-out;}
+.cancel_qr:hover span{opacity:1;transition:0.3s ease-in-out;}
+.icon-Collapse:before{
+	content:"\e96a";
+	font-size:12px;
+	margin-right:6px;
+}
+.icon-Expand:before{
+	content:"\e975";
+	font-size:12px;
+	margin-right:4px;
+}
+.greylayer{
+	display: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: #00000080 0% 0% no-repeat padding-box;
+	opacity: 0.4;
+	z-index:2;
+	transition:0.3s ease-in-out;
+	
+}
+#qr_container_dom{opacity:0;}
+.container_expand{
+	position:absolute;
+	z-index:-1;
+	width:200px;
+	height:224px;
+	top:168px;
+	left:150px;
+	background:#ffffff;
+	opacity:0;
+	transition: transform 0.3s ease-in-out;
+	border:2px solid #4E5BBE !important;
+}
+#qr_container_dom2{padding:2px;}

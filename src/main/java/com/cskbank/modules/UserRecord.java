@@ -5,23 +5,37 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.InvalidInputMessage;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public abstract class UserRecord implements Serializable {
 
 	public static enum Type {
-		CUSTOMER, EMPLOYEE, ADMIN;
+		CUSTOMER(3), EMPLOYEE(2), ADMIN(1);
 
-		public static Type convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid User Type Obtained");
-			}
+		private int typeID;
+
+		private Type(int typeID) {
+			this.typeID = typeID;
 		}
+
+		public int getTypeID() {
+			return this.typeID;
+		}
+
+		public static Type getType(int typeID) throws AppException {
+			for (Type type : Type.values()) {
+				if (type.typeID == typeID) {
+					return type;
+				}
+			}
+			throw new AppException(InvalidInputMessage.INVALID_IDENTIFIER);
+		}
+
 	}
 
 	private int userId;
@@ -90,7 +104,7 @@ public abstract class UserRecord implements Serializable {
 	}
 
 	public void setType(String userType) throws AppException {
-		this.type = UserRecord.Type.convertStringToEnum(userType);
+		this.type = ConvertorUtil.convertToEnum(UserRecord.Type.class, userType);
 	}
 
 	public void setType(UserRecord.Type userType) throws AppException {
@@ -116,8 +130,8 @@ public abstract class UserRecord implements Serializable {
 		this.modifiedBy = userId;
 	}
 
-	public void setModifiedAt(long dateTime) {
-		this.modifiedAt = dateTime;
+	public void setModifiedAt(Long dateTime) {
+		this.modifiedAt = dateTime == null ? 0 : dateTime;
 	}
 
 	// Getters

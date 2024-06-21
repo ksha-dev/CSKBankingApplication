@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+<param-groups>
+   <param-group name="samlresponseparams">
+     <param name="SAMLResponse" max-len="50000" type="String" />
+      <param name="RelayState" max-len="50000" type="String" />
+      <param name="SAMLart" max-len="500" type="String" />
+    </param-group>
+    <param-group name="samlrequestparams">
+        <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
+        <param name="ZOID" type="long" />
+        <param name="woID" regex="app_id" />
+        <param name="appid" regex="app_id" />
+        <param name="uname" regex="email" />
+		<param name="getticket" type="boolean" />
+    </param-group>
+    <param-group name="loginparams">
+      <param name="LOGIN_ID" regex="username_or_email" />
+      <param name="email_readonly" type="boolean" description="To set readonly mode to loginId field"/>
+      <param name="PASSWORD" regex="oldpassword" max-len="250" min-len="1" secret="true" />
+      <param name="backtourl" regex="serviceurl" max-len="50000" />
+      <param name="PARTNER_DOMAIN" regex="domain" />
+      <param name="IS_AJAX" type="boolean" />
+      <param name="is_org" type="boolean" />
+      <param name="idpfwd" type="boolean" />
+      <param name="SERVICE_NAME" regex="servicename" />
+      <param name="lid" regex="username_or_email" />
+      <param name="pwd" regex="oldpassword" max-len="250" secret="true" />
+      <param name="submit" regex="plain_str" />
+      <param name="hide_signup" type="boolean" />
+      <param name="hidesignup" type="boolean" />
+      <param name="hide_gsignup" type="boolean" />
+      <param name="hidegsignup" type="boolean" />
+      <param name="hide_title" type="boolean" />
+      <param name="hide_fp" type="boolean" />
+      <param name="signup_bgcolor" regex="colorcode" />
+      <param name="username_label" regex="iamcleartextpattern" />
+      <param name="partner_domain" regex="domain" />
+      <param name="load_ifr" type="boolean" />
+      <param name="h" type="boolean" />
+      <param name="css" regex="serviceurl" max-len="500" />
+      <param name="ga" type="boolean" description="Boolean to show only the GoogleApps login box" />
+      <param name="fbuid" type="long" />
+      <param name="action" regex="plain_str" max-len="20" />
+      <param name="hidefbconnect" type="boolean" />
+      <param name="emailid" regex="email" />
+      <param name="dcc" type="boolean" description="Disable cookie check" />
+      <param name="hidegooglesignin" type="boolean" />
+      <param name="hidegappsignup" type="boolean" />
+      <param name="hideyahoosignin" type="boolean" />
+      <param name="showsignupbutton" type="boolean" />
+      <param name="hip" type="boolean" />
+      <param name="errtype" type="int" />
+      <param name="captcha" regex="hipstring" max-len="8" />
+      <param name="cdigest" regex="digest" max-len="500" />
+      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
+      <param name="getticket" type="boolean" />
+      <param name="appname" regex="iamcleartextpattern" />
+      <param name="override_css" type="boolean" />
+      <param name="hide_logo" type="boolean" />
+      <param name="appinfo" regex="serviceurl" />
+      <param name="hide_remember" type="boolean" />
+      <param name="go" regex="google|facebook|yahoo" />
+      <param name="iamcsrcoo" regex="iamcleartextpattern" max-len="500" />
+      <param name="iamdccsrf" regex="iambase64" max-len="500" />
+      <param name="hide_reg_link" type="boolean" description="To show or hide SignUp link for non registered email login error message" />
+      <param name="remove_temp_token" regex="false" />
+      <param name="newtheme" type="boolean" />
+      <param name="thirdpartydomain" type="boolean" description="To redirect iframe url to parent window when csrf cookie unavailable"/>
+      <param name="showfs" type="boolean" description="To show/hide federated signin option"/>
+      <param name="portal_zid" type="long" description="Portal/Org id to display the logo"/>
+      <param name="portal_id" type="long" description="Portal/Org id to display the logo"/>
+      <param name="portal_name" regex="[a-zA-Z0-9]+" description="manageengine/site24x7 to display their logo"/>
+      <param name="portal_domain" regex="domain" description="Org domain to display the org logo"/>
+      <param name="autofocus_disable" type="boolean" />
+      <param name="client_auth" type="boolean" />
+      <param name="dsrc" regex="iamcleartextpattern"/>
+      <param name="hidelinkedin" type="boolean" />
+      <param name="hidetwitter" type="boolean" />
+      <param name="hideweibo" type="boolean" />
+      <param name="hidebaidu" type="boolean" />
+      <param name="hidedouban" type="boolean" />
+      <param name="hideqq" type="boolean" />
+      <param name="hideazure" type="boolean" />
+      <param name="msignup" type="boolean" />
+      <param name="IAM_CID" regex="^[0-9\.a-zA-Z]+$" max-len="512" />
+      <param name="vdigest" regex="digest" max-len="5000" description="digest for associating fs user with remote account"/>
+      <param name="signupurl" regex="serviceurl" max-len="500" />
+      <param name="cli_time" type="long" />
+    </param-group>
+</param-groups>
+
+  <urls>
+    <url path="/" authentication="optional" method="get">
+      <param name="monitor" regex="true" />
+      <param name="LOGIN_ID" regex="username_or_email" />
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    <url path="/static/index.jsp">
+      <param name="LOGIN_ID" regex="username_or_email" />
+      <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    <url path="/mfaerror">
+    	<param name="lockapp" type="boolean"/>
+    	<param name="css" regex="serviceurl" max-len="500" />
+    </url>
+    <url path="/ui/unauth/orguserinvite.jsp">
+      <param name="DIGEST" regex="digest" max-len="500" />
+    </url>
+    <url path="/login" redirect="/signin" />
+    <url path="/authorize" https="true" authentication="optional" description="Temp page to set cookie">
+    	<param name="tptt" regex="iamticket" secret="true" max-len="1000"/>
+    	<param-group name="loginparams"/>
+    </url>
+    <url path="/confirm" https="true" description="Email address confirmation" method="get" authentication="optional">
+      <param name="DIGEST" regex="digest" min-occurrences="1" max-len="500" />
+      <param name="sch" type="int"/>
+	  <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    <!--
+        unsupported url configuration commented below
+        <url path="/g/pnia" description="New User Reject invitation">
+            <param name="DIGEST" regex="digest" min-occurrences="1" max-len="500"/>
+        </url>
+
+        <url path="/g/pnir" description="New User Reject invitation">
+            <param name="DIGEST" regex="digest" min-occurrences="1" max-len="500"/>
+		</url>
+
+        <url path="/g/peia" description="Existing user Accept Invitation">
+            <param name="DIGEST" regex="digest" min-occurrences="1" max-len="500"/>
+            <param name="PASSWORD" regex="oldpassword"/>
+		</url>
+
+        <url path="/g/peir" description="Existing user Reject Invitation">
+            <param name="DIGEST" regex="digest" min-occurrences="1" max-len="500"/>
+            <param name="PASSWORD" regex="oldpassword"/>
+        </url-->
+  	<url path="/samlresponse/(${ZID}|${domain-name})(/${ciphertext})?" url-type="multiple" description="process the saml authentication response" authentication="optional" method="get">
+       <param-group name="samlresponseparams"/>
+    </url>
+    <url path="/samlresponse/(${ZID}|${domain-name})(/${ciphertext})?" url-type="multiple" description="process the saml authentication response" authentication="optional" method="post" csrf="false">
+       <param-group name="samlresponseparams"/>
+	   <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    <url path="/samlDoLogout" description="Forces the user to logout. The IDP has sent a logout request" authentication="optional" method="get">
+      <param name="SAMLRequest" max-len="50000" type="String" />
+      <param name="SAMLResponse" max-len="50000" type="String" />
+      <param name="RelayState" max-len="50000" type="String" />
+	  <param name="SigAlg" max-len="100" type="String"/>
+	  <param name="Signature" max-len="400" type="String" />
+    </url>
+    <url path="/samlDoLogout" description="Forces the user to logout. The IDP has sent a logout request" authentication="optional" method="post" csrf="false">
+      <param name="SAMLRequest" max-len="50000" type="String" />
+      <param name="SAMLResponse" max-len="50000" type="String" />
+      <param name="RelayState" max-len="50000" type="String" />
+	  <param name="SigAlg" max-len="100" type="String"/>
+	  <param name="Signature" max-len="400" type="String" />
+    </url>
+    <url path="/iam/signin/samlsp/${ZID}(/${ciphertext})?" url-type="multiple" description="process the saml authentication response" authentication="optional" method="post" csrf="false" relogin="true" >
+      <response>
+       <headers>
+       <header name="X-Frame-Options" value="trusted"/>
+        </headers>
+	 </response>
+     <param-group name="samlresponseparams"/>
+    </url>
+    <url path="/p/setup" sl_auth="tfatemp_required" method="post" csrf="true" duration="30" lock-period="100" threshold="10" user="true" description="Setup TFA with Mobile">
+      <param name="mobile" regex="phone" />
+      <param name="countrycode" regex="countrycode" />
+      <param name="verifytype" type="int" />
+    </url>
+    <url path="/goauth" description="Url for sign in using google Oauth" https="true" method="post" csrf="false" authentication="optional">
+      <param name="digest" regex="digest" max-len="512" />
+      <param name="redirecturl" regex="url" max-len="50000" />
+      <param name="domain" regex="domain" />
+      <param name="ZSService" regex="iamcleartextpattern" />
+      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
+      <param name="appname" regex="iamcleartextpattern" />
+      <param name="getticket" type="boolean" />
+      <param name="account" regex="zid" max-len="100" />
+      <param name="g_source" regex="iamcleartextpattern" />
+      <param name="hide_signup" type="boolean" />
+      <param name="nup" type="boolean" />
+      <param name="identifier" regex="url" />
+    </url>
+    <url path="/goauthresponse" description="Url to handle google Oauth response" sl_auth="fs_required" method="get">
+      <param name="state" regex="digest" max-len="50000" />
+      <param name="redirecturl" regex="url" max-len="50000" />
+      <param name="prompt" regex="iamcleartextpattern" />
+      <param name="authuser" regex="iamcleartextpattern" />
+      <param name="code" regex="iamcleartextpattern" max-len="1000" />
+      <param name="hd" regex="domain" />
+      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />      
+		<param name="error" regex="iamcleartextpattern" max-len="100" />
+    </url>
+    <url path="/ui/settings/verifyMobileSignup.jsp" sl_auth="ms_optional" authentication="optional" >
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+    <url path="/ui/unauth/confirmedUserSuccessPage.jsp" />    
+    <url path="/gdpr/dpastatus/update" method="post" csrf="false">
+    	<param name="data" regex="iamjson"/>
+    </url>
+    
+    <url path="/googlec600844700329b5c.html" description="Google webmasters domain verify url">
+    </url>
+   
+     <url path="/accounts/widget/ticket" https="true" authentication="required" description="Create widget ticket" api="true" method="post" internal="true" scoped-services="all" >
+    	<param name="portal_client_id" regex="client_id"/>
+    </url>
+     <url path="/accounts/widget/validate" https="true"  method="get">
+    	<param name="user_token" regex="iambase64" max-len="1000" secret="true" />
+    </url>
+    
+    <url path="/api/public/v1/regiondetails" description="To get the region and associated countries" method="get" internal="true" scoped-services="all"></url>
+
+    <url path="/api/public/v1/geodetails" description="To get timezone(includes compressed),country,language list " method="get"  ignore-extraparam="true">
+    	<response>
+    	<!-- This is defined for cors request. if this is configured no need to configure option method in url attribute, security team will handle it
+    		 below header will be set for cors request.
+    		 refere:https://intranet.wiki.zoho.com/security/Cross-Origin-Resource-Sharing-Guidelines.html-->
+	    	<headers>
+	               <header name="Access-Control-Allow-Origin" value="trusted">
+	               <!-- coheader only will get set if the origin is trusted. check AccountsSecurityProvider.isTrusted() -->
+		               <coheader>
+		               	 <header name="Access-Control-Allow-Credentials" value="true"/>
+	              		 <header name="Access-Control-Allow-Methods" value="get"/>
+	               		 <header name="Access-Control-Max-Age" value="172800"/><!-- 172800 means allowing the browser to send request for 2 day -->
+		               </coheader>
+	               </header>
+	        </headers>
+        </response>
+    	<param name="get" regex="timezones|languages|countries" split="," max-occurrences="3"/>
+		<param name="service_language" regex="en|ja|zh|tr|hu|de|es|fr|it|nl|pt|sv|ko|ru|pl|hr|bg|ar|th|fl|in|zh_tw|pt_br|he|iw|vi"/>
+		<param name="isjs" type="boolean"/>
+		<param name="compress" type="boolean"/>
+	</url>
+   <url path="/ssokit/addemail" description="Add Secondary email option for sso kit" mweb_oauth="required">
+   		<param name="temp_token" regex="iamcleartextpattern" max-len="1500"/>
+   		<param name="email" regex="email" />
+   		<param name="action" type="String" />
+   		<param name="token" regex="iamcleartextpattern" max-len="500" max-occurrences="1" />
+   </url>
+   
+    <url path="/ssokit/closeaccount" description="Close Account for user" mweb_oauth="required">
+   		<param name="temp_token" regex="iamcleartextpattern" max-len="1500"/>
+   		<param name="token" regex="iamcleartextpattern" max-len="500" max-occurrences="1" />
+   </url>   
+  
+   <url path="/.well-known/apple-developer-domain-association.txt" description="To verify domain in apple side." />
+   <url path="/.well-known/apple-app-site-association" description="To open oneauth app through associated domains for ios" />
+   <url path="/.well-known/assetlinks.json" description="To open oneauth app through associated domains for android" />
+   
+    <url path="/accounts/pfs/[0-9]+/clientidpcallback" description="portal federation signin callback from IDP" method="get" ignore-extraparam="true">
+	 	<param name="state" regex="digest" max-len="5000" />
+		<param name="redirecturl"  xss="antisamyfilter" />
+		<param name="code" regex="^([a-zA-Z0-9\._\*\-%\/])+$" max-len="5000" />
+		<param name="accounts-server" regex="iamcleartextpattern" max-len="100" />
+		<param name="location" regex="iamcleartextpattern" />
+		<param name="session_state" regex="plain_str" />
+		<param name="authuser" regex="iamcleartextpattern" />
+		<param name="hd" regex="domain" />
+		<param name="prompt" regex="iamcleartextpattern" />
+		<param name="error" regex="iamcleartextpattern" max-len="1000" />
+		<param name="user" type="String" max-len="-1" />
+	 </url>
+	 <url path="/accounts/pfs/[0-9]+/clientidpcallback" description="portal federation signin callback from IDP" method="post" csrf="false" ignore-extraparam="true">
+	 	<param name="state" regex="digest" max-len="5000" />
+		<param name="redirecturl"  xss="antisamyfilter" />
+		<param name="code" regex="^([a-zA-Z0-9\._\*\-%\/])+$" max-len="5000" />
+		<param name="accounts-server" regex="iamcleartextpattern" max-len="100" />
+		<param name="location" regex="iamcleartextpattern" />
+		<param name="session_state" regex="plain_str" />
+		<param name="authuser" regex="iamcleartextpattern" />
+		<param name="hd" regex="domain" />
+		<param name="prompt" regex="iamcleartextpattern" />
+		<param name="error" regex="iamcleartextpattern" max-len="1000" />
+		<param name="user" type="String" max-len="-1" />
+	 </url>
+  </urls>
+  <urls prefix="(/accounts/p/[0-9]+(-[0-9]+)?)?" path-regex="true">
+    <url path="/pconfirm" authentication="optional" description="Portal invitation page" method="get">
+      <param name="digest" regex="digest" max-len="512" />
+      <param name="redirecturl" regex="url" max-len="50000" />
+      <param name="dcc"  type="boolean"/>
+      <param name="servicename" regex="servicename" />
+      <param name="orgtype" type="int" />
+      <param name="css_url" regex="urloruriwithparams" />
+      <param name="load_iframe" type="boolean" />
+     </url>
+     <url path="/pconfirm" authentication="optional" https="true"  description="Portal invitation exeution" method="post" csrf="false">
+       	 <param name="password" regex="password" max-len="250" secret="true" />
+	     <param name="cpassword" regex="password" max-len="250" secret="true" />
+	     <param name="is_ajax" type="boolean" />
+	     <param name="digest" regex="digest" max-len="512" />
+	     <param name="redirecturl" regex="url" max-len="50000" /> 
+	     <param name="orgtype" type="int" />
+	     <param name="load_iframe" type="boolean" />
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+	 </url>
+	 <url path="/signin/jwt/${ZID}(/${ciphertext})?" url-type="multiple" description="process the jwt authentication response" authentication="optional" method="get">
+       <param name="jwt" max-len="2000" type="String"/>
+       <param name="return_to" regex="serviceurl" max-len="50000"/>
+       <extraparam regex="cleartextpattern" max-len="2000" type="String" description="Some request contains jwt token in param other than `jwt`"/>
+    </url>
+	 <url path="/clientidprequest" description="portal federation signin request" method="get">
+	 	<param name="servicename" regex="servicename" />
+	 	<param name="serviceurl" regex="serviceurl" max-len="2000"/>
+	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
+		<param name="css_url" regex="urloruriwithparams" />
+		<param name="hide_fp" type="boolean" />
+		<param name="dcc" type="boolean" />
+		<param name="portal" max-len="100" regex="iamcleartextpattern" />
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+	 </url>
+	 <url path="/clientidprequest" description="portal federation signin request" method="post" csrf="false">
+	 	<param name="servicename" regex="servicename" />
+	 	<param name="serviceurl" regex="serviceurl" max-len="2000"/>
+	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
+		<param name="css_url" regex="urloruriwithparams" />
+		<param name="hide_fp" type="boolean" />
+		<param name="dcc" type="boolean" />
+		<param name="portal" max-len="100" regex="iamcleartextpattern" />
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+	 </url>
+	 <url path="/clientidpmanage" description="portal federation request management" method="get">
+	 	<param name="state" regex="digest" max-len="10000" />
+	 	<param name="redirecturl" regex="url" max-len="50000"/>
+	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
+	 	<param name="fromnewsignin"  type="boolean" />
+	 </url>
+	 <url path="/samlauthrequest/(${ZID}|${domain-name})(/${ciphertext})?" url-type="multiple" description="Client Portal SAML auth request using zaaid" authentication="optional" method="get">
+		<param-group name="loginparams"/>
+	 	<param-group name="samlrequestparams"/>
+		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+	 </url>
+	 <url path="/signin/samlsp/${ZID}(/${ciphertext})?" url-type="multiple" description="Client Portal SAML auth response using zaaid" authentication="optional" mweb_oauth="optional" method="post" csrf="false" relogin="true" ignore-extraparam="true">
+       <param-group name="samlresponseparams"/>
+    </url>
+	<url path="/signin/samlsp/${ZID}(/${ciphertext})?" url-type="multiple" description="Client Portal SAML auth response using zaaid" authentication="optional" mweb_oauth="optional" method="get" relogin="true" ignore-extraparam="true">
+		<param-group name="samlresponseparams"/>
+	</url>
+    <url path="/logout/samlsp/${ZID}(/${ciphertext})?" url-type="multiple" description="Forces Client Portal SAML user to logout" authentication="optional" mweb_oauth="optional" method="get">
+      <param name="SAMLRequest" max-len="50000" type="String" />
+      <param-group name="samlresponseparams"/>
+      <param name="Signature" max-len="400" type="String" />
+      <param name="SigAlg" max-len="100" type="String"/>
+    </url>
+    <url path="/logout/samlsp/${ZID}(/${ciphertext})?" url-type="multiple" description="Forces Client Portal SAML user to logout" authentication="optional" mweb_oauth="optional" method="post" csrf="false">
+      <param name="SAMLRequest" max-len="50000" type="String" />
+      <param-group name="samlresponseparams"/>
+    </url>
+    <url path="/logout" method="get" description="Sign out of current user">
+      <param name="hide_signup" type="boolean" />
+      <param name="hide_title" type="boolean" />
+      <param name="force_logout" type="boolean" />
+	  <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+    </url>
+  </urls>
+</security>

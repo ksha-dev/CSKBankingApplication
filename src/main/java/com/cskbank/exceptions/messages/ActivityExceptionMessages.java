@@ -26,6 +26,7 @@ public enum ActivityExceptionMessages {
 
 	INVALID_START_DATE("Start Date of range cannot be greater than the end date"),
 	EQUAL_START_END_DATE("Start Date and End Date cannot be the same"),
+	FAILED_TO_LOAD_FROM_CACHE("The request data cannot be obtained at the moment - Staus : CACHE_FAILURE"),
 	INVALID_END_DATE("End date cannot be greater than the current date");
 
 	private String message;

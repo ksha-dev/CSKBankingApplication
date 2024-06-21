@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+    <urls>
+    	<url path="/oauth/v2/userinfo" description="open id user info details" https="true" method="post" sl_auth="oauth_required" api="true"/>
+    	<url path="/oauth/v2/keys" method="get">
+    	<response>
+    		  <headers>
+    		  	<header name="Access-Control-Allow-Origin" value=" * " />
+    		  </headers>
+    	</response>
+    	</url>
+    	<url path="/.well-known/openid-configuration" method="get">
+    	<response>
+    		  <headers>
+    		  	<header name="Access-Control-Allow-Origin" value=" * " />
+    		  </headers>
+    	</response>
+    	</url>
+    	
+    	<!--  changes for appaccount based client id generation -->
+    	<url path="/oauthapp/${zid}/oauthclient/register" description="Create oauth client id for app account based" https="true" authentication="required" method="post" api="true" internal="true" scoped-services="all">
+    		<param name="details" min-occurrences="1" type="JSONObject" template="client_register" max-len="-1"/>
+    	</url>
+    	<url path="/oauthapp/${zid}/oidcapp/create" description="Create Custom OIDC app" https="true" authentication="required" method="post" api="true" internal="true" scoped-services="all">
+    		<param name="oidcAppMeta" min-occurrences="1" type="JSONObject" template="oidcAppMeta" max-len="-1"/>
+    	</url>
+    	<url path="/oauthapp/${zid}/oidcapp/${zid}/client/create" description="Create Custom OIDC Client app" https="true" authentication="required" method="post" api="true" internal="true" scoped-services="all">
+    		<param name="oauthClientMeta" min-occurrences="1" type="JSONObject" template="oauthClientMeta" max-len="-1"/>
+    	</url>
+    	<url path="/oauthapp/${zid}/oidcapp/${zid}/update" description="Update Custom OIDC app" https="true" authentication="required" method="put" api="true" internal="true" scoped-services="all">
+    		<param name="oidcAppMeta" type="JSONObject" template="oidcAppMeta" max-len="-1"/>
+    	</url>
+    	
+    	<url path="/oauthapp/${zid}/oidcapp/${zid}/client/${client_id}/update" description="Update Custom OIDC client app" https="true" authentication="required" method="put" api="true" internal="true" scoped-services="all">
+    		<param name="updateClientMeta" type="JSONObject" template="oauthClientMeta" max-len="-1"/>
+    		<param name="deleteClientMeta" type="JSONObject" template="oauthClientMeta" max-len="-1"/>
+    	</url>
+    	
+    	<url path="/oauthapp/${zid}/oidcapp/${zid}/client/${client_id}/delete" description="Delete OIDC Client app" https="true" authentication="required" method="delete" api="true" internal="true" scoped-services="all"/>
+    	
+    	<url path="/oauthapp/${zid}/oauth/v2/keys" method="get">
+    	<response>
+    		  <headers>
+    		  	<header name="Access-Control-Allow-Origin" value=" * " />
+    		  </headers>
+    	</response>
+    	</url>
+    	<url path="/oauthapp/${zid}/.well-known/openid-configuration" method="get">
+    	<response>
+    		  <headers>
+    		  	<header name="Access-Control-Allow-Origin" value=" * " />
+    		  </headers>
+    	</response>
+    	</url>
+    	<url path="/oauthapp/${zid}/oauth/v2/userinfo" description="open id user info details" https="true" method="post" sl_auth="oauth_required" api="true"/>
+    	
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app" authentication="optional" sl_auth="oauth_optional" method="post" internal="true" scoped-services="all" description="create an OIDC Application" csrf="false" api="true">
+    		 <inputstream type="JSONObject" template="manage_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}" authentication="optional" sl_auth="oauth_optional" method="put" internal="true" scoped-services="all" description="update a OIDC Application" csrf="false" api="true">
+    		 <inputstream type="JSONObject" template="manage_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client" authentication="optional" sl_auth="oauth_optional" method="post" internal="true" scoped-services="all" description="create OIDC Client app" csrf="false" api="true">
+    		 <inputstream type="JSONObject" template="client_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}" authentication="optional" sl_auth="oauth_optional" method="put" internal="true" scoped-services="all" description="update OIDC Client app status" csrf="false" api="true">
+    		 <inputstream type="JSONObject" template="client_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}" authentication="optional" sl_auth="oauth_optional" method="delete" internal="true" scoped-services="all" description="Delete OIDC Client app" csrf="false" api="true"/>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/redirecturl" authentication="optional" sl_auth="oauth_optional" method="post" internal="true" scoped-services="all" description="add redirect url to client app" csrf="false" api="true">
+    		<inputstream type="JSONObject" template="redirectUrl_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/redirecturl/${iamcleartextpattern}" authentication="optional" sl_auth="oauth_optional" method="put" internal="true" scoped-services="all" description="update redirect url to client app" csrf="false" api="true">
+    		<inputstream type="JSONObject" template="redirectUrl_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/redirecturl/${iamcleartextpattern}" authentication="optional" sl_auth="oauth_optional" method="delete" internal="true" scoped-services="all" description="delete redirect url to client app" csrf="false" api="true"/>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/jsdomain" authentication="optional" sl_auth="oauth_optional" method="post" internal="true" scoped-services="all" description="add js domain to client app" csrf="false" api="true">
+    		<inputstream type="JSONObject" template="jsDomain_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/jsdomain/${iamcleartextpattern}" authentication="optional" sl_auth="oauth_optional" method="put" internal="true" scoped-services="all" description="update js domain to client app" csrf="false" api="true">
+    		<inputstream type="JSONObject" template="jsDomain_oidcapp" max-len="-1" />
+    	</url>
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/app/${zid}/client/${client_id}/jsdomain/${iamcleartextpattern}" authentication="optional" sl_auth="oauth_optional" method="delete" internal="true" scoped-services="all" description="delete jsdomain to client app" csrf="false" api="true"/>
+    	
+    	<url path="/oauthapp/v1/oidcapp/${org_type}/manage/${zid}/createorgclient" authentication="required" method="post" internal="true" scoped-services="all" description="Create org oauth client" csrf="false" api="true">
+    		<inputstream type="JSONObject" template="register_client" max-len="-1"/>
+    	</url>
+    </urls>
+    
+    <regexes>
+    	<regex name="client_id" value="[A-Za-z0-9\-]+[.][A-Za-z0-9]+"/>
+    	<regex name="org_type" value="[0-9]+"/>
+    	<regex name="zid" value="[A-Za-z0-9\-]+"/>
+    </regexes>
+    <jsontemplates>
+    	<jsontemplate name="register_client">
+    		<key name="orgoauthclientcreation" type="JSONObject" template="client_register" max-len="-1"/>
+   		</jsontemplate>
+    	<jsontemplate name="client_oidcapp">
+   			<key name="manageoidcclient" type="JSONObject" template="oauthClientMeta" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="redirectUrl_oidcapp">
+	     	<key name="manageredirecturl" type="JSONObject" template="redirectUrlMeta" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="jsDomain_oidcapp">
+	     	<key name="managejsdomains" type="JSONObject" template="redirectUrlMeta" max-len="-1" />
+	     </jsontemplate>
+    	<jsontemplate name="manage_oidcapp">
+   			<key name="manageoidcapp" type="JSONObject" template="oidcAppMeta" max-len="-1" />
+	     </jsontemplate>
+    	<jsontemplate name="client_register">
+	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
+	 		<key name="client_type" regex="code|token|device|nativeapp"/>
+	 		<key name="client_name" regex="iamcleartextpattern"/>
+	 		<key name="is_org_oauth" type="boolean"/>
+	 	</jsontemplate>
+	 	<jsontemplate name="oidcAppMeta">
+	 		<key name="app_name" regex="iamcleartextpattern"/>
+	 		<key name="identifier" regex="iamcleartextpattern"/>
+	 		<key name="description" regex="iamcleartextpattern"/>
+	 		<key name="bcl_uri_enabled" type="boolean"/>
+	 		<key name="back_channel_logout_uri" regex="serviceurl" />
+	 		<key name="at_custom_enabled" type="boolean"/>
+	 		<key name="id_custom_enabled" type="boolean"/>
+	 		<key name="status" type="boolean"/>
+	 	</jsontemplate>
+	 	<jsontemplate name="oauthClientMeta">
+	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
+	 		<key name="js_domain_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
+	 		<key name="status" type="boolean"/>
+	 		<key name="enabled" type="boolean"/>
+	 		<key name="client_type" regex="code|token|device|nativeapp"/>
+	 	</jsontemplate>
+	 	<jsontemplate name="redirectUrlMeta">
+	 		<key name="redirect_url" regex="serviceurl"/>
+	 		<key name="js_domain" regex="serviceurl"/>
+	 	</jsontemplate>
+	 	<jsontemplate name="redirect_uri">
+    		<value regex="serviceurl" max-len="1000"/>
+    	</jsontemplate>
+	</jsontemplates>
+</security>

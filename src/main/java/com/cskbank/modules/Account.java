@@ -4,21 +4,34 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.exceptions.messages.InvalidInputMessage;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public class Account implements Serializable {
 
 	public static enum AccountType {
-		SAVINGS, CURRENT, SALARY;
+		SAVINGS(1), CURRENT(2), SALARY(3);
 
-		public static AccountType convertStringToEnum(String label) throws AppException {
-			try {
-				return valueOf(label);
-			} catch (IllegalArgumentException e) {
-				throw new AppException("Invalid Identifier Obtained");
+		private int typeID;
+
+		private AccountType(int typeID) {
+			this.typeID = typeID;
+		}
+
+		public int getTypeID() {
+			return this.typeID;
+		}
+
+		public static AccountType getType(int typeID) throws AppException {
+			for (AccountType type : AccountType.values()) {
+				if (type.typeID == typeID) {
+					return type;
+				}
 			}
+			throw new AppException(InvalidInputMessage.INVALID_IDENTIFIER);
 		}
 	}
 
@@ -59,9 +72,8 @@ public class Account implements Serializable {
 		this.openingDate = openingDate;
 	}
 
-	public void setLastTransactedAt(long lastTransactionDateTime) throws AppException {
-		ValidatorUtil.validatePositiveNumber(lastTransactionDateTime);
-		this.lastTransactionAt = lastTransactionDateTime;
+	public void setLastTransactedAt(Long lastTransactionDateTime) throws AppException {
+		this.lastTransactionAt = lastTransactionDateTime == null ? 0 : lastTransactionDateTime;
 	}
 
 	public void setStatus(String status) throws AppException {
@@ -95,8 +107,8 @@ public class Account implements Serializable {
 		this.modifiedBy = userId;
 	}
 
-	public void setModifiedAt(long dateTime) {
-		this.modifiedAt = dateTime;
+	public void setModifiedAt(Long dateTime) {
+		this.modifiedAt = dateTime == null ? 0 : dateTime;
 	}
 
 	// Getters

@@ -17,10 +17,6 @@ public class APIServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public APIServlet() throws AppException {
-		Services.initialize();
-	}
-
 	public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		JSONObject responseContent = new JSONObject();
 		RequestStatus status = null;
@@ -87,13 +83,15 @@ public class APIServlet extends HttpServlet {
 
 			switch (apiPaths[1]) {
 			case "customer":
-				CustomerRecord customer = Services.customerOperations.getCustomerRecord(Integer.parseInt(apiPaths[2]));
+				CustomerRecord customer = HandlerObject.getCustomerHandler()
+						.getCustomerRecord(Integer.parseInt(apiPaths[2]));
 				result.accumulate("data", JSONObject.wrap(customer));
 				status = RequestStatus.SUCCESS;
 				break;
 
 			case "employee":
-				EmployeeRecord employee = Services.employeeOperations.getEmployeeRecord(Integer.parseInt(apiPaths[2]));
+				EmployeeRecord employee = HandlerObject.getEmployeeHandler()
+						.getEmployeeRecord(Integer.parseInt(apiPaths[2]));
 				result.accumulate("data", JSONObject.wrap(employee));
 				status = RequestStatus.SUCCESS;
 

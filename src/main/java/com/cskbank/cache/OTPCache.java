@@ -77,4 +77,8 @@ public class OTPCache {
 			jedis.del(optkey);
 		}
 	}
+
+	public synchronized void clear() {
+		jedis.flushAll();
+	}
 }

@@ -1,0 +1,1533 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	
+	<!-- User PrimaryFactor Reauth URLs -->
+   	<urls prefix="(/accounts/p/[0-9]+)?" path-regex="true">
+   		<url path="/relogin/v1/primary/${ZID}/password" method="post" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true" >
+   			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+		    	<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		    </throttles>
+		    <param-group name="newloginparams"/>
+    	    <inputstream type="JSONObject" template="pwd_reauth_data" max-len="-1"/>
+	    </url>
+	    <url path="/relogin/v1/primary/${ZID}/samlreauth/${ciphertext}" method="post" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true" >
+	    	<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+		    	<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		    </throttles>
+		    <param-group name="newloginparams"/>
+	    </url>
+	    
+	    <url path="/relogin/v1/primary/${ZID}/otp/${ciphertext}" method="post" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true">
+			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="otp_reauth_data" max-len="-1" />
+    	    <param-group name="newloginparams"/>
+	    </url>
+	    
+	    <url path="/relogin/v1/primary/${ZID}/otp/${ciphertext}" method="put" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true">
+			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+	        <inputstream type="JSONObject" template="otp_reauth_data" max-len="-1" />
+    	    <param-group name="newloginparams"/>
+	    </url>
+    	
+    	<url path="/relogin/v1/primary/${ZID}/device/${ciphertext}" method="post" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true">
+    		<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+    			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+    		</throttles>
+			<inputstream type="JSONObject" template="device_reauth_data" max-len="-1" />
+			<param-group name="newloginparams"/>
+    	</url>
+    	
+    	<url path="/relogin/v1/primary/${ZID}/device/${ciphertext}" method="put" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" operation-param="polling" operation-value="false" relogin="true">
+    		<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="non_polling_device_reauth_data" max-len="-1" />
+			<param-group name="newloginparams"/>
+    	</url>
+    	
+    	<url path="/relogin/v1/primary/${ZID}/device/${ciphertext}" method="put" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" operation-param="polling" operation-value="true" relogin="true">
+			<inputstream type="JSONObject" template="device_reauth_data" max-len="-1" />
+			<param-group name="newloginparams"/>
+    	</url>
+    	
+    	<url path="/relogin/v1/primary/${ZID}/passkey/self" method="post" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true">
+			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+    	    <param-group name="newloginparams"/>
+	    </url>
+	    <url path="/relogin/v1/primary/${ZID}/passkey/self" method="put" authentication="optional" mweb_oauth="optional" user-needed="true" csrf="true" relogin="true">
+			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="reauth">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="passkey_reauth_data" max-len="-1" />
+    	    <param-group name="newloginparams"/>
+	    </url>
+
+   	</urls>
+   	
+	<urls>
+		<!-- Web session creation using refreshtoken -->
+		<url path="/account/v1/websession" authentication="optional" csrf="false" method="get" mweb_oauth="required">
+			<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="websession">
+				<throttle duration="5m" threshold="20" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+    		<param name="temp_token" max-len="-1" regex="simplestring"/>
+    		<param name="token" regex="iamcleartextpattern" max-len="500" max-occurrences="1" />
+   		</url> 
+   		
+		<!-- new relogin UI -->
+		<url path="/account/v1/relogin" authentication="optional" sl_auth="customauth_optional" csrf="false" method="get" mweb_oauth="optional" user-needed="true" relogin="true">
+    		<param name="post" type="boolean" />
+    		<param name="temp_token" max-len="-1" regex="simplestring"/>
+    		<param name="servicename" regex="servicename" />
+    		<param-group name="newloginparams"/>
+   		</url> 
+		
+		<url path="/mreauth" method="get" authentication="optional" duration="10" threshold="40" user="true" lock-period="5" description="Get reauth temp token for device">
+          <param name="ra_token" regex="device_token" secret="true" max-len="1000"/>
+          <param name="redirect_uri" regex="serviceurl" max-len="2000"/>
+        </url>
+    	 
+<!-- New DPA URLs -->
+		 <url path="/webclient/v1/account/${ZID}/dpa" url-type='multiple' method="post" authentication="required" csrf="true" description="Submit a dpa agreement by the user" >
+			<inputstream type="JSONObject" template="dpa_json_form"  max-len="-1"/>
+		</url>
+		<url path="/webclient/v1/account/${ZID}/dpa" method="get" url-type='multiple' authentication="required"  description="get the service org details from payments"/>
+		<url path="/webclient/v1/account/${ZID}/dpa" method="put" url-type='multiple' authentication="required" csrf="true" description="Add an organisation to the existing dpa">		
+			<inputstream type="JSONObject" template="dpa_merge_json" max-len="-1"/>
+		</url>
+		
+<!-- 		<url path="/webclient/v1/account/${Zaid}/user/${Zuid}/phone/${oz-phoneno}" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" authentication="required" csrf="true" description="edit Phonenumbers"> -->
+<!-- 			<inputstream type="JSONObject" template="phone_json" max-len="-1" />	 -->
+<!-- 		</url> -->
+		
+				
+		<!-- Allowed IPs -->
+		
+		<url path="/webclient/v1/account/self/user/self/allowedip" csrf="true" auth-type="reauth" reauth-time="300" authentication="required" method="post" description="Add IPs for accessing account">
+			<inputstream type="JSONObject" template="IP_json" max-len="-1" />
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>	
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/allowedip/${multipaddress}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required"  method="delete" description="Deleting IPs restrictions">
+		     <throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+		
+		<!--  GeoFencing -->
+		<!-- DELETE APIS -->
+		<url path="/api/v1/account/self/user/self/geofencing/[0-9,]+"  csrf="false" authentication="required" method="delete" oauthscope="geofencing" operation-type="DELETE" description="Delete multiple GeoFencing Entries for account">
+			 <throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/geofencing/[0-9,]+" csrf="true" auth-type="reauth" reauth-time="300" authentication="required" method="delete" description="Delete multiple GeoFencing Entries for account">
+ 			 <throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+
+		<url path="/api/v1/account/self/user/self/geofencing" csrf="false" authentication="required" method="delete" oauthscope="geofencing" operation-type="DELETE" description="Delete All GeoFencing entries for a user">
+ 			 <throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/geofencing" csrf="true" auth-type="reauth" reauth-time="300" authentication="required" method="delete" description="Delete all GeoFencingCountry for account">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+		
+		<!-- GET APIs -->
+		<url path="/api/v1/account/self/user/self/geofencing" csrf="false" authentication="required" method="get" oauthscope="geofencing" operation-type="READ" description="get GeoFencingInfo for a user"/>
+	
+		<url path="/webclient/v1/account/self/user/self/geofencing" authentication="required" method="get" description="get GeoFencingInfo for a user"/>
+
+
+		<!-- POST APIs -->
+		<url path="/api/v1/account/self/user/self/geofencing" csrf="false"  authentication="required" method="post" oauthscope="geofencing" operation-type="UPDATE" description="Add GeoFencing entries for a user">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			<inputstream type="JSONObject" template="geofencing_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/geofencing" csrf="true" auth-type="reauth" reauth-time="300" authentication="required" method="post" description="Add GeoFencingCountry for  account">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			<inputstream type="JSONObject" template="geofencing_json" max-len="-1" />
+		</url>
+
+		<!-- UPDATE APIS -->		
+		<url path="/api/v1/account/self/user/self/geofencing/${identifiercleartextpattern}" csrf="false"  authentication="required" method="put" oauthscope="geofencing" operation-type="UPDATE" description="Update new GeoFencing entries for user">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			<inputstream type="JSONObject" template="update_geofencing_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/geofencing/${identifiercleartextpattern}" csrf="true" auth-type="reauth" reauth-time="300" authentication="required" method="put" description="Update new GeoFencing entries for user">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			<inputstream type="JSONObject" template="update_geofencing_json" max-len="-1" />
+		</url>
+		
+		<!-- App Passwords -->
+		
+		<url path="/webclient/v1/account/self/user/self/apppasswords" auth-type="reauth" reauth-time="300" method="post" authentication="required" csrf="true" duration="5" lock-period="15" threshold="10" description="generate app specific password">
+	     <inputstream type="JSONObject" template="apppasswords_json" max-len="-1" />	
+	   </url>
+    	
+    	<url path="/webclient/v1/account/self/user/self/apppasswords/${apppass_id}" url-type="multiple" method="delete" authentication="required" csrf="true" description="remove app specific password" />
+		
+		<!-- Trsuted Devices/Device logins -->
+		<url path="/webclient/v1/account/self/user/self/devicelogins/${apppass_id}" method="delete" authentication="required" csrf="true" description="Delete trusted device(s) for devicelogins" />
+		
+		<url path="/webclient/v1/account/self/user/self/devicelogins" method="delete" authentication="required" csrf="true" description="Delete trusted device(s) for devicelogins" />
+		     
+		<url path="/webclient/v1/account/self/user/self/mailclientlogins/${apppass_id}" method="delete" authentication="required" csrf="true" description="Delete mailclient login(s)" />
+		
+		<url path="/webclient/v1/account/self/user/self/mailclientlogins"  method="delete" authentication="required" csrf="true" description="Delete mailclient login(s)" />
+		
+		<!-- Api Tokens -->
+		<url path="/webclient/v1/account/self/user/self/activeauthtokens/${ciphertext}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required"  method="delete" description="Deleting api tokens">
+		</url>
+		<url path="/webclient/v1/account/self/user/self/activeauthtokens/${ciphertext}" auth-type="reauth" reauth-time="300" reauth-response="code" url-type="multiple" authentication="required"  description="viewing the Auth Token">
+		</url>
+		<url path="/webclient/v1/account/self/user/self/activeauthtokens/${multiciphertext}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required"  method="delete" description="Deleting selected API tokens">
+		</url>
+		<url path="/webclient/v1/account/self/user/self/activeauthtokens" csrf="true" auth-type="reauth" reauth-time="300" authentication="required"  method="delete" description="Deleting all API tokens">
+		</url>
+		<!-- Connected Apps -->
+		<url path="/webclient/v1/account/self/user/self/connectedapps/${cleartextpattern}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" method="delete" authentication="required" duration="5" threshold="20" lock-period="15" description="delete connected app with the account">
+		</url>
+		<!-- device login (mobile apps) -->
+		<url path="/webclient/v1/account/self/user/self/applogins/${cleartextpattern}/devices/${cleartextpattern}" auth-type="reauth" reauth-time="300" csrf="true" url-type="multiple" method="delete" authentication="required" duration="5" threshold="20" lock-period="15" description="delete connected Mobile app with the account">
+			<param name="token" regex="iamcleartextpattern" max-len="1000" />
+		</url>
+
+<!-- 	For MFA Page -->
+
+<!-- 		<url path="/webclient/v1/account/${Zaid}/user/${Zuid}/mfa" url-type="multiple" method="post" duration="5" threshold="10" lock-period="15" user="true" sl_auth="tfatemp_optional" https="true" authentication="optional" csrf="true" description="activate tfa for user"> -->
+<!-- 			<inputstream type="JSONObject" template="tfa_json" max-len="-1" /> -->
+<!-- 		</url> -->
+
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode" method="put" duration="5" threshold="10" lock-period="15" auth-type="reauth" reauth-time="300" authentication="required" csrf="true" description="pause tfa and it can be resumed at a later time and change primary">
+      		<inputstream type="JSONObject" template="tfa_json" max-len="-1" />
+    	</url>
+	    
+    	<!-- EXO Star App -->
+	    <url path="/webclient/v1/account/self/user/self/mfa/mode/exostar" method="post" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="Exo Star setup">
+	  	 	<inputstream type="JSONObject" template="exo_star_json" max-len="-1" />  
+	    </url>
+	    
+	    <url path="/webclient/v1/account/self/user/self/mfa/mode/exostar" csrf="true" method="delete" authentication="required" auth-type="reauth" reauth-time="300" description="Exo Star delete"/>
+		
+		<!-- Yubikey --> 
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/yubikey"  method="post" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="generates challenge"/>
+ 
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/yubikey/self" method="put" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="registers yubikey">
+		 	<inputstream type="JSONObject" template="yubikey_json" max-len="-1"/>  
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/yubikey/${ciphertext}" url-type="multiple" method="delete" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="deletes particular yubikey"/>
+
+
+		<!-- Passkey -->
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/passkey"  method="post" authentication="required" csrf="true" auth-type="reauth" reauth-time="300"  description="generates challenge"/>
+ 
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/passkey/self" method="put" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="registers passkey">
+		 	<inputstream type="JSONObject" template="passkey_json" max-len="-1"/>
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/passkey/${ciphertext}" url-type="multiple" method="delete" authentication="required" csrf="true" auth-type="reauth" reauth-time="300" description="deletes particular passkey"/>
+
+	     <!-- Device Webclient -->
+	     <url path="/webclient/v1/account/self/user/self/mfa/mode/device/${newdevicetok}" url-type="multiple" method="delete" auth-type="reauth" reauth-time="300" authentication="required" csrf="true" duration="5" threshold="10" lock-period="15" description="Deleting the device form browser"/>
+	     
+	     <url path="/webclient/v1/account/self/user/self/mfa/mode/device/${newdevicetok}" url-type="multiple" method="put" auth-type="reauth" reauth-time="300" authentication="required" csrf="true" duration="5" threshold="10" lock-period="15" description="Making a device primary">
+	     </url>
+	     
+	     
+	    <!-- For MFA  -->
+
+	<url path="/api/v1/account/self/user/self" method="get" disable-get-api-csrf="true" authentication="required" oauthscope="usersessions" operation-type="READ" description="To get all sessions from mobile app">
+		<param name="include" regex="iamcleartextpattern" />
+		<param-group name="deviceauth"/>
+	</url>
+
+         <url path="/api/v1/account/self/user/self/reauth" method="post" csrf="false" authentication="required"  oauthscope="reauth" operation-type="CREATE" description="To generate temp token for reauth"  mobile="true">
+         <inputstream type="JSONObject" template="reauth_json" max-len="-1" />
+        <param-group name="deviceauth"/>
+         </url>
+        
+        <url path="/api/v1/account/self/user/self/reauth"  method="put" csrf="false" authentication="required"  oauthscope="reauth" operation-type="UPDATE" description="To  validate temp token for reauth"  mobile="true">
+        <inputstream type="JSONObject" template="reauth_json" max-len="-1" />
+        <param-group name="deviceauth"/>
+        </url>
+        
+        
+          <url path="/api/v1/account/self/user/self/device" method="post" csrf="false" authentication="required"  oauthscope="device" operation-type="CREATE" description="set the initial device details of user">
+              <inputstream type="JSONObject" template="device_json" max-len="-1" />	
+       </url>
+
+       <url path="/api/v1/account/self/user/self/device" method="get" csrf="false" authentication="required"  oauthscope="device" operation-type="READ" description="get meta of devicer">
+       <param-group name="deviceauth"/>
+       </url>
+
+       <url path="/api/v1/account/self/user/self/device/${newdevicetok}" method="put" url-type="multiple" csrf="false" authentication="required" oauthscope="device" operation-type="UPDATE" description="Update DeviceToken when restored from backup, Update OS Version, Update Device Info">
+        	<inputstream type="JSONObject" template="device_update_json" max-len="-1" />
+        	<param-group name="deviceauth"/>
+      </url>
+
+      <url path="/api/v1/account/self/user/self/device/${newdevicetok}" method="delete" url-type="multiple" csrf="false" authentication="required" oauthscope="device" operation-type="DELETE" description="delete device">
+        	<param-group name="deviceauth"/>
+        	<param name="make_primary" max-len="400" regex="device_token"/>
+      </url>
+	  <!-- By default in RO setup, write operation is not allowed for the Operation-type='CREATE', to override this added skip-ro check-->      
+       <url path="/api/v1/account/self/user/self/device/${newdevicetok}/pushstatus" method="put" csrf="false"  url-type="multiple"  authentication="required" oauthscope="device" operation-type="UPDATE" description="Approval for a SignIn Request from Device" skip-ro-check="true">
+          <inputstream type="JSONObject" template="pushstatus_json" max-len="-1" />
+         <param-group name="deviceauth"/>
+        </url>
+        
+        <url path="/api/v1/account/self/user/self/device/${newdevicetok}/devicekey" method="post" csrf="false"  url-type="multiple"  authentication="required" oauthscope="device" operation-type="CREATE" description="To add data in IAMUserAppKeyStore">
+        	<param-group name="deviceauth"/>
+        	<inputstream type="JSONObject" template="devicekey_json" max-len="-1" />
+		</url>
+
+		<url path="/api/v1/account/self/user/self/device/self/crossdcpushstatus" method="put" csrf="false" dc-system-auth="true" description="Server to Server crossdc push request">
+			<inputstream type="JSONObject" template="crossdc_pushstatus_json" max-len="-1" />
+		</url>
+
+      <url path="/api/v1/account/self/user/self/device/${newdevicetok}/primary" method="put" csrf="false" url-type="multiple" authentication="required" oauthscope="device" operation-type="UPDATE" description="Update primary Device">
+        	<param-group name="deviceauth"/>/>
+      </url>
+    
+ 	   <!-- Passkey -->
+       <url path="/api/v1/account/self/user/self/passkey" method="get" csrf="false" authentication="required"  oauthscope="passkey" operation-type="READ" description="get passkeys information">
+            <param-group name="deviceauth"/>
+       </url>
+       <url path="/api/v1/account/self/user/self/passkey" method="post" csrf="false" authentication="required"  oauthscope="passkey" operation-type="CREATE" description="create challenge for passkey">
+		     <param-group name="deviceauth"/>
+		</url>
+        <url path="/api/v1/account/self/user/self/passkey/${yubikey_id}"  method="put" csrf="false" authentication="required"  oauthscope="passkey" operation-type="UPDATE" description="validae and store passkey">
+    	    <inputstream type="JSONObject" template="passkey_device_json" max-len="-1" />
+	        <param-group name="deviceauth"/>
+        </url>
+		<url path="/api/v1/account/self/user/self/passkey/${yubikey_id}" method="delete" authentication="required" csrf="false" oauthscope="passkey" operation-type="DELETE" description="deletes particular passkey">
+		    <param-group name="deviceauth"/>
+		</url>
+		
+		<!-- IP -->
+		<url path="/api/v1/account/self/user/self/allowedip" method="post" csrf="false" authentication="required"  oauthscope="userallowedip" operation-type="CREATE" description="Add User Ips" >
+		<inputstream type="JSONObject" template="IP_json" max-len="-1" />
+		</url> 
+		
+		<url path="/api/v1/account/self/user/self/allowedip/${multipaddress}" method="delete" csrf="false" authentication="required"  oauthscope="userallowedip" operation-type="DELETE" description="Delete User Ips" ></url>
+   
+    
+    <url path="/api/v1/account/self/user/self/passphrase" method="post"  csrf="false" authentication="required" oauthscope="recovery" operation-type="CREATE" description="To add Passphrase for mfa user">
+        		<inputstream type="JSONObject" template="passphrase_json" max-len="-1" />
+        		<param-group name="deviceauth"/>
+    </url>
+
+	<url path="/api/v1/account/self/user/self/passphrase" method="put"  csrf="false" authentication="required" oauthscope="recovery" operation-type="UPDATE" description="To verify Passphrase for mfa user">
+		<throttles key="url.path+user.zuid" window="ROLLING" scope="APPSERVER">
+			<throttle duration="15m" threshold="10" lock-period="30m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</throttles>
+        <inputstream type="JSONObject" template="passphrase_json" max-len="-1" />
+        <param-group name="deviceauth"/>
+    </url>
+    
+    <url path="/api/v1/account/self/user/self/passphrase" method="delete"  csrf="false" authentication="required" oauthscope="recovery" operation-type="DELETE" description="To delete Passphrase for mfa user">
+        		<param-group name="deviceauth"/>
+    </url>
+
+    <url path="/api/v1/account/self/user/self/passphrase" method="get"  csrf="false" authentication="required" oauthscope="recovery" operation-type="READ" description="To Fetch Passphrase for mfa user">
+        		<param-group name="deviceauth"/>
+    </url>
+    
+	<url path="/api/v1/account/self/user/self/passphrase/self/challenge" method="post"  csrf="false" authentication="required" oauthscope="recovery" operation-type="CREATE" description="To generate the challenge for verify passphare">
+				<inputstream type="JSONObject" template="challenge_json" max-len="-1" />
+        		<param-group name="deviceauth"/>
+    </url>
+
+	<url path="/api/v1/account/self/user/self/passphrase/self/challenge" method="put"  csrf="false" authentication="required" oauthscope="recovery" operation-type="UPDATE" description="To verify passphrase using challenge">
+				<inputstream type="JSONObject" template="challenge_json" max-len="-1" />
+        		<param-group name="deviceauth"/>
+    </url>
+
+    <url path="/api/v1/account/self/user/self/device/${newdevicetok}/launchsync" method="get" url-type="multiple"  authentication="required" oauthscope="device" operation-type="READ" csrf="false" description="OneAuth App launch sync info...">
+	          <param-group name="deviceauth"/>
+	</url>
+       
+       <!-- for backward compatiablity configuring regex here for zaid and zuid -->
+       <url path="/api/v1/account/${ZID}/user/${ZID}/device/${newdevicetok}/modeupdate" method="put" csrf="false" url-type="multiple" authentication="required" oauthscope="mfa" operation-type="UPDATE" duration="5" threshold="10" lock-period="15"  description="activate mfa for user">
+        	<inputstream type="JSONObject" template="modeupdate_json" max-len="-1" />	
+        	<param-group name="deviceauth"/>
+       </url>
+       
+       <url path="/api/v1/account/self/user/self/totpgroup" method="post" authentication="required" csrf="false" oauthscope="tpsecret" operation-type="CREATE"  description="add/update user third party secrets">
+        	<inputstream type="JSONObject" template="totpgroup_json" max-len="-1"/>
+        	<param-group name="deviceauth"/>
+       </url>
+
+		<url path="/api/v1/account/self/user/self/totpgroup" method="get" authentication="required" csrf="false" oauthscope="tpsecret" operation-type="READ"  description="Fetch user third party secrets">
+        	<inputstream type="JSONObject" template="totpgroups_getjson" max-len="-1"/>
+        	<param-group name="deviceauth"/>
+       </url>
+
+	   <url path="/api/v1/account/self/user/self/totpgroup" method="delete" authentication="required" csrf="false" url-type="multiple" oauthscope="tpsecret" operation-type="DELETE"  description="delete user third party secrets group">
+			<param-group name="deviceauth"/>
+       </url>
+
+	   <url path="/api/v1/account/self/user/self/totpgroup/[0-9\,]*" method="delete" authentication="required" csrf="false" url-type="multiple" oauthscope="tpsecret" operation-type="DELETE"  description="delete user third party secrets group">
+        	<param-group name="deviceauth"/>
+       </url>
+
+	   <url path="/api/v1/account/self/user/self/totpgroup/${ZID}/totpsecret/[0-9\,]*" method="delete" authentication="required" csrf="false" oauthscope="tpsecret" operation-type="DELETE"  description="delete user third party secrets">
+	   		<param-group name="deviceauth"/>
+	   </url>
+
+       <url path="/api/v1/account/self/user/self/tpsecret" method="post" authentication="required" csrf="false" oauthscope="tpsecret" operation-type="CREATE"  description="user third party secrets">
+        		<inputstream type="JSONObject" template="usertpsecrets_json" max-len="-1" />
+        		<param-group name="deviceauth"/>
+       </url>
+
+        <url path="/api/v1/account/self/user/self/tpsecret" method="delete" authentication="required" csrf="false"  oauthscope="tpsecret" operation-type="DELETE" description="delete all third party secrets">
+        		<param-group name="deviceauth"/>
+       </url>
+
+        <url path="/api/v1/account/self/user/self/tpsecret" method="get" authentication="required" csrf="false"  oauthscope="tpsecret" operation-type="READ" description="user third party secrets">
+        		<param-group name="deviceauth"/>
+       </url>	
+
+        <url path="/api/v1/account/self/user/self/tpsecret" method="put" authentication="required" csrf="false"  oauthscope="tpsecret" operation-type="UPDATE" description="enable/disable third party secrets">
+			<param-group name="deviceauth" />
+			<inputstream type="JSONObject" template="usertpsecret_json" max-len="-1" />
+       </url>
+
+ 	   <url path="/api/v1/account/self/user/self/resetpassword" method="put" authentication="required" csrf="false"  oauthscope="userpassword" operation-type="UPDATE" description="To change current user password via App">
+        		<inputstream type="JSONObject" template="password_json_mobile" max-len="-1" />
+        		<param-group name="deviceauth"/>	
+       </url>
+
+   		<url path="/api/v1/account/self/user/self/backupcodes" method="put" authentication="required" csrf="false"  oauthscope="userbackupcode" operation-type="UPDATE" description="To remove old Backup codes and set new backup codes">	
+       		<param-group name="deviceauth"/>
+       </url>
+        
+		<url path="/api/v1/account/self/user/self/websessions/${httpcookievalue}" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="usersessions" operation-type="DELETE" description="To remove particular web session from mobile app">
+			<param-group name="deviceauth"/>
+		</url>
+				
+		<url path="/api/v1/account/self/user/self/websessions" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="usersessions" operation-type="DELETE" description="To remove all web sessions from mobile app">
+			<param-group name="deviceauth"/>
+		</url>
+		
+ 		<url path="/api/v1/account/self/user/self/device/${newdevicetok}/logout"  method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="mfalogout" operation-type="DELETE" description="To logout from a particular device">
+			<param-group name="deviceauth"/>
+		</url>
+ 
+   		
+   		<url path="/api/v1/account/self/user/self/profile" method="put" authentication="required" csrf="false"  oauthscope="userprofile" operation-type="UPDATE" description="To update user profile via App">
+        		<inputstream type="JSONObject" template="profile_json_mobile" max-len="-1" />
+        		<param-group name="deviceauth"/>	
+       </url>
+       
+       <url path="/api/v1/account/self/user/self/profile" method="get" authentication="required" csrf="false"  oauthscope="userprofile" operation-type="READ" description="To get user profile via App">
+        		<param-group name="deviceauth"/>	
+       </url>
+  	  
+       <url path="/api/v1/account/self/user/self/tpappsessions/${cleartextpattern}" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="usersessions" operation-type="DELETE" description="To delete connectedapps via App">
+        		<param-group name="deviceauth"/>	
+       </url>
+       
+       <url path="/api/v1/account/self/user/self/zohoapps/${cleartextpattern}/zohoappsessions/${cleartextpattern}" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="usersessions" operation-type="DELETE" description="To delete applogins via App">
+        		<param-group name="deviceauth"/>	
+       </url>
+
+       <url path="/api/v1/account/self/user/self/zohoapps/${cleartextpattern}/zohoappsessions" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="usersessions" operation-type="DELETE" description="To delete applogins via App">
+			<param-group name="deviceauth"/>
+       </url>
+
+		<url path="/api/v1/account/self/user/self/mfamobile" method="post" authentication="required" csrf="false"  oauthscope="mobilerecovery" operation-type="CREATE" description="To send OTP SMS">
+			<param-group name="deviceauth" />
+			<inputstream type="JSONObject" template="tfa_mobile_json" max-len="-1" />
+       </url>
+
+       <url path="/api/v1/account/self/user/self/mfamobile/${iambase64}" method="put" url-type="multiple" authentication="required" csrf="false"  oauthscope="mobilerecovery" operation-type="UPDATE" description="Verify recovery mobile number">
+			<throttles key="url.path+user.zuid" window="ROLLING" scope="APPSERVER">
+				<throttle duration="15m" threshold="10" lock-period="30m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<param-group name="deviceauth" />
+			<inputstream type="JSONObject" template="verify_mobile_json" max-len="-1" />
+       </url>
+
+       <url path="/api/v1/account/self/user/self/mfamobile/${iambase64}" method="delete" url-type="multiple" authentication="required" csrf="false"  oauthscope="mobilerecovery" operation-type="DELETE" description="Delete recovery mobile number">
+			<param-group name="deviceauth" />
+       </url>
+
+	   <url path="/api/v1/account/self/user/self/mfamobile" method="get" authentication="required" csrf="false"  oauthscope="mobilerecovery" operation-type="READ" description="To fetch recovery mobile number">
+			<param-group name="deviceauth" />
+       </url>
+
+       <url path="/api/v1/account/self/user/self/mfamobile/${iambase64}/primary" method="put" url-type="multiple" authentication="required" csrf="false"  oauthscope="mobilerecovery" operation-type="UPDATE" description="To make primary recovery mobile number">
+			<param-group name="deviceauth" />
+			<inputstream type="JSONObject" template="verify_mobile_json" max-len="-1" />
+       </url>
+
+		<url path="/api/v1/extension/${ZID}/device/${newdevicetok}/push" method="post" csrf="false" url-type="multiple" authentication="required" oauthscope="tpsecret" operation-type="CREATE" description="send push notify for getting third party secrets">
+			<inputstream type="JSONObject" template="tp_secret_data" max-len="-1" />
+		</url>
+
+		<url path="/api/v1/extension/${ZID}/device/${newdevicetok}/push" method="put" csrf="false" url-type="multiple" authentication="required" oauthscope="tpsecret" operation-type="UPDATE" description="Re send push notify for getting third party secrets"/>
+
+		<url path="/api/v1/extension/${ZID}/device/${newdevicetok}/poll" method="put" csrf="false" url-type="multiple" authentication="required" oauthscope="tpsecret" operation-type="UPDATE" description="verify push notify for getting third party secrets"/>
+
+		
+<!-- 		For Settings Page -->	
+		<url path="/webclient/v1/template/settings" method="get" authentication="required" description="Settings page template" />
+		<!-- Preferences -->
+		 <url path="/webclient/v1/account/self/user/self/preferences" auth-type="reauth" reauth-time="300"  method="put" authentication="required" csrf="true" user="true" description="alter User preference">
+     		 <inputstream type="JSONObject" template="preference_json" max-len="-1" />	
+     		 <throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+    	</url>
+		<!-- Authorized Websites -->
+		<url path="/webclient/v1/account/self/user/self/authorizedwebsites/${domain_name}" auth-type="reauth" reauth-time="300" csrf="true" url-type="multiple" authentication="required"  method="delete" description="Revoke access authorization websites"/>
+		<!-- Linked Accounts -->
+		<url path="/webclient/v1/account/self/user/self/linkedaccounts/${iambase64}" auth-type="reauth" reauth-time="300" url-type="multiple" csrf="true" authentication="required"  method="delete" description="remove openid mapping">
+		</url>
+		<!-- SAML -->
+		<url path="/webclient/v1/org/self/saml" method="post" auth-type="reauth" reauth-time="300" authentication="required"  roles="OrgAdmin" csrf="true" duration="5" threshold="15" lock-period="20" description="To configure saml">
+		  	<param name="saml[login_url]" regex="serviceurl" max-len="50000" />
+			<param name="saml[logout_url]" regex="serviceurl" max-len="50000" />
+			<param name="saml[login_binding]" regex="0|1" />
+			<param name="saml[logout_binding]" regex="0|1" />
+			<param name="saml[publickey]" max-len="10000" xss="antisamyfilter"/>
+			<param name="saml[name_identifier]" regex="0|1|3" />
+			<param name="saml[enable_saml_logout]" type="boolean" />
+			<param name="saml[service]" regex="plain_str" />
+			<param name="saml[enable_saml_jit]" type="boolean"/>
+			<param name="saml[enable_signature]" type="boolean"/>
+			<param name="saml[generate_sp_cert]" type="boolean"/>			
+			<param name="saml[jit_attr]" type="JSONObject" template="saml_jit_attr" max-len="-1"/>
+			<param name="saml[signin_params]" type="JSONObject" template="saml_custom_params" max-len="-1"/>
+			<param name="saml[signout_params]" type="JSONObject" template="saml_custom_params" max-len="-1"/>
+			 <file name="saml[publickey_upload]" content-type-name="saml_key" max-size="51200">
+		       <filename regex="cleartext:removehtmlentities" max-len="255" />
+			</file>
+		</url>
+		
+		<url path="/webclient/v1/org/self/saml" auth-type="reauth" reauth-time="300" method="delete" csrf="true" authentication="required" roles="OrgAdmin" duration="5" threshold="15" lock-period="20" description="To delete saml" >
+   	 	</url>
+
+		<url path="/webclient/v1/org/self/saml" method="get" authentication="required" roles="OrgAdmin" duration="5" threshold="15" lock-period="20" description="To get saml data from metadata" >
+			<file name="saml_metadata_upload" content-type-name="saml_key" max-size="51200">
+				<filename regex="cleartext:removehtmlentities" max-len="255" />
+			</file>
+		</url>
+   	 	<url path="/webclient/v1/org/self/saml" method="put" auth-type="reauth" reauth-time="300" authentication="required" roles="OrgAdmin" csrf="true" duration="5" threshold="15" lock-period="20" description="To edit saml" >
+   	 		<inputstream type="JSONObject" template="saml_json" max-len="-1" />
+   	 	</url>
+		
+		<!-- Close Accounts -->
+		<url path="/webclient/v1/account/self/user/self/closeaccounts/${ZID}" auth-type="reauth" reauth-time="60" csrf="true" url-type="multiple" authentication="required"  method="put" description="close user account">
+	    	<inputstream type="JSONObject" template="closeaccount_json" max-len="-1" />			
+		</url>
+		
+		
+		<url path="/webclient/v1/account/self/user/self/closeaccount" csrf="true"  authentication="optional" user-needed="true" mweb_oauth="optional" auth-type="reauth" reauth-time="120" method="post" description="Create Close Account Request">
+			<inputstream type="JSONObject" template="claccrequest_json" max-len="-1" />	
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/closeaccount/${ZID}" csrf="true"  url-type="multiple" authentication="optional" user-needed="true" mweb_oauth="optional" method="delete" description="delete close account request">
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/closeaccount/${ZID}" csrf="true" url-type="multiple"  authentication="optional" user-needed="true" mweb_oauth="optional" auth-type="reauth" reauth-time="120" method="put" description="Update the close account request">
+			<inputstream type="JSONObject" template="claccupdate_json" max-len="-1" />
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/closeaccount/${ZID}" csrf="true" method="get" authentication="optional" user-needed="true" mweb_oauth="optional" auth-type="reauth" reauth-time="120" reauth-response="code" description="get Close Account Request Details" >
+			<param name="include" regex="iamcleartextpattern" />
+		</url>
+	 	
+		
+		
+<!-- 		For groups Page -->	
+		<url path="/webclient/v1/template/groups" method="get" authentication="required" description="groups page template" />
+		
+		<url path="/webclient/v1/account/self/user/self/groups" method="get" authentication="required" description="get all the details needed for Group tab">
+			<param name="include" regex="iamcleartextpattern" />		
+		</url>
+		<!-- Create Groups -->
+		<url path="/webclient/v1/account/self/user/self/groups" method="post" authentication="required" csrf="true" description="Create new group">
+			<inputstream type="JSONObject" template="group_json" max-len="-1" />	
+		</url>
+		<!-- edit Groups -->
+		
+		<url path="/webclient/v1/account/self/user/self/groups/${ciphertext}/uploadphoto" method="post" url-type="multiple" authentication="required" csrf="true" description="Used to upload GROUP display pic">
+			 <file content-type-name="image" name="uploadphoto[picture]" max-size="10485" allowed-extensions="jpg,png,gif,jpeg" antivirus="true">
+		     	<filename regex="cleartext:removehtmlentities" max-len="150" />
+		     </file>
+		</url>
+		<url path="/webclient/v1/account/self/user/self/groups/${ciphertext}" method="put" url-type="multiple" authentication="required" csrf="true" description="edit group info">
+			<inputstream type="JSONObject" template="group_json" max-len="-1" />	
+		</url>
+	
+		<!-- delete Groups -->
+		<url path="/webclient/v1/account/self/user/self/groups/${ciphertext}" url-type="multiple" csrf="true" authentication="required"  method="delete" description="Deleting groups/unsuscribing groups">
+		</url>
+		<!-- changinf userroles Groups -->
+		<url path="/webclient/v1/account/self/user/self/groups/${ciphertext}/members/${member_Zuid}" csrf="true" url-type="multiple" authentication="required"  method="put" description="updating user roles in groups?resending inviatton">
+			<inputstream type="JSONObject" template="group_member_json" max-len="-1" />	
+		</url>
+		<!-- delete Groups members and invitation -->
+		<url path="/webclient/v1/account/self/user/self/groups/${ciphertext}/members/${member_Zuid}" csrf="true" url-type="multiple" authentication="required"  method="delete" description="Deleting group members /inviations">
+		</url>
+		<!--get contacts-->
+		<url path="/webclient/v1/account/self/user/self/contacts" method="get" authentication="required" description="getting the contacts(both frquent and searched)" >
+			<param name="q" type="String" max-len="-1"/>
+			<param name="page"  type="int" max-len="-1"/>
+			<param name="per_page"  type="int" max-len="-1"/>
+		</url>
+
+<!-- 		For Privacy Page -->	
+		<url path="/webclient/v1/template/privacy" method="get" authentication="required" description="Privacy page template" />
+<!-- 		For Privacy Page -->	
+		<url path="/webclient/v1/template/compliance" method="get" authentication="required" description="Compliance page template" />		
+<!--		For Trusted Domain -->
+		<url path="/webclient/v1/account/self/user/self/trusteddomain" method="post" csrf="true" authentication="required">
+			<inputstream type="JSONObject" template="trusteddomain_json" max-len="-1" />
+		</url>
+		
+		<url path="/authorize-domain" authentication="required" method="get" description="Access request page">
+			<param name="pid" regex="Zaid" />
+			<param name="domain" regex="domain" />
+			<param name="serviceurl" regex="urlwithparams" max-occurrences="1" max-len="50000"/>
+			<param name="digest" regex="digest" max-len="1000" />
+		</url>
+<!-- org url -->
+		<url path="/webclient/v1/template/organization" method="get" authentication="required" description="Org page template" />
+<!-- KYC URLs -->
+		 <url path="/webclient/v1/account/${ZID}/kyc" url-type="multiple" method="get" authentication="required" description="Fetch KYC details" />
+		
+		 <url path="/webclient/v1/account/${ZID}/kyc" url-type="multiple" method="post" authentication="required" csrf="true" description="Submit a dpa agreement by the user" >
+			<inputstream type="JSONObject" template="kyc_json"  max-len="-1"/>
+		</url>
+		
+		<url path="/webclient/v1/account/${ZID}/kyc" method="put" url-type="multiple" authentication="required" csrf="true" description="Add an organisation to the existing dpa">		
+			<inputstream type="JSONObject" template="kyc_merge_json" max-len="-1"/>
+		</url>
+		
+		<!-- Org tab  -->
+		<url path="/webclient/v1/org/self" url-type="multiple" method="get" authentication="required" description="To get org details">
+			<param name="include" regex="iamcleartextpattern" min-occurrences="1"/>
+		</url>
+		<!--   Domain Verify  -->
+
+		<url path="/webclient/v1/org/self/domain/${domain-name}" url-type="multiple" method="put" duration="5" threshold="15" lock-period="20" authentication="required" csrf="true" description="To verify org domain">
+			<inputstream type="JSONObject" template="domain_json" max-len="-1"/>
+		</url>
+		<url path="/webclient/v1/org/self/domain/${domain-name}" url-type="multiple" method="delete" duration="5" threshold="15" lock-period="20" authentication="required" csrf="true" description="To delete domain"/>
+
+		<!-- OrgMerge -->
+		<url path="/invitation/org/merge/${digest_in_url}" method="get" authentication="required" description="For rendering org invitation page"/>
+
+		<url path="/webclient/v1/orgmerge/${digest_in_url}" method="get" url-type='multiple' authentication="required" description="Get necessary details for UI"/>
+
+		<url path="/webclient/v1/orgmerge/${digest_in_url}" method="put" url-type='multiple' authentication="required" csrf="true" description="merge two org">
+			<inputstream type="JSONObject" template="orgmerge_json" max-len="-1"/>
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+
+		<url path="/webclient/v1/orgmerge/${digest_in_url}" method="delete" url-type='multiple' authentication="required" csrf="true" description="merge two org">
+			<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+		</url>
+		
+		<url path="/invitation/multidc/user/${digest_in_url}" method="get" authentication="required" description="For rendering multidc user invitation page">
+			<param name="clone_dc" regex="plain_str" max-len="10" min-occurrences="1"/>
+			<param name="clone_zoid" regex="plain_str" max-len="10" min-occurrences="1"/>
+			<param name="invitation_email" regex="email" min-occurrences="1"/>
+		</url>
+	</urls>
+
+	<urls prefix="(/accounts/p/[0-9]+)?" path-regex="true">
+
+		<url path="/home" authentication="required" method="get">
+			<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
+		</url>
+
+		<url path="/accounts-msgs" authentication="optional" description="JS error messages">
+			<param name="ln" regex="language" />
+			<param name="nl" regex="language" />
+			<param name="v" type="int" />
+		</url>
+		<!-- templates -->
+		<url path="/webclient/v1/template/profile" method="get" authentication="required" description="profile page template" />
+		<url path="/webclient/v1/template/mfa" method="get" authentication="required" description="multi MFA page template" />
+
+		<!-- display picture edit -->
+		<url path="/webclient/v1/account/self/user/self/photo" method="post" authentication="required" csrf="true" description="Used to crop and Upload USER">
+			<param name="photo[height]" type="int"/>
+		    <param name="photo[width]" type="int"/>
+		    <param name="photo[x_point]" type="int"/>
+		    <param name="photo[y_point]" type="int"/>
+		    <param name="photo[r_value]" type="int"/>
+			<param name="photo[photo_Permission]" type="int" />
+			 <file content-type-name="image" name="photo[picture]" max-size="10485" allowed-extensions="jpg,png,gif,jpeg" antivirus="true">
+		       <filename regex="cleartext:removehtmlentities" max-len="150" />
+		     </file>
+		</url>
+		<url path="/webclient/v1/account/self/user/self/photo" method="delete" authentication="required" csrf="true" description="Used to delete USER profile picture"></url>
+
+		<!-- personal details -->
+		<url path="/webclient/v1/account/self/user/self" csrf="true" method="put"  authentication="required" description="update personal details">
+			<inputstream type="JSONObject" template="user_json" max-len="-1" />		
+		</url>
+		<url path="/webclient/v1/account/self/user/self" method="get" auth-type="reauth" reauth-time="2700" reauth-response="code" authentication="required" description="get all the details needed">
+			<throttles key="url.path+user.zuid+url.dynamic_key" window="ROLLING" scope="SERVICE" name="loginhistory">
+			<throttle lock-period="60" duration="60" threshold="5"/>
+			</throttles>
+			<param name="include" regex="iamcleartextpattern" />		
+		</url>
+
+		<!-- sessions Remove App -->
+    	<url path="/webclient/v1/account/self/user/self/mfa/mode/browser/${httpcookievalue}" method="delete" url-type="multiple" auth-type="reauth" reauth-time="300" authentication="required" csrf="true" description="close tfa sessions"></url>
+
+		<url path="/webclient/v1/account/self/user/self/closesession" csrf="true" method="put" authentication="required" duration="5" threshold="10" lock-period="15" description="terminate required sessinons web and device">
+			<inputstream type="JSONObject" template="session_termination_json" max-len="-1" />
+		</url>
+
+		<!-- email -->
+		<url path="/webclient/v1/account/self/user/self/email/${email}/makeprimary" url-type="multiple" auth-type="reauth" reauth-time="300" method="put" authentication="required" csrf="true" description="Change primary number">
+			<inputstream type="JSONObject" template="change_prim_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/email/${email}" url-type="multiple" auth-type="reauth" reauth-time="300" authentication="required" method="delete" csrf="true" throwallerrors="true" login-throwerror="true" description="delete a particular emailid"/>
+
+		<url path="/webclient/v1/account/self/user/self/email/${iambase64}" url-type="multiple" auth-type="reauth" reauth-time="300" method="put" authentication="required" csrf="true" description="Resend and Verify Email">
+			<throttles key="url.path+user.zuid+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="profile_add_email_resend_verify">
+				<throttle duration="15m" threshold="10" lock-period="30m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="verifyemail_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/email" method="post"  auth-type="reauth" reauth-time="300" authentication="required" duration="15" lock-period="30" threshold="10" csrf="true" description="add new email">
+ 			<inputstream type="JSONObject" template="create_email_json" max-len="-1"/>
+		</url>
+
+
+		<!-- phonenumber -->
+		
+		<url path="/webclient/v1/account/self/user/self/phone/${oz-phoneno}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required" method="delete"  duration="5" threshold="15" lock-period="20"/>
+
+		<url path="/webclient/v1/account/self/user/self/phone/${oz-phoneno}/makerecovery" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" authentication="required" csrf="true" description="Convert to recovery from backup">
+			<inputstream type="JSONObject" template="backup_torecovery_json" max-len="-1" />	
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/phone/${oz-phoneno}/makeloginnumber" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" authentication="required" csrf="true" description="Convert to number to loginnumber">
+			<inputstream type="JSONObject" template="changemobileprimary_json" max-len="-1" />	
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/phone/${oz-phoneno}/removeloginnumber" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required" method="delete" csrf="true" duration="5" threshold="15" lock-period="20"/>
+
+		<url path="/webclient/v1/account/self/user/self/phone/${oz-phoneno}/makemfa" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" authentication="required" csrf="true" description="Convert number to mfa">
+			<inputstream type="JSONObject" template="changemfa_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/phone" method="post" auth-type="reauth" reauth-time="300" duration="15" lock-period="30" threshold="5" authentication="required" csrf="true" description="add new phonenumber">
+			<inputstream type="JSONObject" template="phone_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/phone/${iambase64}" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" authentication="required" csrf="true" description="OTP Resend and Confirmation">
+			<throttles key="url.path+user.zuid+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="profile_add_phoneno_resend_verify">
+				<throttle duration="15m" threshold="3" lock-period="30m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<inputstream type="JSONObject" template="verify_json" max-len="-1" />
+		</url>
+
+		<!-- MFA -->
+		<url path="/webclient/v1/account/self/user/self/mfa" reauth-response="code" auth-type="reauth" reauth-time="2700" method="get" authentication="required" description="get Mfa configured details" />
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode" method="put" duration="5" threshold="10" lock-period="15" auth-type="reauth" reauth-time="300" authentication="required" csrf="true" description="pause tfa and it can be resumed at a later time and change primary">
+			<inputstream type="JSONObject" template="tfa_json" max-len="-1" />
+		</url>
+
+		<!-- MFA MOBILE -->
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/mobile" authentication="required" method="post" csrf="true" duration="30" lock-period="300" auth-type="reauth" reauth-time="300" threshold="10" description="send otp to mobile ">
+			<inputstream type="JSONObject" template="tfa_mobile_json" max-len="-1" />
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/mobile/${iambase64}/primary" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required" method="put" csrf="true" duration="20" threshold="10" lock-period="300" description="change given num as primary">
+    		<inputstream type="JSONObject" template="primary_mobile_json" max-len="-1" />
+    	</url>
+		
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/mobile/${iambase64}" url-type="multiple" authentication="required" method="put" csrf="true" auth-type="reauth" reauth-time="300" description="verify otp and register mobile for mfa">
+			<throttles key="url.path+user.zuid+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="mfa_setup_resend_verify">
+				<throttle duration="15m" threshold="3" lock-period="30m" />
+			</throttles>
+			<inputstream type="JSONObject" template="verify_mobile_json" max-len="-1" />
+		</url>
+
+
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/mobile/${iambase64}" csrf="true" url-type="multiple" method="delete" auth-type="reauth" reauth-time="300" authentication="required" duration="5" threshold="10" lock-period="15" description="Deleting tfa backup mobile number">
+			<param name="primary" regex="iambase64" />
+		</url>
+
+		<!-- Authenticator App -->
+		<url path="/webclient/v1/account/self/user/self/mfa/mode/otp" auth-type="reauth" reauth-time="300" method="post" csrf="true" authentication="required" description="generates secret key"/>
+
+	    <url  path="/webclient/v1/account/self/user/self/mfa/mode/otp/${iambase64}" auth-type="reauth" reauth-time="300" url-type="multiple" method="put" csrf="true" authentication="required" description="registers secret key">
+	   		<inputstream type="JSONObject" template="tfa_otp_json" max-len="-1"  />
+	  	</url>
+
+		<url  path="/webclient/v1/account/self/user/self/mfa/mode/otp" auth-type="reauth" reauth-time="300" method="delete" csrf="true" authentication="required" description="Delete secret key"/>
+
+
+		<!-- Backup Code Generator -->
+		<url path="/webclient/v1/account/self/user/self/backupcodes" method="put" authentication="required" auth-type="reauth" reauth-time="300" csrf="true" duration="1" lock-period="5" threshold="10" description="generate Backup Code for recovery" >
+			<inputstream type="JSONObject" template="tfa_backup_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/backupcodes/print" method="put" authentication="required" csrf="true" duration="1" lock-period="5" threshold="10" user="true" description="print the generated Backup Code" >
+			<inputstream type="JSONObject" template="tfa_printbackup_json" max-len="-1" />
+		</url>
+
+		<url path="/webclient/v1/account/self/user/self/backupcodes/download" method="get" authentication="required" duration="1" lock-period="5" threshold="10" description="download the generated backupcode" >
+			<param name="iamcsrcoo" regex="^(?:[a-z0-9\.\-])+$" max-len="300"></param>
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/backupcodes/status" method="put" authentication="required" csrf="true" duration="1" lock-period="5" threshold="10" description="Update the status for generated backup codes">
+			<inputstream type="JSONObject" template="tfa_backup_status_json" max-len="-1"/>
+		</url>
+		
+		<!-- 		For Security Page -->		
+		<url path="/webclient/v1/template/security" method="get" authentication="required" description="Secuirty page template" />
+		
+		<!-- password change -->
+		<url path="/webclient/v1/account/self/user/self/password" method="put" authentication="required" org-oauthscope="userpassword" operation-type="UPDATE" duration="5" threshold="10" lock-period="15" description="To change current login user password through OrgOauthToken as well as ticket">
+			<inputstream type="JSONObject" template="password_json" max-len="-1" secret="true" />
+		</url>
+		
+		<url path="/webclient/v1/account/self/user/self/password" method="get" authentication="required" org-oauthscope="userpassword" operation-type="READ" internal="true" duration="5" threshold="10" lock-period="15" description="To retrieve password hash through OrgOAuthToken" />
+		
+		<!-- 		For Sessions Page -->	
+		<url path="/webclient/v1/template/sessions" method="get" authentication="required" description="Sessions page template" />
+		<!-- Sessions -->
+		<url path="/webclient/v1/account/self/user/self/activesessions/${httpcookievalue}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required"  method="delete" description="Deleting sessions tickets">
+		</url>
+		<url path="/webclient/v1/account/self/user/self/activesessions/${multihttpcookievalue}" csrf="true" auth-type="reauth" reauth-time="300" url-type="multiple" authentication="required"  method="delete" description="Deleting selected sessions tickets">
+		</url>
+		<url path="/webclient/v1/account/self/user/self/activesessions" csrf="true" auth-type="reauth" reauth-time="300" authentication="required"  method="delete" description="Deleting all other sesion tickets">
+		</url>
+
+		<url path="/webclient/v1/multidc/export" method="post" csrf="true" authentication="required" description="Initiating the multi-dc account copy process">
+			<inputstream type="JSONObject" template="multidc_export_json" max-len="500" />
+		</url>
+		<url path="/webclient/v1/multidc/export/${digest_in_url}" method="delete" csrf="true" authentication="required" description="Deleting the multi-dc invitation in cross-dc">
+			<param name="clone_dc" regex="plain_str" max-len="10"/>
+		</url>
+
+		<!--=== POST Announcement UI ===-->
+		<url path="/announcement/(add-recovery|tfa-banner)" authentication="required" auth-type="reauth" reauth-time="300" ignore-extraparam="true">
+			<param-group name="announcementparams" />
+		</url>
+
+		<url path="/announcement/[a-z\-A-Z]+(/next)?" authentication="required" ignore-extraparam="true">
+			<param-group name="announcementparams" />
+		</url>
+	</urls>
+
+	<jsontemplates>
+		<jsontemplate name="otp_reauth_data">
+   			<key name="otpreauth" type="JSONObject" template="otp_keys" max-len="-1"/>
+    	</jsontemplate>
+    	<jsontemplate name="device_reauth_data">
+   			<key name="devicereauth" type="JSONObject" template="device_keys" max-len="-1"/>
+    	</jsontemplate>
+		<jsontemplate name="non_polling_device_reauth_data">
+   			<key name="devicereauth" type="JSONObject" template="non_polling_device_keys" max-len="-1"/>
+    	</jsontemplate>
+    	<jsontemplate name="pwd_reauth_data">
+    		<key name="passwordreauth" type="JSONObject" template="pwd_keys" max-len="-1"/>
+    	</jsontemplate>
+    	
+    	<jsontemplate name="dpa_json_form">
+	  		<key name="dpa" template="dpa_format" type="JSONObject" max-len="-1"/>
+	  	</jsontemplate>
+	  	<jsontemplate name="dpa_format">
+	  		<key name="fn" regex="iamcleartextpattern" max-len="50" min-occurrences="1"/>
+	  		<key name="em" regex="email" min-occurrences="1"/>
+	  		<key name="on" type="String" min-occurrences="1"/>
+	  		<key name="cn" type="String" min-occurrences="1"/>
+	  		<key name="cd" type="String" max-len="2500"/>
+			<key name="ca" template="dpa_address" type="JSONObject" max-len="500" min-occurrences="1"/>
+			<key name="dpa_type" regex="[0-9]" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="dpa_address">
+			<key name="str" regex="[0-9a-zA-Z_\-\+\.\$@\?\,\:\'\/\!\[\]\(\)\|\#&amp;\P{InBasicLatin}\s&quot;]+" max-len="200" min-occurrences="1"/>
+			<key name="city" regex="iamcleartextpattern" max-len="100" min-occurrences="1"/>
+			<key name="state" regex="iamcleartextpattern" max-len="100" min-occurrences="1"/>
+			<key name="country" regex="country" min-occurrences="1"/>
+			<key name="zcode" regex="iamcleartextpattern" max-len="20" min-occurrences="1"/>
+		</jsontemplate>
+		
+		<jsontemplate name="dpa_merge_json">
+	  		<key name="dpa" template="merge_format" type="JSONObject" max-len="-1"/>
+	  	</jsontemplate>
+	  	<jsontemplate name="merge_format">
+	  		<key name="szid" regex="iamcleartextpattern" min-occurrences="1"/>
+	  		<key name="dpa_type" regex="[0-9]" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="user_json">
+   			<key name="user" type="JSONObject" template="user_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="user_format">
+	        <key name="first_name" regex="iamcleartextpattern" min-len="1"/>
+   			<key name="last_name" regex="iamcleartextpattern" min-len="1"/>
+   			<key name="display_name" regex="iamcleartextpattern" max-len="100"/>
+   			<key name="gender" type="int" />
+   			<key name="country" regex="country"/>
+   			<key name="state" regex="iamcleartextpattern" />
+   			<key name="language"  regex="language" />
+   			<key name="timezone" regex="timezone"/>
+    	</jsontemplate>
+
+    	<jsontemplate name="create_email_json">
+				<key name="email" type="JSONObject" template="create_email_format" max-len="-1" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="create_email_format">
+			<key name="email_id" regex="email" min-occurrences="1"/>
+		</jsontemplate>
+
+		<jsontemplate name="verifyemail_json">
+			<key name="email" type="JSONObject" template="verify_email_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="verify_email_format">
+			<key name="code" regex="[0-9]{7}" min-occurrences="1"/>
+		</jsontemplate>
+    	<jsontemplate name="modeupdate_json">
+   			<key name="modeupdate" type="JSONObject" template="modeupdate_format" max-len="-1" />
+	     </jsontemplate>
+	      <jsontemplate name="modeupdate_format">
+   			<key name="mode" type="int"/>
+        	<key name="mode_pref" type="int" />
+        	<key name="restrict_signin" type="boolean" />
+			<key name="make_primary" type="boolean" />
+        	<key name="bio_type" type="int"/> 		
+    	</jsontemplate>
+    	
+    	 <jsontemplate name="device_json">
+   			<key name="device" type="JSONObject" template="device_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="device_format">
+   			<key name="device_type" max-len="1" min-occurrences="1" type="int" />
+         	<key name="app_id" max-len="50" min-occurrences="1" regex="app_id"/>
+         	<key name="apns_mode" max-len="20" min-occurrences="1" regex="apns_mode"/>
+        	<key name="device_token" max-len="250" regex="device_token"/>
+        	<key name="old_device_token" max-len="250" regex="device_token"/>
+        	<key name="os_version"  max-len="10" min-occurrences="1" regex="os_version"/>
+        	<key name="device_info" max-len="250" regex="((?![0-9a-zA-Z+\,\(\)\[\]\s\P{InBasicLatin}]).)+" filter-matched-content="true" replacement-string=" "/>
+        	<key name="device_name" max-len="500" regex="iambase64"/>
+        	<key name="public_key" max-len="500" min-occurrences="1" regex="iambase64"/>
+        	<key name="app_version" max-len="10" min-occurrences="1" regex="[0-9a-zA-Z_\-\+\.\s]+"/>
+        	<key name="is_token_available" type="boolean" />
+    	</jsontemplate>
+
+
+    	<jsontemplate name="device_update_json">
+   			<key name="device" type="JSONObject" template="device_update_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="device_update_format">
+   			<key name="os_version"  max-len="10"  regex="os_version"/>
+        	<key name="device_info" max-len="250" regex="((?![0-9a-zA-Z+\,\(\)\[\]\s\P{InBasicLatin}]).)+" filter-matched-content="true" replacement-string=" "/>
+        	<key name="device_name" max-len="500" regex="iambase64"/>
+        	<key name="new_device_token" max-len="250" regex="device_token"/>
+        	<key name="app_version" max-len="10"  regex="[0-9a-zA-Z_\-\+\.\s]+"/>
+    	</jsontemplate>
+    	
+    	<jsontemplate name="change_prim_json">
+   			<key name="makeprimary" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="backup_torecovery_json">
+   			<key name="makerecovery" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="changemobileprimary_json">
+   			<key name="makeloginnumber" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	     </jsontemplate>
+	      <jsontemplate name="changemfa_json">
+   			<key name="makemfa" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	     </jsontemplate>
+		<jsontemplate name="phone_json">
+			<key name="phone" type="JSONObject" template="phone_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="phone_format">
+			<key name="mobile" regex="phone" min-occurrences="1"/>
+			<key name="countrycode" regex="countrycode" min-occurrences="1"/>
+			<key name="captcha" regex="hipstring" max-len="8"/>
+			<key name="cdigest" regex="digest" max-len="500" max-occurrences="1"/>
+    	</jsontemplate>
+
+		<jsontemplate name="verify_json">
+			<key name="phone" type="JSONObject" template="verify_phone_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="verify_phone_format">
+				<key name="code" secret="true" regex="[0-9]{7}"/>
+				<key name="countrycode" regex="countrycode"/>
+		</jsontemplate>
+    	
+    	<jsontemplate name="password_json">
+   			<key name="password" type="JSONObject" template="password_format" max-len="-1" secret="true" />
+	    </jsontemplate>
+    	 <jsontemplate name="password_format">
+   			<key name="currpwd" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
+   			<key name="pwd" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
+   			<key name="incpwddata" type="boolean"/>
+    	</jsontemplate>
+    	
+		<jsontemplate name="session_termination_json">
+			<key name="sessionterminate" type="JSONObject" template="session_termination_keys" max-len="-1" />
+	    </jsontemplate>
+    	
+    	<jsontemplate name="password_json_mobile">
+   			<key name="resetpassword" type="JSONObject" template="password_mobile_format" max-len="-1" />
+	    </jsontemplate>
+    	 <jsontemplate name="password_mobile_format">
+   			<key name="oldP" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
+   			<key name="newP" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
+   			<key name="rWS" type="boolean" /> 
+   			<key name="rAS" type="boolean" />    			
+    	</jsontemplate>
+
+    	<jsontemplate name="lockapp_json_mobile">
+   			<key name="lockapp" type="JSONObject" template="lockapp_mobile_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="lockapp_mobile_format">
+   			<key name="dL" type="boolean"  min-occurrences="1"/> 
+    	</jsontemplate>
+
+    	<jsontemplate name="profile_json_mobile">
+   			<key name="profile" type="JSONObject" template="user_profile_mobile_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="user_profile_mobile_format">
+	        <key name="fN" regex="iamcleartextpattern"/>
+   			<key name="nN" regex="iamcleartextpattern"/>
+   			<key name="g" type="int" />
+   			<key name="c" regex="country"/>
+   			<key name="l"  regex="language" />
+   			<key name="t" regex="timezone"/>
+    	</jsontemplate>
+ 
+        <jsontemplate name="IP_json">
+   			<key name="allowedip" type="JSONObject" template="IP_format" max-len="-1" />
+	    </jsontemplate>
+	     <jsontemplate name="IP_format">
+   			<key name="ip_name" regex="newcleartextpattern"  />
+   			<key name="ips" type = "JSONArray" template = "IP_Array" array-size="1-50" max-len="-1" />
+   			<key name="client_apps" type = "JSONArray" template = "Int_array" array-size="1-10" min-occurrences="1" max-len="-1"/>
+    	</jsontemplate> 
+    	
+    	<jsontemplate name = "Int_array" >
+    	    <value type="int"/>
+    	</jsontemplate>
+    	  	
+    	<jsontemplate name = "IP_Array"  >
+    	   <value type="JSONArray" template="IP_Values"  array-size="1-2" max-len="-1"/>
+    	</jsontemplate>
+    	
+    	<jsontemplate name = "IP_Values" >
+    	    <value regex="ipaddress"/>
+    	</jsontemplate>
+
+		<jsontemplate name="geofencing_json">
+			<key name="geofencing" type="JSONObject" template="geofencing_format" max-len="-1" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="geofencing_format">
+			<key name="location_info" type="JSONArray" template="geofencing_country_format" max-len="-1" min-occurrences="1" />
+			<key name="location_type" regex="[0|1]" min-occurrences="1"/>
+			<key name="allowed_clients" type = "JSONArray" template = "authModes_array" min-occurrences="1"/>
+			<key name="name" regex="identifiercleartextpattern" />
+		</jsontemplate>
+
+		<jsontemplate name="update_geofencing_json">
+			<key name="geofencing" type="JSONObject" template="new_geofencing_format" max-len="-1" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="new_geofencing_format">
+			<key name="location_info" type="JSONArray" template="geofencing_country_format" max-len="-1" min-occurrences="1" />
+			<key name="location_ids" type = "JSONArray" template = "Integer_array" min-occurrences="1"/>
+		</jsontemplate>
+
+		<jsontemplate name="geofencing_country_format">
+			<key name="country" regex="country" min-occurrences="1"/>
+			<key name="state" type="JSONArray" template="String_Array"/>
+		</jsontemplate>
+		<jsontemplate name = "String_Array" >
+			<value regex="newcleartextpattern"/>
+		</jsontemplate>
+		<jsontemplate name = "authModes_array" >
+			<value type="int" regex="[0|1|2]"/>
+		</jsontemplate>
+		<jsontemplate name = "Integer_array" >
+			<value regex="[0-9]+"/>
+		</jsontemplate>
+    	<jsontemplate name="apppasswords_json">
+   			<key name="apppasswords" type="JSONObject" template="apppasswords_format" max-len="-1" />
+	    </jsontemplate>
+	     <jsontemplate name="apppasswords_format">
+<!--    			<key name="password" sensitive="true" regex="oldpassword" max-len="250" secret="true" /> -->
+   			<key name="keylabel" regex="cleartextpattern"/>
+    	</jsontemplate>
+    	
+    	<jsontemplate name="preference_json">
+   			<key name="preferences" type="JSONObject" template="preference_format" max-len="-1" />
+	    </jsontemplate>
+	     <jsontemplate name="preference_format">
+   			<key name="dateformat" regex="date_format" /> 
+   			<key name="pass_expiry" type="boolean" /> 
+   			<key name="photo_Permission" type="int" /> 
+   			<key name="subscription" type="boolean" />
+   			<key name="mc_alert" type="boolean" />
+   			<key name="signin_alert" type="boolean" /> 			
+    	</jsontemplate>
+    	
+    	<jsontemplate name="closeaccount_json">
+   			<key name="closeaccounts" type="JSONObject" template="closeaccounts_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="closeaccounts_format">
+   			<key name="reason" regex="NOT_HAPPY|NOT_USEFUL|MOVING_TO_ALTERNATIVE" /> 
+   			<key name="comments" type="cleartext:removehtmlentities" max-len="500" /> 			
+    	</jsontemplate>
+    	
+    	<jsontemplate name="claccrequest_json">
+   			<key name="closeaccount" type="JSONObject" template="claccrequest_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="claccrequest_format">
+   			<key name="includeCloseAcc" type="boolean" /> 			
+    	</jsontemplate>
+    	
+    	<jsontemplate name="claccupdate_json">
+   			<key name="closeaccount" type="JSONObject" template="claccupdate_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="claccupdate_format">
+   			<key name="reason" regex="iamcleartextpattern" /> 
+   			<key name="comments" type="cleartext:removehtmlentities" max-len="500" /> 
+   			<key name="includeCloseAcc" type="boolean" /> 
+   		</jsontemplate>
+    	
+    	
+    	<jsontemplate name="group_json">
+   			<key name="groups" type="JSONObject" template="group_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="group_format">
+   			<key name="grpname" regex="iamcleartextpattern" min-len="1"/>
+   			<key name="grpdesc" type="cleartext:removehtmlentities" max-len="200" />
+<!--    			<key name="lang" regex="language" /> -->
+<!--    			<key name="message" type="cleartext:removehtmlentities" max-len="1000" /> -->
+   			<key name="grpmembers" type="JSONArray" template="group_emails" array-size="0-50" max-len="-1" />
+    	</jsontemplate>
+    	<jsontemplate name="group_emails">
+			<value regex="email"/>
+		</jsontemplate>
+    	
+    	
+<!--     	<jsontemplate name="group_contacts_json"> -->
+<!--    			<key name="contacts" type="JSONObject" template="groupcontacts_format" max-len="-1" /> -->
+<!-- 	     </jsontemplate> -->
+<!-- 	      <jsontemplate name="groupcontacts_format"> -->
+<!--    			<key name="q" type="String" /> -->
+<!--     	</jsontemplate> -->
+    	
+    	<jsontemplate name="group_member_json">
+   			<key name="members" type="JSONObject" template="groupmember_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="groupmember_format">
+   			<key name="isModerator" type="boolean" />
+   			<key name="isReInvite" type="boolean" />
+    	</jsontemplate>
+    	
+<!--     	<jsontemplate name="photo_json"> -->
+<!--    			<key name="photo" type="JSONObject" template="photo_format" max-len="-1" /> -->
+<!-- 	     </jsontemplate> -->
+<!-- 	     <jsontemplate name="photo_format"> -->
+<!--    			<key name="height" type="int" /> -->
+<!--    			<key name="width" type="int" /> -->
+<!--    			<key name="x_point" type="int" /> -->
+<!--    			<key name="y_point" type="int" /> -->
+<!--    			<key name="picture" type="int" /> -->
+<!--     	</jsontemplate> -->
+
+
+		<jsontemplate name="tfa_json">
+   			<key name="mfa" type="JSONObject" template="tfa_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="tfa_format">
+   			<key name="activate" type="boolean"   />
+   			<key name="makeprimary" type="boolean" /> 		
+   			<key name="mode" type="int"/>	
+   			<key name="primary" regex="iambase64" max-len="500"/>
+    	</jsontemplate>
+
+		<jsontemplate name="pushstatus_json">
+			<key name="pushstatus" type="JSONObject" template="pushstatus_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="crossdc_pushstatus_json">
+			<key name="crossdcpushstatus" type="JSONObject" template="pushstatus_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="pushstatus_format">
+			<key name="token_id" max-len="500" regex="digest" />
+			<key name="totp_code" regex="code" />
+			<key name="status" type="int" />
+			<key name="error_status" type="int" />
+			<key name="mode_pref" type="int" />
+			<key name="type" regex="SIGNIN_PUSH|ALERT_PUSH|PWD_RECOVERY_PUSH|GENERAL_PUSH|REAUTH_PUSH" />
+			<key name="data" regex="iambase64"  max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="devicekey_json">
+			<key name="key" type="JSONObject" template="devicekey_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="devicekey_format">
+			<key name="publickey" max-len="500" regex="iambase64" />
+		</jsontemplate>
+    	
+    	<jsontemplate name="reauth_json">
+    	   <key name="reauth" type="JSONObject" template="reauth_json_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="reauth_json_format">
+   			<key name="ra_token" max-len="200" regex="device_token"/>
+        </jsontemplate>
+    	
+    
+		<jsontemplate name="tfa_mobile_json">
+			<key name="mfamobile" type="JSONObject" template="tfa_mobile_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="tfa_mobile_format">
+			<key name="mobile" regex="phone_numbers"/>
+			<key name="countrycode" regex="^[A-Z]+$"/>
+			<key name="digest" regex="digest" max-len="400"/>
+		</jsontemplate>
+
+		<jsontemplate name="verify_mobile_json">
+			<key name="mfamobile"  type="JSONObject" template="verify_mobile_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="verify_mobile_format">
+			<key name="code" regex="[0-9]{7}" secret="true"/>
+			<key name="digest" regex="digest" max-len="400"/>
+			<key name="is_resend" type="boolean"/>
+		</jsontemplate>
+		
+		<jsontemplate name="primary_mobile_json">
+			<key name="primary"  type="JSONObject" template="emptyJson_format" max-len="-1" min-occurrences="1"/>
+		</jsontemplate>
+    	
+    	<jsontemplate name="tfa_otp_json">
+   			<key name="mfaotp" secret="true" type="JSONObject" template="tfa_otp_format" max-len="-1" />
+	     </jsontemplate>
+	     <jsontemplate name="tfa_otp_format">
+			<key name="code" secret="true" regex="code" min-occurrences="1"/>
+    	</jsontemplate>
+    	
+    	<jsontemplate name="tfa_backup_json">
+   			<key name="backupcodes" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	    </jsontemplate>
+	    
+	    <jsontemplate name="tfa_printbackup_json">
+   			<key name="print" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	    </jsontemplate>
+	    
+	    <jsontemplate name="tfa_backup_status_json">
+			<key name="status" type="JSONObject" template="tfa_backup_status_template" max-len="-1" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="tfa_backup_status_template">
+			<key name="status" regex="iamcleartextpattern" min-occurrences="1"/>
+		</jsontemplate>
+
+	    <jsontemplate name="privacy_json">
+   			<key name="privacy" type="JSONObject" template="emptyJson_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="emptyJson_format">
+    	</jsontemplate>
+	    
+    	<jsontemplate name="exo_star_json">
+   			<key name="mfaexostar" type="JSONObject" template="exo_star_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="exo_star_format">
+	    	<key name="code" secret="true" type="int" />
+     	 	<key name="type" regex="(hardtok|softtok)" />
+    	</jsontemplate>
+    	
+    	<jsontemplate name="passkey_json">
+			<key name="mfapasskey" template="passkey_format" type="JSONObject" max-len="-1" ></key>
+		</jsontemplate>
+		<jsontemplate name="passkey_device_json">
+			<key name="passkey" template="passkey_format" type="JSONObject" max-len="-1" ></key>
+		</jsontemplate>
+		<jsontemplate name="passkey_format">
+			<key name="key_name" regex="newcleartextpattern" max-len="50" />
+	        <key name="id" regex="iambase64" min-occurrences="1"/>
+			<key name="type" regex="newcleartextpattern" />
+			<key name="rawId" regex="iambase64" min-occurrences="1"/>
+			<key name="extensions" template="emptyJson_format" type="JSONObject" max-len="-1"/>
+			<key name="response" template="passkey_response_format" type="JSONObject" max-len="-1"/>
+        </jsontemplate>
+        <jsontemplate name="passkey_response_format">
+			<key name="clientDataJSON" regex="iambase64" max-len="-1" min-occurrences="1"/>
+			<key name="attestationObject" regex="iambase64" max-len="-1" min-occurrences="1"/>
+			<key name="transports"  template="passkey_transports_format" type="JSONArray" max-len="-1"/>
+        </jsontemplate>
+		<jsontemplate name="passkey_transports_format">
+			 <value regex="cable|internal|hybrid" min-occurrences="1"/>
+		</jsontemplate> 
+
+    	<jsontemplate name="yubikey_json">
+			<key name="mfayubikey" template="yubikey_format" type="JSONObject" max-len="-1" ></key>
+		</jsontemplate>
+		<jsontemplate name="yubikey_format">
+			<key name="key_name" regex="newcleartextpattern" min-occurrences="1" max-len="50" />
+	        <key name="id" regex="iambase64" min-occurrences="1" max-len="-1"/>
+			<key name="type" regex="newcleartextpattern" />
+			<key name="rawId" regex="iambase64" min-occurrences="1" max-len="-1"/>
+			<key name="extensions" template="emptyJson_format" type="JSONObject" max-len="-1"/>
+			<key name="response" template="yubikey_response_format" type="JSONObject" max-len="-1"/>
+        </jsontemplate>
+        <jsontemplate name="yubikey_response_format">
+			<key name="clientDataJSON" regex="iambase64" max-len="-1" min-occurrences="1"/>
+			<key name="attestationObject" regex="iambase64" max-len="-1" min-occurrences="1"/>
+			<key name="transports"  template="yubikey_transports_format" type="JSONArray" max-len="-1"/>
+        </jsontemplate>
+		<jsontemplate name="yubikey_transports_format">
+			 <value regex="usb|nfc|ble|hybrid|internal"/>
+		</jsontemplate> 
+    	
+    	<jsontemplate name="saml_json">
+   			<key name="saml" type="JSONObject" template="saml_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="saml_format">
+   			<key name="saml_status" type="boolean"  /> 			
+    	</jsontemplate>
+    	
+    	
+    	<jsontemplate name="passphrase_json">
+   			<key name="passphrase" type="JSONObject" template="passphrase_format" max-len="-1" />
+	    </jsontemplate>
+	    <jsontemplate name="passphrase_format">
+   			<key name="pass_phrase" regex="password"/>
+   			<key name="public_key" max-len="300" regex="iambase64"/>
+   			<key name="private_key" max-len="2000" regex="iambase64"/>
+   			<key name="signature" max-len="200" regex="iambase64" />
+			<key name="enc_provider" max-len="20" regex="iambase64" />
+			<key name="cipher_text" max-len="200" regex="iambase64"/>
+   			<key name="enc_salt" max-len="200" regex="iambase64"/>
+   			<key name="rec_salt" max-len="200" regex="iambase64"/>
+   			<key name="secret_key" max-len="200" regex="iambase64" />
+   			<key name="forgot_passphrase" type="boolean"  />
+    	</jsontemplate>
+		<jsontemplate name="challenge_json">
+			<key name="challenge" type="JSONObject" template="passphrase_format" max-len="-1" />
+		</jsontemplate>
+    	 <jsontemplate name="usertpsecrets_json">
+       <key name="tpsecret_all" type="JSONArray" template="usertpsecret_multi_json" max-len="-1" array-size="0-100" />
+       </jsontemplate>
+       <jsontemplate name="usertpsecret_multi_json">
+        	<key name="app_name" regex="iamcleartextpattern"  max-len="200"/>
+			<key name="app_secret" regex="iambase64" max-len="300"/>
+   			<key name="label" regex="iamcleartextpattern" max-len="200"/>
+		   	<key name="durations" type="int"/>
+	   </jsontemplate>
+
+	<jsontemplate name="usertpsecret_json">
+		<key name="tpsecret" type="JSONObject" template="tpsecret_format" max-len="-1" />
+	</jsontemplate>
+
+	<jsontemplate name="tpsecret_format">
+		<key name="sync_tpsecret" type="boolean" />
+	</jsontemplate>
+
+	<jsontemplate name="totpgroup_json">
+		<key name="totpgroup" type="JSONObject" template="totpgroup_format" max-len="-1"/>
+	</jsontemplate>
+
+	<jsontemplate name="totpgroup_format">
+		<key name="totpgroup_all" type="JSONArray" template="totpgroup_multi_json" max-len="-1" array-size="1-100" />
+	</jsontemplate>
+
+    <jsontemplate name="totpgroup_multi_json">
+       	<key name="group_name" regex="plain_str" max-len="50"/>
+       	<key name="state" regex="add|edit|move" max-len="10"/>
+		<key name="group_id" regex="[0-9]+" min-occurrences="1"/>
+  		<key name="next_id" regex="[0-9\-]+" />
+  		<key name="is_head" type="boolean" />
+  		<key name="group_details" type="JSONObject" template="customized_json" max-len="-1" max-occurrences="10"/>
+	   	<key name="totpsecrets" type="JSONArray" template="totpsecrets_format" max-len="-1" array-size="0-100" />
+    </jsontemplate>
+
+    <jsontemplate name="totpsecrets_format">
+       	<key name="app_name" regex="iamcleartextpattern" max-len="200"/>
+       	<key name="state" regex="add|edit|move" max-len="10"/>
+		<key name="app_secret" regex="iambase64" max-len="500"/>
+  		<key name="label" regex="iamcleartextpattern" max-len="200" />
+	   	<key name="durations" type="int"/>
+	   	<key name="app_id" regex="[0-9]+" min-occurrences="1"/>
+	   	<key name="next_id" regex="[0-9\-]+" />
+	   	<key name="app_details" type="JSONObject" template="customized_json" max-len="-1" max-occurrences="15"/>
+	   	<key name="app_logo" type="int"/>
+	   	<key name="is_head" type="boolean" />
+   </jsontemplate>
+
+	<jsontemplate name="customized_json">
+		<key name="[a-zA-Z0-9-_]+" name-regex="true" type="String" max-len="10000"/>
+	</jsontemplate>
+
+	<jsontemplate name="totpgroups_getjson">
+		<key name="totpgroup_all" type="JSONArray" template="totpgroup_getformat" max-len="-1" array-size="0-1" />
+	</jsontemplate>
+
+	<jsontemplate name="totpgroup_getformat">
+       	<key name="last_updated_time" regex="[0-9\-]+" />
+    </jsontemplate>
+
+    	<jsontemplate name="trusteddomain_json">
+			<key name="trusteddomain" type="JSONObject" template="trusteddomain_format" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="trusteddomain_format">
+			<key name="digest" regex="digest" max-len="1000" />
+			<key name="domain" regex="domain_name" max-len="100"/>
+			<key name="serviceurl" regex="serviceurl" max-len="2000"/>
+			<key name="servicename" regex="servicename" />
+			<key name="atd" type="boolean"/>
+		</jsontemplate>
+		<jsontemplate name="tp_secret_data">
+			<key name="sendpushnotify" type="JSONObject" template="tp_secret_JSON" max-len="-1" />
+		</jsontemplate>
+		<jsontemplate name="tp_secret_JSON">
+			<key name="app_id" regex = "[0-9]+" />
+		</jsontemplate>
+		<jsontemplate name="kyc_json">
+			<key name="kyc" type="JSONObject" template="kyc_json_format" max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="kyc_json_format">
+			<key name="on" type="String" description="Organisation name"/>
+			<key name="is" type="int" description="Industry Sector"/>
+			<key name="iss" type="int" description="Industry Sub Sector"/>
+			<key name="ec" type="int" description="Employee Count"/>
+			<key name="em" regex="email" description="Org Contact Email ID"/>
+			<key name="fn" regex="iamcleartextpattern" max-len="100" description="First Name"/>
+			<key name="ln" regex="iamcleartextpattern" max-len="100" description="Last Name"/>
+			<key name="mn" regex="phone" description="Mobile Number"/>
+			<key name="dn" regex="iamcleartextpattern" description="Designation"/>
+			<key name="ca" template="dpa_address" type="JSONObject" max-len="500"/>
+			<key name="kyc_contacts" type="JSONArray" template="kyc_multi_json" max-len="-1" array-size="0-6"/>
+		</jsontemplate>
+		<jsontemplate name="kyc_multi_json">
+			<key name="cem" regex="email" min-occurrences="1" description="Contact Email"/>
+			<key name="cfn" regex="iamcleartextpattern" max-len="100" description="Contact First Name"/>
+			<key name="cln" regex="iamcleartextpattern" max-len="100" description="Contact Last Name"/>
+			<key name="dpo" type="boolean" description="Data Protection Officer"/>
+			<key name="pr" type="boolean" description="Privacy Representative"/>
+			<key name="adr" type="boolean" description="Transfer Account Ownership"/>
+			<key name="bn" type="boolean" description="Breach Notification"/>
+			<key name="spn" type="boolean" description="SubProcessor addition and Modification Notification"/>
+			<key name="add" type="boolean" min-occurrences="1" description="Add or Delete KYC Contact"/>
+		</jsontemplate>
+		
+		<jsontemplate name="kyc_merge_json">
+			<key name="kyc" type="JSONObject" template="kyc_merge_format" max-len="-1" />
+		</jsontemplate>
+		
+		<jsontemplate name="kyc_merge_format">
+			<key name="soid" regex="[0-9]+" min-occurrences="1"/>
+		</jsontemplate>
+		
+		<!-- Domain Verify Post Announcement -->
+		<jsontemplate name="domain_json">
+			<key name="domain" template="domain_template" type="JSONObject" max-len="-1" ></key>
+		</jsontemplate>
+		<jsontemplate name="domain_template">
+			<key name="type"  regex="^(0|1|2)$"></key>
+			<key name="domain_type"  regex="^(0|1|2|3)$" min-occurrences="1"></key>
+		</jsontemplate>
+
+		
+		<!-- Org Merge Invitation -->
+		<jsontemplate name="orgmerge_json">
+			<key name="orgmerge" type="JSONObject" template="orgmerge_format" max-len="-1"/>
+		</jsontemplate>
+		<jsontemplate name="orgmerge_format">
+			<key name="zaaids" type="JSONArray" template="zaaids" min-occurrences="1"/>
+		</jsontemplate>
+		<jsontemplate name="zaaids">
+			<value type="long" />
+		</jsontemplate>
+		
+		
+		<jsontemplate name="saml_custom_params">
+			<key name="to_be_added" type="JSONObject" template="saml_custom_params_obj" max-len="-1"/>
+			<key name="to_be_updated" type="JSONObject" template="saml_custom_params_obj" max-len="-1"/>
+			<key name="to_be_deleted" type="JSONArray" template="saml_custom_params_arr" array-size="1-2" max-len="-1"/>
+		</jsontemplate>
+		<jsontemplate name="saml_custom_params_obj">
+			<key name="ZLOGINID" regex="plain_str" max-len="30" />
+			<key name="ZEMAIL" regex="plain_str" max-len="30" />
+		</jsontemplate>
+		<jsontemplate name="saml_custom_params_arr">
+			<key index="0-1" regex="plain_str"  max-len="30" />
+		</jsontemplate>
+		
+		
+		<jsontemplate name="saml_jit_attr">
+			<key name="first_name" xss="antisamyfilter" max-len="200"/>
+			<key name="last_name" xss="antisamyfilter" max-len="200"/>
+			<key name="display_name" xss="antisamyfilter" max-len="200"/>
+		</jsontemplate>
+
+		<jsontemplate name="passkey_reauth_data">
+			<key name="passkeyreauth" type="JSONObject" template="passkey_keys" max-len="-1"/>
+		</jsontemplate>
+		<jsontemplate name="passkey_keys">
+	        <key name="id" regex="iambase64" max-len="-1"/>
+			<key name="rawId" regex="iambase64" max-len="-1"/>
+			<key name="type" regex="iamcleartextpattern" />
+			<key name="response" template="passkey_signin_response_format" type="JSONObject" max-len="-1"/>
+        </jsontemplate>
+        <jsontemplate name="passkey_signin_response_format">
+   			<key name="authenticatorData" regex="iambase64" max-len="-1"/>
+   			<key name="clientDataJSON" regex="iambase64" max-len="-1"/>
+			<key name="signature" regex="iambase64" max-len="-1"/>
+			<key name="userHandle" regex="iambase64" max-len="-1"/>
+        </jsontemplate>
+        
+    	<jsontemplate name="multidc_export_json">
+	    	<key name="multidcexport" type="JSONObject" template="multidc_export" max-len="200"/>
+        </jsontemplate>
+    	<jsontemplate name="multidc_export">
+   			<key name="digest" regex="digest_in_url" max-len="100"  min-occurrences="1"/>
+   			<key name="invitation_email" regex="email" min-occurrences="1"/>
+   			<key name="clone_dc" regex="plain_str" max-len="10"  min-occurrences="1"/>
+   			<key name="clone_zoid" regex="ZID" min-occurrences="1"/>
+        </jsontemplate>
+    </jsontemplates>
+
+    <param-groups>
+	    <param-group name="deviceauth">
+			<param name="device_token" max-len="600" regex="device_token"/>
+        	<param name="nonce" type="long"/>
+
+        	<!-- `client_id` - Temporary extraparam support provided for oneauth apis used in arattai ssokit -->
+        	<param name="client_id" regex="iamcleartextpattern" max-len="1000" />
+	    </param-group>
+	</param-groups>
+
+
+
+<regexes>
+<regex name="tplabel" value="(([\w]([\w\-\.\+\']*)@(?=.{4,256})(([A-Za-z0-9]+)(([\-\_]*[A-Za-z0-9])*)[\.])+[A-Za-z]{2,22})|([A-Za-z0-9_\-\+\.]{5,14}))" />
+</regexes>
+</security>
+
+
+		
+<!--
+//security-unauth.xml
+<url path="/" authentication="optional"/> 
+    	
+//security-rest.xml
+<url path="/rest/user/password/verify" https="true" authentication="optional" sl_auth="customauth_optional" user-needed="true" method="post" csrf="true"  duration="5" threshold="15" lock-period="10">
+	<param name="password" regex="oldpassword" max-len="250" secret="true" />
+</url>
+-->

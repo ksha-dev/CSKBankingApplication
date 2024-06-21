@@ -9,11 +9,15 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ValidatorUtil;
 
+import redis.clients.jedis.Jedis;
+
 public class CachePool {
 	private static UserAPI userAPI;
 	private static Cache<Integer, UserRecord> userRecordCache;
 	private static Cache<Long, Account> accountCache;
 	private static Cache<Integer, Branch> branchCache;
+
+	private static OTPCache otpCache;
 
 	public static enum CacheIdentifier {
 		Redis, LRU
@@ -30,6 +34,7 @@ public class CachePool {
 
 	@SuppressWarnings("unchecked")
 	public static void initializeCache(UserAPI userAPI, CacheIdentifier identifier) throws AppException {
+		otpCache = new OTPCache();
 		if (Objects.isNull(CachePool.userAPI)) {
 			synchronized (CachePool.class) {
 				if (Objects.isNull(CachePool.userAPI)) {
@@ -75,9 +80,20 @@ public class CachePool {
 		return branchCache;
 	}
 
-	public static void clear() {
+	public static void clear() throws AppException {
+		validateAPI();
 		userRecordCache.clear();
 		accountCache.clear();
 		branchCache.clear();
+		otpCache.clear();
+	}
+
+	public static OTPCache getOTPCache() {
+		return otpCache;
+	}
+
+	@SuppressWarnings("resource")
+	public static void clearRedisDB() {
+		new Jedis(RedisCache.HOST_NAME, RedisCache.PORT).flushDB();
 	}
 }

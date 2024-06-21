@@ -1,0 +1,152 @@
+#$Id: $
+
+---
+api_server_url: "http://localhost:8080"
+
+prefix_uri: "accounts/p"
+
+base_uri: "password"
+
+versions: "v2"
+
+handlers_package: "com.zoho.accounts.internal.recovery"
+
+icresturi_handler_api: "com.zoho.accounts.webclient.authorization.ICRESTUriHandlerImpl"
+
+default_access_control:
+ post: 
+  roles: admin
+ get:
+  roles: user
+ put:
+  roles: admin
+ delete:
+  roles: admin
+  
+resources:
+#new recovery
+ - resource_name: Lookup
+   identifier: login_id
+   path: "/lookup/:login_id"
+   access_control: false
+   fields: login_id 
+   resources:
+    - resource_name: CaptchaVerificationAuth
+      path: "/captcha"
+      access_control: false
+ - resource_name: PrimaryAuth
+   identifier: zuid
+   path: "/primary/:zuid"
+   resource_exist: false
+   access_control: false
+   resources:
+    - resource_name: PasswordRecoveryAuth
+      path: "/password"
+      fields: password
+      access_control:
+        post:
+          roles: self
+    - resource_name: RecoverySigninAuth
+      path: "/rsignin"
+      access_control:
+        post:
+          roles: self
+    - resource_name: EmailRecoveryAuth
+      identifier: email
+      path: "/mail/:email"
+      fields: email_id,mdigest,code
+      access_control:
+        post:
+          roles: self
+        put:
+          roles: self
+    - resource_name: MobileRecoveryAuth
+      identifier: emobile
+      path: "/mobile/:emobile"
+      fields: mobile,mdigest,code
+      access_control:
+        post:
+         roles: self
+        put:
+         roles: self
+    - resource_name: DeviceRecoveryAuth
+      identifier: deviceid
+      path: "/device/:deviceid"
+      access_control:
+        post:
+         roles: self
+        put:
+         roles: self 
+    - resource_name: DomainRecoveryAuth
+      identifier: domain
+      path: "/domain/:domain"
+      access_control:
+        post:
+         roles: self
+        put:
+         roles: self
+    - resource_name: PasskeyRecoveryAuth
+      identifier: passkey_name
+      path: "/passkey/:passkey_name"
+      access_control:
+        post:
+          roles: self
+        put:
+          roles: self
+ - resource_name: SecondaryAuth
+   identifier: zuid
+   path: "/secondary/:zuid"
+   resource_exist: false
+   access_control: false
+   resources:
+    - resource_name: MobileSecRecoveryAuth
+      identifier: emobile
+      path: "/mobile/:emobile"
+      fields: mdigest,code
+      access_control:
+        post:
+          roles: self
+        put:
+          roles: self
+    - resource_name: DeviceSecRecoveryAuth
+      identifier: deviceid
+      path: "/device/:deviceid"
+      fields: code
+      access_control:
+        post:
+          roles: self
+        put:
+          roles: self
+    - resource_name: TOTPSecRecoveryAuth
+      path: "/totp"
+      fields: code
+      access_control:
+        post:
+          roles: self
+    - resource_name: YubikeySecRecoveryAuth
+      identifier: yubikey_id
+      path: "/yubikey"
+      access_control:
+        post:
+          roles: self
+        put:
+          roles: self
+ - resource_name: Reset
+   identifier: zuid
+   path: "/reset/:zuid"
+   resource_exist: false
+   access_control: false
+   resources:
+    - resource_name: Password
+      fields: newpassword
+      path: "/password"
+      access_control:
+        put:
+         roles: self
+    - resource_name: PasswordSessionTerminate
+      fields: rmwebses,rmappses,inconeauth,rmapitok
+      derived: true
+      path: "/closesession"
+      access_control:
+        put:
+         roles: self

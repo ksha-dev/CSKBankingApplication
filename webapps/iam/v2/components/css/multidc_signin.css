@@ -1,0 +1,291 @@
+/*$Id$*/
+@font-face {
+  font-family: 'signinicon';
+  src:  url('../images/fonts/signinicon.eot');
+  src:  url('../images/fonts/signinicon.eot') format('embedded-opentype'),
+    url('../images/fonts/signinicon.woff2') format('woff2'),
+    url('../images/fonts/signinicon.ttf') format('truetype'),
+    url('../images/fonts/signinicon.woff') format('woff'),
+    url('../images/fonts/signinicon.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'signinicon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+	margin: 0px;
+}
+.bg_one {
+	display: block;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: url('../images/bg.svg') transparent;
+	background-size: auto 100%;
+	z-index: -1;
+}
+.signin_container{
+	display: block;
+    width: 500px;
+    min-height: 520px;
+    background-color: #fff;
+    box-shadow: 0px 2px 30px #ccc6;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+    margin-top: 7%;
+    overflow: hidden;
+    padding: 50px;
+    box-sizing: border-box;
+}
+.signin_head {
+	display: block;
+	font-size: 24px;
+	font-weight: 500;
+	margin-bottom: 20px;
+	line-height: 30px;
+	transition: all .1s ease-in-out;
+}
+.service_name,.backup_desc,.pass_name {
+	display: block;
+	font-size: 16px;
+	color: #000;
+	font-weight: 400;
+}
+.zoho_logo {
+	display: block;
+	margin-bottom: 20px;
+	background: url('../images/newZoho_logo.svg') no-repeat transparent;
+	background-size: auto 100%;
+	height: 40px;
+    width: auto;
+}
+.portal_logo{
+	display: block;
+	height: 60px;
+	width: auto;
+	margin-bottom: 20px;
+	background-size: auto 100%;
+}
+
+/* heights of the following service logos are 40px by default which is given for .zoho_logo, can be overwritten if needed */
+
+.Site24x7 {background-image: url("../images/apps/site24x7-logo.png"); height: 33px;}
+	
+.AlarmsOne {background-image: url("../images/apps/alarmsone.png"); height: 46px;}
+
+.SDPOnDemand {background-image: url("../images/apps/SDPOnDemand.png"); height: 46px;}
+
+.MDMOnDemand {background-image: url("../images/apps/MDMOnDemand.png"); height: 35px;}
+
+.ManageEngine {background-image: url("../images/apps/manageengine-logo.png"); height: 36px;}
+
+.ZohoPOS {background-image: url("../images/apps/Zakya-logo.png"); height: 50px;}
+
+.TrainerCentral {background-image: url("../images/apps/TrainerCentral.png"); height: 46px;}
+
+.DesktopCentralCloud{background-image: url("../images/apps/Endpoint_Central_logo.gif"); height: 46px;}
+
+.MEAplus{background-image: url("../images/apps/MEAPlus.svg"); height: 46px;}
+
+.Vani{background-image: url("../images/apps/Vani.svg");}
+
+.RemoteBoard{background-image: url("../images/apps/Vani.svg");}
+
+.Nila{background-image: url("../images/apps/Nila.svg");}
+
+.hellouser {
+    display: inline-flex;
+    justify-content: space-between;
+    border: 1px solid #EEEEEE;
+    border-radius: 7px;
+    cursor: pointer;
+    box-sizing: border-box;
+    max-width: 100%;
+    flex-wrap: nowrap;
+}
+.username {
+    display: inline-block;
+    font-size: 16px;
+    padding: 12px 14px;
+    line-height: 20px;
+    width: auto;
+    word-break: break-all;
+}
+.Notyou {
+    position: relative;
+    float: right;
+    font-size: 14px;
+    padding: 0px 14px 0px 0px;
+    display: inline-block;
+    color: #0091FF;
+    line-height: 38px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.multiDC-con{
+	color: #E56000;
+	line-height: 24px;
+	font-size: 14px;
+	margin-top: 24px;
+}
+#multiDC_container {
+    border: 1px solid #dedede;
+    margin-top: 24px;
+    border-radius: 8px;
+    padding: 12px;
+    
+}
+.profile_head, .login_another {
+    cursor: pointer;
+}
+.profile_dp {
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    background-color: #f7f7f7;
+    border-radius: 50%;
+    box-sizing: border-box;
+    float: left;
+    overflow: hidden;
+    cursor: pointer;
+    background-size: cover;
+    position: relative;
+    background-position: -36px;
+    border-radius: 50%;
+    border: 2px solid #007BD9;
+}
+.file_lab {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.profile_info {
+    display: inline-block;
+    padding: 4px 0px;
+    margin-left: 10px;
+    max-width: calc(100% - 100px);
+    margin-top: 5px;
+}
+.profile_name {
+    display: block;
+    font-size: 16px;
+    line-height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+.profile_email {
+    display: block;
+    line-height: 16px;
+    margin-top: 4px;
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+.DC_info {
+    margin: 10px 0px;
+    background: #F2F2F2;
+    padding: 5px 8px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: inline-block;
+ 	float: right;
+ 	opacity: 0.6;
+ 	text-transform: uppercase;
+}
+.icon-datacenter {
+    padding-right: 4px;
+}
+.icon-datacenter:before {
+    content: "\e97b";
+}
+.blue {
+    box-shadow: 0px 2px 2px #fff;
+    background-color: #159AFF;
+    color: #fff;
+}
+.btn {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    height: 44px;
+    border-radius: 4px;
+    letter-spacing: .5px;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    border: none;
+    margin: auto;
+    margin-bottom: 30px;
+    transition: all .2s ease-in-out;
+    margin-top: 24px;
+    text-decoration: none;
+    text-align: center;
+}
+.btn span{
+	margin: 14px auto;
+    display: inline-block;
+}
+#createaccount {
+    margin-top: 28px;
+}
+#createaccount a, #createaccount {
+    color: #1389E3;
+    margin-bottom: 0px;
+}
+.text16 {
+    display: block;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #626262;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+}
+@media only screen and (max-width: 600px){
+	body{
+		-webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+	}
+	.signin_container {
+	    width: 100%;
+	    box-shadow: none;
+	    margin: 0px auto;
+	    position: relative;
+	    z-index: 1;
+	    margin-top: 0px;
+	    height: auto;
+	    overflow: hidden;
+	    padding: 30px;
+	}
+	.bg_one{
+	    display: none;
+	}
+	.profile_info{
+		 max-width: calc(100% - 124px);
+	}
+}

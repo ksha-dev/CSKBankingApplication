@@ -10,7 +10,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.utility.ValidatorUtil;
 
-public class ServerConnection {
+class ServerConnection {
 	private static Connection serverConnection = null;
 	private static final String SERVER_URL = "jdbc:mysql://localhost:3306";
 	private static final String SERVER_USER_NAME = "admin";
@@ -29,14 +29,14 @@ public class ServerConnection {
 		}
 	}
 
-	public static Connection getServerConnection() throws AppException {
+	static Connection getServerConnection() throws AppException {
 		if (ValidatorUtil.isObjectNull(serverConnection)) {
 			throw new AppException(APIExceptionMessage.NO_SERVER_CONNECTION);
 		}
 		return serverConnection;
 	}
 
-	public static void closeServerConnection() {
+	static void closeServerConnection() {
 		if (!ValidatorUtil.isObjectNull(serverConnection)) {
 			try {
 				serverConnection.close();
@@ -45,7 +45,7 @@ public class ServerConnection {
 		}
 	}
 
-	public static void startTransaction() throws AppException {
+	static void startTransaction() throws AppException {
 		try {
 			getServerConnection().setAutoCommit(false);
 		} catch (SQLException e) {
@@ -53,7 +53,7 @@ public class ServerConnection {
 		}
 	}
 
-	public static void endTransaction() throws AppException {
+	static void endTransaction() throws AppException {
 		try {
 			getServerConnection().commit();
 			getServerConnection().setAutoCommit(true);
@@ -62,7 +62,7 @@ public class ServerConnection {
 		}
 	}
 
-	public static void reverseTransaction() throws AppException {
+	static void reverseTransaction() throws AppException {
 		try {
 			getServerConnection().rollback();
 		} catch (SQLException e) {

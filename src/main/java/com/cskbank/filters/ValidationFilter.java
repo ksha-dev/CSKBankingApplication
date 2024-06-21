@@ -3,7 +3,6 @@ package com.cskbank.filters;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ServletUtil;
 
 /**

@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.List;
 
 import com.cskbank.api.mysql.MySQLQuery.Column;
@@ -16,10 +15,8 @@ import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.ValidatorUtil;
-import com.mysql.cj.xdevapi.Schema;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.ValidatorUtil;
 
 class MySQLAPIUtil {
 

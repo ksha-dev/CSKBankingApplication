@@ -57,6 +57,23 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
+	public void addEmployeeRecord(EmployeeRecord employee) throws AppException {
+		ValidatorUtil.validateObject(employee);
+		MySQLQuery queryBuilder = new MySQLQuery();
+		queryBuilder.insertInto(Schemas.EMPLOYEES);
+		queryBuilder.insertValuePlaceholders(2);
+		queryBuilder.end();
+		try (PreparedStatement statement = ServerConnection.getServerConnection()
+				.prepareStatement(queryBuilder.getQuery())) {
+			statement.setInt(1, employee.getUserId());
+			statement.setInt(2, employee.getBranchId());
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new AppException(e);
+		}
+	}
+
+	@Override
 	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value, int adminId)
 			throws AppException {
 		ValidatorUtil.validateId(employeeId);

@@ -1,0 +1,259 @@
+/*$Id$*/
+
+@font-face {
+  font-family: "accountsicon";
+  src: url("../images/fonts/emailphonenewtabpebbledomain.eot");
+  src: url("../images/fonts/emailphonenewtabpebbledomain.eot") format("embedded-opentype"),
+    url("../images/fonts/emailphonenewtabpebbledomain.ttf") format("truetype"),
+    url("../images/fonts/emailphonenewtabpebbledomain.woff") format("woff"),
+    url("../images/fonts/emailphonenewtabpebbledomain.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "accountsicon" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-Domain:before {
+  content: "\e904";
+}
+.icon-Pebble:before{
+	content: "\e903"
+}
+.domainicon:after{
+	content: "\e904";
+	font-size: 16px;
+	color: #F95E5E;
+	position:absolute;
+	top:7px;
+	left:7px;
+	
+}
+
+html {
+	height: 100%;
+	width: 100%;
+}
+body {
+	margin: 0px;
+	height: max-content;
+	width: 100%;
+}
+
+.verifymaincontainer {
+        max-width: 500px;
+        margin:auto;
+        margin-top:80px;
+}
+.verifyzohologo{
+	background-image: url("../images/newZoho_logo.svg");
+  height: 100%;
+  background-repeat: no-repeat;
+  width: auto;
+  height: 40px;
+  background-size: contain;
+  margin-bottom: 20px;
+}
+.verifyheadermsg {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+}
+.verifymsgcontainer {
+        font-size: 14px;
+        line-height: 24px;
+        margin-bottom: 30px;
+}
+.verifymsgcontainer ul {
+	padding-inline-start: 12px;
+}
+.domainwarningheader{
+	margin-top: 12px;
+}
+.domainwarningmsg {
+	color: #E56000;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight:500;
+}
+li::marker {
+	color: #E56000;
+}
+.verifydomainnote {
+        font-size: 13px;
+        margin-bottom: 30px;
+}
+.reverifydomainnote {
+        font-size: 13px;
+        line-height: 17px;
+        margin-bottom: 30px;
+}
+.managedomains {
+        text-decoration: none;
+        color: white;
+        padding: 12px 20px;
+        background-color: #1389e3;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+}
+.managedomains:hover{
+background-color:#1177C5;
+}
+.remindlaterdomains {
+        text-decoration: none;
+        font-size: 12px;
+        border-bottom: 1px dashed #acacac;
+        padding-bottom: 3px;
+        font-weight: 600;
+        color: #8b8b8b;
+        float: right;
+        position: relative;
+	top: 10px;
+	left: 0px;
+	background-color: white;
+	transition : left .4s ease-in;
+}
+.domaincreated {
+        font-size: 12px;
+        color: #666666;
+        font-weight: 500;
+        line-height:16px;
+}
+.domaindetails {
+        font-weight: 500;
+        font-size: 14px;
+        padding-bottom: 6px;
+}
+.domaincontainer {
+        box-sizing: border-box;
+        padding: 15px 20px;
+}
+.verifydomaincontainer {
+        border: 1px solid #dcdcdc;
+        border-radius: 16px;
+        margin-bottom: 20px;
+}
+.domainheader {
+        box-sizing: border-box;
+        padding: 20px;
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 600;
+        border-bottom: 1px solid #dcdcdc;
+}
+.domainicon{
+	 font-size:30px;
+	 color:#FEF4F4;
+	 position: relative;
+	 top: -2px;
+	 margin-right:10px;
+}     
+div.domaincontainer:last-child{
+	margin-bottom:20px;
+}
+.buttdisabled{
+	opacity: 0.5;
+	pointer-events: none;
+}
+.loader{
+	display: inline-block;
+	border-radius: 50%;
+	width: 8px;
+	height: 8px;
+  	position: relative;
+  	top: 2px;
+  	margin-right: 10px;
+  	border: 2px solid rgba(255, 255, 255, 0.2);
+  	border-left: 2px solid;
+  	border-bottom: 2px solid;
+  	transform: translateZ(0);
+  	-webkit-animation: load 1s infinite linear;
+  	animation: load 1s infinite linear;
+}
+.remind_loader{
+	left: -20px;
+	pointer-events: none;
+}
+.remind_loader::after{
+	content:"";
+	display: inline-block;
+	position: absolute;
+	top: 2px;
+	right: 0px;
+	z-index: -2;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	border-left: 2px solid;
+	border-bottom: 2px solid;
+	-webkit-animation: load .6s infinite linear, anim_r .2s 1 forwards ease-in;
+	animation: load .6s infinite linear, anim_r .2s 1 forwards ease-in;
+	width: 7px;
+	height: 7px;
+	border-radius: 50px;
+}
+@keyframes load {
+	0% {
+    	-webkit-transform: rotate(0deg);
+    	transform: rotate(0deg);
+  	}
+  	100% {
+   		-webkit-transform: rotate(360deg);
+   		transform: rotate(360deg);
+  	}
+}
+@keyframes anim_r{
+	0%{
+		right: 0px;
+	}
+	100%{
+		right: -20px;
+	}
+}
+.moredomains{
+	color: #0091ff;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 12px;
+	display:block; 
+	width: fit-content;	
+}
+@media screen and (min-width: 435px) and (max-width: 900px) {
+  .verifymaincontainer {
+    margin-top: 50px;
+    max-width: 500px;
+     box-sizing:border-box;
+    padding: 0px 20px;
+  }
+}
+@media screen and (max-width: 435px) {
+  .verifymaincontainer {
+    width: 100%;
+    margin-top: 40px;
+    box-sizing:border-box;
+    padding: 0px 15px;
+  }
+  .managedomains{
+    display: block;
+    text-align: center;
+  }
+  .remindlaterdomains{
+	margin: auto;
+    display: block;
+    width: max-content;
+    top: 30px;
+    float: unset;
+}
+  }
+}

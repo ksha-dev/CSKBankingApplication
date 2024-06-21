@@ -3,8 +3,6 @@ package com.cskbank.exceptions;
 import java.sql.SQLException;
 
 import com.cskbank.exceptions.messages.ServletExceptionMessage;
-import com.mysql.cj.exceptions.MysqlErrorNumbers;
-import com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping;
 
 public class AppException extends Exception {
 	private static final long serialVersionUID = 1L;
@@ -17,12 +15,22 @@ public class AppException extends Exception {
 		super(message);
 	}
 
+	public AppException(Enum<?> customEnum, Throwable e) {
+		this(customEnum);
+		this.initCause(e);
+	}
+
 	public AppException(SQLException sqlEx) {
 		this("An Error occured. STATE_CODE : " + sqlEx.getSQLState() + " ERROR_CODE : " + sqlEx.getErrorCode());
 	}
 
-	public <T> AppException(T customEnum) {
+	public <T> AppException(Enum<?> customEnum) {
 		super(customEnum.toString());
+	}
+
+	public AppException(Throwable e) {
+		super(e.getMessage());
+		this.initCause(e);
 	}
 
 	public <T extends Enum<?>> AppException(T customEnum, String message) {

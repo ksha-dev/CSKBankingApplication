@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="zohofsmsorgzaid" account_name="ZohoFSM Service Org">
+		<IAMAccountDomain domain="zohofsmsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="scannersorgzaid" account_name="Scanner Service Org">
+		<IAMAccountDomain domain="scannersorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="proposalsorgzaid" account_name="Proposal Service Org">
+		<IAMAccountDomain domain="proposalsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="rtcplatformsorgzaid" account_name="RTCPlatform Service Org">
+		<IAMAccountDomain domain="rtcplatformsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="kalvisorgzaid" account_name="Kalvi Service Org">
+		<IAMAccountDomain domain="kalvisorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

@@ -1,0 +1,7 @@
+# Default Criterias
+# Key : Resource, Value : Criteria Object (com.adventnet.ds.query.Criteria.toString())
+---
+User: (((((((IAMUser.USER_STATUS = '0') OR (IAMUser.USER_STATUS = '1')) OR (IAMUser.USER_STATUS = '5')) OR (IAMUser.USER_STATUS = '6'))  OR (IAMUser.USER_STATUS = '7'))  OR (IAMUser.USER_STATUS = '9'))  OR (IAMUser.USER_STATUS = '11'))
+Properties: (IAMUserProps.PROP_NAME != 'md5')
+ServiceOrg: (IAMServiceOrg.IS_ENABLED = TRUE)
+ServiceOrgMember: (((IAMServiceOrgMember.IS_ACTIVE = '1') OR (IAMServiceOrgMember.IS_ACTIVE = '0')) AND (IAMServiceOrgMember.USER_TYPE != 6))

@@ -5,31 +5,30 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import com.cskbank.exceptions.AppException;
 
 public class GetterUtil {
 
 	private static Properties redirectURLProperties = null;
 
-	public static Properties loadProperties(String propertiesName) throws AppException {
+	public static Properties loadPropertiesFile(String propertiesFileName) throws AppException {
 		Properties properties = new Properties();
-		try (InputStream input = PropertiesUtil.class.getClassLoader().getResourceAsStream(propertiesName)) {
+		try (InputStream input = GetterUtil.class.getClassLoader().getResourceAsStream(propertiesFileName)) {
 			if (input == null) {
-				throw new AppException("Unable to load redirects.properties");
+				throw new AppException("Unable to load " + propertiesFileName);
 			}
 			properties.load(input);
 			return properties;
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			throw new AppException("Cannot load Properties");
-
 		}
 	}
 
-	public static void loadRedirectURLProperties() throws AppException {
-		redirectURLProperties = loadProperties("redirects.properties");
+	public synchronized static void loadRedirectURLProperties() throws AppException {
+		if (redirectURLProperties == null) {
+			redirectURLProperties = loadPropertiesFile("redirects.properties");
+		}
 	}
 
 	public static String getRedirectURL(String requestURL) {

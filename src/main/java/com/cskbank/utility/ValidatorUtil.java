@@ -14,7 +14,7 @@ public class ValidatorUtil {
 
 	private static final String PIN_REGEX = "^\\d{4}$";
 	private static final String MOBILE_NUMBER_REGEX = "^[7-9]\\d{9}$";
-	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-z]{2,}+$";
+	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 	private static final String PAN_REGEX = "^[A-Z]{3}[ABCFGHLJPT][A-Z]\\d{4}[A-Z]$";
 	private static final String PASSWORD_REGEX = "^((?=[^\\d])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!_+-@^#$%&]).{8,20})$";
 	private static final String AADHAAR_REGEX = "^[2-9]\\d{11}$";

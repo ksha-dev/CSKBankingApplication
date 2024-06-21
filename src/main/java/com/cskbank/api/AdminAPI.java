@@ -15,6 +15,8 @@ public interface AdminAPI extends EmployeeAPI {
 	// Employee
 	public boolean createEmployee(EmployeeRecord employee) throws AppException;
 
+	public void addEmployeeRecord(EmployeeRecord employee) throws AppException;
+
 	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value, int adminId)
 			throws AppException;
 

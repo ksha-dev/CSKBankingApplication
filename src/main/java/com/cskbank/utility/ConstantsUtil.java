@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cskbank.exceptions.AppException;
-import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.exceptions.messages.InvalidInputMessage;
 import com.zoho.logs.common.util.logging.LoggerUtil;
-import com.zoho.logs.common.util.logging.ZLoggerHandler;
 
 public class ConstantsUtil {
 
@@ -57,7 +55,7 @@ public class ConstantsUtil {
 	}
 
 	public static enum PersistanceIdentifier {
-		MySQL
+		MySQL, Mickey
 	}
 
 	public static enum ModifiableField {
@@ -78,7 +76,26 @@ public class ConstantsUtil {
 			Status.BLOCKED);
 
 	public static enum Status {
-		ACTIVE, INACTIVE, CLOSED, FROZEN, BLOCKED, VERIFICATION;
+		ACTIVE(1), INACTIVE(2), CLOSED(3), FROZEN(4), BLOCKED(5), VERIFICATION(6);
+
+		private int statusID;
+
+		private Status(int statusID) {
+			this.statusID = statusID;
+		}
+
+		public int getStatusID() {
+			return this.statusID;
+		}
+
+		public static Status getStatus(int statusID) throws AppException {
+			for (Status status : Status.values()) {
+				if (status.statusID == statusID) {
+					return status;
+				}
+			}
+			throw new AppException(InvalidInputMessage.INVALID_IDENTIFIER);
+		}
 	}
 
 	public static enum TransactionType {
@@ -115,8 +132,26 @@ public class ConstantsUtil {
 	}
 
 	public static enum Gender {
-		MALE, FEMALE, OTHER;
+		MALE(1), FEMALE(2), OTHER(3);
 
+		private int genderID;
+
+		private Gender(int genderID) {
+			this.genderID = genderID;
+		}
+
+		public int getGenderID() {
+			return this.genderID;
+		}
+
+		public static Gender getGender(int genderID) throws AppException {
+			for (Gender gender : Gender.values()) {
+				if (gender.genderID == genderID) {
+					return gender;
+				}
+			}
+			throw new AppException(InvalidInputMessage.INVALID_GENDER);
+		}
 	}
 
 	public static enum TransactionHistoryLimit {

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	<param-groups>
+  		<param-group name="invokerparams">
+  			<param name="invoker_method" type="String" max-len="-1" secret="true"/>
+			<param name="format" type="int"/>
+	        <param name="client_zaid" regex="plain_str"/>
+	        <param name="oauthToken" regex="iamcleartextpattern"/>
+	        <param name="tokenType" regex="iamcleartextpattern"/>
+	        <param name="systemcall" type="boolean"/>
+	        <param name="mid" type="long"/>
+	    </param-group>
+	</param-groups>
+
+	<urls>
+	  	<url path="/invoker/[a-zA-Z0-9]+/OrgAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/OrgAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/GroupAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/GroupAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/UserAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/UserAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/SearchAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ServiceAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ServiceAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/OAuthAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/OAuthAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/EventAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/CryptoAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/CryptoAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ServiceOrgAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ServiceOrgAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthDomainAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthDomainAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthDomainVOAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuthDomainVOAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AppAccountAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AppAccountAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AppAccountVOAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AppAccountVOAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url> 
+	    <url path="/invoker/[a-zA-Z0-9]+/ClientPortalAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ClientPortalAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/CacheAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/CacheAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/PushAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/PushAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/RoutingPolicyAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/RoutingPolicyAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ConditionalPolicyAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/ConditionalPolicyAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuditAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/AuditAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	</urls>
+</security>

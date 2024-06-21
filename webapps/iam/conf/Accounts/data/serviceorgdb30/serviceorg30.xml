@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="zbaassorgzaid" account_name="ZBAAS Service Org">
+		<IAMAccountDomain domain="zbaassorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="quartzsorgzaid" account_name="Quartz Service Org">
+		<IAMAccountDomain domain="quartzsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="paliidesorgzaid" account_name="PaliIDE Service Org">
+		<IAMAccountDomain domain="paliidesorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="transmailsorgzaid" account_name="Transmail Service Org">
+		<IAMAccountDomain domain="transmailsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="nimbussorgzaid" account_name="Nimbus Service Org">
+		<IAMAccountDomain domain="nimbussorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

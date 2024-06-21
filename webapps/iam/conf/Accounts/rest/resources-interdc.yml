@@ -1,0 +1,41 @@
+# $Id: $
+# Configuration Sample Format :
+# ``` 
+#   - resource_name: {{ResourceName in PascalCase}} (Mandatory)
+#     identifier: {{identifier}}.
+#     path: "users/:zuid". Customize REST API Path. default : {resource}/:{identifier}  
+#     downloadable: Boolean.
+#     multipart: Boolean.
+#     derived: Boolean.
+#     resources: {{SubResources}
+#     access_control: {{false}} || {{Map}}
+#       {{method}}:  # (get | post | put | delete)
+#         roles: {{Role Name}}. # Single or Comma seprated User Role. Allowed to perform this operation. 
+#                                 If `ServiceAdmin` configured its parent Roles such as SuperAdmin, Admin can also perform the action based on the weigtage of the role. 
+#         role_hierarchy: {{Boolean}} # Don't consider Parent roles hierarchy, Verify given set of Roles alone. 
+#         password: {{Boolean}} # Default is false. If you required authentication check, give true.
+# ```
+---
+api_server_url: "http://localhost:8080"
+
+base_uri: "interdc"
+
+versions: "v1"
+
+handlers_package: "com.zoho.accounts.internal.interdc"
+
+icresturi_handler_api: "com.zoho.accounts.api.authorization.ICRESTUriHandlerImpl"
+
+resources:
+  - resource_name: MultiDCImport
+    identifier: digest
+    path: /multidc/import/:digest
+    access_control: false
+  - resource_name: MultiDCOriginValidate
+    identifier: digest
+    path: /multidc/originvalidate/:digest
+    access_control: false
+  - resource_name: MultiDCLogout
+    identifier: digest
+    path: /multidc/logout/:digest
+    access_control: false

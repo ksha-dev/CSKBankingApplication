@@ -1,7 +1,0 @@
-Google reCaptcha 
-
-Site Key : 6LeyIuYpAAAAABrOOV8oTgPY0BXUAwbq1FXoIPtf
-Secret Key : 6LeyIuYpAAAAAJYhikBEnnjVguSAnnjmD_Eu6n1e
-
--Xdebug
--agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:44469

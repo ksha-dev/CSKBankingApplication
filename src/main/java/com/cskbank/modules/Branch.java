@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public class Branch implements Serializable {
 
 	private int branchId;
@@ -61,8 +62,8 @@ public class Branch implements Serializable {
 		this.modifiedBy = userId;
 	}
 
-	public void setModifiedAt(long dateTime) {
-		this.modifiedAt = dateTime;
+	public void setModifiedAt(Long dateTime) {
+		this.modifiedAt = dateTime == null ? 0 : dateTime;
 	}
 
 	// getters

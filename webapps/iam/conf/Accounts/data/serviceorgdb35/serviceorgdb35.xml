@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="roomwisesorgzaid" account_name="ZohoRoomwise Service Org">
+		<IAMAccountDomain domain="roomwisesorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="internalsorgzaid" account_name="Zoho Common Service Orgs">
+		<IAMAccountDomain domain="internalsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="meaplussorgzaid" account_name="MEAplus Service Org">
+		<IAMAccountDomain domain="meaplussorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="zohostartsorgzaid" account_name="ZohoStart Service Org">
+		<IAMAccountDomain domain="zohostartsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="webpageanalyzersorgzaid" account_name="WebPageAnalyzer Service Org">
+		<IAMAccountDomain domain="webpageanalyzersorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

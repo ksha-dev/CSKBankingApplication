@@ -2,8 +2,6 @@ package com.cskbank.handlers;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.cskbank.api.UserAPI;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
@@ -13,13 +11,9 @@ import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ConvertorUtil;
-import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.LogOperation;
-import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
+import com.cskbank.utility.ValidatorUtil;
 
 public class CommonHandler {
 
@@ -43,8 +37,8 @@ public class CommonHandler {
 	public UserRecord getUser(int userID, String password) throws AppException {
 		if (api.userAuthentication(userID, password)) {
 			return CachePool.getUserRecordCache().refreshData(userID);
-		}
-		return null;
+		} else
+			throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED);
 	}
 
 	public List<Transaction> getTransactionsOfAccount(Account account, int pageNumber, TransactionHistoryLimit limit)

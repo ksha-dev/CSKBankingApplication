@@ -1,0 +1,514 @@
+/*$Id$*/
+		body.result_pop {
+    		height: auto;
+   			width: 100%;
+    		background-color: rgb(252 252 252);
+    		margin: 0px;
+		}
+		.result{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 4;
+			opacity: 0;
+			transition: opacity .3s ease-in-out;
+			background-color: #ffffff;
+			padding: 0 10px;
+			box-sizing: border-box;
+		}
+		.result_popup {
+    		margin: auto;
+    		height: auto;
+    		background: #fff;
+    		box-sizing: border-box;
+    		padding: 30px;
+    		border: 1px solid #E5E5E5;
+    		overflow: hidden;
+    		border-radius: 16px;
+   			margin-top: 60px;
+    		position: relative;
+    		max-width: 580px;
+		}
+		.result .rebrand_partner_logo {
+        	height: 40px;
+        	background: url("../images/newZoho_logo.svg") no-repeat;
+        	background-size: auto 40px;
+        	width: 94px;
+        	margin: auto;
+        	margin-top: 100px;
+        	margin-bottom: 20px;
+      	}
+      	.pop_bg {
+    		width: auto;
+    		height: 60%;
+    		position: absolute;
+    		left: 0px;
+    		right: 0px;
+    		top: 0px;
+		}
+      	.result_popup .pop_icon {
+    		width: 40px;
+    		border-radius: 50%;
+    		overflow: hidden;
+    		font-size: 44px;
+    		margin: auto;
+    		position: relative;
+    		top: -15px;
+    		color: #939393;
+    		margin-top: 40px;
+    		font-weight: 600;
+    		background: #16C188;
+		}
+      	#result_popup_error .pop_icon.error {
+    		background: #dd5757;
+		}
+		.result_popup .pop_icon:after{
+			display: inline-block;
+    		content: "";
+    		width: 16px;
+  			height: 7px;
+    		border-bottom: 3px solid #fff;
+  			border-left: 3px solid #fff;
+  			transform: rotate(-45deg);
+  			position: absolute;
+  			top:13px;
+  			left: 10px;
+		}
+		.result_popup .pop_icon.error:before,
+		.result_popup .pop_icon.error:after {
+    		display: block;
+    		content: "";
+    		height: 18px;
+    		width: 3px;
+    		background-color: #fff;
+    		margin: auto;
+    		border-radius: 1px;
+    		transform: rotate(-45deg);
+    		position: absolute;
+    		top: 11px;
+    		right: 0px;
+    		left: 0px;
+    		z-index: 1;
+		}
+		.result_popup .pop_icon.error:after {
+    		transform: rotate(45deg);
+    		border: 0;
+		}
+      	.result_popup .pop_icon .inner_circle {
+    		display: block;
+    		width: 40px;
+    		height: 40px;
+    		position: relative;
+    		top: -3px;
+    		left: -3px;
+    		border-radius: 50%;
+			background: #41D05B;
+		}
+		.result_popup .pop_icon.error .inner_circle {
+			background: #F66363;
+		}
+		.result_popup .grn_text {
+    		text-align: center;
+    		color: #000000;
+    		font-weight: 500;
+    		font-size: 18px;
+    		font-weight: 600;
+		}
+		.result_popup .defin_text {
+    		text-align: center;
+    		margin-top: 10px;
+    		font-size: 15px;
+    		line-height: 20px;
+		}
+    	.content_container {
+        	max-width: 540px;
+        	padding-top: 100px;
+        	padding-right: 4%;
+        	display: inline-block;
+      	}
+      .rebrand_partner_logo {
+        height: 40px;
+        margin-bottom: 20px;
+        background: url("../images/newZoho_logo.svg") no-repeat;
+        background-size: auto 40px;
+      }
+      .announcement_header {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        cursor: default;
+      }
+      .account_verify_desc,
+      .otp_sent_desc,
+      .already_existing_desc {
+        font-size: 16px;
+        line-height: 24px;
+        margin-bottom: 20px;
+        cursor: default;
+      }
+      .otp_sent_desc,
+      .enter_eml_mob_desc {
+      	line-height: 24px;
+        margin-bottom: 30px;
+      }
+      .valueemailormobile{
+      	display:inline-block;
+      }
+      .emolabel {
+        font-size: 12px;
+        line-height: 14px;
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+        letter-spacing: 0px;
+        color: #000000b3;
+      }
+      .otp_input_container,
+      .email_input_container,
+      .mobile_input_container {
+        width: 300px;
+        margin-bottom: 30px;
+      }
+      .emailormobile {
+        font-weight: 600;
+      }
+      .resend_otp {
+        font-size: 14px;
+        line-height: 26px;
+        margin:12px 0 20px 0;
+        cursor: pointer;
+        font-weight: 500;
+        color: #0093ff;
+        width: max-content;
+      }
+      #email_input,
+      #mobile_input {
+        height: 44px;
+        padding: 12px 15px;
+        line-height: 30px;
+        width: 288px;
+        border: 1px solid #0f090933;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+      #email_input:focus-visible, #mobile_input:focus-visible{
+      	outline: none;
+      }
+      input#otp_input {
+        margin-bottom: 0px;
+        padding: 14px 15px;
+      }
+      .edit_option {
+        font-size: 16px;
+        line-height: 24px;
+        margin-left: 10px;
+        color: #0093ff;
+        cursor: pointer;
+      }
+      .send_otp_btn,
+      .verify_btn,
+      .update_send_otp_btn,
+      .cont_btn {
+        font: normal normal 600 14px/30px sans-serif;
+        padding: 5px 30px;
+        border-radius: 4px;
+        color: white;
+        border: none;
+        background: #1389e3 0% 0% no-repeat padding-box;
+        cursor: pointer;
+      }
+      .send_otp_btn:hover,
+      .verify_btn:hover,
+      .update_send_otp_btn:hover{
+      	background-color: #0779CF;
+      }
+      .send_otp_btn span{
+	   	margin-left: 10px;
+	  	font-size: 10px;
+	  }
+      .nonclickelem {
+        color: #626262;
+        pointer-events: none;
+        cursor: none;
+      }
+      button:disabled {
+        opacity: 0.4;
+      }
+      .cont_btn{
+      	display: block;
+      	margin: auto;
+      	margin-top: 30px;
+      }
+      .illustration {
+        width: 350px;
+        height: 350px;
+        display: inline-block;
+        background: url("../images/ann_blockunconfirmed.svg") no-repeat;
+      }
+      .flex-container {
+        display: flex;
+        max-width: 1200px;
+        gap: 50px;
+        margin: auto;
+      }
+      .illustration-container {
+        padding-top: 100px;
+        padding-right: 10%;
+      }
+      .content_container {
+        padding-left: 10%;
+      }
+      .otp_input_container {
+        position: relative;
+      }
+      .otp_container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        height: 44px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        font-size: 16px;
+        outline: none;
+        padding: 0px 15px;
+        transition: all 0.2s ease-in-out;
+        background: #ffffff;
+        border: 1px solid #dddddd;
+        text-indent: 0px;
+      }
+      .otp_container::after {
+        content: attr(placeholder);
+        height: 44px;
+        line-height: 44px;
+        font-size: 14px;
+        position: absolute;
+        color: #b9bcbe;
+        left: 15px;
+        z-index: 1;
+        cursor: text;
+      }
+      .customOtp {
+        border: none;
+        outline: none;
+        background: transparent;
+        height: 100%;
+        font-size: 14px;
+        text-align: left;
+        width: 22px;
+        padding: 0px;
+      }
+      .hidePlaceHolder::after {
+        z-index: -1 !important;
+      }
+      #otp_split_input input::placeholder {
+        color: #b9bcbe;
+      }
+	  .error_msg {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        color: #e92b2b;
+        display: none;
+        white-space: normal;
+      }
+      .errorborder {
+        border: 2px solid #ff8484 !important;
+      }
+      .already_added, .add_new_number {
+      	color: #0093ff;
+      	font-weight: 500;
+      	font-size: 14px;
+      	margin-top: 12px;
+      	margin-bottom:20px;
+      	cursor: pointer;
+      	width:max-content;
+	  }
+      .cc {
+        float: right;
+      }
+      .cn {
+        margin-left: 10px;
+        float: left;
+        max-width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      #error_space{
+			position: fixed;
+		    width: fit-content;
+		    width: -moz-fit-content;
+		    left: 0px;
+		    right: 0px;
+		    margin: auto;
+		    border: 1px solid #FCD8DC;
+		    display: inline-block;
+		    padding: 18px 30px;
+		    background: #FFECEE;
+		    border-radius: 4px;
+		    color: #000;
+		    top: -100px;
+		    transition: all .3s ease-in-out;
+		    box-sizing: border-box;
+	        max-width: 400px;
+		}
+		.top_msg
+		{
+			font-size: 14px;
+			color: #000;
+			line-height: 24px;
+			float: left;
+			margin-left: 10px;
+		    font-weight: 500;
+		    font-size: 14px;
+			text-align: center;
+			line-height: 24px;
+		    max-width: 304px;
+		}
+		.error_icon
+		{
+		    position: relative;
+		    background: #FD395D;
+		    width: 24px;
+		    height: 24px;
+		    box-sizing: border-box;
+		    border-radius: 50%;
+		    display: inline-block;
+		    color: #fff;
+		    font-weight: 700;
+		    font-size: 16px;
+		    text-align: center;
+		    line-height: 24px;
+		}
+		.show_error{
+			top:60px !important;
+		}
+      .pic {
+        width: 20px;
+        height: 14px;
+        background-size: 280px 252px;
+        background-image: url("../images/Flags.png");
+        background-position: -180px -238px;
+        float: left;
+        margin-top: 1px;
+      }
+      #footer {
+		    width: 100%;
+		    height: 20px;
+		    font-size: 14px;
+		    color: #727272;
+		    position: absolute;
+		    margin: 20px 0px;
+		    text-align: center;
+	  }
+	  #footer a{
+		color:#727272;
+	  }
+	  
+	  .loader,
+	  .loader:after {
+  		border-radius: 50%;
+  		width: 10px;
+  		height: 10px;
+	  }	
+	  .loader {
+		display: inline-block;
+  		font-size: 10px;
+  		position: relative;
+  		top: 2px;
+  		margin-right: 10px;
+  		text-indent: -9999em;
+  		border: 2px solid rgba(255, 255, 255, 0.2);
+  		border-left: 2px solid;
+  		border-bottom: 2px solid;
+  		transform: translateZ(0);
+  		-webkit-animation: load 1s infinite linear;
+  		animation: load 1s infinite linear;
+	  }
+	  @keyframes load {
+  			0% {
+    			-webkit-transform: rotate(0deg);
+    			transform: rotate(0deg);
+  			}
+  			100% {
+    			-webkit-transform: rotate(360deg);
+    			transform: rotate(360deg);
+  		}
+	  }
+	  .tick {
+        display: inline-block;
+        margin-right: 10px;
+        width: 10px;
+        height: 5px;
+        border-left: 2px solid #0093ff;
+        border-bottom: 2px solid #0093ff;
+        transform: rotate(-45deg);
+        position: relative;
+        top: -4px;
+      }
+      .verified_tick {
+       height:5px;
+       width:0px;
+       animation: 0.6s ease-in-out 0s 1 forwards running tick;
+       margin-right: 0px;
+       margin-left: 10px;
+       left:-10px;
+      }
+	  @keyframes tick {
+        0% {
+          width: 0px;
+        }
+        100% {
+          width: 10px;
+        }
+      }
+      .white {
+		border-bottom-color: #ffffff;
+		border-left-color: #ffffff;
+	  }
+      @media only screen and (min-width: 435px) and (max-width: 980px) {
+        .flex-container {
+          padding: 50px 25px 0px 25px;
+        }
+        .illustration-container {
+          display: none;
+        }
+        .content_container {
+          padding: 0;
+          margin: auto;
+        }
+        .countNameAddDiv,.phone_code_label+select
+		{
+			position:absolute;
+		}
+      }
+      @media only screen and (max-width: 435px) {
+        .flex-container {
+          padding: 50px 20px 0px 20px;
+        }
+        .content_container {
+          width: 100%;
+          padding: 0;
+        }
+        .illustration-container {
+          display: none;
+        }
+        .otp_input_container {
+          width: 100%;
+        }
+        .email_input_container, #email_input {
+          width: 100%;
+        }
+        #mobile_input {
+          width: 100%;
+        }
+        button {
+          width: 100%;
+        }
+        .countNameAddDiv,.phone_code_label+select
+		{
+			position:absolute;
+		}
+      }

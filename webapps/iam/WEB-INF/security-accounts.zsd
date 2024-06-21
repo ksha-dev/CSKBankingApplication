@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+  <redefine schemaLocation="conf/security-iamagent.zsd">
+    <attributeGroup name="urlGroup">
+      <attributeGroup ref="urlGroup" />
+      <attribute name="sl_auth" type="String" regex="fs_required|passexp_required|fs_optional|mfaauth_required|ms_optional|pa_required|pa_optional|tfatemp_required|tfatemp_optional|tfaauth_optional|tfaauth_required|invite_required|invite_optional|smartsignin_optional|smartsignin_required|customauth_required|customauth_optional|signup_required|actrefToken_optional|oauth_required|mobileLogin_required|oauth_optional" />
+      <attribute name="pauth" type="boolean" />
+      <attribute name="captcha-threshold" type="integer" />
+      <attribute name="block-threshold" type="integer" />
+      <attribute name="update-validationcount" type="boolean" />
+      <attribute name="iam-operation" type="String" regex="unconfirmed|tfa-verify|pass-expired" />
+      <attribute name="https" type="boolean" />
+      <attribute name="mobile" type="boolean" />
+      <attribute name="user-needed" type="boolean" />
+      <attribute name="block-referrer" type="boolean" />
+      <attribute name="mweb_oauth" type="String" regex="optional|required" />
+      <attribute name="relogin" type="boolean" />
+    </attributeGroup>
+  </redefine>
+</schema>

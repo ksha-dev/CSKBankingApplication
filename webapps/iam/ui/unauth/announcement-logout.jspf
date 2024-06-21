@@ -1,0 +1,223 @@
+<%-- $Id$ --%>
+<%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
+<%@page import="com.adventnet.iam.xss.IAMEncoder"%>
+<%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.webclient.util.WebClientUtil"%>
+<%@page import="org.json.JSONObject"%>
+<% 
+JSONObject logout_data = WebClientUtil.getLogoutData(request, user);
+if(logout_data != null && logout_data.length() != 0) { %>
+<style>
+@font-face {
+  font-family: 'AccountsUI';
+  src:  url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")%>');
+  src:  url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")%>') format('embedded-opentype'),
+    url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.ttf")%>') format('truetype'),
+    url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.woff")%>') format('woff'),
+    url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.woff2")%>') format('woff2'),
+    url('<%= StaticContentLoader.getStaticFilePath("/v2/components/images/fonts/AccountsUI.svg")%>') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+[class^="logout-icon-"], [class*=" logout-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'AccountsUI' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.logout-icon-datacenter:before {
+  content: "\e92b";
+}
+.logout-wrapper {
+    position: fixed;
+    top: 25px;
+    right: 50px;
+    cursor: pointer;
+    border: solid 1px #fff;
+    border-radius: 8px;
+    font-family: 'ZohoPuvi', 'Open Sans', sans-serif;
+    font-size: 14px;
+    transition: .3s width, .3s height;    
+    z-index: 1;
+}
+.logout-wrapper:hover {
+    border-color: #e0e0e0;
+    background-color: #fbfcfc;
+}
+.logout-wrapper .name {
+	position: absolute;
+    top: 0px;
+    right: 38px;
+    margin: 0;
+    line-height: 30px;
+    display: block;
+    white-space: nowrap;
+    transition: top .3s;
+    font-size: 14px;
+    font-weight: normal;
+}
+.logout-wrapper img {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transition: all .3s ease-out;     
+    border-radius: 50%;     
+}
+
+.logout-wrapper.open .name {
+    font-size: 16px;
+    font-weight: 500;
+    top: 108px;
+    line-height: 1;
+}
+
+.logout-wrapper.open img {
+    width: 80px;
+    height: 80px;
+    top: 20px;
+    right: calc(50% - 64px);
+}
+
+.logout-wrapper.open {
+    border-color: #e0e0e0;
+    background-color: #fbfcfc;
+    box-shadow: 0px 0px 6px 8px #ececec85;   
+}
+p.muted {
+    font-size: 12px;
+    line-height: 16px;
+    color: #5b6367;
+    margin:0px;
+    padding-top: 10px
+}
+div.dc {
+    padding: 10px 25px;
+    background: #ffffff;
+    border-top: solid 1px #e0e0e0;
+    border-radius: 0px 0px 8px 8px;
+    font-size: 10px;
+    color: #5b6367;
+    line-height: 16px;
+    white-space: nowrap;
+}
+div.dc span {
+    font-size: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+a.err-btn {
+    background-color: #EF5E57;
+    cursor: pointer;
+    width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
+    font-weight: 500;
+    color: #fff;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-size: 12px;
+    border: none;
+    margin: 20px auto;
+    font-family: 'ZohoPuvi', 'Open Sans', sans-serif;
+    text-decoration: none;
+    display: block;
+}
+
+a.err-btn:focus, a.err-btn:focus-visible {
+	outline: none;
+}
+
+.user-info {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 30px;
+    margin: 8px 24px;
+    /* transition: all .3s; */
+}
+
+.more-info {
+    position: absolute;
+    visibility: hidden;
+    top: 0px;
+    right: 0;
+    text-align: center;
+    transition: top .3s;    
+    width: 100%;
+    display: table;
+}
+
+.logout-wrapper.open .more-info {
+    visibility: visible;
+    top: 132px;
+    right: 0px;
+    min-width:280px;
+}
+
+.logout-wrapper.open .user-info {
+    margin: 8px 24px 0px 0px;
+}
+</style>
+<div class="logout-wrapper">
+	<div class="user-info">
+		<p class="name"> <%=IAMEncoder.encodeHTMLAttribute(logout_data.getString("displayName")) %></p>
+		<img onerror="this.src='<%=StaticContentLoader.getStaticFilePath("/v2/components/images/user_2.png")%>';" src="<%=IAMEncoder.encodeHTMLAttribute(logout_data.getString("profilePic")) %>" />
+	</div>
+	<div class="more-info">
+		<p class="muted"> <%=IAMEncoder.encodeHTMLAttribute(logout_data.getString("email")) %></p>
+		<p class="muted"> <span><%=I18NUtil.getMessage("IAM.USER.ID") %> :</span>  <%= logout_data.get("zuid") %></p>
+		<a href="<%= IAMEncoder.encodeHTMLAttribute(logout_data.getString("logoutUrl")) %>" class="err-btn"><%=I18NUtil.getMessage("IAM.SIGN.OUT") %></a> 
+		<% if (logout_data.getBoolean("showUserCurrentDC")) { %>
+			<div class="dc">
+				<span class="logout-icon-datacenter"></span>
+				<%=I18NUtil.getMessage("IAM.DC.LOCATION",logout_data.getString("currDC")) %>
+			</div>
+		<% } %>
+	</div>
+</div>
+<script>
+var logWrap = document.querySelector('.logout-wrapper'); // No I18N 
+var userWrap = document.querySelector('.logout-wrapper .user-info'); // No I18N 
+var moreWrap = document.querySelector('.logout-wrapper .more-info');// No I18N 
+var nameDom = userWrap.querySelector('p'); // No I18N 
+userWrap.setAttribute('style','width:'+(nameDom.offsetWidth + 38)+'px;height:'+nameDom.offsetHeight+'px'); // No I18N 
+logWrap.setAttribute('style','width:'+(userWrap.offsetWidth + 48)+'px;height:'+(userWrap.offsetHeight+16)+'px');// No I18N 
+logWrap.addEventListener('click', function(event) {// No I18N 
+	event.stopPropagation();
+	if(!event.target.classList.contains('err-btn')) { // No I18N 
+		logWrap.classList.toggle('open'); // No I18N 
+		if(logWrap.classList.contains('open')) { // No I18N 
+			nameDom.style.right = 'calc(50% - '+((nameDom.offsetWidth/2) + 24 )+'px)';//No I18N 
+			var fullWidth = ((nameDom.offsetWidth + 24) > moreWrap.offsetWidth) ? (nameDom.offsetWidth + 24) : moreWrap.offsetWidth;
+			userWrap.setAttribute('style','width:'+fullWidth+'px;height:124px');// No I18N 
+			logWrap.setAttribute('style','width:'+fullWidth+'px;height:'+(userWrap.offsetHeight + moreWrap.offsetHeight + 8)+'px');// No I18N 
+		} else {
+			nameDom.style.right = '38px';// No I18N 
+			userWrap.setAttribute('style','width:'+(nameDom.offsetWidth + 38)+'px;height:'+nameDom.offsetHeight+'px');// No I18N 
+			logWrap.setAttribute('style','width:'+(userWrap.offsetWidth + 48)+'px;height:'+(userWrap.offsetHeight+16)+'px');// No I18N 
+		}
+	}
+});
+document.addEventListener('click', function(event) {// No I18N 
+	if(!event.target.classList.contains('err-btn') && logWrap.classList.contains('open')) {// No I18N 
+		logWrap.classList.toggle('open');// No I18N 
+		nameDom.style.right = '38px';// No I18N 
+		userWrap.setAttribute('style','width:'+(nameDom.offsetWidth + 38)+'px;height:'+nameDom.offsetHeight+'px');// No I18N 
+		logWrap.setAttribute('style','width:'+(userWrap.offsetWidth + 48)+'px;height:'+(userWrap.offsetHeight+16)+'px');// No I18N 
+	}
+})
+</script>
+<% } %>

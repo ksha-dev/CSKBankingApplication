@@ -1,0 +1,207 @@
+/*$Id$*/
+@font-face {
+  font-family: 'federatedicons';
+  src:  url('../images/fonts/federatedicons.eot');
+  src:  url('../images/fonts/federatedicons.eot') format('embedded-opentype'),
+    url('../images/fonts/federatedicons.woff2') format('woff2'),
+    url('../images/fonts/federatedicons.ttf') format('truetype'),
+    url('../images/fonts/federatedicons.woff') format('woff'),
+    url('../images/fonts/federatedicons.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="fedicon-"], [class*=" fedicon-"], [class^="fedicon-"] span, [class*=" fedicon-"] span{
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'federatedicons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fedicon-apple_small:before {
+  content: "\e901";
+}
+.fedicon-google .path1:before {
+  content: "\e91c";
+  color: rgb(66, 133, 244);
+}
+.fedicon-google .path2:before {
+  content: "\e91d";
+  margin-left: -1em;
+  color: rgb(52, 168, 83);
+}
+.fedicon-google .path3:before {
+  content: "\e91e";
+  margin-left: -1em;
+  color: rgb(251, 188, 5);
+}
+.fedicon-google .path4:before {
+  content: "\e91f";
+  margin-left: -1em;
+  color: rgb(234, 67, 53);
+}
+.fedicon-azure_small .path1:before {
+  content: "\e93b";
+  color: rgb(107, 190, 0);
+}
+.fedicon-azure_small .path2:before {
+  content: "\e93c";
+  margin-left: -1em;
+  color: rgb(255, 62, 0);
+}
+.fedicon-azure_small .path3:before {
+  content: "\e93d";
+  margin-left: -1em;
+  color: rgb(0, 165, 246);
+}
+.fedicon-azure_small .path4:before {
+  content: "\e93e";
+  margin-left: -1em;
+  color: rgb(255, 183, 0);
+}
+.fedicon-linkedin_small:before {
+  color: #ffffff;
+  content: "\e922";
+}
+.fedicon-facebook_small:before {
+  color: #ffffff;
+  content: "\e90c";
+}
+.fedicon-Zoho_common-2:before {
+	color: #ffffff;
+    content: "\e941";
+}
+
+.fed_2show {
+	display: block;
+}
+.signin_fed_text {
+	display: block;
+	font-size: 15px;
+	font-weight: 500;
+	color: #444;
+	margin-bottom: 10px;
+}
+.small_box {
+	width: 40px;
+	border-radius: 5px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+.google_icon {
+	background-color: #fff;
+	width: auto;
+	box-shadow: 0px 0px 2px #00000012, 0px 2px 2px #00000024;
+}
+.fed_div {
+	display: none;
+	height: 40px;
+	cursor: pointer;
+	overflow: hidden;
+	float: left;
+}
+.small_box .fed_center_google {
+	display: block;
+}
+.fed_center_google{padding: 11px;font-size:18px}
+.fed_center{
+    display: block;
+    margin: auto;
+    width: max-content;
+    font-size: 18px;
+    margin-top: 11px;
+}
+.fed_icon {
+	display: block;
+	height: 18px;
+	width: 18px;
+	margin: 11px;
+	overflow: hidden;
+}
+.google_icon {
+	background-color: #fff;
+	width: auto;
+	box-shadow: 0px 0px 2px #00000012, 0px 2px 2px #00000024;
+}
+.google_icon .fed_icon {
+	background: url("../images/signin_icons.png") no-repeat transparent;
+	background-position: -10px -10px;
+}
+.MS_icon {
+	background-color: #2F2F2F;
+}
+.MS_icon .fed_icon {
+	background: url("../images/signin_icons.png") no-repeat transparent;
+	background-position: -38px -10px;
+}
+.linkedin_fed_box {
+	background-color: #0966C2;
+}
+.linkedin_fed_box .fed_icon {
+	background: url("../images/signin_icons.png") no-repeat transparent;
+	width: 80px;
+	background-position: -9px -174px;
+}
+.small_box .linked_fed_icon {
+	width: 18px;
+	background-position: -66px -10px;
+}
+.fb_fed_box {
+	background-color: #1877F2;
+}
+.fb_fed_box .fed_icon {
+	background: url("../images/signin_icons.png") no-repeat transparent;
+	background-position: -94px -10px;
+}
+.zoho_fed_box {
+	background-color: #EF463E;
+}
+.zoho_icon {
+	background: url(../images/signin_icons.png) no-repeat transparent;
+	background-position: -153px -174px;
+}
+.fed_center_apple{
+    display: block;
+    margin: auto;
+    width: max-content;
+    margin-top: 11px;
+}
+.fed_center_azure{
+	padding: 12px;
+}
+.apple_normal_icon .fed_icon{
+    height: 18px;
+    width: 15px;
+    background: url("../images/signin_icons.png") no-repeat transparent;
+    background-position: -12px -75px;
+    margin: 10px 0px 0px 0px;
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+}
+.large_box .apple_normal_large{
+    display: block;
+    height: 16px;
+    width: 125px;
+    margin:12px auto;
+    background: url("../images/signin_icons.png") no-repeat transparent -10px -200px;
+    float: none;
+}
+.apple_normal_icon{
+    background-color: #000;
+    overflow: hidden;
+    color: #ffffff;
+}
+.small_box .apple_normal_icon .fed_icon{
+	height: 18px;
+    width: 16px;
+	background-size: 205px 200px;
+}

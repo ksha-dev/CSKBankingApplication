@@ -3,6 +3,7 @@ package com.cskbank.modules;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public class CustomerRecord extends UserRecord {
 	private long aadhaarNumber;
 	private String panNumber;

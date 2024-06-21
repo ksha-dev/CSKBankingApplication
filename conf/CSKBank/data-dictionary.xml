@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE data-dictionary SYSTEM "data-dictionary.dtd">
+<data-dictionary name="CSKBank">
+
+	<!-- User Table -->
+	<table name="User">
+		<columns>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<uniquevalue-generation>
+					<generator-name>User.USER_ID</generator-name>
+				</uniquevalue-generation>
+			</column>
+			<column name="FIRST_NAME">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z\s]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="LAST_NAME">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z\s]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="DOB">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="GENDER">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="ADDRESS">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z0-9/,.\- ]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="PHONE">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[7-9]\d{9}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="EMAIL">
+				<data-type>CHAR</data-type>
+				<max-size>30</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="TYPE">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="STATUS">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_BY">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+		<primary-key name="User_PK">
+			<primary-key-column>USER_ID</primary-key-column>
+		</primary-key>
+		<unique-keys>
+			<unique-key name="User_UK">
+				<unique-key-column>EMAIL</unique-key-column>
+			</unique-key>
+		</unique-keys>
+	</table>
+
+	<!-- Customer Table -->
+	<table name="Customer">
+		<columns>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="AADHAAR">
+				<data-type>BIGINT</data-type>
+				<max-size>12</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[1-9]\d{11}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="PAN">
+				<data-type>CHAR</data-type>
+				<max-size>10</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Z]{3}[ABCFGHLJPT][A-Z]\d{4}[A-Z]$</pattern>
+				</allowed-values>
+			</column>
+		</columns>
+
+		<primary-key name="Customer_PK">
+			<primary-key-column>USER_ID</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="Customer_FK"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+
+	<!-- Branch Table -->
+	<table name="Branch">
+		<columns>
+			<column name="BRANCH_ID">
+				<data-type>INTEGER</data-type>
+				<uniquevalue-generation>
+					<generator-name>Branch.BRANCH_ID</generator-name>
+				</uniquevalue-generation>
+			</column>
+			<column name="NAME">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z0-9 ]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="ADDRESS">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z0-9/,.\- ]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="PHONE">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[7-9]\d{9}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="EMAIL">
+				<data-type>CHAR</data-type>
+				<max-size>30</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="IFSC_CODE">
+				<data-type>CHAR</data-type>
+				<max-size>11</max-size>
+				<allowed-values>
+					<pattern>^[A-Z]{4}0[0-9]{6}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="ACCOUNTS_COUNT">
+				<data-type>BIGINT</data-type>
+				<default-value>0</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_BY">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+
+		<primary-key name="Branch_PK">
+			<primary-key-column>BRANCH_ID</primary-key-column>
+		</primary-key>
+		<foreign-keys>
+			<foreign-key name="Branch_FK" reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>MODIFIED_BY</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+		<unique-keys>
+			<unique-key name="Branch_UK1">
+				<unique-key-column>EMAIL</unique-key-column>
+			</unique-key>
+			<unique-key name="Branch_UK2">
+				<unique-key-column>PHONE</unique-key-column>
+			</unique-key>
+		</unique-keys>
+	</table>
+
+	<!-- Employee Table -->
+	<table name="Employee">
+		<columns>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="BRANCH_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+		</columns>
+
+		<primary-key name="Employee_PK">
+			<primary-key-column>USER_ID</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="Employee_FK1"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Employee_FK2"
+				reference-table-name="Branch">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>BRANCH_ID</fk-local-column>
+						<fk-reference-column>BRANCH_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+
+	<!-- Accounts Table -->
+	<table name="Account">
+		<columns>
+			<column name="ACCOUNT_NUMBER">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="TYPE">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="BRANCH_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="LAST_TRANSACTED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+			<column name="BALANCE">
+				<data-type>DECIMAL</data-type>
+				<precision>2</precision>
+				<default-value>0.00</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="STATUS">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_BY">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+		<primary-key name="Account_PK">
+			<primary-key-column>ACCOUNT_NUMBER</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="Account_FK1"
+				reference-table-name="Customer">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Account_FK2"
+				reference-table-name="Branch">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>BRANCH_ID</fk-local-column>
+						<fk-reference-column>BRANCH_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Account_FK3"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>MODIFIED_BY</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+
+	<!-- Transactions Table -->
+	<table name="Transaction">
+		<columns>
+			<column name="TRANSACTION_ID">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+				<uniquevalue-generation>
+					<generator-name>Transaction.TRANSACTION_ID</generator-name>
+				</uniquevalue-generation>
+			</column>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="SENDER_ACCOUNT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="RECEIVER_ACCOUNT">
+				<data-type>BIGINT</data-type>
+			</column>
+			<column name="AMOUNT">
+				<data-type>DECIMAL</data-type>
+				<precision>2</precision>
+				<nullable>false</nullable>
+			</column>
+			<column name="CLOSING_BALANCE">
+				<data-type>DECIMAL</data-type>
+				<precision>2</precision>
+				<nullable>false</nullable>
+			</column>
+			<column name="TYPE">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="TIME_STAMP">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="REMARKS">
+				<data-type>CHAR</data-type>
+				<max-size>50</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z0-9,. -]{5,50}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_BY">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+
+		<primary-key name="Transaction_PK">
+			<primary-key-column>TRANSACTION_ID</primary-key-column>
+			<primary-key-column>USER_ID</primary-key-column>
+			<primary-key-column>SENDER_ACCOUNT</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="Transaction_FK1"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Transaction_FK2"
+				reference-table-name="Account">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>SENDER_ACCOUNT</fk-local-column>
+						<fk-reference-column>ACCOUNT_NUMBER</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Transaction_FK3"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>MODIFIED_BY</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+
+	<!-- Credential Table -->
+	<table name="Credential">
+		<columns>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="PASSWORD">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+			</column>
+			<column name="PIN">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_BY">
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+
+		<primary-key name="Credential_PK">
+			<primary-key-column>USER_ID</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="Credential_FK1"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="Credential_FK2"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>MODIFIED_BY</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+
+	<!-- API Key Table -->
+	<table name="APIKey">
+		<columns>
+			<column name="AK_ID">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+				<uniquevalue-generation>
+					<generator-name>APIKey.AK_ID</generator-name>
+				</uniquevalue-generation>
+			</column>
+			<column name="ORG_NAME">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z,. ]+$</pattern>
+				</allowed-values>
+			</column>
+			<column name="API_KEY">
+				<data-type>CHAR</data-type>
+				<max-size>40</max-size>
+				<nullable>false</nullable>
+				<allowed-values>
+					<pattern>^[A-Za-z0-9]{40}$</pattern>
+				</allowed-values>
+			</column>
+			<column name="CREATED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="VALID_UNTIL">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="IS_ACTIVE">
+				<data-type>BOOLEAN</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+			</column>
+		</columns>
+
+		<primary-key name="APIKey_PK">
+			<primary-key-column>AK_ID</primary-key-column>
+		</primary-key>
+	</table>
+
+	<!-- Audit Table -->
+	<table name="AuditLog">
+		<columns>
+			<column name="AUDIT_ID">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+				<uniquevalue-generation>
+					<generator-name>AuditLog.AUDIT_ID</generator-name>
+				</uniquevalue-generation>
+			</column>
+			<column name="USER_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="TARGET_ID">
+				<data-type>INTEGER</data-type>
+				<nullable>false</nullable>
+			</column>
+			<column name="OPERATION">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+			</column>
+			<column name="STATUS">
+				<data-type>CHAR</data-type>
+				<max-size>20</max-size>
+				<nullable>false</nullable>
+			</column>
+			<column name="DESCRIPTION">
+				<data-type>CHAR</data-type>
+				<max-size>255</max-size>
+				<nullable>false</nullable>
+			</column>
+			<column name="MODIFIED_AT">
+				<data-type>BIGINT</data-type>
+				<nullable>false</nullable>
+			</column>
+		</columns>
+
+		<primary-key name="AuditLog_PK">
+			<primary-key-column>AUDIT_ID</primary-key-column>
+		</primary-key>
+
+		<foreign-keys>
+			<foreign-key name="AuditLog_FK1"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>USER_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+			<foreign-key name="AuditLog_FK2"
+				reference-table-name="User">
+				<fk-columns>
+					<fk-column>
+						<fk-local-column>TARGET_ID</fk-local-column>
+						<fk-reference-column>USER_ID</fk-reference-column>
+					</fk-column>
+				</fk-columns>
+			</foreign-key>
+		</foreign-keys>
+	</table>
+</data-dictionary>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="zohoissuingsorgzaid" account_name="Zoho Issuing Service Org">
+		<IAMAccountDomain domain="zohoissuingsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="chaossorgzaid" account_name="Chaos Service Org">
+		<IAMAccountDomain domain="chaossorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="loanssorgzaid" account_name="Loans Service Org">
+		<IAMAccountDomain domain="loanssorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="zoholmssorgzaid" account_name="ZohoLMS Service Org">
+		<IAMAccountDomain domain="zoholmssorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="caassorgzaid" account_name="CaaS Service Org">
+		<IAMAccountDomain domain="caassorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="translatesorgzaid" account_name="Translate Service Org">
+		<IAMAccountDomain domain="translatesorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

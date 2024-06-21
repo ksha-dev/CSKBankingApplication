@@ -11,19 +11,17 @@ import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.handlers.CommonHandler;
 import com.cskbank.handlers.EmployeeHandler;
 import com.cskbank.modules.Account;
-import com.cskbank.modules.Account.AccountType;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
+import com.cskbank.utility.ValidatorUtil;
 
 class EmployeeRunner {
 

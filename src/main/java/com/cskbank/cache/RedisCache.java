@@ -13,9 +13,9 @@ import redis.clients.jedis.Jedis;
 
 class RedisCache<K, V> extends Cache<K, V> {
 
-	private static final String HOST_NAME = "localhost";
-	private static final int PORT = 6379;
-	private Jedis jedis;
+	static final String HOST_NAME = "localhost";
+	static final int PORT = 6379;
+	private static Jedis jedis;
 
 	public RedisCache(UserAPI api, int capacity, String moduleName) {
 		super(api, capacity, moduleName);
@@ -70,5 +70,13 @@ class RedisCache<K, V> extends Cache<K, V> {
 			e.printStackTrace();
 		}
 		return returnObject;
+	}
+
+	@Override
+	public void remove(K key) {
+		byte[] keyBytes = (moduleName + key).getBytes();
+		if (jedis.exists(keyBytes)) {
+			jedis.del(keyBytes);
+		}
 	}
 }

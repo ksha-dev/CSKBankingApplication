@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../conf/security.xsd">
+	<urls prefix="/app/admin">
+
+		<!-- Without Parameters -->
+		<url path="/employees" method="get" />
+		<url path="/branches" method="get" />
+		<url path="/accounts" method="get" />
+		<url path="/api_service" method="get" />
+		<url path="/add_employee" method="get" />
+		<url path="/add_branch" method="get" />
+
+		<!-- With Parameters -->
+		<url path="/employee_details" method="post"><param name="userId" regex="id" /></url>
+		<url path="/employees" method="post"><param-group name="pagination" /></url>
+		<url path="/accounts" method="post"><param-group name="pagination" /></url>
+		<url path="/branches" method="post"><param-group name="pagination" /></url>
+		<url path="/api_service" method="post"><param-group name="pagination" /></url>
+		<url path="/create_api_key" method="post"><param name="orgName" regex="text" /></url>
+		<url path="/invalidate_api_key" method="post"><param name="ak_id" regex="id" /></url>
+	</urls>
+</security>

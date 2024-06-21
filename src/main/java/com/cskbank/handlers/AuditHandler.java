@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import com.cskbank.api.UserAPI;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.AuditLog;
-import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class AuditHandler {
@@ -29,13 +28,7 @@ public class AuditHandler {
 		ValidatorUtil.validateObject(auditLog.getLogOperation());
 		ValidatorUtil.validateObject(auditLog.getOperationStatus());
 		ValidatorUtil.validateObject(auditLog.getDescription());
-
-//		ConstantsUtil.DEFAULT_LOGGER.info(String.format("[USER-%d][TARGET-%d][OP-%s][STAT-%s][DES-%s]",
-//				auditLog.getUserId(), auditLog.getTargetId(), auditLog.getLogOperation(), auditLog.getOperationStatus(),
-//				auditLog.getDescription()));
-
 		auditLogExecutor.execute(auditRunnable(auditLog));
-
 	}
 
 	private Runnable auditRunnable(AuditLog auditLog) {

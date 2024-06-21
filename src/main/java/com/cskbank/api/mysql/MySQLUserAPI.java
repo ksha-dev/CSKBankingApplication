@@ -3,21 +3,14 @@ package com.cskbank.api.mysql;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import com.cskbank.api.UserAPI;
 import com.cskbank.api.mysql.MySQLQuery.Column;
 import com.cskbank.api.mysql.MySQLQuery.Schemas;
-import com.cskbank.consoleRunner.utility.LoggingUtil;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
 import com.cskbank.modules.APIKey;
@@ -26,18 +19,15 @@ import com.cskbank.modules.AuditLog;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil;
+import com.cskbank.utility.ConstantsUtil.ModifiableField;
+import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
+import com.cskbank.utility.ConstantsUtil.TransactionType;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.cskbank.utility.ConstantsUtil.LogOperation;
-import com.cskbank.utility.ConstantsUtil.ModifiableField;
-import com.cskbank.utility.ConstantsUtil.OperationStatus;
-import com.cskbank.utility.ConstantsUtil.Status;
-import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
-import com.cskbank.utility.ConstantsUtil.TransactionType;
 
 public class MySQLUserAPI implements UserAPI {
 
@@ -121,7 +111,7 @@ public class MySQLUserAPI implements UserAPI {
 				if (record.next()) {
 					UserRecord user = null;
 					long createdAt = record.getLong(Column.CREATED_AT.toString());
-					UserRecord.Type type = UserRecord.Type.convertStringToEnum(
+					UserRecord.Type type = ConvertorUtil.convertToEnum(UserRecord.Type.class,
 							MySQLAPIUtil.getConstantFromId(Schemas.USER_TYPES, record.getInt(Column.TYPE.toString())));
 					switch (type) {
 					case CUSTOMER:

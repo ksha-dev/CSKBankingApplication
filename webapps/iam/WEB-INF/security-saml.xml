@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../conf/security.xsd">
+	<param-groups>
+		<param-group name="samlidprequestparams">
+			<param name="SAMLRequest" max-len="50000" xss="antisamyfilter" />
+			<param name="SAMLResponse" max-len="50000" xss="antisamyfilter" />
+			<param name="RelayState" max-len="50000" xss="antisamyfilter" />
+			<param name="Signature" max-len="400" xss="antisamyfilter" />
+			<param name="SigAlg" max-len="100" xss="antisamyfilter" />
+		</param-group>
+	</param-groups>
+	<urls>
+		<url path="/saml2/idp/[0-9]+" authentication="optional" method="post" csrf="false">
+			<param-group name="samlidprequestparams" />
+		</url>
+		<url path="/saml2/idp/[0-9]+" authentication="required" method="get" csrf="false">
+			<param-group name="samlidprequestparams" />
+		</url>
+		<url path="/saml2/idp/initiate" authentication="required" method="get">
+			<param name="appid" regex="([0-9]+)" max-len="100" />
+		</url>
+		<url path="/saml2/idp/metadata" authentication="required" method="get" duration="5" threshold="10" lock-period="45" >
+			<param name="id" regex="iambase64" max-len="50" />
+		</url>
+		<url path="/samlSPNotify/[0-9]+" authentication="optional" method="post" csrf="false" description="process the logout request from service provider and initiate logout to all service providers">
+			<param-group name="samlidprequestparams" />
+		</url>
+		<url path="/samlSPNotify/[0-9]+" authentication="optional" method="get" description="process the logout request from service provider and initiate logout to all service providers">
+			<param-group name="samlidprequestparams" />
+		</url>
+	</urls>
+	  <content-types>
+    	<content-type name="cert" content-types="application/x-unknown-mime-type" />
+ 	 </content-types>
+</security>

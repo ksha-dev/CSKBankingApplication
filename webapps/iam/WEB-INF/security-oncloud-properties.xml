@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../conf/security.xsd">
+  <properties>
+    <property name="com.zoho.ediscovery.handler" value="com.zoho.accounts.dcmigration.DCMigrationHandler" />
+  </properties>
+</security>
