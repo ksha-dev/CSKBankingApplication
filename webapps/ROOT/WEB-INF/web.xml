@@ -151,4 +151,8 @@
 		<location>/WEB-INF/jsp/common/error.jsp</location>
 	</error-page>
 
+	<listener>
+		<listener-class>com.cskbank.service.InitContextListener</listener-class>
+	</listener>
+
 </web-app>

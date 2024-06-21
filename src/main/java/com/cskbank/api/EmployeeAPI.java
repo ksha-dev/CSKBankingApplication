@@ -10,6 +10,9 @@ import com.cskbank.modules.UserRecord;
 
 public interface EmployeeAPI extends UserAPI {
 
+	// User
+	public void createUserRecord(UserRecord user) throws AppException;
+
 	// Customer
 	public int createCustomer(CustomerRecord customer) throws AppException;
 
@@ -32,4 +35,5 @@ public interface EmployeeAPI extends UserAPI {
 	public long depositAmount(Transaction depositTransaction) throws AppException;
 
 	public long withdrawAmount(Transaction withdrawTransaction) throws AppException;
+
 }

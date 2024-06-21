@@ -9,6 +9,8 @@ import com.cskbank.modules.Branch;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ValidatorUtil;
 
+import redis.clients.jedis.Jedis;
+
 public class CachePool {
 	private static UserAPI userAPI;
 	private static Cache<Integer, UserRecord> userRecordCache;
@@ -78,13 +80,20 @@ public class CachePool {
 		return branchCache;
 	}
 
-	public static void clear() {
+	public static void clear() throws AppException {
+		validateAPI();
 		userRecordCache.clear();
 		accountCache.clear();
 		branchCache.clear();
+		otpCache.clear();
 	}
 
 	public static OTPCache getOTPCache() {
-		return getOTPCache();
+		return otpCache;
+	}
+
+	@SuppressWarnings("resource")
+	public static void clearRedisDB() {
+		new Jedis(RedisCache.HOST_NAME, RedisCache.PORT).flushDB();
 	}
 }

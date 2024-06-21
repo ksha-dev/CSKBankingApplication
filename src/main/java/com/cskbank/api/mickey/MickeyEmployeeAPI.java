@@ -12,7 +12,6 @@ import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.CREDENTIAL;
 import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.USER;
-import com.adventnet.db.api.RelationalAPI;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
 import com.adventnet.ds.query.DataSet;
@@ -66,7 +65,8 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 		}
 	}
 
-	protected void createUserRecord(UserRecord user) throws AppException {
+	@Override
+	public void createUserRecord(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
 		Row newUserRow = new Row(USER.TABLE);
@@ -216,8 +216,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			query.setCriteria(
 					new Criteria(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.BRANCH_ID), branchId, QueryConstants.EQUAL));
 
-			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataset = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataset.next()) {
 				return GetterUtil.getPageCount((int) dataset.getValue(1));
 			} else {
@@ -294,8 +293,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			query.setCriteria(closeAccountCriteria);
 			query.addSelectColumn(Column.getColumn(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER).count());
 
-			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataset = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataset.next()) {
 				return (int) dataset.getValue(1) == 1;
 			} else

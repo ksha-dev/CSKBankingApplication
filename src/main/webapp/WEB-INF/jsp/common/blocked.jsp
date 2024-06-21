@@ -33,7 +33,7 @@ if (error != null) {
 				been blocked for malicious activities. Please contact Administrator
 				for further instructions</p>
 			<p class="signup-element">
-				<a href="/CSKBankingApplication/login"
+				<a href="/login"
 					style="color: white; font-weight: bold;">Home</a>
 			</p>
 		</div>

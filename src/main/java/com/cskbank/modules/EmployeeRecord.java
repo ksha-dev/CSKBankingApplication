@@ -1,5 +1,6 @@
 package com.cskbank.modules;
 
+@SuppressWarnings("serial")
 public class EmployeeRecord extends UserRecord {
 	private int branchId;
 

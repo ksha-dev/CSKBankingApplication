@@ -159,7 +159,6 @@ public class ConvertorUtil {
 			}
 			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new AppException(APIExceptionMessage.CONSTANT_VALUE_ERROR);
 		}
 	}

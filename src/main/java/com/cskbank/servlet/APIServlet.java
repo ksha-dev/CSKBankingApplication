@@ -83,14 +83,14 @@ public class APIServlet extends HttpServlet {
 
 			switch (apiPaths[1]) {
 			case "customer":
-				CustomerRecord customer = HandlerObject.customerHandler
+				CustomerRecord customer = HandlerObject.getCustomerHandler()
 						.getCustomerRecord(Integer.parseInt(apiPaths[2]));
 				result.accumulate("data", JSONObject.wrap(customer));
 				status = RequestStatus.SUCCESS;
 				break;
 
 			case "employee":
-				EmployeeRecord employee = HandlerObject.employeeHandler
+				EmployeeRecord employee = HandlerObject.getEmployeeHandler()
 						.getEmployeeRecord(Integer.parseInt(apiPaths[2]));
 				result.accumulate("data", JSONObject.wrap(employee));
 				status = RequestStatus.SUCCESS;

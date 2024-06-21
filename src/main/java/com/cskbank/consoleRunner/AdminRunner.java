@@ -13,10 +13,10 @@ import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
+import com.cskbank.utility.ValidatorUtil;
 
 class AdminRunner {
 
@@ -97,6 +97,7 @@ class AdminRunner {
 							}
 						}
 					} while (isListFull);
+					LoggingUtil.logBrach(operations.getBranch(branchId));
 				}
 					break;
 

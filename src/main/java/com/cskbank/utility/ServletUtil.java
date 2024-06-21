@@ -1,8 +1,6 @@
 package com.cskbank.utility;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,8 +16,6 @@ import com.cskbank.filters.Parameters;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.Status;
-import com.zoho.logs.logclient.v2.LogAPI;
-import com.zoho.logs.logclient.v2.json.ZLMap;
 
 public class ServletUtil {
 
@@ -177,17 +173,10 @@ public class ServletUtil {
 
 	}
 
-	public static void redirectError(HttpServletRequest request, HttpServletResponse response,
-			AppException appException) throws IOException {
+	public static void redirectError(HttpServletRequest request, HttpServletResponse response, Exception exception)
+			throws IOException {
 		try {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			appException.printStackTrace(pw);
-			if (appException.getCause() != null) {
-				appException.getCause().printStackTrace(pw);
-			}
-			LogAPI.log("access",
-					new ZLMap().put("message", appException.getMessage()).put("stacktrace", sw.toString()));
+			LogUtil.logException(exception);
 			GetterUtil.loadRedirectURLProperties();
 			String requestURL = request.getServletPath() + request.getPathInfo();
 			if (Pattern.matches("^/(customer|employee|admin)/authorization$", request.getPathInfo())) {
@@ -197,13 +186,11 @@ public class ServletUtil {
 					requestURL = requestURL + "." + operation;
 				}
 			}
-			request.getSession(false).setAttribute("error", appException.getMessage());
+			request.getSession(false).setAttribute("error", exception instanceof AppException ? exception.getMessage()
+					: ServletExceptionMessage.ERROR_OCCURED.toString());
 			response.sendRedirect(request.getContextPath() + GetterUtil.getRedirectURL(requestURL));
 		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			LogAPI.log("access", new ZLMap().put("message", e.getMessage()).put("stacktrace", sw.toString()));
+			LogUtil.logException(e);
 			response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
 		}
 	}

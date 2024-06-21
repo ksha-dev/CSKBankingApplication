@@ -3,7 +3,6 @@ package com.cskbank.modules;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.ValidatorUtil;
 

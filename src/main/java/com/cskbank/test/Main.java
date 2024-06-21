@@ -17,7 +17,7 @@ import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 public class Main {
 	public static void main(String[] args) throws AppException {
 		HandlerObject.initialize(PersistanceIdentifier.MySQL);
-		CachePool.initializeCache(HandlerObject.commonHandler.getUserAPI(), CacheIdentifier.LRU);
+		CachePool.initializeCache(HandlerObject.getCommonHandler().getUserAPI(), CacheIdentifier.LRU);
 
 		AppRunner.runConsoleApp();
 	}

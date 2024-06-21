@@ -11,6 +11,7 @@ import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public abstract class UserRecord implements Serializable {
 
 	public static enum Type {

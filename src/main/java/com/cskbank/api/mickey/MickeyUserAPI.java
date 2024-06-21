@@ -1,6 +1,5 @@
 package com.cskbank.api.mickey;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -9,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.transaction.TransactionManager;
-
-import org.json.JSONObject;
 
 import com.adventnet.cskbank.ACCOUNT;
 import com.adventnet.cskbank.APIKEY;
@@ -21,7 +18,6 @@ import com.adventnet.cskbank.CUSTOMER;
 import com.adventnet.cskbank.EMPLOYEE;
 import com.adventnet.cskbank.TRANSACTION;
 import com.adventnet.cskbank.USER;
-import com.adventnet.db.api.RelationalAPI;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
 import com.adventnet.ds.query.DataSet;
@@ -60,8 +56,6 @@ import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
-import com.zoho.logs.logclient.v2.LogAPI;
-import com.zoho.logs.logclient.v2.json.ZLMap;
 
 public class MickeyUserAPI implements UserAPI {
 
@@ -71,17 +65,16 @@ public class MickeyUserAPI implements UserAPI {
 			Row criteriaRow = new Row(CREDENTIAL.TABLE);
 			criteriaRow.set(CREDENTIAL.USER_ID, userID);
 			DataObject credentialDO = DataAccess.get(CREDENTIAL.TABLE, criteriaRow);
-			LogAPI.log("mickey", new ZLMap().put("data_object", credentialDO.toString()));
-			Row credentialRow = credentialDO.getFirstRow(CREDENTIAL.TABLE);
-			if (credentialRow == null) {
+			if (credentialDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 			}
+			Row credentialRow = credentialDO.getFirstRow(CREDENTIAL.TABLE);
 			if (credentialRow.getString(CREDENTIAL.PASSWORD).equals(SecurityUtil.encryptPasswordSHA256(password))) {
 				return true;
 			} else {
 				throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED);
 			}
-		} catch (DataAccessException | IOException e) {
+		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.USER_AUNTHENTICATION_FAILED, e);
 		}
 	}
@@ -110,10 +103,10 @@ public class MickeyUserAPI implements UserAPI {
 			Row customerRow = new Row(CUSTOMER.TABLE);
 			customerRow.set(CUSTOMER.USER_ID, customerID);
 			DataObject customerDO = DataAccess.get(CUSTOMER.TABLE, customerRow);
-			customerRow = customerDO.getFirstRow(CUSTOMER.TABLE);
-			if (ValidatorUtil.isObjectNull(customerRow)) {
+			if (customerDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.CUSTOMER_RECORD_NOT_FOUND);
 			}
+			customerRow = customerDO.getFirstRow(CUSTOMER.TABLE);
 			return MickeyConverstionUtil.convertToCustomerRecord(customerRow);
 		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
@@ -125,10 +118,10 @@ public class MickeyUserAPI implements UserAPI {
 			Row employeeRow = new Row(EMPLOYEE.TABLE);
 			employeeRow.set(EMPLOYEE.USER_ID, employeeID);
 			DataObject employeeDO = DataAccess.get(EMPLOYEE.TABLE, employeeRow);
-			employeeRow = employeeDO.getFirstRow(EMPLOYEE.TABLE);
-			if (employeeRow == null) {
+			if (employeeDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.EMPLOYEE_RECORD_NOT_FOUND);
 			}
+			employeeRow = employeeDO.getFirstRow(EMPLOYEE.TABLE);
 			return MickeyConverstionUtil.convertToEmployeeRecord(employeeRow);
 		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
@@ -142,11 +135,10 @@ public class MickeyUserAPI implements UserAPI {
 			Row userRow = new Row(USER.TABLE);
 			userRow.set(USER.USER_ID, userID);
 			DataObject userDO = DataAccess.get(USER.TABLE, userRow);
-			userRow = userDO.getFirstRow(USER.TABLE);
-
-			if (ValidatorUtil.isObjectNull(userRow)) {
+			if (userDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 			}
+			userRow = userDO.getFirstRow(USER.TABLE);
 
 			UserRecord.Type type = Type.getType(userRow.getInt(USER.TYPE));
 			UserRecord user = null;
@@ -165,7 +157,6 @@ public class MickeyUserAPI implements UserAPI {
 			}
 
 			MickeyConverstionUtil.updateUserRecord(userRow, user);
-			LogAPI.log("mickey", new ZLMap().put("user", JSONObject.wrap(user).toString()));
 			return user;
 
 		} catch (Exception e) {
@@ -250,12 +241,11 @@ public class MickeyUserAPI implements UserAPI {
 	@Override
 	public boolean doesEmailExist(String email) throws AppException {
 		ValidatorUtil.validateEmail(email);
-
 		Row emailRow = new Row(USER.TABLE);
 		emailRow.set(USER.EMAIL, email);
 		try {
-			emailRow = DataAccess.get(USER.TABLE, emailRow).getFirstRow(USER.TABLE);
-			return ValidatorUtil.isObjectNull(emailRow);
+			DataObject dataObject = DataAccess.get(USER.TABLE, emailRow);
+			return ValidatorUtil.isObjectNull(dataObject);
 		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED, e);
 		}
@@ -268,10 +258,10 @@ public class MickeyUserAPI implements UserAPI {
 		userEmailCheck.and(Column.getColumn(USER.TABLE, USER.EMAIL), email, QueryConstants.EQUAL);
 
 		try {
-			Row userEmailRow = DataAccess.get(USER.TABLE, userEmailCheck).getFirstRow(USER.TABLE);
-			return ValidatorUtil.isObjectNull(userEmailRow);
+			DataObject emailDO = DataAccess.get(USER.TABLE, userEmailCheck);
+			return !emailDO.isEmpty();
 		} catch (DataAccessException e) {
-			throw new AppException(APIExceptionMessage.USER_EMAIL_INCORRECT, e);
+			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
 	}
 
@@ -282,8 +272,11 @@ public class MickeyUserAPI implements UserAPI {
 		Row branchRow = new Row(BRANCH.TABLE);
 		branchRow.set(BRANCH.BRANCH_ID, branchID);
 		try {
-			return MickeyConverstionUtil
-					.convertToBranch(DataAccess.get(BRANCH.TABLE, branchRow).getFirstRow(BRANCH.TABLE));
+			DataObject branchDO = DataAccess.get(BRANCH.TABLE, branchRow);
+			if (branchDO.isEmpty()) {
+				throw new AppException(APIExceptionMessage.BRANCH_DETAILS_NOT_FOUND);
+			}
+			return MickeyConverstionUtil.convertToBranch(branchDO.getFirstRow(BRANCH.TABLE));
 		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
@@ -505,8 +498,7 @@ public class MickeyUserAPI implements UserAPI {
 			query.addSelectColumn(new Column(TRANSACTION.TABLE, TRANSACTION.TRANSACTION_ID).count());
 			query.setCriteria(transactionsCriteria);
 
-			DataSet dataSet = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataSet = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataSet.next()) {
 				return GetterUtil.getPageCount((int) dataSet.getValue(1));
 			} else
@@ -530,8 +522,7 @@ public class MickeyUserAPI implements UserAPI {
 			query.addSelectColumn(new Column(TRANSACTION.TABLE, TRANSACTION.TRANSACTION_ID).count());
 			query.setCriteria(transactionsCriteria);
 
-			DataSet dataSet = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataSet = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataSet.next()) {
 				return GetterUtil.getPageCount((int) dataSet.getValue(1));
 			} else

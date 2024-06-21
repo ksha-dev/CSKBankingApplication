@@ -8,9 +8,8 @@ import com.cskbank.handlers.CommonHandler;
 import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
+import com.cskbank.utility.ValidatorUtil;
 
 public class AppRunner {
 	public static final Logger log = LoggingUtil.DEFAULT_LOGGER;

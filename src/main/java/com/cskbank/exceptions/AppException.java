@@ -3,8 +3,6 @@ package com.cskbank.exceptions;
 import java.sql.SQLException;
 
 import com.cskbank.exceptions.messages.ServletExceptionMessage;
-import com.mysql.cj.exceptions.MysqlErrorNumbers;
-import com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping;
 
 public class AppException extends Exception {
 	private static final long serialVersionUID = 1L;

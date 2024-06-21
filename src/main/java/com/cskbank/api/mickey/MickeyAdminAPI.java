@@ -13,7 +13,6 @@ import com.adventnet.cskbank.ACCOUNT;
 import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.EMPLOYEE;
-import com.adventnet.db.api.RelationalAPI;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
 import com.adventnet.ds.query.DataSet;
@@ -75,6 +74,21 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
+	public void addEmployeeRecord(EmployeeRecord employee) throws AppException {
+		ValidatorUtil.validateObject(employee);
+		Row newEmployeeRow = new Row(EMPLOYEE.TABLE);
+		newEmployeeRow.set(EMPLOYEE.USER_ID, employee.getUserId());
+		newEmployeeRow.set(EMPLOYEE.BRANCH_ID, employee.getBranchId());
+		try {
+			DataObject empDO = new WritableDataObject();
+			empDO.addRow(newEmployeeRow);
+			DataAccess.add(empDO);
+		} catch (Exception e) {
+			throw new AppException(APIExceptionMessage.EMPLOYEE_CREATION_FAILED, e);
+		}
+	}
+
+	@Override
 	public boolean updateEmployeeDetails(int employeeId, ModifiableField field, Object value, int adminId)
 			throws AppException {
 		throw new AppException(APIExceptionMessage.OPERATION_RESTRICTED);
@@ -108,8 +122,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			SelectQuery query = new SelectQueryImpl(Table.getTable(EMPLOYEE.TABLE));
 			query.addSelectColumn(Column.getColumn(EMPLOYEE.TABLE, EMPLOYEE.USER_ID).count());
 
-			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataset = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataset.next()) {
 				return GetterUtil.getPageCount((int) dataset.getValue(1));
 			} else {
@@ -194,10 +207,9 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 		try {
 			SelectQuery query = new SelectQueryImpl(Table.getTable(BRANCH.TABLE));
 			query.addSelectColumn(new Column(BRANCH.TABLE, BRANCH.BRANCH_ID).count());
-			DataSet dataSet = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataSet = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataSet.next()) {
-				return (int) dataSet.getValue(1);
+				return GetterUtil.getPageCount((int) dataSet.getValue(1));
 			}
 		} catch (SQLException | QueryConstructionException e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
@@ -243,8 +255,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			SelectQuery query = new SelectQueryImpl(Table.getTable(ACCOUNT.TABLE));
 			query.addSelectColumn(new Column(ACCOUNT.TABLE, ACCOUNT.ACCOUNT_NUMBER).count());
 
-			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataset = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataset.next()) {
 				return GetterUtil.getPageCount((int) dataset.getValue(1));
 			} else {
@@ -261,8 +272,7 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 			SelectQuery query = new SelectQueryImpl(Table.getTable(APIKEY.TABLE));
 			query.addSelectColumn(new Column(APIKEY.TABLE, APIKEY.AK_ID).count());
 
-			DataSet dataset = RelationalAPI.getInstance().executeQuery(query,
-					RelationalAPI.getInstance().getConnection());
+			DataSet dataset = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
 			if (dataset.next()) {
 				return GetterUtil.getPageCount((int) dataset.getValue(1));
 			} else {

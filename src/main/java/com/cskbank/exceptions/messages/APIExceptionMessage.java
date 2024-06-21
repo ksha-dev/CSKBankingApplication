@@ -9,7 +9,8 @@ public enum APIExceptionMessage {
 	USER_AUNTHENTICATION_FAILED("The credentials entered for the acount is incorrect. Please try again"),
 	NO_SERVER_CONNECTION("Unable to connect to server. Please try again after sometime. Sorry for the inconvenience"),
 	LOGGING_FAILED("An internal error occured during log operation"),
-	EMAIL_CHECK_FAILED("Failed to check if user exists via Email Id"), USER_EMAIL_INCORRECT("Incorrect Email Address"),
+	EMAIL_CHECK_FAILED("Failed to check if user exists via Email Id"),
+	USER_EMAIL_INCORRECT("The User ID or Email address given does not exist or match"),
 
 	NO_RECORDS_FOUND("No matching records were found."), CANNOT_FETCH_DETAILS("Unable to fetch details at the moment"),
 	UNKNOWN_USER_OR_BRANCH("There might be no records with the given User ID or Branch ID."),

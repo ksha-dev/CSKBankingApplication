@@ -84,7 +84,8 @@ public class MySQLEmployeeAPI extends MySQLUserAPI implements EmployeeAPI {
 		}
 	}
 
-	protected void createUserRecord(UserRecord user) throws AppException {
+	@Override
+	public void createUserRecord(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
 		MySQLQuery queryBuilder = new MySQLQuery();

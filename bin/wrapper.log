@@ -69,3 +69,68 @@ STATUS | wrapper  | 2024/06/20 19:23:07 |
 WARN   | wrapper  | 2024/06/20 19:23:07 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
 WARN   | wrapper  | 2024/06/20 19:23:07 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
 STATUS | wrapper  | 2024/06/20 19:23:08 | Launching a JVM...
+STATUS | wrapper  | 2024/06/21 09:37:23 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/21 09:37:23 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/21 09:37:23 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/21 09:37:23 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/21 09:37:23 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/21 09:37:23 | 
+WARN   | wrapper  | 2024/06/21 09:37:23 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/21 09:37:23 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/21 09:37:24 | Launching a JVM...
+STATUS | wrapper  | 2024/06/21 13:40:38 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/21 13:40:38 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/21 13:40:38 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/21 13:40:38 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/21 13:40:38 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/21 13:40:38 | 
+WARN   | wrapper  | 2024/06/21 13:40:38 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/21 13:40:38 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/21 13:40:39 | Launching a JVM...
+STATUS | wrapper  | 2024/06/21 17:26:34 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/21 17:26:34 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/21 17:26:34 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/21 17:26:34 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/21 17:26:34 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/21 17:26:34 | 
+WARN   | wrapper  | 2024/06/21 17:26:34 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/21 17:26:34 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/21 17:26:34 | Launching a JVM...
+STATUS | wrapper  | 2024/06/21 17:47:16 | INT trapped.  Shutting down.
+WARN   | wrapper  | 2024/06/21 17:47:16 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/21 17:47:16 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+INFO   | jvm 1    | 2024/06/21 17:47:16 | System going to Shutdown --- received process interrupt
+INFO   | jvm 1    | 2024/06/21 17:47:16 | Shutting down the JVM now!
+INFO   | jvm 1    | 2024/06/21 17:47:16 | Stopping Services
+INFO   | jvm 1    | 2024/06/21 17:47:16 | CSKBankService                                    [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:16 | TableTemplateService                              [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:16 | TemplateService                                   [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | WebService                                        [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | TaskEngineService                                 [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | AuthorizationService                              [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | AuthenticationService                             [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | PatchUpdaterService                               [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | CacheService                                      [ STOPPED ]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | Destroying Services
+INFO   | jvm 1    | 2024/06/21 17:47:17 | CSKBankService                                    [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | TableTemplateService                              [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | TemplateService                                   [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | WebService                                        [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | TaskEngineService                                 [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | AuthorizationService                              [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | AuthenticationService                             [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | PatchUpdaterService                               [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | CacheService                                      [DESTROYED]
+INFO   | jvm 1    | 2024/06/21 17:47:17 | Stopping Module processors
+INFO   | jvm 1    | 2024/06/21 17:47:17 | 
+INFO   | jvm 1    | 2024/06/21 17:47:17 | ModuleStopProcess:: Persistence::DBAUDIT     [ STOPPED ]
+STATUS | wrapper  | 2024/06/21 17:47:17 | <-- Wrapper Stopped
+STATUS | wrapper  | 2024/06/21 17:47:28 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/21 17:47:28 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/21 17:47:28 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/21 17:47:28 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/21 17:47:28 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/21 17:47:28 | 
+WARN   | wrapper  | 2024/06/21 17:47:28 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/21 17:47:28 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/21 17:47:28 | Launching a JVM...

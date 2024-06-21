@@ -1,9 +1,0 @@
-Target Name: ddtool-jar-compile
-Source:
-   /advent1/nms5-build/dobuild/ddtool/tools/ddtool
-Classpath:
-   /advent1/nms5-build/dobuild/ddtool/tools/ddtool/output/temp/ddtool_jar
-   /advent1/nms5-build/dobuild/ddtool/tools/ddtool/output/temp/thirdparty_packages/velocity/velocity-1.3.1/velocity-1.3.1.jar
-   /advent1/nms5-build/dobuild/ddtool/tools/ddtool/output/temp/thirdparty_packages/velocity/velocity-1.3.1/velocity-dep-1.3.1.jar
-   /advent1/nms5-build/dobuild/ddtool/tools/ddtool/output/temp/thirdparty_packages/commons_cli/commons_cli_1_0/commons-cli-1.0.jar
-------------------------------

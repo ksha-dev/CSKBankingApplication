@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.cskbank.api.AdminAPI;
-import com.cskbank.api.UserAPI;
-import com.cskbank.api.mysql.MySQLAdminAPI;
 import com.cskbank.cache.CachePool;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.APIExceptionMessage;
@@ -13,17 +11,14 @@ import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.APIKey;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
-import com.cskbank.modules.CustomerRecord;
 import com.cskbank.modules.EmployeeRecord;
 import com.cskbank.modules.UserRecord;
-import com.cskbank.modules.UserRecord.Type;
-import com.cskbank.servlet.HandlerObject;
 import com.cskbank.utility.ConstantsUtil;
-import com.cskbank.utility.ValidatorUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.SecurityUtil;
+import com.cskbank.utility.ValidatorUtil;
 
 public class AdminHandler {
 

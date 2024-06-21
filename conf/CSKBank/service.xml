@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services>
 	<Service service_id="Service:service_id:CSKBankService" service_name="CSKBankService" module_id="CSKBank" classname="com.cskbank.service.CSKBankService">
+		 <ServiceProperties serviceprop_id="ServiceProperties:serviceprop_id:CSKBankService-1" service_id="CSKBankService" property="persistence" value="Mickey"/>
+		<ServiceProperties serviceprop_id="ServiceProperties:serviceprop_id:CSKBankService-2" service_id="CSKBankService" property="cache" value="Redis"/> 
 	</Service>
 </services>

@@ -84,11 +84,11 @@ public class APITester {
 			OutputStream os = connection.getOutputStream();
 			OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
 
-//			// Write JSON payload to output stream
-//			osw.write(jsonInputString);
-//			osw.flush();
-//			osw.close();
-//			os.close();
+			// Write JSON payload to output stream
+			osw.write("");
+			osw.flush();
+			osw.close();
+			os.close();
 
 			// Check response code
 			int responseCode = connection.getResponseCode();

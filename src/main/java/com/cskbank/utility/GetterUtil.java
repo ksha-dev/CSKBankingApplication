@@ -15,19 +15,20 @@ public class GetterUtil {
 		Properties properties = new Properties();
 		try (InputStream input = GetterUtil.class.getClassLoader().getResourceAsStream(propertiesFileName)) {
 			if (input == null) {
-				throw new AppException("Unable to load redirects.properties");
+				throw new AppException("Unable to load " + propertiesFileName);
 			}
 			properties.load(input);
 			return properties;
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			throw new AppException("Cannot load Properties");
-
 		}
 	}
 
-	public static void loadRedirectURLProperties() throws AppException {
-		redirectURLProperties = loadPropertiesFile("redirects.properties");
+	public synchronized static void loadRedirectURLProperties() throws AppException {
+		if (redirectURLProperties == null) {
+			redirectURLProperties = loadPropertiesFile("redirects.properties");
+		}
 	}
 
 	public static String getRedirectURL(String requestURL) {

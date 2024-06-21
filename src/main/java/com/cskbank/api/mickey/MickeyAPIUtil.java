@@ -108,7 +108,6 @@ class MickeyAPIUtil {
 		} catch (Exception e) {
 			throw new AppException(APIExceptionMessage.CANNOT_FETCH_DETAILS, e);
 		}
-
 	}
 
 }

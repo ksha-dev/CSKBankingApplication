@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.utility.ValidatorUtil;
 
+@SuppressWarnings("serial")
 public class Branch implements Serializable {
 
 	private int branchId;

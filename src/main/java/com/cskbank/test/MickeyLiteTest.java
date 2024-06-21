@@ -1,8 +1,5 @@
 package com.cskbank.test;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Iterator;
 
 import com.adventnet.cskbank.BRANCH;
@@ -31,21 +28,11 @@ import com.zoho.logs.logclient.v2.json.ZLMap;
 
 public class MickeyLiteTest {
 
-	public static void initDB() throws IOException {
-		try {
-			int userId = initUser();
-			initCredential(userId);
-			int branchID = initBranch(userId);
-			initAdmin(userId, branchID);
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			if (e.getCause() != null) {
-				e.getCause().printStackTrace(pw);
-			}
-			LogAPI.log("access", new ZLMap().put("message", e.getMessage()).put("stacktrace", sw.toString()));
-		}
+	public static void initDB() throws DataAccessException, AppException {
+		int userId = initUser();
+		initCredential(userId);
+		int branchID = initBranch(userId);
+		initAdmin(userId, branchID);
 	}
 
 	private static void initAdmin(int userId, int branchID) throws DataAccessException {
@@ -144,7 +131,7 @@ public class MickeyLiteTest {
 			LogAPI.log("mickey",
 					new ZLMap().put("firstRow", dataObject.getFirstRow(USER.TABLE).getString(USER.FIRST_NAME)));
 
-			Iterator it = dataObject.getRows(USER.TABLE);
+			Iterator<?> it = dataObject.getRows(USER.TABLE);
 			while (it.hasNext()) {
 				Row row = (Row) it.next();
 				LogAPI.log("mickey", new ZLMap().put(row.getInt(USER.USER_ID) + "", row.getString(USER.FIRST_NAME)));

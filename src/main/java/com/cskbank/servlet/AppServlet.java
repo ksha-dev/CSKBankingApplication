@@ -63,7 +63,7 @@ public class AppServlet extends HttpServlet {
 					break;
 				}
 			}
-		} catch (AppException e) {
+		} catch (Exception e) {
 			ServletUtil.redirectError(request, response, e);
 		}
 	}
@@ -114,8 +114,7 @@ public class AppServlet extends HttpServlet {
 				}
 			}
 
-		} catch (AppException e) {
-//			ConstantsUtil.DEFAULT_LOGGER.log(Level.ERROR, e.getMessage(), e);
+		} catch (Exception e) {
 			ServletUtil.redirectError(request, response, e);
 		}
 	}

@@ -1,8 +1,6 @@
 package com.cskbank.filters;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Objects;
 
 import javax.servlet.Filter;
@@ -14,7 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
@@ -55,7 +52,7 @@ public class APIAuthenticationFilter implements Filter {
 		JSONObject responseContent = new JSONObject();
 		if (!Objects.isNull(apiKey)) {
 			try {
-				HandlerObject.commonHandler.validateAPIKey(apiKey);
+				HandlerObject.getCommonHandler().validateAPIKey(apiKey);
 				chain.doFilter(req, res);
 			} catch (AppException e) {
 				responseContent.accumulate("status", "error");

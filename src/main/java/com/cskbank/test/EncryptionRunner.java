@@ -1,10 +1,9 @@
-package com.cskbank.test;
+	package com.cskbank.test;
 
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -37,7 +36,6 @@ public class EncryptionRunner {
 
 	public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException {
-		Random random = new Random();
 		for (int i = 1; i <= 40; i++) {
 			String s = "";
 			for (int j = 1; j <= i; j++) {
