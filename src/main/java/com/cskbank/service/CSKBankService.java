@@ -10,6 +10,7 @@ import com.adventnet.persistence.Row;
 import com.adventnet.persistence.SERVICEPROPERTIES;
 import com.cskbank.api.AdminAPI;
 import com.cskbank.cache.CachePool;
+import com.cskbank.ear.CSKBankMasterInterfaceImpl;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
@@ -17,7 +18,13 @@ import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentConfiguration;
+import com.zoho.ear.common.util.AgentConfiguration;
+import com.zoho.ear.common.util.EARException;
+import com.zoho.ear.dbencryptagent.DBEncryptAgent;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
 
 public class CSKBankService implements Service {
 	private static final Logger LOGGER = Logger.getLogger(CSKBankService.class.getName());
@@ -53,15 +60,19 @@ public class CSKBankService implements Service {
 				+ persistanceIdentifier.toString().toLowerCase() + "." + persistanceIdentifier.toString() + "AdminAPI");
 		adminAPI = persistanceClass.getConstructor().newInstance();
 
-		try {
-			adminAPI.getUserDetails(1);
-			adminAPI.getBranchDetails(1);
-		} catch (Exception e) {
-			LOGGER.log(Level.FINER, "Cannot obtain user and branch details. Trying to initialize DB");
-			initDB();
+		initClasses();
+		if (!adminAPI.isDBInitialized()) {
 			CachePool.clearRedisDB();
+			initDB();
 		}
+	}
 
+	private void initClasses() throws EARException {
+		KMSAgentConfiguration.setKMSMasterInterfaceClass("com.cskbank.ear.CSKBankMasterInterfaceImpl");
+		KMSAgentConfiguration.setRemoteRedisHost(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT);
+		DBEncryptAgent.setEAROrgIdInterface("com.cskbank.ear.CSKBankOrgIdImpl");
+		DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+		AgentConfiguration.setStandAloneMode(true);
 	}
 
 	private void initDB() throws AppException {

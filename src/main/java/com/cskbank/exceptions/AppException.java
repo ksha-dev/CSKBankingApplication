@@ -33,6 +33,10 @@ public class AppException extends Exception {
 		this.initCause(e);
 	}
 
+	public AppException(String message, Throwable e) {
+		super(message, e);
+	}
+
 	public <T extends Enum<?>> AppException(T customEnum, String message) {
 		super(customEnum.toString() + " - " + message);
 	}

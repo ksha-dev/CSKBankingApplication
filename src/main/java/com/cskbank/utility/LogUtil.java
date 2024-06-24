@@ -35,4 +35,13 @@ public class LogUtil {
 			e.printStackTrace();
 		}
 	}
+
+	public static void logString(String string) {
+		try {
+			LogAPI.log("access", new ZLMap().put("custom print", string));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

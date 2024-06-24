@@ -98,6 +98,11 @@ public class Account implements Serializable {
 		this.balance = balance;
 	}
 
+	public void setBalance(String balance) throws AppException {
+		ValidatorUtil.validateObject(balance);
+		setBalance(ConvertorUtil.convertStringToDouble(balance));
+	}
+
 	public void setCreatedAt(long dateTime) {
 		this.createdAt = dateTime;
 	}

@@ -7,6 +7,7 @@ import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Account;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.UserRecord;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 import redis.clients.jedis.Jedis;
@@ -94,6 +95,6 @@ public class CachePool {
 
 	@SuppressWarnings("resource")
 	public static void clearRedisDB() {
-		new Jedis(RedisCache.HOST_NAME, RedisCache.PORT).flushDB();
+		new Jedis(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT).flushDB();
 	}
 }

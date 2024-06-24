@@ -134,3 +134,51 @@ STATUS | wrapper  | 2024/06/21 17:47:28 |
 WARN   | wrapper  | 2024/06/21 17:47:28 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
 WARN   | wrapper  | 2024/06/21 17:47:28 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
 STATUS | wrapper  | 2024/06/21 17:47:28 | Launching a JVM...
+STATUS | wrapper  | 2024/06/24 13:29:02 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/24 13:29:02 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/24 13:29:02 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/24 13:29:02 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/24 13:29:02 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/24 13:29:02 | 
+WARN   | wrapper  | 2024/06/24 13:29:02 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/24 13:29:02 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/24 13:29:02 | Launching a JVM...
+STATUS | wrapper  | 2024/06/24 15:30:42 | --> Wrapper Started as Console
+STATUS | wrapper  | 2024/06/24 15:30:42 | Java Service Wrapper Professional Edition 64-bit 3.5.51
+STATUS | wrapper  | 2024/06/24 15:30:42 |   Copyright (C) 1999-2022 Tanuki Software, Ltd. All Rights Reserved.
+STATUS | wrapper  | 2024/06/24 15:30:42 |     http://wrapper.tanukisoftware.com
+STATUS | wrapper  | 2024/06/24 15:30:42 |   Licensed to Zoho Corporation Pvt. Ltd. for MickeyLite
+STATUS | wrapper  | 2024/06/24 15:30:42 | 
+WARN   | wrapper  | 2024/06/24 15:30:42 | Unable to write to the configured log file: ../logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/24 15:30:42 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+STATUS | wrapper  | 2024/06/24 15:30:42 | Launching a JVM...
+INFO   | jvm 1    | 2024/06/24 17:15:25 |                                         [POPULATED]
+WARN   | wrapper  | 2024/06/24 17:15:25 | Unable to write to the configured log file: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/logs/wrapper.log (No such file or directory)
+WARN   | wrapper  | 2024/06/24 17:15:25 |   Falling back to the default file in the current working directory: /home/sharan-pt-7373/Documents/GitHub/CSKBankingApplication/bin/wrapper.log
+INFO   | jvm 1    | 2024/06/24 17:15:25 | TaskEngine
+INFO   | jvm 1    | 2024/06/24 17:15:27 |                                         [POPULATED]
+INFO   | jvm 1    | 2024/06/24 17:15:27 | Tomcat                                            [POPULATED]
+INFO   | jvm 1    | 2024/06/24 17:15:27 | ClientFramework
+INFO   | jvm 1    | 2024/06/24 17:15:31 |                                    [POPULATED]
+INFO   | jvm 1    | 2024/06/24 17:15:31 | ClientComponents
+INFO   | jvm 1    | 2024/06/24 17:15:51 |                                   [POPULATED]
+INFO   | jvm 1    | 2024/06/24 17:15:52 | CSKBank
+INFO   | jvm 1    | 2024/06/24 17:15:53 |                                            [POPULATED]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | 
+INFO   | jvm 1    | 2024/06/24 17:15:53 | Creating Services
+INFO   | jvm 1    | 2024/06/24 17:15:53 | CacheService                                      [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | PatchUpdaterService                               [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | AuthenticationService                             [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | AuthorizationService                              [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | TaskEngineService                                 [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | WebService                                        [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | TemplateService                                   [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | TableTemplateService                              [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | CSKBankService                                    [ CREATED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | 
+INFO   | jvm 1    | 2024/06/24 17:15:53 | Starting Services
+INFO   | jvm 1    | 2024/06/24 17:15:53 | CacheService                                      [ STARTED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | PatchUpdaterService                               [ STARTED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | AuthenticationService                             [ STARTED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | AuthorizationService                              [ STARTED ]
+INFO   | jvm 1    | 2024/06/24 17:15:53 | TaskEngineService                                 [ STARTED ]

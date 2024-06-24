@@ -54,6 +54,7 @@ import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
 import com.cskbank.utility.ConstantsUtil.TransactionType;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
 
@@ -138,6 +139,7 @@ public class MickeyUserAPI implements UserAPI {
 			if (userDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 			}
+			LogUtil.logString(userDO.toString());
 			userRow = userDO.getFirstRow(USER.TABLE);
 
 			UserRecord.Type type = Type.getType(userRow.getInt(USER.TYPE));

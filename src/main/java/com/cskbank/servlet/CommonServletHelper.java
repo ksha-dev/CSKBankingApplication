@@ -27,6 +27,10 @@ import com.cskbank.utility.ConstantsUtil.LogOperation;
 import com.cskbank.utility.ConstantsUtil.OperationStatus;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ConstantsUtil.TransactionHistoryLimit;
+import com.zoho.ear.common.util.EARException;
+import com.zoho.ear.encryptagent.EncryptAgent;
+import com.zoho.logs.logclient.v2.LogAPI;
+import com.zoho.logs.logclient.v2.json.ZLMap;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.MailGenerationUtil;
@@ -44,6 +48,7 @@ class CommonServletHelper {
 		try {
 			HandlerObject.getAdminHandler().getPageCountOfBranches();
 			user = HandlerObject.getCommonHandler().getUser(userId, password);
+
 			if (user.getStatus() == Status.VERIFICATION) {
 				ServletUtil.session(request).setAttribute("unverified_user", user);
 				response.sendRedirect(request.getContextPath() + "/verification");
@@ -400,7 +405,8 @@ class CommonServletHelper {
 			long startDate = ConvertorUtil.dateStringToMillis(startDateString);
 			long endDate = ConvertorUtil.dateStringToMillisWithCurrentTime(endDateString);
 			if (pageCount <= 0) {
-				pageCount = HandlerObject.getCommonHandler().getPageCountOfTransactions(accountNumber, startDate, endDate);
+				pageCount = HandlerObject.getCommonHandler().getPageCountOfTransactions(accountNumber, startDate,
+						endDate);
 			}
 			transactions = HandlerObject.getCommonHandler().getTransactionsOfAccount(account, currentPage, startDate,
 					endDate);

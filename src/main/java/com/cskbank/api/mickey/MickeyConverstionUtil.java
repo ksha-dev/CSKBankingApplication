@@ -42,7 +42,7 @@ class MickeyConverstionUtil {
 		}
 		CustomerRecord customer = new CustomerRecord();
 		customer.setUserId(customerRow.getInt(CUSTOMER.USER_ID));
-		customer.setAadhaarNumber(customerRow.getLong(CUSTOMER.AADHAAR));
+		customer.setAadhaarNumber(customerRow.getString(CUSTOMER.AADHAAR));
 		customer.setPanNumber(customerRow.getString(CUSTOMER.PAN));
 		return customer;
 	}
@@ -53,10 +53,10 @@ class MickeyConverstionUtil {
 
 		user.setFirstName(userRow.getString(USER.FIRST_NAME));
 		user.setLastName(userRow.getString(USER.LAST_NAME));
-		user.setDateOfBirth(userRow.getLong(USER.DOB));
+		user.setDateOfBirth(userRow.getString(USER.DOB));
 		user.setGender(Gender.getGender(userRow.getInt(USER.GENDER)));
 		user.setAddress(userRow.getString(USER.ADDRESS));
-		user.setPhone(userRow.getLong(USER.PHONE));
+		user.setPhone(userRow.getString(USER.PHONE));
 		user.setEmail(userRow.getString(USER.EMAIL));
 		user.setType(Type.getType(userRow.getInt(USER.TYPE)));
 		user.setStatus(Status.getStatus(userRow.getInt(USER.STATUS)));
@@ -76,7 +76,7 @@ class MickeyConverstionUtil {
 		account.setType(AccountType.getType(accountRow.getInt(ACCOUNT.TYPE)));
 		account.setOpeningDate(accountRow.getLong(ACCOUNT.CREATED_AT));
 		account.setLastTransactedAt(accountRow.getLong(ACCOUNT.LAST_TRANSACTED_AT));
-		account.setBalance(accountRow.getBigDecimal(ACCOUNT.BALANCE).doubleValue());
+		account.setBalance(accountRow.getString(ACCOUNT.BALANCE));
 		account.setStatus(Status.getStatus(accountRow.getInt(ACCOUNT.STATUS)));
 		account.setCreatedAt(accountRow.getLong(ACCOUNT.CREATED_AT));
 		account.setModifiedBy(accountRow.getInt(ACCOUNT.MODIFIED_BY));

@@ -28,8 +28,8 @@
 				</allowed-values>
 			</column>
 			<column name="DOB">
-				<data-type>BIGINT</data-type>
-				<nullable>false</nullable>
+				<data-type>CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 			<column name="GENDER">
 				<data-type>INTEGER</data-type>
@@ -45,19 +45,12 @@
 				</allowed-values>
 			</column>
 			<column name="PHONE">
-				<data-type>BIGINT</data-type>
-				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[7-9]\d{9}$</pattern>
-				</allowed-values>
+				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 			<column name="EMAIL">
-				<data-type>CHAR</data-type>
-				<max-size>30</max-size>
-				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</pattern>
-				</allowed-values>
+				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 			<column name="TYPE">
 				<data-type>INTEGER</data-type>
@@ -84,11 +77,6 @@
 		<primary-key name="User_PK">
 			<primary-key-column>USER_ID</primary-key-column>
 		</primary-key>
-		<unique-keys>
-			<unique-key name="User_UK">
-				<unique-key-column>EMAIL</unique-key-column>
-			</unique-key>
-		</unique-keys>
 	</table>
 
 	<!-- Customer Table -->
@@ -99,20 +87,12 @@
 				<nullable>false</nullable>
 			</column>
 			<column name="AADHAAR">
-				<data-type>BIGINT</data-type>
-				<max-size>12</max-size>
-				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[1-9]\d{11}$</pattern>
-				</allowed-values>
+				<data-type>CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 			<column name="PAN">
-				<data-type>CHAR</data-type>
-				<max-size>10</max-size>
-				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[A-Z]{3}[ABCFGHLJPT][A-Z]\d{4}[A-Z]$</pattern>
-				</allowed-values>
+				<data-type>CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 		</columns>
 
@@ -285,10 +265,8 @@
 				<data-type>BIGINT</data-type>
 			</column>
 			<column name="BALANCE">
-				<data-type>DECIMAL</data-type>
-				<precision>2</precision>
-				<default-value>0.00</default-value>
-				<nullable>false</nullable>
+				<data-type>CTEXT_CEK</data-type>
+				<max-size>100</max-size>
 			</column>
 			<column name="STATUS">
 				<data-type>INTEGER</data-type>

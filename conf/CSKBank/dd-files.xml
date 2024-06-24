@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<!--$Id$-->
+<conf-files> 
+<ConfFile url="cskbank-data-dictionary.xml"/>
+<ConfFile url="kms-agent-data-dictionary.xml"/>
+</conf-files>
+

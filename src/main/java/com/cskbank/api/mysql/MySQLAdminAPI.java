@@ -22,6 +22,7 @@ import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
@@ -420,6 +421,27 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 		} catch (SQLException e) {
 			throw new AppException(e);
 		}
+	}
+
+	@Override
+	public boolean isDBInitialized() {
+		try {
+			MySQLQuery query = new MySQLQuery();
+			query.selectCount(Schemas.USERS);
+			query.end();
+
+			try (ResultSet resultSet = ServerConnection.getServerConnection().prepareCall(query.getQuery())
+					.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt(1) > 0;
+				}
+			} catch (Exception e) {
+				LogUtil.logException(e);
+			}
+		} catch (Exception e) {
+			LogUtil.logException(e);
+		}
+		return false;
 	}
 
 }

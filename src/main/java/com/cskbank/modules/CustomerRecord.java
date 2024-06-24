@@ -1,6 +1,7 @@
 package com.cskbank.modules;
 
 import com.cskbank.exceptions.AppException;
+import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 @SuppressWarnings("serial")
@@ -14,6 +15,11 @@ public class CustomerRecord extends UserRecord {
 	public void setAadhaarNumber(long aadhaarNumber) throws AppException {
 		ValidatorUtil.validateAadhaarNumber(aadhaarNumber);
 		this.aadhaarNumber = aadhaarNumber;
+	}
+
+	public void setAadhaarNumber(String aadhaarNumber) throws AppException {
+		ValidatorUtil.validateObject(aadhaarNumber);
+		setAadhaarNumber(ConvertorUtil.convertStringToLong(aadhaarNumber));
 	}
 
 	public void setPanNumber(String panNumber) throws AppException {

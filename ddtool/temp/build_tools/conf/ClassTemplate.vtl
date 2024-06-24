@@ -1,0 +1,93 @@
+package $pkg;
+
+/** <p> Description of the table <code>$Tab_name</code>.
+ *  Column Name and Table Name of  database table  <code>$Tab_name</code> is mapped
+ * as constants in this util.</p> 
+ #if( $Tab_description )
+ $Tab_description. <br>
+ #end
+ #if( $gen.getPkList() )
+ * 
+ #if( $gen.getPkList().size() > 1 ) 
+ * Primary Keys for this definition are  <br>
+ #else
+ * Primary Key for this definition is  <br>
+ #end
+ <ul>
+ #foreach( $pkCol in $gen.getPkList() )
+ * <li> {@link #$pkCol.toUpperCase()}
+ #end
+ * </ul>
+ #end
+*/
+ 
+public final class $Tab_name.toUpperCase()
+{
+    private $Tab_name.toUpperCase()()
+    {
+    }
+   
+#if( $Tab_name )
+    /** Constant denoting the Table Name of this definition.
+     */
+    public static final String TABLE = "$Tab_name" ;
+#end
+#foreach( $cName in $gen.getColumnsNames() )
+#if( $gen.updateContextForCol($cName) )
+    /**
+       #if( $Col_description )
+       * <p> $Col_description.</p>
+       #end
+       #if( $gen.getPkList().contains($cName) )
+       #if( $gen.getPkList().size() > 1 )
+       * This column is one of the Primary Key for this Table definition. <br>
+       #else
+       * This column is an Primary Key for this Table definition. <br>
+       #end
+       #end
+       #if( $Col_data-type )
+       * Data Type of this field is <code>$Col_data-type</code>. <br>
+       #end
+       #if( $Col_max-size )
+       * Maximum length of this field value is <code>$Col_max-size</code>. <br>
+       #end
+       #if( $Col_default-value )
+       * Default Value is <code>$Col_default-value</code>. <br>
+       #end
+       #if( $Col_default-value && $Col_nullable )
+       * This field is not nullable. If value for field is not set default value "<code>$Col_default-value</code>" , 
+       * will be taken.<br>
+       #else
+       #if( $Col_nullable )
+       * This field is nullable. <br>
+       #else
+       * This field is not nullable. <br>
+       #end
+       #end
+       #if( $Col_unique )
+       *    This field is an unique column.<br>
+       #end
+       #if( $Col_allowed-values )
+       #if( $Col_values )
+       * Allowed Values are ,<br>
+       * <ul>
+       #foreach( $Col_value in $Col_values )
+       * <li><code>$Col_value</code></li>
+       #end
+       * </ul>
+       #end
+       #if( $Col_from && $Col_to)
+       * Allowed values range from <code>$Col_from</code> to <code>$Col_to</code> </br>
+       #end
+       #end
+    */
+    public static final String ${Col_name.toUpperCase()}= "$Col_name" ;
+
+    /*
+    * The index position of the column ${Col_name.toUpperCase()} in the table.
+    */
+    public static final int ${Col_name.toUpperCase()}_IDX = $Col_index ;
+
+#end
+#end
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data-dictionary SYSTEM "data-dictionary.dtd">
+<!--?xml-stylesheet type="text/xsl" href="./data-dictionary-transform.xsl"? -->
+
+<data-dictionary name="KMS">
+
+	<!-- ::::::: KMS KeyManagement Tables ::::::: -->
+	<table name="KMS_KeyStore">
+		<description>Encrypted KeyStore Table</description>
+		<columns>
+			<column name="KEY_TOKEN">
+				<description>Unique Key Identifier</description>
+				<data-type>CHAR</data-type>
+				<max-size>128</max-size>
+			</column>
+			<column name="ENCRYPTED_KEY">
+				<description>Encrypted Key</description>
+				<data-type>BLOB</data-type>
+			</column>
+			<column name="ENCRYPTED_IV">
+				<description>Encrypted Iv</description>
+				<data-type>BLOB</data-type>
+			</column>
+			<column name="KEY_HASH">
+				<description>Key Hash</description>
+				<data-type>BLOB</data-type>
+			</column>
+			<column name="IV_HASH">
+				<description>IV Hash</description>
+				<data-type>BLOB</data-type>
+			</column>
+			<column name="CREATED_TIME">
+				<description>Key Created Time</description>
+				<data-type>DATETIME</data-type>
+			</column>
+			<column name="VERSION">
+				<description>Key Version</description>
+				<data-type>INTEGER</data-type>
+				<default-value>1</default-value>
+			</column>
+			<column name="MASTER_ID">
+				<description>Master Identifier 1|2</description>
+				<data-type>TINYINT</data-type>
+				<allowed-values>
+					<value>1</value>
+					<value>2</value>
+				</allowed-values>
+			</column>
+			<column name="ALGORITHM">
+				<description>Encryption Algorithm Used</description>
+				<data-type>CHAR</data-type>
+				<default-value>AES-256</default-value>
+			</column>
+		</columns>
+
+		<primary-key name="KEYTOKEN_PK">
+			<primary-key-column>KEY_TOKEN</primary-key-column>
+		</primary-key>
+	</table>
+
+	<!-- ::::::: /KMS KeyManagement Tables ::::::: -->
+
+</data-dictionary>

@@ -1,5 +1,8 @@
 package com.cskbank.utility;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,16 +17,20 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.io.IOUtils;
+
 import com.cskbank.exceptions.AppException;
 import com.cskbank.exceptions.messages.ActivityExceptionMessages;
 import com.cskbank.modules.UserRecord;
+import com.zoho.ear.common.util.RandomGenerator;
 
 public class SecurityUtil {
 	static final int API_KEY_LENGTH = 40;
 	static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	public static final String KEY_LABEL = "CSKBankingApp001";
 	private static final String ALGORITHM = "AES";
 	private static final String TRANSFORMATION = "AES";
-	private static final SecretKey DEFAULT_KEY = new SecretKeySpec("CSKBankingApp001".getBytes(), ALGORITHM);
+	private static final SecretKey DEFAULT_KEY = new SecretKeySpec(KEY_LABEL.getBytes(), ALGORITHM);
 
 	public static String encryptPasswordSHA256(String password) {
 		try {
@@ -125,5 +132,30 @@ public class SecurityUtil {
 
 	public static SecretKey getSecreteKey(int userId, long createdAt) throws AppException {
 		return new SecretKeySpec(String.format("%016d", ((createdAt * userId) % (10 ^ 16))).getBytes(), ALGORITHM);
+	}
+
+	public static void generateMasterKey(String filePath) throws AppException {
+		byte[] masterKey = RandomGenerator.getAESKey();
+		byte[] masterIv = RandomGenerator.getAESIV();
+
+		try {
+			filePath = System.getProperty("server.dir") + "/" + filePath;
+			checkPath(filePath);
+
+			IOUtils.write(masterKey, new FileOutputStream(filePath + "/MasterKey"));
+			IOUtils.write(masterIv, new FileOutputStream(filePath + "/MasterIv"));
+		} catch (IOException e) {
+			LogUtil.logException(e);
+		}
+	}
+
+	public static void checkPath(String path) throws AppException {
+		ValidatorUtil.validateObject(path);
+		if (!path.trim().isEmpty()) {
+			File pathDir = new File(path);
+			if (!pathDir.exists()) {
+				pathDir.mkdir();
+			}
+		}
 	}
 }

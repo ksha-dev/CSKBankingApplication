@@ -61,7 +61,7 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			newCredentialDO.addRow(newCredentialRow);
 			DataAccess.add(newCredentialDO);
 		} catch (DataAccessException e) {
-			throw new AppException(e);
+			throw new AppException("User Generated as : USER_ID " + user.getUserId(), e);
 		}
 	}
 

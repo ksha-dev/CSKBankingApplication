@@ -12,9 +12,16 @@ import com.adventnet.persistence.Row;
 import com.adventnet.persistence.SERVICEPROPERTIES;
 import com.cskbank.cache.CachePool;
 import com.cskbank.cache.CachePool.CacheIdentifier;
+import com.cskbank.ear.CSKBankMasterInterfaceImpl;
 import com.cskbank.servlet.HandlerObject;
+import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConvertorUtil;
+import com.cskbank.utility.LogUtil;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentConfiguration;
+import com.zoho.ear.common.util.AgentConfiguration;
+import com.zoho.ear.common.util.EARException;
+import com.zoho.ear.dbencryptagent.DBEncryptAgent;
 import com.zoho.logs.logclient.v2.LogAPI;
 import com.zoho.logs.logclient.v2.json.ZLMap;
 
@@ -55,10 +62,23 @@ public class InitContextListener implements ServletContextListener {
 			}
 			HandlerObject.initialize(persistenceIdentifier);
 			CachePool.initializeCache(HandlerObject.getCommonHandler().getUserAPI(), cacheIdentifier);
+			initClasses();
 
 			LogAPI.log("access", new ZLMap().put("message", "ContextListener Initialized"));
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void initClasses() {
+		try {
+			KMSAgentConfiguration.setKMSMasterInterfaceClass("com.cskbank.ear.CSKBankMasterInterfaceImpl");
+			KMSAgentConfiguration.setRemoteRedisHost(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT);
+			DBEncryptAgent.setEAROrgIdInterface("com.cskbank.ear.CSKBankOrgIdImpl");
+			DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+			AgentConfiguration.setStandAloneMode(true);
+		} catch (EARException e) {
+			LogUtil.logException(e);
 		}
 	}
 }

@@ -13,6 +13,7 @@ import com.adventnet.cskbank.ACCOUNT;
 import com.adventnet.cskbank.APIKEY;
 import com.adventnet.cskbank.BRANCH;
 import com.adventnet.cskbank.EMPLOYEE;
+import com.adventnet.cskbank.USER;
 import com.adventnet.ds.query.Column;
 import com.adventnet.ds.query.Criteria;
 import com.adventnet.ds.query.DataSet;
@@ -40,6 +41,7 @@ import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
+import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
@@ -331,6 +333,22 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 		} catch (Exception e) {
 			throw new AppException(APIExceptionMessage.API_GENERATION_FAILED, e);
 		}
+	}
+
+	@Override
+	public boolean isDBInitialized() {
+		try {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(USER.TABLE));
+			query.addSelectColumn(new Column(USER.TABLE, USER.USER_ID).count());
+
+			DataSet ds = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
+			if (ds.next()) {
+				return (int) ds.getValue(1) > 0;
+			}
+		} catch (Exception e) {
+			LogUtil.logException(e);
+		}
+		return false;
 	}
 
 }

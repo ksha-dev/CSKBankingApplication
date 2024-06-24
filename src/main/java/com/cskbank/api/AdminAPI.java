@@ -46,4 +46,6 @@ public interface AdminAPI extends EmployeeAPI {
 
 	public boolean generateApiKey(APIKey apiKey) throws AppException;
 
+	public boolean isDBInitialized();
+
 }

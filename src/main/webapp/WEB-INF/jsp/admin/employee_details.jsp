@@ -73,7 +73,7 @@ EmployeeRecord employee = (EmployeeRecord) request.getAttribute("employee");
 
 				<div class="dual-element-row">
 					<p class="profile-element">Mobile</p>
-					<h4 class="profile-element"><%=ConvertorUtil.hiddenDate(employee.getPhone())%></h4>
+					<h4 class="profile-element"><%=ConvertorUtil.hiddenPhone(employee.getPhone())%></h4>
 				</div>
 
 				<div class="dual-element-row">

@@ -22,6 +22,9 @@ public class ConstantsUtil {
 	private static final long ONE_DAY_MILLIS = 86400000;
 	private static final int API_VALID_DAYS = 5;
 
+	public static final String REDIS_HOST = "127.0.0.1";
+	public static final int REDIS_PORT = 6379;
+
 	public static long getAPIValidityTime() {
 		return ONE_DAY_MILLIS * API_VALID_DAYS;
 	}

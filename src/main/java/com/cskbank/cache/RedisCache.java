@@ -8,18 +8,17 @@ import java.io.ObjectOutputStream;
 
 import com.cskbank.api.UserAPI;
 import com.cskbank.exceptions.AppException;
+import com.cskbank.utility.ConstantsUtil;
 
 import redis.clients.jedis.Jedis;
 
 class RedisCache<K, V> extends Cache<K, V> {
 
-	static final String HOST_NAME = "localhost";
-	static final int PORT = 6379;
 	private static Jedis jedis;
 
 	public RedisCache(UserAPI api, int capacity, String moduleName) {
 		super(api, capacity, moduleName);
-		jedis = new Jedis(HOST_NAME, PORT);
+		jedis = new Jedis(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT);
 	}
 
 	@Override

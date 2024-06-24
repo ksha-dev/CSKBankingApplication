@@ -79,6 +79,11 @@ public abstract class UserRecord implements Serializable {
 		this.dateOfBirth = temp;
 	}
 
+	public void setDateOfBirth(String dob) throws AppException {
+		ValidatorUtil.validateObject(dob);
+		setDateOfBirth(ConvertorUtil.convertStringToLong(dob));
+	}
+
 	public void setGender(String gender) throws AppException {
 		this.gender = ConvertorUtil.convertToEnum(Gender.class, gender);
 	}
@@ -96,6 +101,11 @@ public abstract class UserRecord implements Serializable {
 	public void setPhone(long mobileNumber) throws AppException {
 		ValidatorUtil.validateMobileNumber(mobileNumber);
 		this.mobileNumber = mobileNumber;
+	}
+
+	public void setPhone(String mobileNumber) throws AppException {
+		ValidatorUtil.validateObject(mobileNumber);
+		setPhone(ConvertorUtil.convertStringToLong(mobileNumber));
 	}
 
 	public void setEmail(String email) throws AppException {
