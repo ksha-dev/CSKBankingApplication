@@ -22,7 +22,10 @@ import com.cskbank.modules.UserRecord;
 import com.cskbank.modules.UserRecord.Type;
 import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.Status;
+import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.zoho.ear.common.util.EARException;
+import com.zoho.ear.encryptagent.EncryptAgent;
 
 class MickeyConverstionUtil {
 
@@ -56,6 +59,8 @@ class MickeyConverstionUtil {
 		user.setDateOfBirth(userRow.getString(USER.DOB));
 		user.setGender(Gender.getGender(userRow.getInt(USER.GENDER)));
 		user.setAddress(userRow.getString(USER.ADDRESS));
+//		user.setPhone(
+//				EncryptAgent.getInstance().decrypt(SecurityUtil.KEY_LABEL, userRow.getString(USER.PHONE), null, false));
 		user.setPhone(userRow.getString(USER.PHONE));
 		user.setEmail(userRow.getString(USER.EMAIL));
 		user.setType(Type.getType(userRow.getInt(USER.TYPE)));

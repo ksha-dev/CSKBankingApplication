@@ -25,9 +25,11 @@ public class LogUtil {
 	public synchronized static void logException(Throwable e) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
+
 		e.printStackTrace(pw);
-		if (e.getCause() != null) {
-			e.getCause().printStackTrace(pw);
+		Throwable cause = e.getCause();
+		if (cause != null) {
+			cause.printStackTrace(pw);
 		}
 		try {
 			LogAPI.log("access", new ZLMap().put("message", e.getMessage()).put("stacktrace", sw.toString()));
@@ -38,10 +40,17 @@ public class LogUtil {
 
 	public static void logString(String string) {
 		try {
-			LogAPI.log("access", new ZLMap().put("custom print", string));
+			LogAPI.log("access", new ZLMap().put("custom_print", string));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
+	public static void logmickey(String string) {
+		try {
+			LogAPI.log("mickey", new ZLMap().put("custom_print", string));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

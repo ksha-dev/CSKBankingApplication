@@ -7,18 +7,23 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import com.adventnet.ds.query.Criteria;
+import com.adventnet.iam.security.antivirus.Agent;
 import com.adventnet.persistence.DataAccess;
 import com.adventnet.persistence.Row;
 import com.adventnet.persistence.SERVICEPROPERTIES;
 import com.cskbank.cache.CachePool;
 import com.cskbank.cache.CachePool.CacheIdentifier;
 import com.cskbank.ear.CSKBankMasterInterfaceImpl;
+import com.cskbank.ear.CSKBankOrgIdImpl;
 import com.cskbank.servlet.HandlerObject;
 import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.LogUtil;
 import com.zoho.ear.agent.kmsagent.util.KMSAgentConfiguration;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentDBInterface;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentKeyManagement;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentKeyMeta;
 import com.zoho.ear.common.util.AgentConfiguration;
 import com.zoho.ear.common.util.EARException;
 import com.zoho.ear.dbencryptagent.DBEncryptAgent;
@@ -72,11 +77,13 @@ public class InitContextListener implements ServletContextListener {
 
 	private void initClasses() {
 		try {
-			KMSAgentConfiguration.setKMSMasterInterfaceClass("com.cskbank.ear.CSKBankMasterInterfaceImpl");
 			KMSAgentConfiguration.setRemoteRedisHost(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT);
-			DBEncryptAgent.setEAROrgIdInterface("com.cskbank.ear.CSKBankOrgIdImpl");
-			DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+			KMSAgentConfiguration.setKMSMasterInterfaceClass(CSKBankMasterInterfaceImpl.class.getName());
+			LogUtil.logString("KMS Class : " + KMSAgentConfiguration.masterInterfaceClass);
+
 			AgentConfiguration.setStandAloneMode(true);
+			DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+			DBEncryptAgent.disableOrgID();
 		} catch (EARException e) {
 			LogUtil.logException(e);
 		}

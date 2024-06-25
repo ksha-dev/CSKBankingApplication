@@ -27,6 +27,7 @@ import com.adventnet.ds.query.Table;
 import com.adventnet.ds.query.UpdateQuery;
 import com.adventnet.ds.query.UpdateQueryImpl;
 import com.adventnet.persistence.DataAccess;
+import com.adventnet.persistence.DataAccessException;
 import com.adventnet.persistence.DataObject;
 import com.adventnet.persistence.Row;
 import com.adventnet.persistence.WritableDataObject;
@@ -336,19 +337,15 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
-	public boolean isDBInitialized() {
+	public int isDBInitialized() throws AppException {
 		try {
-			SelectQuery query = new SelectQueryImpl(Table.getTable(USER.TABLE));
-			query.addSelectColumn(new Column(USER.TABLE, USER.USER_ID).count());
-
-			DataSet ds = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
-			if (ds.next()) {
-				return (int) ds.getValue(1) > 0;
-			}
-		} catch (Exception e) {
-			LogUtil.logException(e);
+			Row userRow = new Row(USER.TABLE);
+			DataObject userDO = DataAccess.get(USER.TABLE, userRow);
+			userRow = userDO.getFirstRow(USER.TABLE);
+			return userRow == null ? 0 : userRow.getInt(USER.USER_ID);
+		} catch (DataAccessException e) {
+			throw new AppException(e);
 		}
-		return false;
 	}
 
 }

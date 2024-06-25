@@ -45,12 +45,14 @@
 				</allowed-values>
 			</column>
 			<column name="PHONE">
-				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>100</max-size>
+				<nullable>false</nullable>
 			</column>
 			<column name="EMAIL">
-				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>100</max-size>
+				<nullable>false</nullable>
 			</column>
 			<column name="TYPE">
 				<data-type>INTEGER</data-type>
@@ -87,12 +89,12 @@
 				<nullable>false</nullable>
 			</column>
 			<column name="AADHAAR">
-				<data-type>CTEXT_CEK</data-type>
-				<max-size>100</max-size>
+				<data-type>CTEXT</data-type>
+				<max-size>200</max-size>
 			</column>
 			<column name="PAN">
-				<data-type>CTEXT_CEK</data-type>
-				<max-size>100</max-size>
+				<data-type>CTEXT</data-type>
+				<max-size>200</max-size>
 			</column>
 		</columns>
 
@@ -265,7 +267,7 @@
 				<data-type>BIGINT</data-type>
 			</column>
 			<column name="BALANCE">
-				<data-type>CTEXT_CEK</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>100</max-size>
 			</column>
 			<column name="STATUS">

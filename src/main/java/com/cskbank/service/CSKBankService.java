@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.adventnet.iam.security.antivirus.Agent;
 import com.adventnet.mfw.service.Service;
 import com.adventnet.persistence.DataObject;
 import com.adventnet.persistence.Row;
@@ -11,6 +12,7 @@ import com.adventnet.persistence.SERVICEPROPERTIES;
 import com.cskbank.api.AdminAPI;
 import com.cskbank.cache.CachePool;
 import com.cskbank.ear.CSKBankMasterInterfaceImpl;
+import com.cskbank.ear.CSKBankOrgIdImpl;
 import com.cskbank.exceptions.AppException;
 import com.cskbank.modules.Branch;
 import com.cskbank.modules.EmployeeRecord;
@@ -19,6 +21,7 @@ import com.cskbank.utility.ConstantsUtil.Gender;
 import com.cskbank.utility.ConstantsUtil.PersistanceIdentifier;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.zoho.ear.agent.kmsagent.util.KMSAgentConfiguration;
+import com.zoho.ear.agent.kmsagent.util.KMSAgentMaster;
 import com.zoho.ear.common.util.AgentConfiguration;
 import com.zoho.ear.common.util.EARException;
 import com.zoho.ear.dbencryptagent.DBEncryptAgent;
@@ -58,21 +61,29 @@ public class CSKBankService implements Service {
 		@SuppressWarnings("unchecked")
 		Class<AdminAPI> persistanceClass = (Class<AdminAPI>) Class.forName("com.cskbank.api."
 				+ persistanceIdentifier.toString().toLowerCase() + "." + persistanceIdentifier.toString() + "AdminAPI");
+
 		adminAPI = persistanceClass.getConstructor().newInstance();
 
 		initClasses();
-		if (!adminAPI.isDBInitialized()) {
+		int userId = adminAPI.isDBInitialized();
+
+		if (userId < 1) {
 			CachePool.clearRedisDB();
 			initDB();
+		} else {
+			adminAPI.getUserDetails(userId);
 		}
 	}
 
 	private void initClasses() throws EARException {
-		KMSAgentConfiguration.setKMSMasterInterfaceClass("com.cskbank.ear.CSKBankMasterInterfaceImpl");
+//		DBEncryptAgent.setEAROrgIdInterface(CSKBankOrgIdImpl.class.getName());
 		KMSAgentConfiguration.setRemoteRedisHost(ConstantsUtil.REDIS_HOST, ConstantsUtil.REDIS_PORT);
-		DBEncryptAgent.setEAROrgIdInterface("com.cskbank.ear.CSKBankOrgIdImpl");
-		DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+		KMSAgentConfiguration.setKMSMasterInterfaceClass(CSKBankMasterInterfaceImpl.class.getName());
 		AgentConfiguration.setStandAloneMode(true);
+		DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
+		DBEncryptAgent.disableOrgID();
+		LOGGER.log(Level.SEVERE, KMSAgentConfiguration.masterInterfaceClass);
+//		DBEncryptAgent.setEAROrgIdInterface(CSKBankOrgIdImpl.class.getName());
 	}
 
 	private void initDB() throws AppException {
@@ -90,6 +101,8 @@ public class CSKBankService implements Service {
 		admin.setModifiedBy(1);
 
 		adminAPI.createUserRecord(admin);
+
+		admin.setModifiedBy(admin.getUserId());
 
 		Branch branch = new Branch();
 		branch.setAccountsCount(0);

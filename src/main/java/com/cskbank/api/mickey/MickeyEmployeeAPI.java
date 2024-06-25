@@ -43,6 +43,8 @@ import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.zoho.ear.common.util.EARException;
+import com.zoho.ear.encryptagent.EncryptAgent;
 
 public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 
@@ -69,20 +71,20 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 	public void createUserRecord(UserRecord user) throws AppException {
 		ValidatorUtil.validateObject(user);
 
-		Row newUserRow = new Row(USER.TABLE);
-		newUserRow.set(USER.FIRST_NAME, user.getFirstName());
-		newUserRow.set(USER.LAST_NAME, user.getLastName());
-		newUserRow.set(USER.GENDER, user.getGender().getGenderID());
-		newUserRow.set(USER.DOB, user.getDateOfBirth());
-		newUserRow.set(USER.ADDRESS, user.getAddress());
-		newUserRow.set(USER.PHONE, user.getPhone());
-		newUserRow.set(USER.EMAIL, user.getEmail());
-		newUserRow.set(USER.TYPE, user.getType().getTypeID());
-		newUserRow.set(USER.STATUS, user.getStatus().getStatusID());
-		newUserRow.set(USER.CREATED_AT, user.getCreatedAt());
-		newUserRow.set(USER.MODIFIED_BY, user.getModifiedBy());
-
 		try {
+			Row newUserRow = new Row(USER.TABLE);
+			newUserRow.set(USER.FIRST_NAME, user.getFirstName());
+			newUserRow.set(USER.LAST_NAME, user.getLastName());
+			newUserRow.set(USER.GENDER, user.getGender().getGenderID());
+			newUserRow.set(USER.DOB, user.getDateOfBirth());
+			newUserRow.set(USER.ADDRESS, user.getAddress());
+			newUserRow.set(USER.PHONE, user.getPhone());
+			newUserRow.set(USER.EMAIL, user.getEmail());
+			newUserRow.set(USER.TYPE, user.getType().getTypeID());
+			newUserRow.set(USER.STATUS, user.getStatus().getStatusID());
+			newUserRow.set(USER.CREATED_AT, user.getCreatedAt());
+			newUserRow.set(USER.MODIFIED_BY, user.getModifiedBy());
+
 			DataObject newUserDO = new WritableDataObject();
 			newUserDO.addRow(newUserRow);
 			user.setUserId(DataAccess.add(newUserDO).getFirstRow(USER.TABLE).getInt(USER.USER_ID));
@@ -104,12 +106,12 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 
 			Row newCustomerRow = new Row(CUSTOMER.TABLE);
 			newCustomerRow.set(CUSTOMER.USER_ID, customer.getUserId());
-			newCustomerRow.set(CUSTOMER.AADHAAR, customer.getAadhaarNumber());
+			newCustomerRow.set(CUSTOMER.AADHAAR, customer.getAadhaarNumber() + "");
 			newCustomerRow.set(CUSTOMER.PAN, customer.getPanNumber());
 
 			DataObject newCustomerDO = new WritableDataObject();
 			newCustomerDO.addRow(newCustomerRow);
-			newCustomerDO = DataAccess.add(newCustomerDO);
+			DataAccess.add(newCustomerDO);
 
 			transactionManager.commit();
 			return customer.getUserId();

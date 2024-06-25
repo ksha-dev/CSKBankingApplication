@@ -424,24 +424,25 @@ public class MySQLAdminAPI extends MySQLEmployeeAPI implements AdminAPI {
 	}
 
 	@Override
-	public boolean isDBInitialized() {
+	public int isDBInitialized() throws AppException {
 		try {
 			MySQLQuery query = new MySQLQuery();
-			query.selectCount(Schemas.USERS);
+			query.selectColumn(Column.USER_ID);
+			query.fromSchema(Schemas.USERS);
+			query.limit(1);
 			query.end();
 
 			try (ResultSet resultSet = ServerConnection.getServerConnection().prepareCall(query.getQuery())
 					.executeQuery()) {
 				if (resultSet.next()) {
-					return resultSet.getInt(1) > 0;
+					return resultSet.getInt(1);
+				} else {
+					return 0;
 				}
-			} catch (Exception e) {
-				LogUtil.logException(e);
 			}
 		} catch (Exception e) {
-			LogUtil.logException(e);
+			throw new AppException(e);
 		}
-		return false;
 	}
 
 }

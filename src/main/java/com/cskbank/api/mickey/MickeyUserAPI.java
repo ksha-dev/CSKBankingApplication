@@ -57,6 +57,7 @@ import com.cskbank.utility.GetterUtil;
 import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.SecurityUtil;
 import com.cskbank.utility.ValidatorUtil;
+import com.zoho.ear.dbencryptagent.udt.CipherTextDTTransformer;
 
 public class MickeyUserAPI implements UserAPI {
 
@@ -133,9 +134,13 @@ public class MickeyUserAPI implements UserAPI {
 	public UserRecord getUserDetails(int userID) throws AppException {
 		ValidatorUtil.validateId(userID);
 		try {
+			LogUtil.logString("Initialize row");
 			Row userRow = new Row(USER.TABLE);
+			LogUtil.logString("Set row id");
 			userRow.set(USER.USER_ID, userID);
+			LogUtil.logString("Get dataobject");
 			DataObject userDO = DataAccess.get(USER.TABLE, userRow);
+			LogUtil.logString("Check if data object has row");
 			if (userDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 			}
@@ -244,7 +249,8 @@ public class MickeyUserAPI implements UserAPI {
 	public boolean doesEmailExist(String email) throws AppException {
 		ValidatorUtil.validateEmail(email);
 		Row emailRow = new Row(USER.TABLE);
-		emailRow.set(USER.EMAIL, email);
+		emailRow.set(USER.EMAIL,
+				new CipherTextDTTransformer().transform(USER.TABLE, USER.EMAIL, email, "SEARCHABLE_CTEXT_CEK"));
 		try {
 			DataObject dataObject = DataAccess.get(USER.TABLE, emailRow);
 			return ValidatorUtil.isObjectNull(dataObject);
