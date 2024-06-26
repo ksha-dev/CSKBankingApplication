@@ -19,6 +19,7 @@ import com.cskbank.modules.Transaction;
 import com.cskbank.modules.UserRecord;
 import com.cskbank.utility.ConstantsUtil.Status;
 import com.cskbank.utility.ValidatorUtil;
+import com.zoho.ear.dbencryptagent.udt.CipherTextDTTransformer;
 
 class MickeyAPIUtil {
 
@@ -34,7 +35,9 @@ class MickeyAPIUtil {
 			UpdateQuery updateBalanceQuery = new UpdateQueryImpl(ACCOUNT.TABLE);
 			updateBalanceQuery.setCriteria(updateBalanceCriteria);
 
-			updateBalanceQuery.setUpdateColumn(ACCOUNT.BALANCE, account.getBalance());
+//			updateBalanceQuery.setUpdateColumn(ACCOUNT.BALANCE, new CipherTextDTTransformer().transform(ACCOUNT.TABLE,
+//					ACCOUNT.BALANCE, account.getBalance(), "CTEXT"));
+			updateBalanceQuery.setUpdateColumn(ACCOUNT.BALANCE, account.getBalance() + "");
 			updateBalanceQuery.setUpdateColumn(ACCOUNT.LAST_TRANSACTED_AT, account.getLastTransactedAt());
 			updateBalanceQuery.setUpdateColumn(ACCOUNT.MODIFIED_BY, account.getModifiedBy());
 			updateBalanceQuery.setUpdateColumn(ACCOUNT.MODIFIED_AT, account.getModifiedAt());

@@ -148,8 +148,6 @@ class EmployeeServletHelper {
 		ServletUtil.session(request).setAttribute("type", type);
 		ServletUtil.session(request).setAttribute("redirect", "process_transaction");
 		response.sendRedirect("authorization");
-
-		response.sendRedirect("transaction");
 	}
 
 	public void processTransactionPostRequest(HttpServletRequest request, HttpServletResponse response)

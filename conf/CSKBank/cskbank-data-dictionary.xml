@@ -45,12 +45,12 @@
 				</allowed-values>
 			</column>
 			<column name="PHONE">
-				<data-type>CTEXT</data-type>
+				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
 				<max-size>100</max-size>
 				<nullable>false</nullable>
 			</column>
 			<column name="EMAIL">
-				<data-type>CTEXT</data-type>
+				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
 				<max-size>100</max-size>
 				<nullable>false</nullable>
 			</column>
@@ -91,10 +91,12 @@
 			<column name="AADHAAR">
 				<data-type>CTEXT</data-type>
 				<max-size>200</max-size>
+				<nullable>false</nullable>
 			</column>
 			<column name="PAN">
 				<data-type>CTEXT</data-type>
 				<max-size>200</max-size>
+				<nullable>false</nullable>
 			</column>
 		</columns>
 
@@ -427,12 +429,12 @@
 				<nullable>false</nullable>
 			</column>
 			<column name="PASSWORD">
-				<data-type>CHAR</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>255</max-size>
 				<nullable>false</nullable>
 			</column>
 			<column name="PIN">
-				<data-type>CHAR</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>255</max-size>
 				<nullable>false</nullable>
 			</column>
@@ -487,20 +489,14 @@
 				</uniquevalue-generation>
 			</column>
 			<column name="ORG_NAME">
-				<data-type>CHAR</data-type>
-				<max-size>20</max-size>
+				<data-type>CTEXT</data-type>
+				<max-size>100</max-size>
 				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[A-Za-z,. ]+$</pattern>
-				</allowed-values>
 			</column>
 			<column name="API_KEY">
-				<data-type>CHAR</data-type>
-				<max-size>40</max-size>
+				<data-type>CTEXT</data-type>
+				<max-size>100</max-size>
 				<nullable>false</nullable>
-				<allowed-values>
-					<pattern>^[A-Za-z0-9]{40}$</pattern>
-				</allowed-values>
 			</column>
 			<column name="CREATED_AT">
 				<data-type>BIGINT</data-type>

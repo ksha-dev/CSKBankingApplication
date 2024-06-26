@@ -99,8 +99,7 @@ public class Account implements Serializable {
 	}
 
 	public void setBalance(String balance) throws AppException {
-		ValidatorUtil.validateObject(balance);
-		setBalance(ConvertorUtil.convertStringToDouble(balance));
+		setBalance(balance == null ? 0 : ConvertorUtil.convertStringToDouble(balance));
 	}
 
 	public void setCreatedAt(long dateTime) {
@@ -151,7 +150,7 @@ public class Account implements Serializable {
 	}
 
 	public double getBalance() {
-		return this.balance;
+		return ConvertorUtil.convertToTwoDecimals(balance);
 	}
 
 	public int getModifiedBy() {

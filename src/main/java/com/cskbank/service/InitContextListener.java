@@ -36,11 +36,6 @@ public class InitContextListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		try {
-			LogAPI.log("access", new ZLMap().put("message", "ContextListener Destroyed"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -68,8 +63,6 @@ public class InitContextListener implements ServletContextListener {
 			HandlerObject.initialize(persistenceIdentifier);
 			CachePool.initializeCache(HandlerObject.getCommonHandler().getUserAPI(), cacheIdentifier);
 			initClasses();
-
-			LogAPI.log("access", new ZLMap().put("message", "ContextListener Initialized"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -85,7 +78,7 @@ public class InitContextListener implements ServletContextListener {
 			DBEncryptAgent.setCommonServiceName(CSKBankService.class.getSimpleName());
 			DBEncryptAgent.disableOrgID();
 		} catch (EARException e) {
-			LogUtil.logException(e);
+			e.printStackTrace();
 		}
 	}
 }

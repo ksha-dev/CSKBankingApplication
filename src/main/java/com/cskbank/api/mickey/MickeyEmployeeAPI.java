@@ -76,9 +76,9 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			newUserRow.set(USER.FIRST_NAME, user.getFirstName());
 			newUserRow.set(USER.LAST_NAME, user.getLastName());
 			newUserRow.set(USER.GENDER, user.getGender().getGenderID());
-			newUserRow.set(USER.DOB, user.getDateOfBirth());
+			newUserRow.set(USER.DOB, user.getDateOfBirth() + "");
 			newUserRow.set(USER.ADDRESS, user.getAddress());
-			newUserRow.set(USER.PHONE, user.getPhone());
+			newUserRow.set(USER.PHONE, user.getPhone() + "");
 			newUserRow.set(USER.EMAIL, user.getEmail());
 			newUserRow.set(USER.TYPE, user.getType().getTypeID());
 			newUserRow.set(USER.STATUS, user.getStatus().getStatusID());
@@ -98,10 +98,10 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 	public int createCustomer(CustomerRecord customer) throws AppException {
 		ValidatorUtil.validateObject(customer);
 
-		TransactionManager transactionManager = DataAccess.getTransactionManager();
+//		TransactionManager transactionManager = DataAccess.getTransactionManager();
 
 		try {
-			transactionManager.begin();
+//			transactionManager.begin();
 			createUserRecord(customer);
 
 			Row newCustomerRow = new Row(CUSTOMER.TABLE);
@@ -113,14 +113,14 @@ public class MickeyEmployeeAPI extends MickeyUserAPI implements EmployeeAPI {
 			newCustomerDO.addRow(newCustomerRow);
 			DataAccess.add(newCustomerDO);
 
-			transactionManager.commit();
+//			transactionManager.commit();
 			return customer.getUserId();
 		} catch (Exception e) {
-			try {
-				transactionManager.rollback();
-			} catch (Exception e1) {
-				e.initCause(e1);
-			}
+//			try {
+//				transactionManager.rollback();
+//			} catch (Exception e1) {
+//				e.initCause(e1);
+//			}
 			throw new AppException(APIExceptionMessage.CUSTOMER_CREATION_FAILED, e);
 		}
 	}

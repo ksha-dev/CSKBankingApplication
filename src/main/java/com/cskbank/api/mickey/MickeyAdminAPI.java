@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.transaction.TransactionManager;
 
@@ -42,7 +44,6 @@ import com.cskbank.utility.ConstantsUtil;
 import com.cskbank.utility.ConstantsUtil.ModifiableField;
 import com.cskbank.utility.ConvertorUtil;
 import com.cskbank.utility.GetterUtil;
-import com.cskbank.utility.LogUtil;
 import com.cskbank.utility.ValidatorUtil;
 
 public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
@@ -339,13 +340,18 @@ public class MickeyAdminAPI extends MickeyEmployeeAPI implements AdminAPI {
 	@Override
 	public int isDBInitialized() throws AppException {
 		try {
-			Row userRow = new Row(USER.TABLE);
-			DataObject userDO = DataAccess.get(USER.TABLE, userRow);
-			userRow = userDO.getFirstRow(USER.TABLE);
-			return userRow == null ? 0 : userRow.getInt(USER.USER_ID);
-		} catch (DataAccessException e) {
+			SelectQuery query = new SelectQueryImpl(Table.getTable(USER.TABLE));
+			query.setRange(new Range(1, 1));
+			query.addSelectColumn(Column.getColumn(USER.TABLE, USER.USER_ID));
+
+			DataSet ds = MickeyConstants.getRAPI().executeQuery(query, MickeyConstants.getRAPIConnection());
+			if (ds.next()) {
+				return (int) ds.getValue(USER.USER_ID);
+			}
+		} catch (Exception e) {
 			throw new AppException(e);
 		}
+		return 0;
 	}
 
 }

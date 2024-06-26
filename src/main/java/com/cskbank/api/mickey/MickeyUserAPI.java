@@ -134,17 +134,12 @@ public class MickeyUserAPI implements UserAPI {
 	public UserRecord getUserDetails(int userID) throws AppException {
 		ValidatorUtil.validateId(userID);
 		try {
-			LogUtil.logString("Initialize row");
 			Row userRow = new Row(USER.TABLE);
-			LogUtil.logString("Set row id");
 			userRow.set(USER.USER_ID, userID);
-			LogUtil.logString("Get dataobject");
 			DataObject userDO = DataAccess.get(USER.TABLE, userRow);
-			LogUtil.logString("Check if data object has row");
 			if (userDO.isEmpty()) {
 				throw new AppException(APIExceptionMessage.USER_NOT_FOUND);
 			}
-			LogUtil.logString(userDO.toString());
 			userRow = userDO.getFirstRow(USER.TABLE);
 
 			UserRecord.Type type = Type.getType(userRow.getInt(USER.TYPE));
@@ -248,11 +243,11 @@ public class MickeyUserAPI implements UserAPI {
 	@Override
 	public boolean doesEmailExist(String email) throws AppException {
 		ValidatorUtil.validateEmail(email);
-		Row emailRow = new Row(USER.TABLE);
-		emailRow.set(USER.EMAIL,
-				new CipherTextDTTransformer().transform(USER.TABLE, USER.EMAIL, email, "SEARCHABLE_CTEXT_CEK"));
 		try {
-			DataObject dataObject = DataAccess.get(USER.TABLE, emailRow);
+			SelectQuery query = new SelectQueryImpl(Table.getTable(USER.TABLE));
+			query.addSelectColumn(Column.getColumn(USER.TABLE, "*"));
+			Criteria c = new Criteria(Column.getColumn(USER.TABLE, USER.EMAIL), email, QueryConstants.EQUAL);
+			DataObject dataObject = DataAccess.get(USER.TABLE, c);
 			return ValidatorUtil.isObjectNull(dataObject);
 		} catch (DataAccessException e) {
 			throw new AppException(APIExceptionMessage.EMAIL_CHECK_FAILED, e);

@@ -1,6 +1,0 @@
-Module=ddtool
-BuildDate=Dec_14_2004
-BuildTime=08:15 PM
-BuildLabel=HEAD
-
-	
