@@ -13,7 +13,7 @@ $.zaParam = function(obj) {
 		}
 	}
 	var str = $.param(obj);
-	return str ? str.replace(__za_r20, "%20") : str;
+	return str;
 }
 
 $.fn.zaSerialize = function() {
@@ -309,16 +309,21 @@ Form.prototype.submit = function(event) {
 		if(params.indexOf("mode")==-1){
 			params += "&mode=01";//NO i18N
 		}
+		if((params.indexOf("newsletter=")==-1) && ($("[name='newsletter']").length > 0)  && (typeof ($("[name='newsletter']").prop('checked')) != 'undefined')){
+			params += "&newsletter=" + $("[name='newsletter']").prop('checked') ;//NO i18N
+		}
 	}
 	if(typeof signup_defaultmode != 'undefined'){
-		removeParam("mode",params); //NO i18N 
+		params = removeParam("mode", params); //No I18N
 		params += "&mode="+ signup_defaultmode; //NO i18N 
 	}
+	params = removeParam("service_language", params); //No I18N
 	var queryparams = params.slice(0).split('&');
 	var result = {};
 	queryparams.forEach(function(pair) {
         pair = pair.split('=');
         if(pair[0] && !pair[0].startsWith("c_")){
+			pair[1] = pair[1].replace(__za_r20, "%20");
         	result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').trim();	
         }
     }); 
@@ -326,26 +331,26 @@ Form.prototype.submit = function(event) {
 		result.country_code=countrycode;
 	}
 	options.ajax.url = options.url = removeParam("loginIdChanged",options.ajax.url) // no i18n
-	options.url = options.ajax.url = !loginIdChanged ? options.ajax.url :options.ajax.url.indexOf("?") !== -1 ? options.ajax.url + "loginIdChanged=true" : options.ajax.url + "?loginIdChanged=true"; // No I18N
+	options.url = options.ajax.url = !loginIdChanged ? options.ajax.url : options.ajax.url.indexOf("?") !== -1 ? options.ajax.url + "&loginIdChanged=true" : options.ajax.url + "?loginIdChanged=true"; //No I18N
 	var signupParams = JSON.parse(JSON.stringify(result));
 	var jsonData = {'signup':signupParams};//no i18N
+	
 	var ajaxOptions = $.extend(true, {
 		dataType: "json",//no i18N
-	    data: JSON.stringify(jsonData),
-	    headers: {
-			'Z-Authorization':'Zoho-ticket '+temp_token // no i18n
-	    },
-	    contentType: "application/json" //no i18N
+		data: JSON.stringify(jsonData),
+		headers: {
+			'Z-Authorization': 'Zoho-ticket ' + temp_token // no i18n
+		},
+		contentType: "application/json" //no i18N
 	}, options.ajax);
 	// Submit handler
-	var onSubmitValue = (options.onsubmit && options.onsubmit.call(this, ajaxOptions)); // Due to a bug in iOS7 Safari value of the condition is stored in a separate variable before checking. 
+	var onSubmitValue = (options.onsubmit && options.onsubmit.call(this, ajaxOptions)); // Due to a bug in iOS7 Safari value of the condition is stored in a separate variable before checking.
 	if (onSubmitValue === false) {
 		return false;
-	} 
+	}
 
 	// Disable Submit Button
 	_this.updateSubmitState(true);
-
 	// Send Request
 	if (options.crossdomain === true) {
 		CrossServiceRequest.send(ajaxOptions, options.usePostMessage);

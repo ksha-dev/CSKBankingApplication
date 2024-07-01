@@ -1,0 +1,1041 @@
+/*$Id$*/
+
+@font-face {
+  font-family: 'Captcha';
+  src:  url('../images/fonts/Captcha.eot');
+  src:  url('../images/fonts/Captcha.eot') format('embedded-opentype'),
+    url('../images/fonts/Captcha.woff2') format('woff2'),
+    url('../images/fonts/Captcha.ttf') format('truetype'),
+    url('../images/fonts/Captcha.woff') format('woff'),
+    url('../images/fonts/Captcha.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="Captchaicon-"], [class*=" Captchaicon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'Captcha' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.Captchaicon-Playbutton:before {
+  content: "\e900";
+}
+.Captchaicon-Audio:before {
+  content: "\e903";
+}
+.Captchaicon-Image:before {
+  content: "\e901";
+}
+.Captchaicon-Refresh:before {
+  content: "\e902";
+}
+
+div#thumb::before {
+    content: "hari";
+}
+
+
+.Captcha_btns
+{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0px 25px;
+    margin-top: 20px;
+}
+
+.disbale_butt
+{
+	opacity: 50%;
+    cursor: not-allowed !important;
+}
+
+.captcha_icons
+{
+	display:inline-block;
+}
+
+.captcha_icons span
+{
+	color: #0006;
+    cursor: pointer;
+    margin-right: 16px;
+    font-size: 24px;
+   	display: inline-block;
+}
+
+
+.captcha_icons span:hover 
+{
+    color: #333;
+}
+
+.darkmode .captcha_icons span
+{
+	color:#C7C7C7;
+}
+
+.darkmode .captcha_icons span:hover 
+{
+	color:#FFFFFF;
+}
+
+
+
+#zlabs_captcha_container
+{
+	border: 1px solid #DBDBDB;
+	height: auto;
+    background-color: #FCFCFC;
+    position: relative;
+    border-radius: 2px;
+    max-width: 400px;
+}
+
+
+.height_set
+{
+	max-height:480px;
+    min-height: 400px;
+}
+
+#imgdiv #background, .audio, .shine_container 
+{
+	height: 263px;
+    width: 350px;
+    border-radius: 2px;
+}
+
+
+.audio
+{
+	margin: auto;
+    border: 1px solid #EEEEEE;
+    margin-bottom: 15px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.audio_content
+{
+	margin: auto;
+    width: 70%;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 35px;
+    font-weight: 600;
+}
+
+.play_cover
+{
+	width: 35px;
+    height: 35px;
+    position: relative;
+    top: 6px;
+    display: flex !important;
+}
+
+#play
+{
+	font-size: 35px;
+    color: #159aff;
+    cursor:pointer;
+}
+
+.play_motion #play
+{
+	opacity:50%;
+	pointer-events: none;
+}
+
+.audio_play_area 
+{
+    display: flex;
+    margin: auto;
+    width: 80%;
+    justify-content: space-evenly;
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.audio_bar 
+{
+    width: 205.5px;
+    height: 47px;
+    box-sizing: content-box;
+    position: relative;
+    background: linear-gradient(to right, #007bd9 50%, #a6c0d5 50%);
+    background-size: 200% 100%;
+    background-position: right;
+}
+
+.audio_bar::after
+{
+	content:"";
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url(../images/Transparnt_audio.svg) no-repeat transparent;
+    background-size: 206px 47px;
+}
+
+.darkmode .audio_bar::after
+{
+	background: url(../images/DMTransparnt_audio.svg) no-repeat transparent;
+    background-size: 206px 47px;
+}
+
+
+/* audio animation */
+
+.audio_animation
+{
+	transition: background-position 4.7s linear;
+	background-position: left;
+}
+
+
+#aoption
+{	width: 75%;
+    text-align: center;
+    margin: auto;
+    margin-top: 30px;
+    position: absolute;
+    bottom: 35px;
+    left: 0;
+    right: 0;
+    -moz-appearance: textfield;
+}
+
+#imgdiv .background
+{
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+#imgslide
+{
+	position: relative;
+    width: 43.7px;
+    height: 43.7px;
+    -webkit-filter: drop-shadow(0px 10px 4px black);
+    filter: drop-shadow(0px 10px 4px black);
+}
+
+.ZCaptcha_desc div
+{
+    font-size: 14px;
+    padding: 16px 0px 16px 0px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.Zcaptcha_error
+{
+	position: absolute;
+    width: 350px;
+    background: #D8454F;
+    height: 30px;
+    color: #FFFFFF;
+    line-height: 30px;
+    z-index: 2;
+    margin: -30px auto 0px auto;
+    font-size: 12px;
+    font-weight: 600;
+    bottom: 0px;
+    text-align: center;
+}
+
+/* error msg for audio captcha is different */
+.audio .Zcaptcha_error	
+{
+	text-align: center;
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+}
+
+
+.Captcha_btnblue
+{
+	cursor: pointer;
+    height: 44px;
+    border-radius: 4px;
+    letter-spacing: .5px;
+    font-size: 12px;
+    font-weight: 800;
+    outline: none;
+    border: none;
+    width: 80px;
+    transition: width .2s ease-in-out;
+    display: inline-block;
+    
+}
+
+
+.no_height
+{
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+    display: block;
+}
+
+.show_laod_butt:before {
+    content: "";
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    margin: 9px;
+    border: 3px solid #fff;
+    border-top: 3px solid #5AB7FE;
+    border-radius: 50%;
+    animation: spin .5s linear infinite;
+    padding: 0px;
+}
+
+/* options Appearance */
+
+.option
+{
+	height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    width: 350px;
+    margin: auto;
+}
+
+.option .radio 
+{
+	padding: 16px 0px 16px 0px;
+    flex: 1;
+    display: flex;
+    position:relative;
+}
+
+.capctha_options1 
+{
+    display: flex;
+    justify-content: space-around;
+    min-width: 50%;
+    flex-grow: 1;
+}
+
+
+.option .option_radiobtn 
+{
+    z-index: 1;
+    margin: 0px;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    opacity: 0;
+    left: 0px;
+    width: 18px;
+    height: 18px;
+}
+
+.option_radiobtn:checked ~ .outer_circle {
+    border: 2px solid #007BD9;
+    opacity: 1;
+}
+.option .outer_circle {
+    height: 14px;
+    width: 14px;
+    float: left;
+    margin: -1px 4px;
+    border: 2px solid #ccc;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.option .inner_circle {
+    height: 8px;
+    width: 8px;
+    background-color: #007BD9;
+    border-radius: 50%;
+    margin: 3px;
+    opacity: 0;
+}
+
+.option_radiobtn:hover ~ .outer_circle .inner_circle {
+	opacity: .3;
+}
+
+.option_radiobtn:checked ~ .outer_circle .inner_circle {
+	opacity: 1;
+}
+
+.radio__label
+{
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+.shine {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 30%,rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 70%);
+    display: block;
+    height: 100%;
+    left: 154%;
+    position: absolute;
+    top: 0px;
+    transform: skewX(55deg);
+    width: 70%;
+    z-index: 2;
+    -webkit-animation: shine 0.85s ease-in-out;
+    animation: shine 0.85s ease-in-out;
+}
+
+
+.shine_container
+{
+	position: absolute;
+    top: 0%;
+    overflow: hidden;
+}
+
+
+
+
+@keyframes shine 
+{
+	100% 
+	{
+		left: -125%;
+	}
+}
+	
+	
+/* Slider Appearance */
+
+
+.slide
+{
+	height: 50px;
+}
+
+.slider
+{
+	top: 7px;
+    position: relative;
+}
+
+
+.zlabs_slide
+{
+	text-align: center;
+	top: -34px;
+    position: relative;
+}
+
+
+
+input[type=range] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 325px; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor:pointer;
+}
+
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent; 
+  border-color: transparent;
+  color: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+ -webkit-appearance: none;
+    height: 34px;
+    width: 58px;
+    border-radius: 20px;
+    background: #007BD9;
+    margin-top: -14px;
+    box-shadow: 0px 3px 0px #0062AD;
+    background-position: 50% 50%;
+    background-image: url(../images/Slider_arrow.svg);
+    background-repeat: no-repeat;
+    background-size: 17px 40px;
+    cursor:pointer;
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+  box-shadow: 0px 3px 0px #0062AD;;
+  height: 34px;
+  width: 58px;
+  border-radius: 20px;
+  background: #007BD9;
+background-image: url(../images/Slider_arrow.svg);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 17px 40px;
+    cursor:pointer;
+    border: none;
+}
+
+/* All the same stuff for IE */
+input[type=range]::-ms-thumb {
+  box-shadow: 0px 3px 0px #0062AD;;
+  height: 34px;
+  width: 58px;
+  border-radius: 20px;
+  background: #007BD9;
+background-image: url(../images/Slider_arrow.svg);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 17px 40px;
+    cursor:pointer;
+  
+}
+
+
+#imgdiv
+{
+	margin: auto auto;
+}
+
+
+
+
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  background: #D6E7F4;
+  border-radius: 6px;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #D6E7F4;
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  background: #D6E7F4;
+  border-radius: 6px;
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+
+
+/* sucess container */
+
+
+.Z_captcha_result_container, .Z_captcha_error_container
+{
+    max-width: 350px;
+    height: 200px;
+    background: white;
+    margin: auto;
+    text-align: center;
+    border: 1px solid transparent;
+    margin-bottom: 25px;
+    box-sizing: border-box;
+    position:relative
+}
+
+.Z_captcha_error_container
+{
+    background: #FFF7F7;
+    height: 100%;
+    min-height: 180px;
+    width: 100%;
+    margin: 0px;
+    max-width: none;
+}
+
+.Z_captcha_reject_header 
+{
+	text-align: center;
+    width: 82%;
+    margin: auto;
+    margin-top: 24px;
+    line-height: 22px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.no_restriction_error
+{
+	background-color: #FFFFFF !important;
+    border: 1px solid #FFFFFF !important;
+}
+
+.no_restriction_error .Z_captcha_error_container
+{
+	background-color: #FFFFFF;
+}
+
+.no_restriction_error .Z_captcha_error_msg
+{
+	margin-top: 12px !important;
+}
+
+.Z_captcha_noHeaddesc
+{
+	margin-top: 25px;
+}
+
+.reject_icon 
+{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    font-size: 44px;
+    position: relative;
+    color: #939393;
+    margin: 30px auto 0px auto;
+    font-weight: 600;
+    background: #D62727;
+}
+
+.reject_icon::before 
+{
+    display: block;
+    content: "";
+    height: 18px;
+    width: 3px;
+    background-color: #fff;
+    margin: auto;
+    border-radius: 1px;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 11px;
+    right: 0px;
+    left: 0px;
+    z-index: 1;
+}
+
+.Z_captcha_error_msg 
+{
+    text-align: center;
+    width: 82%;
+    margin: auto;
+    margin-top: 27px;
+    line-height: 22px;
+    margin-bottom: 27px;
+}
+
+.reject-red-circle 
+{
+    display: block;
+    position: absolute;
+    width: 40px;
+    border-radius: 50px;
+    height: 40px;
+    top: -2px;
+    right: 3px;
+    background: #EB5E67;
+}
+
+
+.reject_icon::after 
+{
+    display: block;
+    content: "";
+    height: 18px;
+    width: 3px;
+    border-radius: 1px;
+    background-color: #fff;
+    position: absolute;
+    margin: auto;
+    top: 11px;
+    transform: rotate(45deg);
+    right: 0px;
+    left: 0px;
+}
+
+
+
+.Z_captcha_success_msg
+{
+	position: absolute;
+    bottom: 70px;
+    width: 100%;
+}
+
+.succ_icon 
+{
+    position: relative;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    margin-top: 40px;
+    transform: rotate(-45deg);
+}
+
+.success_tick
+{
+	height: 0px;
+    width: 0px;
+    margin: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    font-size: 55px;
+    background: #80a382;
+    position: relative;
+    top: 50%;
+    z-index: 1;
+    transform: translateY(-50%);
+    top: 50%;
+}
+
+.success_tick::before 
+{
+	content: '';
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    height: 0%;
+    width: 0%;
+    margin: auto;
+    background: #73c879;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.25s ease-in;
+}
+
+.tick_beat
+{
+	position: absolute;
+    width: 140%;
+    height: 140%;
+    top: -10px;
+    right: -10px;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.tick_beat::after
+{
+	content: "";
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    height: 0%;
+    width: 0%;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    box-sizing: border-box;
+}
+
+.success_animation .tick_beat::after
+{
+	animation: disapear 2s ease-out;
+}
+
+@keyframes disapear {
+  0% {
+
+    background: #80a38200;
+  }
+44%{
+	background: #73c8798f;
+	
+}
+  87% {
+    background: #73c8798f;
+	width:55px;
+	height:55px;
+	opacity:0.8;
+	
+  }
+  
+  95%
+  {
+    background: #73c8798f;
+  	width:100%;
+	height:100%;
+  	opacity:0.3;
+  }
+  
+  100% {
+    background: #73c87938;
+    opacity:0.1;
+  }
+}
+
+
+
+.white_tick:before 
+{
+	display: inline-block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-bottom: 0px solid #fff;
+    border-left: 0px solid #fff;
+    content: "";
+    transition-delay: 0.7s !important;
+    transition:height .5s ease-out;
+    height: 0px;
+    width: 3px;
+    background: white;
+}
+
+.white_tick:after 
+{
+	display: inline-block;
+    position: absolute;
+    margin-left: -10px;
+    margin-top: 9.5px;
+    width: 0px;
+    height: 0px;
+    border-bottom: 0px solid #fff;
+    border-left: 0px solid #fff;
+    content: "";
+	transition:height .5s ease-out 1s;
+    height: 0px;
+    width: 3px;
+    background: white;
+    transform: rotate(270deg);
+    transform-origin: top;
+}
+
+.white_tick
+{
+    display: inline-block;
+    position: absolute;
+    left: 16px;
+    top: 17px;
+    width: 20px;
+    height: 9px;
+}
+
+.success_animation .white_tick::before
+{
+    height: 11px;
+}
+
+.success_animation .white_tick::after
+{
+    height: 22px;
+}
+
+/* .success_tick::after  */
+/* { */
+/* 	content: ""; */
+/*     display: inline-block; */
+/*     position: absolute; */
+/*     left: 14px; */
+/*     top: 17px; */
+/*     width: 0px; */
+/*     height: 0px; */
+/*     border-bottom: 0px solid #fff; */
+/*     border-left: 0px solid #fff; */
+/*     transform: rotate(-45deg); */
+/*     transition: width 0.5s ease-in-out,height 0.5s ease-in-out, border 0.5s ease-in-out; */
+/* } */
+
+/* .success_animation .success_tick::after */
+/* { */
+/*     width: 20px; */
+/*     height: 9px; */
+/*     transition-delay: 0.7s; */
+/*     border-bottom: 3px solid #fff; */
+/*     border-left: 3px solid #fff; */
+/* } */
+
+/* .white_tick:before  */
+/* { */
+/* 	display: inline-block; */
+/*     position: absolute; */
+/*     left: 0px; */
+/*     top: 0px; */
+/*     width: 0px; */
+/*     height: 0px; */
+/*     border-bottom: 0px solid #fff; */
+/*     border-left: 0px solid #fff; */
+/*     content: ""; */
+/*     transition-delay: 0.7s !important; */
+/*     transition: width .5s ease-in,height .5s ease-out,  border 0.5s ease-in-out;; */
+/* } */
+
+.success_animation .success_tick
+{
+	height: 100%;
+    width: 100%;
+    transition: 0.25s ease-in;
+    position: relative;
+}
+
+.success_animation .success_tick::before
+{
+  transition-delay: 0.25s;
+  height: 100%;
+  width: 100%;
+}
+
+
+
+
+#zlabs_captcha_container .box-anim
+{
+	scale: 0.7;
+}
+
+
+
+
+
+
+
+/* shake image */
+
+
+.slider_shake
+{
+	animation: shake 1.5s linear 0s infinite normal;
+	position: relative;
+	-webkit-animation: shake 1.5s ease-in-out;
+  	animation: shake 1.5s ease-in-out;
+}
+
+
+.change_shake
+{
+	-webkit-animation: shake 0.5s ease-in-out;
+  	animation: shake 0.5s ease-in-out;
+}
+
+@-webkit-keyframes shake {
+  0% {
+    -webkit-transform: translateX(0);
+  }
+
+  20% {
+    -webkit-transform: translateX(-10px);
+  }
+
+  40% {
+    -webkit-transform: translateX(10px);
+  }
+
+  60% {
+    -webkit-transform: translateX(-10px);
+  }
+
+  80% {
+    -webkit-transform: translateX(10px);
+  }
+
+  100% {
+    -webkit-transform: translateX(0);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-10px);
+  }
+
+  40% {
+    transform: translateX(10px);
+  }
+
+  60% {
+    transform: translateX(-10px);
+  }
+
+  80% {
+    transform: translateX(10px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@media only screen and (max-width: 435px)
+{
+		
+		#imgdiv #background, .audio, .shine_container 
+		{
+		    height: 254px;
+		    width: 100%;
+		}
+		
+		.option
+		{
+			width:100%;
+			
+		}
+		.Zcaptcha_error {
+			width:100%
+		}
+		
+		input[type=range] 
+		{
+    		width: 100%;
+		}
+
+}
+
+
+
+.darkmode #zlabs_captcha_container 
+{
+    background: #2F303B;
+    border: 1px solid #56565F;
+}
+
+.darkmode .audio
+{
+	border: 1px solid #56565F;
+}
+
+
+
+
+
+
+
+
+
+
+
+

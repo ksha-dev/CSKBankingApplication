@@ -11,8 +11,6 @@
     
         <div id="owner">
             <form name="owner" class="zform" onsubmit="return updateOwner(document.owner);" method="post">
-            <div class="labelkey">Enter the ZID </div> <%--No I18N--%>
-            <div class="labelvalue"><input type='text' name='zid' class='input' placeholder='ZAAID / ZSOID' value='' autocomplete="off"></div>
     			<div class="labelkey">Select the Service</div> <%--No I18N--%>
     			<div class="labelvalue">
                     <select class='select select2Div' name='subtype' onchange='getRoles(document.owner)'>
@@ -26,13 +24,15 @@
     					<% } %>
     				</select>
     			</div>
-    			<div class="labelkey">Enter the ZUID</div> <%--No I18N--%>
-    			<div class="labelvalue"><input type='text' name='zuid' class='input' placeholder='ZUID' value='' autocomplete="off"></div>
+                <div class="labelkey">Enter the ZID </div> <%--No I18N--%>
+                <div class="labelvalue"><input type='text' name='zid' class='input' placeholder='ZAAID / ZSOID' value='' autocomplete="off"></div>
     			<div class="labelkey">Select the Role For Current Owner</div> <%--No I18N--%>
     			<div class="labelvalue">
     				<select class="select select2Div" name='role'>
     				</select>
     			</div>    			
+                <div class="labelkey">Enter New Owner ZUID</div> <%--No I18N--%>
+                <div class="labelvalue"><input type='text' name='zuid' class='input' placeholder='ZUID' value='' autocomplete="off"></div>
     			<div class="accbtn Hbtn">
                     <div class="savebtn" onclick="updateOwner(document.owner)">
 						<span class="btnlt"></span>

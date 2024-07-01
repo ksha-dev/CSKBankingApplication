@@ -66,7 +66,7 @@ var mobileCode;
 			sb.append('<div class="noteparent">');
 			sb.append('<p class="za-confirm-note">').append(I18N.get("IAM.SIGNUP.CONFIRMATION.RIGHT.TO.DEACTIVATE.NEW")).append(I18N.get("IAM.SIGNUP.CONFIRMATION.EMAIL.TIP")).append('</p>');
 			sb.append('</div>');
-			sb.append('<div class="za-confirm-btn"><input type="button" class="signupbtn" value="').append(I18N.get("IAM.BUTTON.CONTINUE.SIGNIN")).append('">');
+			sb.append('<div class="za-confirm-btn"><input type="button" class="signupbtn" value="').append(I18N.get("IAM.AC.PASSWORD.MATCHED.SIGNIN.REDIRECT")).append('">');
 			sb.append('</div></div></section>');
 			return sb.toString();
 		},
@@ -114,7 +114,6 @@ var mobileCode;
 					if(v==="newsletter" && isClientPortal){
 						return;
 					}
-					alert(I18N.get("IAM.ERROR.GENERAL"));
 					throw '"' + v + '" field is not present'; // No I18N
 				}
 
@@ -141,8 +140,7 @@ var mobileCode;
 			$('.za-region-container').css('display','none');//No I18N
 		},
 		url : function() {
-			return ZAConstants.getIAMUrl(uriPrefix+"/webclient/v1/register/initiate"); // No I18N
-			
+			return getIAMURL("/webclient/v1/register/initiate", $.fn.zaSignUp.defaults.x_signup.params); // No I18N
 		},
 		params : function() {
 			if(!this.options.x_signup.params.stop_ufields || this.options.x_signup.params.stop_ufields !== "true") {
@@ -163,7 +161,9 @@ var mobileCode;
 		},
 		validator : {
 			rules : {
-				captcha : "required",// No I18N
+				captcha : {
+					captchaCheck : true
+				},
 				portalname : {
 					portalname : true,
 					validateRemote : true
@@ -244,7 +244,7 @@ var mobileCode;
 				captcha : {
 					required : function() {
 						return I18N.get('IAM.ERROR.WORD.IMAGE');
-					}
+					}	
 				}
 			},
 			ignore:'.ignore-validation'//No I18N
@@ -312,10 +312,7 @@ var mobileCode;
 			}
 		} else {
 			var pdata = (param && Util.valueOf(param.params, validator)) || {};
-			var validateURL = ZAConstants.getIAMUrl(uriPrefix+"/webclient/v1/register/field/validate");//No I18N
-			if(pdata.service_language){
-				validateURL = validateURL+"?service_language="+pdata.service_language;//No I18N
-			}
+			var validateURL = getIAMURL("/webclient/v1/register/field/validate", pdata); //No I18N
 			
 			options = {
 				url :validateURL,
@@ -342,16 +339,16 @@ var mobileCode;
 			}
 			else if(elemntName==="emailormobile"){
 				var countryCd = typeof countrycode !=="undefined" && countrycode ? countrycode : pdata.country_code; //No i18N
-				var json=  {"signupvalidate":{"country_code":countryCd,"emailormobile":$(element).val().trim(),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl,"signupurl":signupurl}};//no i18N
+				var json=  {"signupvalidate":{"country_code":countryCd,"emailormobile":getValidMobileNumber(element,countryCd),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl,"signupurl":signupurl}};//no i18N
 			}
 			else if(elemntName==="password"){//No i18N
 				var json=  {"signupvalidate":{"country_code":pdata.country_code,"password":$(element).val(),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl}};//no i18N
 			}else if(elemntName==="rmobile"){//No i18N
 				var countryCd = typeof countrycode !=="undefined" && countrycode ? countrycode : pdata.country_code; //No i18N
-				var json=  {"signupvalidate":{"country_code":countryCd,"rmobile":$(element).val(),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl}};//no i18N
+				var json=  {"signupvalidate":{"country_code":countryCd,"rmobile":getValidMobileNumber(element,countryCd),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl}};//no i18N
 			}else if(elemntName==="mobile"){//No i18N
 				var countryCd = typeof countrycode !=="undefined" && countrycode ? countrycode : pdata.country_code; //No i18N
-				var json=  {"signupvalidate":{"country_code":countryCd,"mobile":$(element).val(),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl,"signupurl":signupurl}};//no i18N
+				var json=  {"signupvalidate":{"country_code":countryCd,"mobile":getValidMobileNumber(element,countryCd),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl,"signupurl":signupurl}};//no i18N
 			}else if(elemntName==="username"){//No i18N
 				var json=  {"signupvalidate":{"country_code":pdata.country_code,"username":$(element).val().trim(),"servicename":pdata.servicename,"serviceurl":pdata.serviceurl}};//no i18N
 			}
@@ -771,7 +768,17 @@ function toggleTosField(){
         $('#tos').prop('checked', false);
     }
 }
-
+function enableSplitField(elemID,fieldLength,placeHolder){
+	splitField.createElement(elemID,{
+		"splitCount":fieldLength,					// No I18N
+		"charCountPerSplit" : 1,		// No I18N
+		"isNumeric" : true,				// No I18N
+		"otpAutocomplete": true,		// No I18N
+		"customClass" : "customOtp",	// No I18N
+		"inputPlaceholder":'&#9679;',	// No I18N
+		"placeholder":placeHolder	// No I18N
+		});
+}
 function toggleOrgCheckField(){
 	var orgCheckField = $('#signup-orguser');
 	if (orgCheckField.hasClass('unchecked')) {
@@ -797,14 +804,22 @@ function selectTextEnd(input,inputLen) {
     }
 }
 function checkPasswordStrength(event){
+	var f = document.forms.signupform;
+	var value = f && f.password && f.password.value.trim();
+	if(isEmpty(value) && event && (event.key == 'Enter')){
+		return false;
+	}
+	if(isEmpty(value)){
+		$("#password-error").hide();
+		$(".pwderror").hide();
+		return false;
+	}
 	if(event && (event.key == 'Enter')){
 		$(".pwderror").hide();
 		return false;
 	}
 	$("#password-error").remove();
 	$(".za-password-container dd").removeClass("field-error");
-	var f = document.forms.signupform;
-	var value = f && f.password && f.password.value.trim();
 	if(typeof value === "undefined") { //password field is not present in signup form
 		return false;
 	}
@@ -920,7 +935,7 @@ function loadCountries(countryDetails) {
 			if(typeof countryCodeDetail.NEWSLETTER_MODE !=="undefined"){
 				option += "<option value=\""+countryCodeDetail.ISO2_CODE+"\" newsletter_mode=\""+countryCodeDetail.NEWSLETTER_MODE+"\">" + countryCodeDetail.DISPLAY_NAME + "</option>";//No I18N
 			}if(typeof countryCodeDetail.DIALING_CODE !=="undefined"){ // no i18N
-				isdoption += "<option value=\""+countryCodeDetail.ISO2_CODE+"\" data_number=\"+"+countryCodeDetail.DIALING_CODE+"\"  id=\""+countryCodeDetail.ISO2_CODE+ "\">" + countryCodeDetail.COUNTRY_NAME +" (+"+countryCodeDetail.DIALING_CODE+")"+ "</option>";//No I18N
+				isdoption += "<option value=\""+countryCodeDetail.ISO2_CODE+"\" data_number=\"+"+countryCodeDetail.DIALING_CODE+"\"  id=\""+countryCodeDetail.ISO2_CODE+ "\">" + countryCodeDetail.DISPLAY_NAME +" (+"+countryCodeDetail.DIALING_CODE+")"+ "</option>";//No I18N
 			}
 		}
 		for ( var index in selectboxes) {
@@ -962,7 +977,7 @@ function toggleCountryStates(selectCountryElement) {
 		var countryOptionEle = selectCountryElement.options[selectCountryElement.selectedIndex];//.selectedOptions[0];
 		var countryCode = countryOptionEle.value;
 		var countryStates = ZACountryStateDetails[0];
-		var disabledOption = '<option value='+I18N.get("IAM.US.STATE.SELECT")+' disabled selected>'+I18N.get("IAM.US.STATE.SELECT")+'</option>';
+		var disabledOption = '<option value="Select State" disabled selected style="pointer-events:none;">'+"Select State"+'</option>';
 		var stateOptios = countryStates[countryCode.toLowerCase()];
 		if(stateOptios != undefined) {
 			select[0].innerHTML = disabledOption + stateOptios;
@@ -972,6 +987,9 @@ function toggleCountryStates(selectCountryElement) {
 			select[0].innerHTML = "";
 			$('.za-country_state-container').css('display','none'); //No I18N
 		}
+	}
+	if(!isValid($(".select_input--state-uv-select").val())){
+		$(".select_input--state-uv-select").val($('.za-country_state-container select[name=country_state] option:eq(0)').val())
 	}
 }
 function handleNewsletterField(selectElement) {
@@ -989,8 +1007,10 @@ function handleNewsletterField(selectElement) {
 	        $('#newsletter').prop('checked', false)
 	        $('.za-newsletter-container').css('display',''); //No I18N
 		} else {
-			newsletterEle.removeClass('checked').addClass('unchecked');
-	        $('#newsletter').prop('checked', false)
+			if($.fn.zaSignUp.defaults.x_signup.client_portal){
+				newsletterEle.removeClass('checked').addClass('unchecked');
+		        $('#newsletter').prop('checked', false);
+			}
 	        $('.za-newsletter-container').css('display','none'); //No I18N
 		}
 	}
@@ -1041,7 +1061,7 @@ function presignupTracker(){
     catch(exp){} 
 }
 function validateOTP(){
-	var otpfield = $("#otpfield").val();
+	var otpfield =  isSplitfield ? document.getElementById("otpfield").firstChild.value.trim() : $("#otpfield").val();
 	$(".signupbtn").attr("disabled","true");
 	var validator = this;
 	var formOptions = $(validator.currentForm).zaSignUp("options");
@@ -1054,6 +1074,7 @@ function validateOTP(){
 		$(".za-otp-container .error").show();
 		$(".signupbtn span").removeClass('loadingtext');
   		$(".signupbtn").removeClass('changeloadbtn');
+  		$("#otpfield").focus();
   		if (_this.options.x_signup.oncomplete) {
 			_this.options.x_signup.oncomplete.call(this, $.fn.zaSignUp.SIGNUP_STATE.OTP_ERROR); // No I18N
 		}
@@ -1076,7 +1097,7 @@ function validateOTP(){
 		params += "&orgtype="+validateParams.orgtype; //No I18N
 	}
 	if(typeof signup_defaultmode != 'undefined'){
-		removeParam("mode",params); //NO i18N 
+		params = removeParam("mode", params); //No I18N
 		params += "&mode="+ signup_defaultmode; //NO i18N 
 	}
 	var queryparams = params.slice(0).split('&');
@@ -1084,17 +1105,22 @@ function validateOTP(){
 	queryparams.forEach(function(pair) {
         pair = pair.split('=');
         if(pair[0] && !pair[0].startsWith("c_")){
+			pair[1] = pair[1].replace(__za_r20, "%20");
         	result[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').trim();	
         }
     });
     if(typeof countrycode !=="undefined"  && countrycode){
 		result.country_code = countrycode;
 	}
+    triggerOTP(result,validateParams,formOptions);
+    return false;
+}
+function triggerOTP(result,validateParams,formOptions){
 	var signupParams = JSON.parse(JSON.stringify(result));
 	var jsonData = {'signupotpverify':signupParams};//no i18N
 	
 	var validateoptions={
-		url : ZAConstants.getIAMUrl(uriPrefix+"/webclient/v1/register/otp/verify"), // No I18N
+		url : getIAMURL("/webclient/v1/register/otp/verify", validateParams), // No I18N
 		type : "POST", // No I18N
 		dataType: "json",//no i18N
 	    data: JSON.stringify(jsonData),
@@ -1104,11 +1130,13 @@ function validateOTP(){
 	    contentType: "application/json", //no i18N
 		success:function(data){
 				if(data.errors){
-	    	  		Form.Message.error("otp", data.localized_message);//no i18N
+	    	  		Form.Message.error("otp", data.localized_message);//no i18n
 	    	  		$(".signupbtn").removeAttr('disabled');
 	    	  		$(".za-otp-container .error").show();
+	    	  		$(".za-otp-container .error").css("text-indent","0px");//no i18n
 	    	  		$(".signupbtn span").removeClass('loadingtext');
 	    	  		$(".signupbtn").removeClass('changeloadbtn');
+	    	  		$("#otpfield").focus();
 	    	  		if (_this.options.x_signup.oncomplete) {
 	    				_this.options.x_signup.oncomplete.call(this, $.fn.zaSignUp.SIGNUP_STATE.OTP_ERROR); // No I18N
 	    			}
@@ -1123,8 +1151,10 @@ function validateOTP(){
     	 			Form.Message.error("otp", ar.json.localized_message);//no i18N
     	 			$(".signupbtn").removeAttr('disabled');
 	    	  		$(".za-otp-container .error").show();
+	    	  		$(".za-otp-container .error").css("text-indent","0px");//no i18n
 	    	  		$(".signupbtn span").removeClass('loadingtext');
 	    	  		$(".signupbtn").removeClass('changeloadbtn');
+	    	  		$("#otpfield").focus();
 	    	  		if (_this.options.x_signup.oncomplete) {
 	    				_this.options.x_signup.oncomplete.call(this, $.fn.zaSignUp.SIGNUP_STATE.OTP_ERROR);
 	    			}
@@ -1162,7 +1192,7 @@ function resendOTP(){
 	$(".signupbtn span").addClass('loadingtext');
 	$(".signupbtn").addClass('changeloadbtn');
 	var validateoptions = {
-			url : ZAConstants.getIAMUrl(uriPrefix+"/webclient/v1/register/otp/resend"), // No I18N
+			url : getIAMURL("/webclient/v1/register/otp/resend", $.fn.zaSignUp.defaults.x_signup.params), // No I18N
 			type : "POST", // No I18N
 			headers: {
 		            "Z-Authorization": temp_token // no i18n
@@ -1216,7 +1246,7 @@ function showResendMessage(ar){
 		resendotp_checking();
 		$(".alert_message").html(I18N.get("IAM.NEW.SIGNIN.OTP.SENT.RESEND", mobileCode));
 		$(".Alert").css("top","20px");//No i18N
-		window.setTimeout(function(){$(".Alert").css("top","-100px")},5000);
+		window.setTimeout(function(){$(".Alert").css("top","-150px")},5000);
 	}
 	$(".signupbtn span").removeClass('loadingtext');
 	$(".signupbtn").removeClass('changeloadbtn');
@@ -1246,23 +1276,54 @@ function otpInitiateResponse(ar){
 				isEmailOtpInitited = true;
 			}
 			prevmobileCode = $( "input[name='mobile']" ).val()?$( "input[name='mobile']" ).val():$( "input[name='rmobile']" ).val()?$( "input[name='rmobile']" ).val():$( "input[name='email']" ).val()?$( "input[name='email']" ).val():$( "input[name='emailormobile']" ).val()?$( "input[name='emailormobile']").val():"";
-			mobileCode = $( "input[name='mobile']" ).val()?$('#select2-country-code-container').html()+" "+$( "input[name='mobile']" ).val():$( "input[name='rmobile']" ).val()?$('#select2-country-coderecovery-container').html()+" "+$( "input[name='rmobile']" ).val():$( "input[name='email']" ).val()?$( "input[name='email']" ).val():$( "input[name='emailormobile']" ).val() && isNumberOnly($( "input[name='emailormobile']" ).val())?$('#select2-country-emailormobile-container').html()+" "+$( "input[name='emailormobile']").val():$( "input[name='emailormobile']").val();
+			mobileCode = $( "input[name='mobile']" ).val()?$('#country-code').find(":selected").attr("data_number")+" "+$( "input[name='mobile']" ).val():$( "input[name='rmobile']" ).val()?$('#country-coderecovery').find(":selected").attr("data_number")+" "+$( "input[name='rmobile']" ).val():$( "input[name='email']" ).val()?$( "input[name='email']" ).val():$( "input[name='emailormobile']" ).val() && isNumberOnly($( "input[name='emailormobile']" ).val())?$('#country-emailormobile').find(":selected").attr("data_number")+" "+$( "input[name='emailormobile']").val():$( "input[name='emailormobile']").val();
 			mobileCode = (mobileCode.includes('undefined') || mobileCode == undefined )? prevmobileCode : mobileCode; //No i18N
 			$("#mobileotp").text(mobileCode);
 			$(".signupbtn span").removeClass('loadingtext');
 	  		$(".signupbtn").removeClass('changeloadbtn');
+	  		if(isSplitfield && !$(".za-otp-container dd div").hasClass("splitEnabled")){
+				SplitInputClone = $(".za-otp-container").clone();
+				var splitArray = Array.from(document.getElementsByName("otp")[0].attributes);
+				$(".za-otp-container dd input").remove();
+				$("<div></div>").insertBefore(".resendotp");
+				
+				splitArray.forEach(function(element){
+					if(element.nodeName === "name" || element.nodeName === "class" || element.nodeName === "id" || element.nodeName === "onkeydown"){
+						$(".za-otp-container dd div").attr(element.nodeName, element.value);
+					}
+				});
+				$(".za-otp-container dd div").addClass("splitEnabled");
+				enableSplitField("otpfield",7,I18N.get("IAM.VERIFY.CODE"));//no i18n
+				var otp_direction = $("body").attr("dir") === "rtl" ? "right" : "left" ;//no i18n
+				$(".za-otp-container dd div input").css("border","none").css("outline","none").css("background","transparent").css("height","100%").css("font-size","14px").css("text-align",otp_direction).css("width","20px").css("padding","0px");//no i18n
+				$("#otpfield_full_value").attr("name","otp");
+			}
 			$('form[name="signupform"]').attr("action",ZAConstants.getIAMUrl("accounts/webclient/v1/register/field/validate"));
-			resendotp_checking();
+			resendotp_checking();	
 			$(".alert_message").html(I18N.get("IAM.NEW.SIGNIN.OTP.SENT",(mobileCode)));
 			$(".Alert").css("top","20px");//No i18N
-			window.setTimeout(function(){$(".Alert").css("top","-100px")},5000);
+			window.setTimeout(function(){$(".Alert").css("top","-150px")},5000);
 			if (_this.options.x_signup.oncomplete) {
 				_this.options.x_signup.oncomplete.call(this, $.fn.zaSignUp.SIGNUP_STATE.OTP_INITIATED); // No I18N
 			}
 			$('form[name = "signupform"]').attr("submitted","true");
+			$("#otpfield").click();
+		}else if(isSplitfield){
+			$("#otpfield").click();
 		}
 }
 
+function changeCountryCode(){
+	var countrySelect = $(".za-rmobile-container").is(":visible") ? "za-rmobile-container" : $(".za-mobile-container").is(":visible") ? "za-mobile-container": $(".za-emailormobile-container").is(":visible") ? "za-emailormobile-container":"";//no i18n
+	var flagData = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": $(".za-emailormobile-container").is(":visible") ? "country-emailormobile":"";//no i18n
+	if(isMobile && flagData){
+		mobileflag(flagData);
+	}
+	if(countrySelect){
+		var CC = $("#"+flagData).find(":selected").attr("data_number");
+		$("."+countrySelect+" label").html(CC).show();
+	}
+}
 
 function isNumberOnly(element){
 	var NumberRegex =  /^[0-9]+$/;
@@ -1278,6 +1339,10 @@ function gobacktosignup(){
 		$("#firstname, #lastname").hide();
 		$(".za-tos-container, .za-country-container").show();
 		$(".za-mobile-container.field-valid, .za-emailormobile-container.field-valid").show();
+	}
+	if(isSplitfield){
+		$(".signupotpcontainer .za-otp-container").remove();
+		SplitInputClone.insertAfter(".otpmobile");//no i18n
 	}
 	$(".signupbtn").removeAttr('disabled');
 	$("#otpfield").val("");
@@ -1300,6 +1365,7 @@ function gobacktosignup(){
 	if (_this.options.x_signup.oncomplete) {
 		_this.options.x_signup.oncomplete.call(this, $.fn.zaSignUp.SIGNUP_STATE.BACKTO_SIGNUP); // No I18N
 	}
+	$(".fed_2show").show();
 	$('form[name = "signupform"]').removeAttr('submitted');
 }
 
@@ -1347,7 +1413,9 @@ function checking(){
 		a = a ? a : $( "input[name='mobile']").val();
 		var check=/^(?:[0-9] ?){0,1000}[0-9]$/.test(a);
 		if((check==true)&&(a)){
-			$('.select2').show();
+			$(".MobflagContainer").show();
+			$('.za-emailormobile-container label').show();
+			isMobile ? $("#country-emailormobile").addClass("mobileselect").css("display","inline-block") : $('.select_container--country_implement').show();
 			setIndent($("#phonenumber,#mobilefield"));
 //			if(showMobileNoPlaceholder){
 //				phonePattern.intialize(document.signupform.country_code[0], $("#login_id").val());
@@ -1356,15 +1424,18 @@ function checking(){
 //			}
 
 		}else{
-			$('.select2').eq(0).hide();
-			$("#phonenumber,#mobilefield").removeClass("textindent77");
-			$("#phonenumber,#mobilefield").removeClass("textindent86");
-			$("#phonenumber,#mobilefield").removeClass("textindent95");
+			$(".MobflagContainer").hide();
+			$('.za-emailormobile-container label').hide();
+			$("#country-emailormobile").removeClass("mobileselect").css("display","none");
+			$('.select_container--country_implement').hide();
+			$("#phonenumber,#mobilefield").removeClass("textindent107").removeClass("textindent50");
+			$("#phonenumber,#mobilefield").removeClass("uvtextindent0 uvtextindent2 uvtextindent3 uvtextindent4");
 //			if(document.signupform.country_code[0]){phonePattern.destroy(document.signupform.country_code[0]);}
 		}
 //		if($("input[name='emailormobile']").val() == "" && showMobileNoPlaceholder){$("input[name='emailormobile']").attr("placeholder",I18N.get("IAM.EMAIL.ADDRESS.OR.MOBILE"));}
 	}else{
-		$('.select2').show();
+		$(".MobflagContainer").show();
+		$('.select_container--country_implement').show();
 		var countrySelect = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": "";//no i18n
 		var ipfiled = $(".za-rmobile-container").is(":visible") ? "rmobile" : $(".za-mobile-container").is(":visible") ? "mobile": "";//no i18n
 		var selectElement = $(".za-rmobile-container").is(":visible") ? 2 : $(".za-mobile-container").is(":visible") ? 1: "";//no i18n
@@ -1439,18 +1510,11 @@ function validateLastName(selector){
 }
 function setIndent(ele){
 	var codeVal = ele.siblings(".za-country_code-container").find("select option:selected").attr("data_number");//No i18N
-	ele.removeClass("textindent95");
-    ele.removeClass("textindent86");
-    ele.removeClass("textindent77");
-	if(codeVal.length=="3"){
-        ele.addClass("textindent86");
-    }
-    if(codeVal.length=="2"){
-        ele.addClass("textindent77");
-    }
-    if(codeVal.length=="4"){
-        ele.addClass("textindent95");
-    }
+	ele.removeClass("textindent50");
+	var countrySelect = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": $(".za-emailormobile-container").is(":visible") ? "country-emailormobile":"";//no i18n
+	if(countrySelect){
+		isMobile ? ele.addClass("textindent50") : uvselect.setIntentForCntyCode(countrySelect); //no i18N;
+	}
 }
 function selectFlag(e){
     var flagpos = "flag_"+$(e).val().toUpperCase();//No i18N
@@ -1461,8 +1525,10 @@ function selectFlag(e){
 }
 function validateInputFeilds(){
 	if (typeof forcesignup === "undefined" || !forcesignup) {
-		if(!($("#firstname").val())){
+		if(!($("#firstname").val().trim())){
 			Form.Message.error("firstname", I18N.get("IAM.NEW.SIGNUP.FIRSTNAME.VALID")); // no i18n
+			$("#firstname").val("");
+			$("#firstname").focus();
 			return false;
 		}
 	}
@@ -1475,6 +1541,9 @@ function allownumonly(element){
 function clearCommonError(){
 	$(".field-msg").hide();
 }
+function isEmpty(str) {
+    return str ? false : true;
+}
 function changeDomainName(countryCode){
 	var countryAU = ["AU", "NZ"]; //No I18N
 	var countryEU = ["RS", "VA", "UA", "CH", "SE", "ES", "SI", "SK", "SM", "RO", "PT", "PL", "NO", "NL", "ME", "MC", "MD", "MT", "MK", "LU", "LT", "LI", "LV", "IT", "IM", "IE", "IS", "HU", "GR", "GI", "DE", "FR", "FI", "FO", "EE", "DK", "CZ", "CY", "HR", "BG", "BA", "BE", "BY", "AT", "AD", "AL", "AX", "GG", "JE", "XK", "SJ", "CS","UK","TR","GE"]; //No I18N
@@ -1482,6 +1551,7 @@ function changeDomainName(countryCode){
 	var countryJP = ["JP"]; //No I18N
 	var countryUK = ["GB"]; //No I18N
 	var countryCA = ["CA"]; //No I18N
+	var countrySA = ["SA"]; //No I18N
 	if(window.location.hostname.split(".")[1] != "localzoho"){
 		if(countryAU.indexOf(countryCode) != -1){
 			var selectedDC = "AUSTRALIA"; //No I18N
@@ -1501,6 +1571,9 @@ function changeDomainName(countryCode){
 		}else if(countryCA.indexOf(countryCode) != -1){
 			var selectedDC = "CANADA"; //No I18N
 			changeRegisterUrl("ca",false,countryCode,selectedDC); //No I18N
+		}else if(countrySA.indexOf(countryCode) != -1){
+			var selectedDC = "SAUDI ARABIA"; //No I18N
+			changeRegisterUrl("sa",false,countryCode,selectedDC); //No I18N
 		}else{
 			var selectedDC = "US"; //No I18N
 			changeRegisterUrl("com",false,countryCode,selectedDC); //No I18N
@@ -1541,11 +1614,9 @@ function changeRegisterUrl(dc,islocal,countryCode,selectedDC){
 	    var formdata = signupform;
 	    $(".fed_2show").hide();
 	    $(".fed_div").remove();
-	    $("#country").hasClass("select2-hidden-accessible") ? $('.countryCnt').select2('destroy') : "";
-	    $("#country-coderecovery").hasClass("select2_used_tag") ? $("#country-coderecovery").select2("destroy") : "";
-	    $("#country-emailormobile").hasClass("select2_used_tag") ? $("#country-emailormobile").select2("destroy") : "";
-	    $("#country-code").hasClass("select2_used_tag") ? $("#country-code").select2("destroy") : "";
-	    $("select").removeClass("select2_used_tag");
+	    var countrySelect = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": $(".za-emailormobile-container").is(":visible") ? "country-emailormobile":"";//no i18n
+		destroyUV("country");//no i18n
+		destroyUV("country_state");// no i18n
 	    $('form[name="signupform"]').parent().html("").html(formdata);
 	    signupform.action = actionUrl;
 		includeScript(jsUrl);
@@ -1572,6 +1643,7 @@ function changeRegisterUrl(dc,islocal,countryCode,selectedDC){
 	}
 	return false;
 }
+
 function showAutoFilledUser(){
 	var Writedata = isValid(mobilenumber) ? $('.za-country_code-container select[name=country_code]').find(":selected").attr("data_number")+" "+mobilenumber : emailId;
 	$("#login_user").text(Writedata);
@@ -1579,12 +1651,68 @@ function showAutoFilledUser(){
 function isValid(instr) {
 	return instr != null && instr != "" && instr != "null";
 }
+function destroyUV(destroySelect){
+	if(destroySelect){
+		$("#"+destroySelect).uvselect("destroy");
+	}
+}
+function renderUV(locator, search, drpWidth, drpAlign, embedIcon, CF, CC, theme, Mobstyle, flagCodeAttribute, countryCodeAttribute, useThisAttrAsValue, width){
+	$(locator).uvselect(
+	{
+		"searchable" : search, //No i18N
+		"dropdown-width": drpWidth, //No i18N
+		"dropdown-align": drpAlign, //No i18N
+		"embed-icon-class": embedIcon, //No i18N
+		"country-flag" : CF, //No i18N
+		"flag-code-attr" : flagCodeAttribute, //No i18N
+		"country-code" : CC, //No i18N
+		"country-code-attr" : countryCodeAttribute,//No i18N
+		"theme" : theme, //no i18n
+		"prevent_mobile_style": Mobstyle, // no i18n
+		"use-attr-as-value" : useThisAttrAsValue, //No i18N
+		"width" : width //No i18n
+  });
+}
+function de(id) {
+    return document.getElementById(id);
+}
+function getValidMobileNumber(element,countryCd){
+	var elemValue = $(element).val().trim();
+	if(Validator.isMobile(elemValue) && zero_included_countrylist.indexOf(countryCd.toUpperCase()) === -1){
+		var excluded_mobileno = parseInt(elemValue).toString();
+		$(element).val(excluded_mobileno);
+		return excluded_mobileno;
+	}
+	return elemValue;
+}
+
+function mobileflag(countrySelect){
+	if($(".mobileFlag").length == 0){
+		var Arrowdirection = $("body").attr("dir") === "rtl" ? 'right' : 'left';//no i18n 
+		$("#"+countrySelect).parent().prepend($("<div class='MobflagContainer' style='position:absolute;'><i class='mobileFlag' style='position:absolute;margin-top:12px;'></i><label for="+countrySelect+" class='select_country_code' style='margin-left:25px;direction:ltr;'></label><span style='position:relative;top: 8px;"+Arrowdirection+":75px;'><b style='height: 0px; width: 0px;border-color: transparent #CCCCCC #CCCCCC transparent;border-style: solid;transform: rotate(45deg);border-width: 3px;display: inline-block;position: relative;'><b><span></div>"));
+		$(".MobflagContainer").hide();
+	}
+	$(".mobileFlag").html("");
+	addFlagIcon($(".mobileFlag"), $("#"+countrySelect).find(":selected").val());
+}
 function removeParam(key, sourceURL) {
-	var isURL =(sourceURL.indexOf("?") != -1);
+	if (!sourceURL) {
+		return sourceURL;
+	}
 	var urlwithparams = sourceURL.split("?");
-	var params = isURL ? new URLSearchParams(urlwithparams[1]) : new URLSearchParams(sourceURL);
+	var params = urlwithparams.length > 1 ? new URLSearchParams(urlwithparams[1]) : new URLSearchParams(urlwithparams[0]);
+	if (!params.has(key)) {
+		return sourceURL;
+	}
 	params.delete(key);
-	return isURL ? urlwithparams[0]+"?"+params.toString() : sourceURL.toString();
+	return urlwithparams.length > 1 ? urlwithparams[0] + "?" + params.toString() : params.toString();
+}
+function getIAMURL(uriPath, params) {
+	var url = ZAConstants.getIAMUrl(uriPrefix + uriPath);
+	if (params && params.service_language) {
+		url += "?service_language=" + params.service_language; //No I18n
+	}
+	return url;
 }
 (function($) {
   if($.fn.select2){

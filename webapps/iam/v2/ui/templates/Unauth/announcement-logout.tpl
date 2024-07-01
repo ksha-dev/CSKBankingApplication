@@ -94,6 +94,14 @@ p.muted {
     margin:0px;
     padding-top: 8px;
 }
+p.mail_id {
+	padding: 0px 16px;
+	text-align: center;
+	word-break: break-word;
+	font-size: 14px;
+	line-height: 16px;
+	color: #5b6367;
+}
 div.dc {
     padding: 10px 25px;
     background: #ffffff;
@@ -220,7 +228,7 @@ a.err-btn:hover {
 		<img onerror="this.src='${SCL.getStaticFilePath('/v2/components/images/user_2.png')}';" src="${logout_data.profilePic}" alt="User profile picture"/>
 	</div>
 	<div class="more-info">
-		<p class="muted">${Encoder.encodeHTMLAttribute(logout_data.email)}</p>
+		<p class="mail_id">${Encoder.encodeHTML(logout_data.email)}</p>
 		<p class="muted"> <span><@i18n key="IAM.USER.ID"/> :</span> ${logout_data.zuid}</p>
 		<a href="${Encoder.encodeHTMLAttribute(logout_data.logoutUrl)}" class="err-btn"><@i18n key="IAM.SIGN.OUT"/></a> 
 		<#if (logout_data.showUserCurrentDC)>

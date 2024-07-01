@@ -4,11 +4,16 @@
 <title><@i18n key="IAM.CREATE.ZACCOUNT" /></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script type="text/javascript" src="/accounts/p/${signup.portalid}/register/script?${signup.scriptParams}&loadcss=false&tvisit=true"></script>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-<link href="${SCL.getStaticFilePath("/accounts/css/signupnew.css")}" type="text/css" rel="stylesheet" />
-<link href="${SCL.getStaticFilePath("/accounts/css/flagStyle.css")}" type="text/css" rel="stylesheet"/>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
+<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+<@resource path="/v2/components/css/${customized_lang_font}" />
+<@resource path="/accounts/css/signupnew.css" />
+<@resource path="/v2/components/js/uvselect.js" />
+<@resource path="/v2/components/css/uvselect.css" />
+<@resource path="/v2/components/js/flagIcons.js" />
+<@resource path="/v2/components/css/flagIcons.css" />
+<@resource path="/v2/components/js/splitField.js" />
+
+<@resource path="/v2/components/css/uv_unauthStatic.css" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 </head>
 <body style="visibility: hidden;">
@@ -44,7 +49,7 @@
 	     				<dl class="za-emailormobile-container">
 	     					<dd>
 	     						<div class="za-country_code-container">
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-emailormobile" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-emailormobile" onchange="changeCountryCode();"></select>
 								</div>
 								<#if signup.mobileNumber?has_content>
 	     							<input <#if signup.showMobileNoPlaceholder> type="text" <#else> type="number" </#if> placeholder='<@i18n key="IAM.EMAIL.ADDRESS.OR.MOBILE" />'onkeyup ="checking()" onkeydown="checking()" name="emailormobile" maxlength="100" id="phonenumber" value="${signup.mobileNumber}">
@@ -56,18 +61,17 @@
 	     				<dl class="za-mobile-container">
 		     				<dd>	
 		     					<div class="za-country_code-container">
-		     						<label for='country_code_select' class='select_country_code'></label>
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-code" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-code" onchange="changeCountryCode();"></select>
 								</div>
-								<input <#if signup.showMobileNoPlaceholder> type="text" <#else> type="number" </#if> placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" onkeydown="checking()" name="mobile" id="mobilefield" value="${signup.mobileNumber}" inputmode="numeric" oninput="allownumonly(this)"/>
+								<input type="text" placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" onkeydown="checking()" name="mobile" id="mobilefield" value="${signup.mobileNumber}" inputmode="numeric" oninput="allownumonly(this)"/>
 							</dd>
 						</dl>	
 						<dl class="za-rmobile-container">
 							<dd>
 		     					<div class="za-country_code-container">
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-coderecovery" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-coderecovery" onchange="changeCountryCode();"></select>
 								</div>
-								<input <#if signup.showMobileNoPlaceholder> type="text" <#else> type="number" </#if> placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" onkeydown="checking()" name="rmobile" id="rmobilefield" value="${signup.mobileNumber}" inputmode="numeric" oninput="allownumonly(this)"/>
+								<input type="text" placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" onkeydown="checking()" name="rmobile" id="rmobilefield" value="${signup.mobileNumber}" inputmode="numeric" oninput="allownumonly(this)"/>
 							</dd>
 						</dl>		
 						<dl class="za-email-container">
@@ -81,7 +85,7 @@
 						</dl>
 						<dl class="za-password-container">
 							<dd>
-								<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onblur="$('.pwderror').hide()" onkeydown="checkPasswordStrength(event)" onkeyup="checkPasswordStrength(event)" >
+								<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onblur="$('.pwderror').hide()" onkeydown="checkPasswordStrength(event)" onkeyup="checkPasswordStrength(event)" autocomplete="off">
 								<span class="icon-hide show_hide_password"  id="show-password-icon" onclick=togglePasswordField(${signup.minpwdlen});></span>
 								<div class="pwderror"></div>
 							</dd>
@@ -152,7 +156,7 @@
 							<dl class="za-otp-container">
 								<dd>
 									<input type="text" inputmode="numeric" class="form-input" name="otp" id="otpfield" placeholder='<@i18n key="IAM.VERIFY.CODE" />' onkeydown="clearCommonError();" maxlength='10'>
-									<span onclick="resendOTP()" class="resendotp"><@i18n key="IAM.SIGNUP.RESEND.OTP" /></span>
+									<span onclick="resendOTP()" class="resendotp moveRight"><@i18n key="IAM.SIGNUP.RESEND.OTP" /></span>
 								</dd>
 							</dl>
 							<dl class="za-submitbtn-otp">
@@ -176,62 +180,24 @@
 			$(document.body).css("visibility", "visible");
 			$(document.signupform).zaSignUp();
 			var countrySelect = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": $(".za-emailormobile-container").is(":visible") ? "country-emailormobile":"";
-			 if(countrySelect){
-				$("#"+countrySelect).select2({
-			        allowClear: true,
-			        templateResult: format,
-			        searchInputPlaceholder: '<@i18n key="IAM.SEARCH"/>',
-			        templateSelection: function (option) {
-			        	  selectFlag($("#"+countrySelect).find("option:selected"));
-			              return option.text;
-			        },
-			        language: {
-				        noResults: function(){
-				            return '<@i18n key="IAM.NO.RESULT.FOUND"/>';
-				        }
-				    },
-			        escapeMarkup: function (m) {
-			          return m;
-			        }
-			      });
-			      $("#"+countrySelect+"+.select2 .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-			      selectFlag($("#"+countrySelect).find("option:selected"));
-			      $("#select2-"+countrySelect+"-container").html($("#"+countrySelect+" option:selected").attr("data_number"));
-	      		 $(".select_"+countrySelect).html($("#"+countrySelect+" option:selected").attr("data_number"));
-	      		 $("#"+countrySelect).change(function(){
-			        $(".country_code").html($("#"+countrySelect+" option:selected").attr("data_number"));
-			        $("#select2-"+countrySelect+"-container").html($("#"+countrySelect+" option:selected").attr("data_number"));
-			     	setIndent($("#"+countrySelect).parent().siblings("input"));
-		      });
-		      }
-		     if($(".za-country-container").is(":visible")){
-		     	$("#country").select2({
-		     		templateResult: function(option){
-				        var spltext;
-				    	if (!option.id) { return option.text; }
-				    	spltext=option.text.split("(");
-				    	var string_code = $(option.element).attr("value");
-				    	var ob = '<div class="pic flag_'+string_code.toUpperCase()+'" ></div><span class="cn">'+spltext[0]+"</span>" ;
-				    	return ob;
-				    },
-				    searchInputPlaceholder: '<@i18n key="IAM.SEARCH"/>',//no i18n
-				    templateSelection: function (option) {
-				    	selectFlag($(option.element));
-	   		            return option.text;
-				    },
-				    language: {
-				        noResults: function(){
-				            return '<@i18n key="IAM.NO.RESULT.FOUND"/>';
-				        }
-				    },
-				    escapeMarkup: function (m) {
-				       return m;
-				    }
-		     	});
-		     	$("#country+.select2 .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-		     	selectFlag($('#country').find("option:selected"));
-		     	$("#country_state").select2();
-		     }
+			 var fieldID =  $(".za-rmobile-container").is(":visible") ? "rmobilefield" : $(".za-mobile-container").is(":visible") ? "mobilefield": $(".za-emailormobile-container").is(":visible") ? "phonenumber":"";
+			changeCountryCode();
+			 if(countrySelect && !isMobile){
+			 	$(".select_country_code").hide();
+				 if(countrySelect){
+					renderUV("#"+countrySelect, true, $("#"+fieldID).outerWidth()+"px", "left", "flagIcons", true, true, "country_implement", false, "value", "data_number", "value")
+			     }
+			     
+			 }else if(countrySelect ){
+			 	if(countrySelect != 'country-emailormobile'){
+			 		$("#"+countrySelect).addClass("mobileselect").css("display","inline-block");
+			 	}
+			 	mobileflag(countrySelect);
+			 }
+			 if(!isMobile && $(".za-country-container").is(":visible") || (typeof isDataCenterChangeNeeded !=="undefined" && isDataCenterChangeNeeded)){
+		     	renderUV("#country", true, "", "left", "flagIcons", true, false, "country-uv-select", false, "value", "", "value", "100%");
+		     	renderUV("#country_state", true, "", "left", "", false, false, "state-uv-select", false, "", "", "value", "100%");
+			 }
 		     checking();
 		 	if(forcesignup){
 		 		$(".loader, .blur").show();

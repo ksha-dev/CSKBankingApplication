@@ -15,11 +15,9 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 
     boolean isIAMAdmin = request.isUserInRole("IAMAdmininistrator");
     boolean isIAMUser = request.isUserInRole("IAMUser");
-    boolean isMarketingAdmin = request.isUserInRole("MarketingAdmin");
     boolean isIAMOperator = request.isUserInRole("IAMOperator");
     boolean isSupportAdmin = request.isUserInRole("SupportAdmin");
     boolean isIAMServiceAdmin = request.isUserInRole(Role.IAM_SERVICE_ADMIN);
-    boolean isLegalAdmin = request.isUserInRole("LegalAdmin");
     boolean isSDAdmin = request.isUserInRole("SDAdmin");
     boolean isOAuthAdmin = request.isUserInRole("OAuthAdmin");
     boolean isDomainAdmin = request.isUserInRole("IAMDomainAdmin");
@@ -31,7 +29,6 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 	boolean isIAMTemplateAdmin = request.isUserInRole("IAMTemplateAdmin");
     boolean isTestAccountsAdmin = request.isUserInRole("IAMTestAccountsAdmin");
 	boolean isIAMDigestViewer = request.isUserInRole("IAMDigestViewer");
-	boolean isIAMPrivilegeView = request.isUserInRole("IAMPrivilegeView");
 	boolean isIAMEmailViewer = request.isUserInRole("IAMEmailDomainViewer");
 	boolean isIAMPartnerAdmin = request.isUserInRole("IAMPartnerAdmin");
 	boolean isIAMRestViewer = request.isUserInRole("IAMRestViewer");
@@ -40,7 +37,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 	String userid = Long.toString(zuId);
 %>
     <script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
-    <script src="<%=wmsjsurl%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+    <script src="<%=wmsjsurl%>" integrity="<%=wmsjsintegrity%>" crossorigin="anonymous" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
     <script src="<%=jsurl%>/chosen.jquery.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
     <link href="<%=cssurl%>/chosen.css" type="text/css" type="text/css" rel="stylesheet" /> <%-- NO OUTPUTENCODING --%>
     
@@ -67,7 +64,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 	<%}%>
 		var fromService = false;
 		var mainmenu = 'admin';//No I18N
-		<%if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isLegalAdmin || isIAMSupportAdmin || isIAMPrivilegeView) {%>
+		<%if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isIAMSupportAdmin ) {%>
 		var submenu = 'userinfo_panel';//No I18N
 		<%} else if(isSDAdmin) {%>
 		var submenu = 'sec_private_key';//No I18N
@@ -83,8 +80,6 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 		var submenu = 'i18n_panel';//No I18N
 		<%} else if (isIAMServiceAdmin){%>
 		var submenu = 'oauth_scope';//NO I18N
-		<%} else if (isMarketingAdmin) {%>
-		var submenu = 'newsletter_panel'; // No I18N
 		<%} else if (isIAMCacheAdmin) {%>
 		var submenu = 'agentcachereport_panel'; // No I18N
 		<%} else if (isIAMCacheViewer) {%>
@@ -137,7 +132,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 							
 							
                     <%
-                    	if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isLegalAdmin || isIAMSupportAdmin || isIAMPrivilegeView) {
+                    	if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isIAMSupportAdmin ) {
                     %>
 								<div class="spantitle" id="userinfo_panel">
 			    					<div class="menutitle" onclick="loadPage('userinfo_panel','/ui/admin/userinfo.jsp')">
@@ -344,7 +339,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 			    					</div>
 								</div>
 			       <%
-                    	} if(isIAMAdmin || isLegalAdmin || isIAMSupportAdmin){
+                    	} if(isIAMAdmin || isIAMSupportAdmin){
                     %>
 								<div class="spantitle" id="loginhistory_panel">
 			    					<div class="menutitle" onclick="loadPage('loginhistory_panel','/ui/admin/signin-history.jsp?mode=view')">
@@ -384,15 +379,10 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 			    					</div>
 								</div>
 			       <%
-                    	} if(isIAMAdmin || isMarketingAdmin){
+                    	}
                     %>
-								<div class="spantitle" id="newsletter_panel">
-			    					<div class="menutitle" onclick="loadPage('newsletter_panel','/ui/admin/newsletter.jsp?mode=view')">
-										<a href="javascript:;">Newsletter</a><%--No I18N--%>
-			    					</div>
-								</div>
 					<%
-						} if(isIAMAdmin || isOAuthAdmin || (Util.isDevelopmentSetup() && isIAMServiceAdmin)) {
+						 if(isIAMAdmin || isOAuthAdmin || (Util.isDevelopmentSetup() && isIAMServiceAdmin)) {
 					%>
 								<div class="spantitle" id="oauth_configuration"> 
 									<div class="menutitle" onclick="loadPage('oauth_configuration','/ui/admin/oauthconfiguration.jsp')">
@@ -407,6 +397,15 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 										<a href="javascript:;">OAuthScope</a><%--No I18N--%>
 			    					</div>
 								</div>
+					<%
+						} if(isIAMAdmin || isIAMCacheAdmin) {
+					%>
+								<div class="spantitle" id="streamsetting">
+									<div class="menutitle" onclick="loadPage('streamsetting','/ui/admin/streamsetting.jsp')">
+										<a href="javascript:;">Redis Stream Settings</a><%--No I18N--%>
+			   						</div>
+								</div>
+								
 					<%
 						} if(isIAMAdmin){
                     %>
@@ -522,13 +521,6 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 										<a href="javascript:;">Send Redis Message</a><%--No I18N--%>
 			   						</div>
 								</div>
-								
-								<div class="spantitle" id="streamsetting">
-									<div class="menutitle" onclick="loadPage('streamsetting','/ui/admin/streamsetting.jsp')">
-										<a href="javascript:;">Redis Stream Settings</a><%--No I18N--%>
-			   						</div>
-								</div>
-								
 					
                     <%
                     	} if(isIAMAdmin || isIAMOperator ||isIAMSystemAdmin){
@@ -597,7 +589,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 				<div class="mrpcontentdiv">
 	    			<table cellspacing="5" cellpadding="0" border="0" width="100%">
 						<tr><td align="right">Admin password :</td><%--No I18N--%>
-						<td><input type="password" id="verifypwd" class="input"></td></tr>
+						<td><input type="password" autocomplete="off" id="verifypwd" class="input"></td></tr>
 	    			</table>
 	    			<div class="mrpBtn">
 						<input type="button" value="Verify" id="continuebtn"/>
@@ -644,6 +636,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 <script>
     window.onload=function() {
 		try {
+			WmsLite.setClientSRIValues(<%=wmsSRIValues%>);
 			WmsLite.setNoDomainChange();
 			WmsLite.setConfig(64);//64 is value of WMSSessionConfig.CROSS_PRD
 	    	WmsLite.registerZuid('AC',"<%=zuId%>","<%=IAMEncoder.encodeJavaScript(user.getLoginName())%>", true);
@@ -654,5 +647,5 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
     window.onresize=function() {
     	setWindowSize();
     }
-    window.setInterval("watchHash()", 1000);
+    window.setInterval(watchHash, 1000);
 </script>

@@ -118,7 +118,7 @@ body {
 }
 
 .logo {
-	background: url("../../images/rebrand-logos.png") no-repeat scroll -5px -3px transparent;
+	background: url("../../images/newZoho_logo.svg") no-repeat transparent;
 	display: block;
 	height: 56px;
 	float: none;
@@ -424,8 +424,7 @@ hr {
 		background-color: #fff;
 	}
 	.logo {
-		background: url("../../images/rebrand-logos.png") no-repeat -2px -36px;
-		background-size: 145px;
+		background: url("../../images/newZoho_logo.svg") no-repeat;
 		height: 56px;
     	width: 140px;
 		display: block;

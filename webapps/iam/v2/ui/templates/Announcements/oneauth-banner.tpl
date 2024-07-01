@@ -1,6 +1,3 @@
-<#if (new_version_banner)?has_content>
-<#include "oneauth-v3-update.tpl">	
-<#else>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -8,14 +5,15 @@
     	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
     	<title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-    	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+    	<@resource path="/v2/components/css/${customized_lang_font}" />
 	</head>
 	<style>
 		@font-face {
 			font-family: 'Announcement';
 			src:  url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.eot")}');
 			src:  url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.eot")}') format('embedded-opentype'),
+				url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.woff2")}') format('woff2'),
 				url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.ttf")}') format('truetype'),
 				url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.woff")}') format('woff'),
 				url('${SCL.getStaticFilePath("/v2/components/images/fonts/Announcement.svg")}') format('svg');
@@ -235,7 +233,6 @@
 	   	.oneauth-container{
 	   		border-radius: 10px;
 	   		border: 1px dashed #cecece;
-	   		max-width: 520px;
 	   	}
 	   	.oneauth-banner-desc > div{
 	   		line-height: 22px;
@@ -498,7 +495,7 @@
       }
       @media only screen and (max-width: 435px) {
         .wrapper {
-          padding: 30px 20px 0px 20px;
+          padding: 30px 20px 30px 20px;
         }
         .mainCont {
           width: 100%;
@@ -518,67 +515,311 @@
 			margin-bottom: 0;
         }
         .remind-later {
-        	padding-top: 0;
+        	padding-top: 30px;
         	float: unset;
         	display: block;
         	margin: auto;
-        	top: 30px;
+        	top:0px;
         }
       }
 	</style>
 	<body>
   		<#include "../Unauth/announcement-logout.tpl">
-		<main class="wrapper">
-			<div class="mainCont">
-				<div class="zoho_logo"></div>
-				<h2><@i18n key="IAM.ONEAUTH.ANNOUN.HEADING" /></h2>
-				<div class="oneauth-banner-desc">
-					<div><@i18n key="IAM.ONEAUTH.ANNOUN.DESC" /></div>
-					<ul>
-						<li><@i18n key="IAM.ONEAUTH.ANNOUN.PT1" /></li>
-						<li><@i18n key="IAM.ONEAUTH.ANNOUN.PT2" /></li>
-					</ul>
-				</div>
-				<div class="oneauth-container">
-					<div class="oneauth-header">
-					<div class="one-header" onclick="storeRedirect('https://zurl.to/oa_banner_website')">
-					<div class="mode-icon icon-pebble icon-Zoho-oneAuth-logo"><span class="path1 onepathlogo"></span><span class="path2 onepathlogo"></span><span class="path3 onepathlogo"></span><span class="path4 onepathlogo"></span><span class="path5 onepathlogo"></span><span class="path6 onepathlogo"></span><span class="path7 onepathlogo"></span></div>
-							<div class="mode-header-texts"><span><@i18n key="IAM.ZOHO.ONEAUTH.AUTHENTICATOR" /><div class="icon-newtab"></div></span><div class="oneauth-desc or-text"><@i18n key="IAM.ONEAUTH.MFA.TAG" /></div></div>
-					</div>
-						<div class="add-oneauth">
-							<div class="down-badges">
-								<div class="download playstore-icon play-small" onclick="storeRedirect('https://zurl.to/oa_banner_playstore')"></div>
-								<div class="download appstore-icon app-small" onclick="storeRedirect('https://zurl.to/oa_banner_appstore')"></div>
-								<div class="download macstore-icon mac-small" onclick="storeRedirect('https://zurl.to/oa_banner_macstore')" style="display:none"></div>
-								<div class="download winstore-icon win-small" onclick="storeRedirect('https://zurl.to/oa_banner_msstore')" style="display:none"></div>
+  		
+  		
+  		<style>
+  		      /*   Update announcment style chnages */
+      
+      
+		      .update_oneAuth .oneauth-container .mode-icon::after, .oneauth-header-icon::after {
+		    		background-color: transparent;
+				}
+		      
+		      
+		      	.icon-OneAuth .path1:before {
+				  content: "\e976";
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path2:before {
+				  content: "\e977";
+				  margin-left: -1em;
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path3:before {
+				  content: "\e978";
+				  margin-left: -1em;
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path4:before {
+				  content: "\e979";
+				  margin-left: -1em;
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path5:before {
+				  content: "\e97a";
+				  margin-left: -1em;
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path6:before {
+				  content: "\e97b";
+				  margin-left: -1em;
+				  color: rgb(34, 109, 180);
+				}
+				.icon-OneAuth .path7:before {
+				  content: "\e97c";
+				  margin-left: -1em;
+				  color: rgb(249, 178, 29);
+				}
+				
+				
+				.update_oneAuth .oneauth-container{
+			   		max-width: unset;
+			   		border:none;
+			   		background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%23CECECEFF' stroke-width='3' stroke-dasharray='5%2c10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+			   		border-radius:10px;
+			   	}
+			   	
+			   	 .update_oneAuth .oneauth-steps{
+					margin: 0px;
+					padding: 20px 24px;
+					border:none;
+					background-image: linear-gradient(to right, #cecece 59%, rgba(255,255,255,0) 0%);
+				    background-position: top;
+				    background-size: 15px 1.5px;
+				    background-repeat: repeat-x;
+				}
+		      
+		      
+		         .update_oneAuth .update_DESC
+			     {
+			     	margin-bottom: 20px;
+			     }
+			     
+			      .update_oneAuth .add-oneauth {
+					    min-height: unset;
+					}
+			     
+			     .update_oneAuth .qr-image-banner
+			     {
+			     	border: 4px solid #000000;
+		    		border-top-left-radius: 5px;
+		    		border-top-right-radius: 5px;
+		    		width: 92px;
+		    		height: 92px;
+					background-size: 84px 84px;
+		    		
+			     }
+			     
+			     .update_oneAuth .qr-desc
+			     {
+			     	background-color: #000000;
+				    width: 100%;
+				    border: 4px solid #000000;
+				    border-bottom-left-radius: 5px;
+		    		border-bottom-right-radius: 5px;
+				    color: white;
+				    margin-top: -4px;
+				    opacity: 1;
+				    max-width: 106px;
+				    max-width: 92px;
+				    font-size: 10px;
+			     }
+			     
+			     .update_oneAuth .oneauth-steps li
+			     {
+			     	list-style-type: none;
+		    		text-indent: -1em;
+			     }
+			     
+			     .update_oneAuth .add-qr
+			     {
+			        top: 23px;
+				  }
+			     
+			     .update_oneAuth .oneauth-steps li::before
+			     {
+			     	content: "";
+				    width: 6px;
+				    height: 6px;
+				    display: inline-block;
+				    border-radius: 50%;
+				    background-color: #b2b2b2;
+				    margin-right: 8px;
+				    top: -2px;
+				    position: relative;
+			     }
+				
+				.update_oneAuth .mode-icon 
+				{
+				    width: 64px;
+				    height: 64px;
+				    font-size: 64px;
+				    border-radius: 16px;
+		    		border: 1px solid #cecece;
+				}
+				
+				.update_oneAuth .appstore-icon
+				{
+					height: 32px;
+				    width: 107px;
+				    background-size: 107px 32px;	
+				}
+				
+				.update_oneAuth .playstore-icon
+				{
+					height: 32px;
+				    width: 107px;
+				    background-size: 107px 32px;		
+				}
+				
+				.update_oneAuth .winstore-icon
+				{
+					height: 32px;
+				    width: 89px;
+				    background-size: 89px 32px;		
+				}
+				
+				.update_oneAuth .macstore-icon
+				{
+					height: 32px;
+				    width: 125px;
+				    background-size: 125px 32px;		
+				}
+				
+				.update_oneAuth .down-badges 
+				{
+		    		gap: 8px;
+		    		max-width: unset;
+		    	}
+		    	
+		    	
+		      	
+		      	.update_oneAuth .illustration {
+					background: url("${SCL.getStaticFilePath("/v2/components/images/oa_banner_update_illus.svg")}") no-repeat transparent;
+					background-size: 100% 100%;
+		      	}
+		      	
+		      	.update_oneAuth .oneauth-step 
+		      	{
+    				font-size: 12px;
+      			}
+      			.update_oneAuth .oneauth-step-header 
+      			{
+    				font-size: 12px;
+    				font-weight: 500;
+      			}
+	</style>
+  		
+  		
+  		<#if (new_version_banner)?has_content>
+			
+			
+			
+				<main class="wrapper">
+					<div class="update_oneAuth mainCont">
+						<div class="zoho_logo"></div>
+						<h2><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATE.HEADER" /></h2>
+						<div class="oneauth-banner-desc update_DESC">
+							<div><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATE.DESC" /></div>
+						</div>
+						
+						<div class="oneauth-container">
+							<div class="oneauth-header">
+							<div class="one-header" onclick="storeRedirect('https://zurl.to/oa_banner_website')">
+							<div class="mode-icon icon-OneAuth"><span class="path1 onepathlogo"></span><span class="path2 onepathlogo"></span><span class="path3 onepathlogo"></span><span class="path4 onepathlogo"></span><span class="path5 onepathlogo"></span><span class="path6 onepathlogo"></span><span class="path7 onepathlogo"></span></div>
+									<div class="mode-header-texts"><span><@i18n key="IAM.ZOHO.ONEAUTH.AUTHENTICATOR" /><div class="icon-newtab"></div></span><div class="oneauth-desc or-text"><@i18n key="IAM.ONEAUTH.MFA.TAG" /></div></div>
 							</div>
-							<div class="add-qr">
-								<div class="qr-image-banner">
-									<div class="top left"></div>
-									<div class="top right"></div>
-									<div class="bottom right"></div>
-									<div class="bottom left"></div>
-								</div>
-								<div class="qr-desc"><@i18n key="IAM.MFA.ANNOUN.ONEAUTH.SCAN" /></div>
+								<div class="add-oneauth">
+									<div class="down-badges">
+										<div class="download playstore-icon play-small" onclick="storeRedirect('https://zurl.to/oa_banner_playstore')"></div>
+										<div class="download appstore-icon app-small" onclick="storeRedirect('https://zurl.to/oa_banner_appstore')"></div>
+										<div class="download macstore-icon mac-small" onclick="storeRedirect('https://zurl.to/oa_banner_macstore')" style="display:none"></div>
+										<div class="download winstore-icon win-small" onclick="storeRedirect('https://zurl.to/oa_banner_msstore')"  style="display:none"></div>
+									</div>
+									<div class="add-qr">
+										<div class="qr-image-banner"></div>
+										<div class="qr-desc"><@i18n key="IAM.MFA.ANNOUN.ONEAUTH.SCAN" /></div>
+									</div>
+		                  		</div>
 							</div>
-							<button class="link-btn instruct-btn" onclick="showInstructions(event)"><@i18n key="IAM.INSTRUCTIONS.SET.UP" /></button>
-                  		</div>
+							<ul class="oneauth-steps">
+								<div class="oneauth-step-header"><@i18n key="IAM.ANNOUNCEMENT.WHATS.NEW" /></div>
+								<li class="oneauth-step"><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATE1" /></li>
+								<li class="oneauth-step"><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATE2" /></li>
+								<li class="oneauth-step"><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATE3" /></li>
+							</ul>
+						</div>
+						<button class="common-btn" onclick="continueToService(event)"><span></span><@i18n key="IAM.ANNOUNCEMENT.ONE_AUTH.UPDATED" /></button>
+						<button class="link-btn remind-later" onclick="(function(e){window.location.href=remindme; e.target.classList.add('remind_loader')})(event);"><@i18n key="IAM.TFA.BANNER.REMIND.LATER"/></button>
+						
 					</div>
-					<div class="oneauth-steps" style="display:none">
-					<div class="oneauth-step-header"><@i18n key="IAM.AFTER.INSTALLING.ONEAUTH" /></div>
-					<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP1" /></div>
-					<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP2" /></div>
-					<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP3" /></div>
-					<div class="oneauth-footer"><@i18n key="IAM.MFA.PANEL.ONEAUTH.FOOTER.TEXT" /> <a href="https://zurl.to/oa_banner_howworks" target="_blank" class="onefoot-link"><@i18n key="IAM.MFA.PANEL.ONEAUTH.FOOTER.LINK" /></a></div>
+					<div class="illusCont">
+						<div class="illustration"></div>
 					</div>
-				</div>
-				<button class="common-btn" onclick="continueToService(event)"><span></span><@i18n key="IAM.ANNOUNCEMENT.SWITCH.ONEAUTH.SETUP.BUTTON.TEXT" /></button>
-				<button class="link-btn remind-later" onclick="(function(e){window.location.href=remindme; e.target.classList.add('remind_loader')})(event);"><@i18n key="IAM.TFA.BANNER.REMIND.LATER"/></button>
-			</div>
-			<div class="illusCont">
-				<div class="illustration"></div>
-			</div>
-    	</main>
+		    	</main>
+    	
+    	
+    		
+		<#else>
+  		
+  		
+  		
+				<main class="wrapper">
+					<div class="mainCont">
+						<div class="zoho_logo"></div>
+						<h2><@i18n key="IAM.ONEAUTH.ANNOUN.HEADING" /></h2>
+						<div class="oneauth-banner-desc">
+							<div><@i18n key="IAM.ONEAUTH.ANNOUN.DESC" /></div>
+							<ul>
+								<li><@i18n key="IAM.ONEAUTH.ANNOUN.PT1" /></li>
+								<li><@i18n key="IAM.ONEAUTH.ANNOUN.PT2" /></li>
+							</ul>
+						</div>
+						<div class="oneauth-container">
+							<div class="oneauth-header">
+							<div class="one-header" onclick="storeRedirect('https://zurl.to/oa_banner_website')">
+							<div class="mode-icon icon-pebble icon-Zoho-oneAuth-logo"><span class="path1 onepathlogo"></span><span class="path2 onepathlogo"></span><span class="path3 onepathlogo"></span><span class="path4 onepathlogo"></span><span class="path5 onepathlogo"></span><span class="path6 onepathlogo"></span><span class="path7 onepathlogo"></span></div>
+									<div class="mode-header-texts"><span><@i18n key="IAM.ZOHO.ONEAUTH.AUTHENTICATOR" /><div class="icon-newtab"></div></span><div class="oneauth-desc or-text"><@i18n key="IAM.ONEAUTH.MFA.TAG" /></div></div>
+							</div>
+								<div class="add-oneauth">
+									<div class="down-badges">
+										<div class="download playstore-icon play-small" onclick="storeRedirect('https://zurl.to/oa_banner_playstore')"></div>
+										<div class="download appstore-icon app-small" onclick="storeRedirect('https://zurl.to/oa_banner_appstore')"></div>
+										<div class="download macstore-icon mac-small" onclick="storeRedirect('https://zurl.to/oa_banner_macstore')" style="display:none"></div>
+										<div class="download winstore-icon win-small" onclick="storeRedirect('https://zurl.to/oa_banner_msstore')" style="display:none"></div>
+									</div>
+									<div class="add-qr">
+										<div class="qr-image-banner">
+											<div class="top left"></div>
+											<div class="top right"></div>
+											<div class="bottom right"></div>
+											<div class="bottom left"></div>
+										</div>
+										<div class="qr-desc"><@i18n key="IAM.MFA.ANNOUN.ONEAUTH.SCAN" /></div>
+									</div>
+									<button class="link-btn instruct-btn" onclick="showInstructions(event)"><@i18n key="IAM.INSTRUCTIONS.SET.UP" /></button>
+		                  		</div>
+							</div>
+							<div class="oneauth-steps" style="display:none">
+							<div class="oneauth-step-header"><@i18n key="IAM.AFTER.INSTALLING.ONEAUTH" /></div>
+							<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP1" /></div>
+							<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP2" /></div>
+							<div class="oneauth-step"><@i18n key="IAM.MFA.PANEL.ONEAUTH.STEP3" /></div>
+							<div class="oneauth-footer"><@i18n key="IAM.MFA.PANEL.ONEAUTH.FOOTER.TEXT" /> <a href="https://zurl.to/oa_banner_howworks" target="_blank" class="onefoot-link"><@i18n key="IAM.MFA.PANEL.ONEAUTH.FOOTER.LINK" /></a></div>
+							</div>
+						</div>
+						<button class="common-btn" onclick="continueToService(event)"><span></span><@i18n key="IAM.ANNOUNCEMENT.SWITCH.ONEAUTH.SETUP.BUTTON.TEXT" /></button>
+						<button class="link-btn remind-later" onclick="(function(e){window.location.href=remindme; e.target.classList.add('remind_loader')})(event);"><@i18n key="IAM.TFA.BANNER.REMIND.LATER"/></button>
+					</div>
+					<div class="illusCont">
+						<div class="illustration"></div>
+					</div>
+		    	</main>
+    	
+    	
+    	</#if>
+    	
+    	
     	<script>
 			window.onload=function() {
 				if(/Mac|Macintosh|OS X/i.test(navigator.userAgent)){
@@ -608,4 +849,3 @@
     	</script>
 	</body>
 </html>
-</#if>

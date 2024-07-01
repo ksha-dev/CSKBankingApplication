@@ -1,4 +1,5 @@
 <%-- $Id$ --%>
+<%@page import="com.zoho.accounts.internal.signin.DataHandler"%>
 <%@page import="com.zoho.accounts.AccountsConstants"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
 <%@page import="com.zoho.accounts.internal.util.ClientPortalUtil"%>
@@ -7,6 +8,7 @@
 <%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
 <%@page import="com.adventnet.iam.Service"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@page import="com.zoho.accounts.AccountsConfiguration"%>
 <%@page import="com.adventnet.iam.Org"%>
 <%@page import="com.adventnet.iam.IAMStatusCode.StatusCode"%>
@@ -103,10 +105,10 @@
 	}
 	case SAML_NO_SUCH_USER: {
 		Org org = (Org) request.getAttribute("org");
-		String adminEmail = org != null ? Util.USERAPI.getUserFromZUID(String.valueOf(org.getOrgContact())).getContactEmail() : "";
+		String adminEmail = DataHandler.getInstance().getOrgContactSupportEmail(org);
 		String email = String.valueOf(request.getAttribute("email"));
 		errorTitle = Util.getI18NMsg(request, "IAM.SAML.ERROR.USER.NOT.EXIST.TITLE");//No I18N
-		errorDescryption = Util.getI18NMsg(request, "IAM.SAML.ERROR.DISABLED.USER.PROVISIONING.DESC", email, adminEmail);//No I18N
+		errorDescryption = Util.getI18NMsg(request, "IAM.SAML.ERROR.DISABLED.USER.PROVISIONING.DESC", email, IAMUtil.isValid(adminEmail) ? adminEmail :"");//No I18N
 		break;
 	}
 	case SAML_USER_PROVISIONING_FAILED: {
@@ -215,10 +217,23 @@
 		errorDescryption = I18NUtil.getMessage("IAM.SORGINVITATION.INVALID.ENDPOINT.URL");//No I18N
 		break;
 	}
+	case USER_NOT_CONFIRMED: {
+		errorDescryption = I18NUtil.getMessage("IAM.GROUP.CREATE.ERROR.UNCONFIRMED.USER");
+		break;
+	}
+	case USER_PENDING_INVITATION_NOT_EXISTS: {
+		errorDescryption = I18NUtil.getMessage("IAM.SORGINVITATION.NO.PENDING.INVITATIONS");
+		break;
+	}
 	case UNTRUSTED_DOMAIN:{
-		errorTitle = I18NUtil.getMessage("IAM.PORTAL.UNTRUSTED.DOMAIN");
-		errorDescryption = I18NUtil.getMessage("IAM.PORTAL.UNTRUSTED.DOMAIN.DESC");
+		errorTitle = I18NUtil.getMessage("IAM.UNTRUSTED.DOMAIN.TITLE");
+		errorDescryption = I18NUtil.getMessage(DataHandler.getInstance().isClientPortal() ? "IAM.PORTAL.UNTRUSTED.DOMAIN.DESC" : "IAM.UNTRUSTED.DOMAIN.DESC");
 		break;	
+	}
+	case UNTRUSTED_REDIRECT_DOMAIN: {
+		errorTitle = I18NUtil.getMessage("IAM.UNTRUSTED.DOMAIN.TITLE");
+		errorDescryption = I18NUtil.getMessage("IAM.PORTAL.UNTRUSTED.REDIRECT.DOMAIN");
+		break;
 	}
 	case UNAPPROVED_USERS_LIMIT_EXCEEDED:{
 		String adminEmail = String.valueOf(request.getAttribute("admin_email"));
@@ -262,6 +277,16 @@
 		errorDescryption = I18NUtil.getMessage("IAM.PORTAL.NOT.EXIST.DESC");
 		break;
 	}
+	case JWT_MAX_USER_LIMIT_REACHED_IN_PORTAL: {
+		String adminEmail = String.valueOf(request.getAttribute("admin_email"));
+		errorTitle = I18NUtil.getMessage("IAM.JWT.SIGNIN.ERROR.TITLE");
+		errorDescryption = I18NUtil.getMessage("IAM.JWT.SIGNIN.ERROR.DESC", adminEmail);
+		break;
+	}
+	case USER_NOT_ALLOWED_IP: {
+   		request.getRequestDispatcher("/v2/ui/unauth/ip_restriction.jsp").forward(request, response); //No I18N
+   		return;
+	}
 	default: {
 		errorDescryption = code.getMessage();
 		break;
@@ -281,7 +306,7 @@
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
 			<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-			<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" rel="stylesheet"type="text/css">
+			<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %>
 			<style type="text/css">
 			
 
@@ -660,7 +685,7 @@
 		<head>
 		<title><%= Util.getI18NMsg(request,"IAM.ZOHO.ACCOUNTS")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" rel="stylesheet"type="text/css">
+		<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %>
 		</head>
 		<style>
 		body {

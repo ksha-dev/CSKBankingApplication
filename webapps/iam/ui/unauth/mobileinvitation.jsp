@@ -122,7 +122,9 @@
 				}
 				$(".inv-div").hide();
 				$(".verify-div").show();
-	   			setTimeout("$('.hintdiv').show()", 10000);
+	   			setTimeout(function() {
+					$('.hintdiv').show();
+				}, 10000);
 			}else{
 				if(obj.message=="INVAID_TEMP_TOKEN"){
 					window.location.href="";

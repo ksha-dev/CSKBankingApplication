@@ -1,3 +1,4 @@
+<%-- $Id: $ --%>
 <div class="maincontent">
     <div class="menucontent">
 	<div class="topcontent"><div class="contitle" id="deletetitle">Merge ORG</div></div> <%--No I18N--%>
@@ -71,7 +72,7 @@
 	        <div class="labelvalue"><input type="text" id="idsmigorgappacc" class="input noborder" name="migorgappacc" disabled="disabled"/><br> <div style="display:inline; font-size:11.5px; color:gray;"> --- If IP_RESTRICTION is enabled, user has to enable IP_RESTRICTION again in new org</div></div> <%--No I18N--%>
 	        
 	         <div class="labelkey">Admin Password :</div> <%--No I18N--%>
-				<div class="labelvalue"><input type="password" id="adminpassid" name="aminpass" class="input" /></div>
+				<div class="labelvalue"><input type="password" autocomplete="off" id="adminpassid" name="aminpass" class="input" /></div>
 		<div class="labelkey">Select Appaccounts to migrate :</div> <%--No I18N--%>
          <select name="subIds" id="idsappaccs" data-placeholder="Select AppAccounts to merge" style="width:350px;" class="chosen-mergeorg-admin-select labelvalue" multiple tabindex="6">
           

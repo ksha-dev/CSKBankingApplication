@@ -1,47 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><@i18n key="IAM.BLOCK.UNCONFIRMED.TITLE"/></title>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}"></script>
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+    <@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+    <@resource path="/v2/components/js/splitField.js" />
+    <@resource path="/v2/components/js/flagIcons.js" />
+	<@resource path="/v2/components/js/uvselect.js" />
+	<@resource path="/v2/components/css/uvselect.css" />
+	<@resource path="/v2/components/css/flagIcons.css" />
+	<script type="text/javascript" src="${za.contextpath}/encryption/script"></script>
+	<@resource path="/v2/components/js/security.js" />
     <script>
 	    var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
     </script> 
-    <script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/js/phonePatternData.js" />
+    <@resource path="/v2/components/js/common_unauth.js" />
+    <@resource path="/v2/components/css/${customized_lang_font}" />
     <style>
-      @font-face {
-        font-family: "AccountsUI";
-        src: url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")}");
-        src: url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")}") format("embedded-opentype"),
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.ttf")}") format("truetype"), 
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.woff")}") format("woff"),
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.svg")}") format("svg");
-        font-weight: normal;
-        font-style: normal;
-        font-display: block;
-      }
-      [class^="icon-"],
-      [class*=" icon-"] {
-        font-family: "AccountsUI" !important;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      .icon-search:before,
-      .select2-search:after {
-        content: "\e9a7";
-      }
       body {
         margin: 0;
         box-sizing: border-box;
@@ -110,8 +89,8 @@
       #email_input,
       #mobile_input {
         height: 44px;
-        padding: 12px 15px;
-        line-height: 30px;
+        text-indent: 15px;
+        line-height: 44px;
         width: 288px;
         border: 1px solid #0f090933;
         border-radius: 4px;
@@ -131,7 +110,11 @@
         margin-left: 10px;
         color: #0093ff;
         cursor: pointer;
+      }      
+      .primary_btn_check {
+      	margin-top: 15px;
       }
+      .primary_btn_check,
       .send_otp_btn,
       .verify_btn,
       .update_send_otp_btn {
@@ -143,6 +126,7 @@
         background: #1389e3 0% 0% no-repeat padding-box;
         cursor: pointer;
       }
+      .primary_btn_check:hover,
       .send_otp_btn:hover,
       .verify_btn:hover,
       .update_send_otp_btn:hover{
@@ -182,7 +166,7 @@
       .otp_input_container {
         position: relative;
       }
-      .otp_container {
+      .textbox, .otp_container {
         display: flex;
         justify-content: space-around;
         width: 100%;
@@ -263,236 +247,15 @@
         border: 1px solid #dddddd;
         padding: 12px 15px 12px 6px;
       }
-      #select_phonenumber .select2-container {
-        position: absolute;
-        height: 44px;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single {
-        border: none;
-        display:inline-block;
-        position: relative;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 42px;
-        letter-spacing: 0.5px;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-width: 3px;
-      }
-      #select2-countNameAddDiv-container {
-        display: inline-block;
-        margin-left: 42px;
-        margin-right: 13px;
-        padding: 0px;
-        width: auto;
-        font-size: 14px;
-      }
-      .select2-search {
-        display: block;
-        padding: 10px;
-        position: relative;
-      }
-      .select2-search__field {
-        height: 32px;
-        border: none;
-        outline: none;
-        border-radius: 4px;
-        width: 100%;
-        font-size: 13px;
-        padding: 10.5px 8px;
-        border: 1px solid #dfdfdf;
-        text-indent: 21px;
-      }
-      .select2-results__option {
-        list-style-type: none;
-        height: auto;
-        box-sizing: border-box;
-        line-height: 16px;
-        font-family: "ZohoPuvi", Georgia;
-        font-size: 13px;
-        overflow: hidden;
-        padding: 12px 18px;
-        word-break: break-word;
-      }
-      .field .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 40px;
-        color: #000;
-        background-color: transparent;
-        font-size: 14px;
-      }
-      .field .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 40px;
-      }
-      .noindent {
-        position: relative;
-      }
-      .textindent58 {
-        text-indent: 76px !important;
-      }
-      .textindent66 {
-        text-indent: 83px !important;
-      }
-      .textindent78 {
-        text-indent: 92px !important;
-      }
       b {
         font-weight: 500;
       }
       user agent stylesheet b {
         font-weight: bold;
       }
-      span.select2-dropdown.select2-dropdown--below,
-      span.select2-dropdown.select2-dropdown--above {
-        background: #ffffff;
-        border: 1px solid #e6e6e6;
-        border-radius: 0px 0px 4px 4px;
-        margin-top: 0px;
-        box-sizing: border-box;
-        position: relative;
-        z-index: 5;
-        border-top: transparent;
-        overflow: hidden;
-      }
-      .noindent .select2-container .select2-selection--single {
-        text-indent: 0px;
-      }
-      .field .select2-container .select2-selection--single {
-        height: 42px;
-        font-size: 14px;
-      }
-      .select2-container--open + #mobile_input{
-        border: 1px solid #1389e3;
-        border-radius: 4px 4px 0px 0px;
-      }
-      .select2-search--hide {
-        display: none;
-      }
-      .select2-search__field::placeholder {
-        color: #a7a7a7;
-        opacity: 1;
-      }
-      .select2-dropdown {
-        display: inline-block;
-        min-width: 300px;
-      }
-      .select2-selection__rendered {
-        max-width: calc(100% - 30px);
-        overflow: hidden;
-        display: block;
-        text-overflow: ellipsis;
-        font-size: 14px;
-        color: #000000;
-        line-height: 18px;
-      }
-      .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 26px;
-        position: absolute;
-        top: 1px;
-        right: -6px;
-        width: 20px;
-      }
-      .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent #c6c6c6 #c6c6c6 transparent;
-        border-style: solid;
-        transform: rotate(45deg);
-        border-width: 3.5px;
-        height: 0px;
-        width: 0px;
-        position: relative;
-        top: 8px;
-        left: 6px;
-        border-radius: 1px;
-        display: inline-block;
-        margin-top: 6px;
-      }
-      .select2-container .select2-selection--single .select2-selection__rendered {
-        display: block;
-        padding-left: 8px;
-        padding-right: 30px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .select2-container--open .select2-selection {
-        border-radius: 4px 4px 0px 0px;
-      }
-      .select2-selection__arrow {
-        float: right;
-        height: 100%;
-        width: 10px;
-        position: relative;
-        top: -18px;
-      }
-      .select2-search:after {
-        font-family: "AccountsUI" !important;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        position: absolute;
-        top: 19px;
-        font-size: 14px;
-        left: 20px;
-        color: #00000080;
-      }
-      .select2-selection:hover {
-        cursor: pointer;
-      }
-      .selection {
-        display: block;
-        white-space: nowrap;
-        position: relative;
-        height: 42px;
-      }
-      .select2-results__options {
-        padding-left: 0px;
-        max-height: 200px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        background: white;
-      }
-      .select2-results__option--highlighted {
-        background-color: #f8f8f8;
-        color: #000000;
-        cursor: pointer;
-      }
-      .select2-container--open .select2-selection {
-        z-index: 10;
-        border-color: #1389e3 !important;
-        border-bottom-right-radius: 0px !important;
-    	border-bottom-left-radius: 0px !important;
-      }
-      .select2-container--focus .select2-selection {
-        border-color: #1389e3 !important;
-      }
-      .select2-container--disabled.select2-container--focus .select2-selection {
-        border: 1px solid #bfbfbf !important;
-      }
-      .select2-hidden-accessible {
-        visibility: hidden;
-        border: 0 !important;
-        clip: rect(0, 0, 0, 0) !important;
-        height: 0px !important;
-        margin: -1px !important;
-        overflow: hidden !important;
-        padding: 0 !important;
-        position: absolute !important;
-        display: none;
-      }
-      .cc {
-        float: right;
-      }
-      .cn {
-        margin-left: 10px;
-        float: left;
-        max-width: 170px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      /* UV */
+      .selectbox--focus {
+		border: 1px solid #1389e3 !important;
       }
       #error_space{
 			position: fixed;
@@ -570,70 +333,7 @@
     	border-radius: 1px;
     	display: inline-block;
 	  }
-      .pic {
-        width: 20px;
-        height: 14px;
-        background-size: 280px 252px;
-        background-image: url("../images/Flags.png");
-        background-position: -180px -238px;
-        float: left;
-        margin-top: 1px;
-      }
-      .selectFlag {
-        display: inline-block;
-        width: 20px;
-        height: 14px;
-        position: absolute;
-        top: 13px;
-        left: 13px;
-        background-size: 280px 252px;
-        background-image: url("/images/Flags2x.png");
-        background-position: -180px -238px;
-      }
-      .select2-container--already_numbers.select2-container--below{
-      	display: inline-block;
-      	height: 42px;
-      }
-      .field .select2-container--already_numbers .select2-container--focus .select2-selection{
-      	border-color:#dcdcdc !important;
-      }
-      .field span#select2-verfied_phnnum-container{
-      	box-sizing: border-box;
-      	padding:12px 30px 12px 15px;
-      	margin-left: 32px;
-      }
-      .field .select2-container--already_numbers .select2-selection--single{
-     	height: 42px;
-      	border: 1px solid #dcdcdc;
-      	border-radius: 4px;
-    	box-sizing: border-box;
-    	width: 300px;
-    	position: relative;
-    	display: inline-block;
-      }
-      .field .select2-container--already_numbers .select2-selection--single .select2-selection__arrow{
-      	height: 42px;
-      	top: -42px;
-      	margin-right: 6px;
-      	width: 20px;
-      }
-      .field .select2-container--already_numbers .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent #C6C6C6 #C6C6C6 transparent;
-    	border-style: solid;
-    	transform: rotate(45deg);
-    	border-width: 3.5px;
-    	height: 0px;
-    	width: 0px;
-    	position: relative;
-   		top: 8px;
-    	left: -2px;
-    	border-radius: 1px;
-    	display: inline-block;
-      }
-      
-      #select2-localeCn-results .flag_AX {
-        background-position: -140px -224px;
-      }
+
       #footer {
 		    width: 100%;
 		    height: 20px;
@@ -753,7 +453,7 @@
 		}
       }
     </style>
-    <link rel="stylesheet" href="${SCL.getStaticFilePath("/accounts/css/flagStyle.css")}" type="text/css"/>
+    <@resource path="/accounts/css/flagStyle.css" />
     <script>
       var csrfParam= "${za.csrf_paramName}";
       var csrfCookieName = "${za.csrf_cookieName}";
@@ -786,6 +486,8 @@
 	  	"IAM.TFA.RESEND.OTP.COUNTDOWN" : '<@i18n key="IAM.TFA.RESEND.OTP.COUNTDOWN"/>',
 	  	"IAM.ERROR.EMPTY.FIELD" : '<@i18n key="IAM.ERROR.EMPTY.FIELD"/>',
 	  });
+	  var iam_search_text = '<@i18n key="IAM.SEARCHING" />';
+	  var iam_no_result_found_text = '<@i18n key="IAM.NO.RESULT.FOUND" />';
       var cryptData;
       <#if nxt_preann_url??>var next = "${nxt_preann_url}";</#if>
       function handleEditOption(mode) {
@@ -793,6 +495,7 @@
         $(".otp_input_container, .otp_sent_desc").slideUp(200);
         document.querySelector(".enter_eml_mob_desc").style.display = "block";
         document.querySelector(".send_otp_btn").style.display = "block";
+        altered = false;
         if (!resendtiming == 0) {
           $(".send_otp_btn").prop("disabled", true);
         }
@@ -818,29 +521,41 @@
 	  }
       function sendOTP(mode, emailormobilevalue) {
       $(".resend_otp").html("<div class='loader'></div>"+I18N.get('IAM.GENERAL.OTP.SENDING'));
+      $(".send_otp_btn").prop("disabled", "disabled");
         if (mode === "email") {
         	if (isEmailId(emailormobilevalue)) {
         		$("div.valueemailormobile").html(emailormobilevalue);
-            	var params = { blockunconfirmeduser: { email_id: emailormobilevalue } };
-            	sendRequestWithCallback("/webclient/v1/announcement/pre/blockunconfirm", JSON.stringify(params), true, handleOtpSent, "POST")
+            	encryptData.encrypt([emailormobilevalue]).then(function(encryptedloginid) {
+					encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+					var params = { blockunconfirmeduser: { email_id: encryptedloginid } };
+            		sendRequestWithCallback("/webclient/v1/announcement/pre/blockunconfirm", JSON.stringify(params), true, handleOtpSent, "POST")
+				});
           	} else {
              show_error_msg("#email_input", I18N.get("IAM.ERROR.EMAIL.INVALID"));
+             $(".send_otp_btn").removeAttr("disabled");
           	}
         } else if (mode === "mobile") {
           	if (isPhoneNumber(mobile)) {
           		countryCode = emailormobilevalue.substring(emailormobilevalue.length-2);
           		$("div.valueemailormobile").html(emailormobilevalue.substring(0,emailormobilevalue.length-2));
           		emailormobilevalue = (emailormobilevalue.substring(0,emailormobilevalue.length-2)).split(" ")[1];
-           		var params = { blockunconfirmeduser: { mobile: emailormobilevalue, countrycode: countryCode} };
-          		sendRequestWithCallback("/webclient/v1/announcement/pre/blockunconfirm", JSON.stringify(params), true, handleOtpSent, "POST");
+          		encryptData.encrypt([emailormobilevalue]).then(function(encryptedloginid) {
+					encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+					var params = { blockunconfirmeduser: { mobile: encryptedloginid, countrycode: countryCode} };
+	          		sendRequestWithCallback("/webclient/v1/announcement/pre/blockunconfirm", JSON.stringify(params), true, function(resp) {
+	            		handleOtpSent(resp, params);
+	            	}, "POST");
+				});
           	} else {
              show_error_msg("#mobile_input", I18N.get("IAM.PHONE.ENTER.VALID.MOBILE_NUMBER"));
+             $(".send_otp_btn").removeAttr("disabled");
           	}
         }
       }
       
-	  function handleOtpSent(respStr){	
+	  function handleOtpSent(respStr, params){	
 		if(respStr!="" && respStr!= undefined){
+			$(".send_otp_btn").removeAttr("disabled");
 			var resp = JSON.parse(respStr);
 			if(resp.status_code >= 200 && resp.status_code <= 299){
 			clearError('#otp_split_input');
@@ -867,10 +582,29 @@
 				if(mode === "email"){
 					show_error_msg("#email_input", resp.localized_message);
 				}else if(mode === "mobile"){
-					show_error_msg("#mobile_input", resp.localized_message);
+					function errHandler(response) {
+						show_error_msg("#mobile_input", response.localized_message);
+					}
+					if(handleCaptcha().isRequired(resp)) {
+						handleCaptcha(resp, {
+							callbacks: {
+								beforeInit: function() {
+									$(".enter_eml_mob_desc, .send_otp_btn, ."+ mode +"_input_container").slideUp(200);
+								}
+							}
+						})
+						.init('#blocked-mob-captcha', sendRequestWithCallback, ["/webclient/v1/announcement/pre/blockunconfirm", params]).then(handleOtpSent, function(err){
+							$(".enter_eml_mob_desc, .send_otp_btn, ."+ mode +"_input_container").slideDown(300);
+							errHandler(err);
+						});
+					} else {
+						errHandler(resp);
+					}
 				}
 			}}
 		}
+		$('#otp_split_input').click();
+		
 	  }
 	  
 	  function resendOTP(){
@@ -1009,56 +743,9 @@
       }
       
       
-      function phoneSelectformat(option) {
-        //use to country flag structure in select2
-        var spltext;
-        if (!option.id) {
-          return option.text;
-        }
-        spltext = option.text.split("(");
-        var num_code = $(option.element).attr("data-num");
-        var string_code = $(option.element).attr("value");
-
-        var ob =
-          '<div class="pic flag_' +
-          string_code +
-          '" ></div><span class="cn">' +
-          spltext[0] +
-          "</span><span class='cc'>" +
-          num_code +
-          "</span>";
-        return ob;
-      }
-      
-      function selectFlag(e) {
-        var flagpos = "flag_" + $(e).val().toUpperCase();
-        $(".select2-selection__rendered").attr("title", "");
-        e.parent().siblings(".select2").find("#selectFlag").attr("class", ""); 
-        e.parent().siblings(".select2").find("#selectFlag").addClass("selectFlag"); 
-        e.parent().siblings(".select2").find("#selectFlag").addClass(flagpos); 
-      }
-      
-      function codelengthChecking(length_id, changeid) {
-        var code_len = $(length_id).attr("data-num").length;
-        var length_ele = $(length_id)
-          .parent()
-          .siblings("#" + changeid);
-        length_ele.removeClass("textindent58");
-        length_ele.removeClass("textindent66");
-        length_ele.removeClass("textindent78");
-        if (code_len == "3") {
-          length_ele.addClass("textindent66");
-        } else if (code_len == "2") {
-          length_ele.addClass("textindent58");
-        } else if (code_len == "4") {
-          length_ele.addClass("textindent78");
-        }
-        length_ele.focus();
-      }
-      
       function phonecodeChangeForMobile(ele)
 	  {
-		$(ele).css({'opacity':'0','width':'50px'});
+		$(ele).css({'opacity':'0','width':'60px', 'height':'42px'});
 		$(ele).siblings(".phone_code_label").html($(ele).children("option:selected").attr("data-num"));
 		$(ele).change(function(){
 			$(ele).siblings(".phone_code_label").html($(ele).children("option:selected").attr("data-num"));
@@ -1132,6 +819,7 @@
 
   </head>
   <body>
+    <#include "../utils/captcha-handler.tpl">
  	<div id="error_space">
 		<span class="error_icon">&#33;</span> <span class="top_msg"></span>
 	</div>
@@ -1181,7 +869,7 @@
     				class="countNameAddDiv"
     				style="width: 300px"
   				>
-  					<#list country_list as dialingcode>
+  					<#list country_code as dialingcode>
 						<option data-num="${dialingcode.dialcode}" value="${dialingcode.code}" id="${dialingcode.code}" >${dialingcode.display}</option>
   					</#list>
   				</select>
@@ -1199,7 +887,7 @@
     				type="tel"
   				/>
 			</div>
-            <button class="send_otp_btn" onclick="updateEmlMblValue()"><@i18n key="IAM.SEND.OTP"/><span></span></button>
+            <button class="send_otp_btn" onclick="updateEmlMblValue()"><@i18n key="IAM.SEND.OTP"/><span style="margin:0"></span></button>
            </form>
            <form name="confirm_form1" onsubmit="verifyCode(event);return false;" novalidate>
              <div class="otp_input_container" style="display: none">
@@ -1209,6 +897,7 @@
               <button class="verify_btn" type="submit" onclick="verifyCode(event)"><span></span><@i18n key="IAM.NEW.SIGNIN.VERIFY"/></button>
             </div>
           </form>
+          <div id="blocked-mob-captcha"></div>
         </div>
       </div>
       <div class="illustration-container">
@@ -1220,7 +909,7 @@
   	<#include "../Unauth/footer.tpl">
   </footer>
   
-  <script>
+  <script type="text/javascript">
     window.onload = function () {
 
       if(mode === "email"){
@@ -1245,44 +934,36 @@
         otpAutocomplete: true, 
         customClass: "customOtp", 
         inputPlaceholder: "&#9679;", 
-        placeholder: "<@i18n key="IAM.ENTER.CODE"/>", 
       });
       $("#otp_split_input .splitedText").attr("onkeydown", "clearError('#otp_split_input', event)");
       if (mode === "mobile") {
       	if(!isMobile) {
-        	$(document.confirm_form.countrycode)
-          		.select2({
-            		width: "82px",
-            		templateResult: phoneSelectformat,
-            		templateSelection: function (option) {
-              						selectFlag($(option.element));
-              						codelengthChecking(option.element, "mobile_input");
-              						return $(option.element).attr("data-num");
-            		},
-            		language: {
-              			noResults: function () {
-                			return "<@i18n key="IAM.NO.RESULT.FOUND"/>"; 
-              			},
-            		},
-            		escapeMarkup: function (m) {
-              				return m;
-            		},
-          		}).on("select2:open", function () {
-            		$(".select2-search__field").attr("placeholder", "<@i18n key="IAM.SEARCHING"/>");
-          			});
-        $("#select_phonenumber .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-        selectFlag($(document.confirm_form.countrycode).find("option:selected"));
-        $(".select2-selection__rendered").attr("title", "");
-        $(document.confirm_form.countrycode).on("select2:close", function (e) {
-          $(e.target).siblings("input").focus();
-        });
-        phonePattern.intialize(document.confirm_form.countrycode);
-        $(".phone_code_label").css("visibility" ,"hidden")
-      } else {
-        phonecodeChangeForMobile(document.confirm_form.countrycode);
-      }
+      		$(document.confirm_form.countrycode).uvselect({
+				"width": '80px', //No i18N
+				"searchable" : true, //No i18N
+				"dropdown-width": "300px", //No i18N
+				"dropdown-align": "left", //No i18N
+				"embed-icon-class": "flagIcons", //No i18N
+				"country-flag" : true, //No i18N
+				"country-code" : true  //No i18N
+			});
+        	$(".phone_code_label").css("visibility" ,"hidden")
+      	} else {
+        	phonecodeChangeForMobile(document.confirm_form.countrycode);
+      	}
+      	phonePattern.intialize(document.confirm_form.countrycode);
       }
       setFooterPosition();
+      $('#otp_split_input').click();
+      setTimeout(function(){
+      	if(mode === "mobile"){
+      		var last = $("#mobile_input").val().length
+        	$("#mobile_input")[0].setSelectionRange(last, last)
+      		$("#mobile_input").focus();
+      	}else{
+      		$("#email_input:visible").focus();
+      	}
+      }, 300)
     };
   </script>
 </html>

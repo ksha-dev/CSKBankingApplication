@@ -1,12 +1,12 @@
 
-<script src="${SCL.getStaticFilePath("/accounts/js/html5.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/accounts/js/common.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/accounts/js/ajax.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/accounts/js/form.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/accounts/js/validator.js")}" type="text/javascript"></script>
-<script src="${SCL.getStaticFilePath("/accounts/js/confirm.js")}" type="text/javascript"></script>
+<@resource path="/accounts/js/html5.js" />
+<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+<@resource path="/accounts/js/common.js" />
+<@resource path="/accounts/js/ajax.js" />
+<@resource path="/accounts/js/form.js" />
+<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+<@resource path="/accounts/js/validator.js" />
+<@resource path="/accounts/js/confirm.js" />
 <script type='text/javascript'>
 	I18N.load({
 		"IAM.ERROR.ENTER.LOGINPASS" : '<@i18n key="IAM.ERROR.ENTER.LOGINPASS" />',

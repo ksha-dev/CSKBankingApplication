@@ -19,7 +19,11 @@
 		<div class="subtitle">Admin Services</div>
 	</div>
 	<div class="field-bg">
-		<%
+	<%if(Boolean.parseBoolean(AccountsConfiguration.getConfiguration("aoc.services.redirect", "false"))){ %>
+    	<div id="serviceredirect">Please Access the Services from AOC:</div> <br>  <!-- No I18N --><%--No I18N--%>
+    	<div id="serviceredirectlink" style="color:blue;"><a href="<%= IAMEncoder.encodeHTMLAttribute(AccountsConfiguration.getConfiguration("aoc.server.url", null) + "/admin#service/serviceinfo") %>" target="_blank">Click here</a></div>   <!-- No I18N --><%--No I18N--%>
+    <%}
+      else{
 			String type = request.getParameter("t");
 			boolean isServiceOrg = false;
 			boolean isAppAccount = false;
@@ -158,12 +162,12 @@
 		<div class="labelvalue">
 			<select name="service" style="width: 200px;">
 			<%
-			for(HandlerObject.Services serviceName : AccountsInternalConst.HandlerObject.values()) {
-			%>
-					<option value="<%=serviceName.getValue()%>"><%=serviceName.name()%></option>><%--No I18N--%>
-				<%
-				}
+				for(AccountsInternalConst.Services serviceName : AccountsInternalConst.Services.values()) {
 				%>
+					<option value="<%= serviceName.getValue() %>"><%=serviceName.name()%></option>><%--No I18N--%>
+				<% 
+				}
+			%>
 			</select>
 		</div>
 		
@@ -184,7 +188,7 @@
 			</form>
 		</div>
 		<%
-		}
+			}
 				    else if("view".equals(type)) {
 		%>
 		<div class="topbtn Hcbtn" style="margin:6px 0px 8px 0px;">
@@ -209,7 +213,7 @@
 		</div>
 		<div class="content1" id="overflowdiv">
 	<%
-	for(Service service : CSPersistenceAPIImpl.getAllServicesByListingOrder()){
+		for(Service service : CSPersistenceAPIImpl.getAllServicesByListingOrder()){
 	%>
 			<div class="apikeycontent">
 				<div class="apikey" style="width: 10%;"><%=IAMEncoder.encodeHTML(service.getServiceName())%></div>
@@ -229,23 +233,23 @@
 				<div class="clrboth"></div>
 			</div>
 			<%
-			}
-								out.println("</div>");
-					    }
-					    else if("edit".equals(type)) {
-								String sName = request.getParameter("sname");
-								ServiceAPI servieAPI = Util.SERVICEAPI;
-								Service service = servieAPI.getService(sName);
-								isServiceOrg = service.isServiceOrgEnabled();
-								isAppAccount = service.isAppAccountEnabled();
-								Configuration intconf = (Configuration) RestProtoUtil.GET(AppResource.getConfigurationURI(sName, "iam.internal.server")); //No I18N
-								String intServerURL = intconf != null ? intconf.getConfigValue() : "";
-								com.zoho.accounts.AppResourceProto.App.Role[] appRoles = AppResource.getRoleURI(service.getServiceName()).GETS();
-								String publickey = null;
-								AppKeyStore appKeyStore = AppResource.getAppKeyStoreURI(sName,"isc").GET();//No I18N
-								if(appKeyStore != null){
-								 	publickey = appKeyStore.getPublicKey();
-								}
+				}
+							out.println("</div>");
+				    }
+				    else if("edit".equals(type)) {
+							String sName = request.getParameter("sname");
+							ServiceAPI servieAPI = Util.SERVICEAPI;
+							Service service = servieAPI.getService(sName);
+							isServiceOrg = service.isServiceOrgEnabled();
+							isAppAccount = service.isAppAccountEnabled();
+							Configuration intconf = (Configuration) RestProtoUtil.GET(AppResource.getConfigurationURI(sName, "iam.internal.server")); //No I18N
+							String intServerURL = intconf != null ? intconf.getConfigValue() : "";
+							com.zoho.accounts.AppResourceProto.App.Role[] appRoles = AppResource.getRoleURI(service.getServiceName()).GETS();
+							String publickey = null;
+							AppKeyStore appKeyStore = AppResource.getAppKeyStoreURI(sName,"isc").GET();//No I18N
+							if(appKeyStore != null){
+							 	publickey = appKeyStore.getPublicKey();
+							}
 			%>
 			<div class="topbtn Hcbtn">
 				<div class="addnew" onclick="loadui('/ui/admin/service.jsp?t=view');">
@@ -264,15 +268,15 @@
 					</div>
 					<div class="editlink">
 			<%
-			if(IAMUtil.isValid(publickey)){
+				if(IAMUtil.isValid(publickey)){
 			%>
 						<a style="color:#0487EF" href="javascript:;" onclick="regenerate('<%=IAMEncoder.encodeJavaScript(sName)%>','download',false)">ReGenerate</a><%--No I18N--%>
 			<%
-			} else {
+				} else {
 			%>
 						<a href="javascript:;" onclick="regenerate('<%=IAMEncoder.encodeJavaScript(service.getServiceName())%>','add',false)">[Add ISC Key]</a><%--No I18N--%>
 			<%
-			}
+				}
 			%>
                     </div>
 					<div class="labelkey key">Service Name :</div>
@@ -302,19 +306,20 @@
             <div class="labelkey key">Service Type :</div><%--No I18N--%>
 					<div class="labelvalue">
 						<%
-						if (service.getServiceType() == Service.COLLABORATION) {
-																					out.print("Collaboration");
-																				} else if (service.getServiceType() == Service.BUSINESS) {
-																					out.print("Business");
-																				} else if (service.getServiceType() == service.PRODUCTIVITY){
-																					out.print("Productivity");
-																				} else if (service.getServiceType() == service.HELPDESK){
-																					out.print("Helpdesk");//No i18N
-																				} else if (service.getServiceType() == service.FINANCE){
-																					out.print("Finance");//No i18N
-																				} else{
-																					out.print("Humanresources");//No i18N
-																				}
+							if (service.getServiceType() == Service.COLLABORATION) {
+																	out.print("Collaboration");
+																} else if (service.getServiceType() == Service.BUSINESS) {
+																	out.print("Business");
+																} else if (service.getServiceType() == service.PRODUCTIVITY){
+																	out.print("Productivity");
+																} else if (service.getServiceType() == service.HELPDESK){
+																	out.print("Helpdesk");//No i18N
+																} else if (service.getServiceType() == service.FINANCE){
+																	out.print("Finance");//No i18N
+																} else{
+																	out.print("Humanresources");//No i18N
+																}
+						
 						%> 
  					</div>
  										
@@ -322,47 +327,47 @@
 					<div class="labelvalue"> <%=service.isAppAccountEnabled() && service.isServiceOrgEnabled() ? "AppAccount/ServiceOrg " : service.isAppAccountEnabled() ? "Appaccount" : service.isServiceOrgEnabled() ? "ServiceOrg" : "None"%>
 					</div>
 					<%
-					if(service.isServiceOrgEnabled()){
+					
+										if(service.isServiceOrgEnabled()){
 					%>
 					<div class="labelkey key">ServiceOrg Org Model :</div><%--No I18N--%>
 					<div class="labelvalue"> <%=Service.OrgModel.SINGLE.getValue() == service.getServiceOrgAccountType()  ? "Single" : Service.OrgModel.MULTIPLE.getValue() ==service.getServiceOrgAccountType() ? "Multiple" : "None"%>
 					</div>
 					<%
-					}
-													if(service.isAppAccountEnabled()){
+										}
+										if(service.isAppAccountEnabled()){
+					
 					%>
 					<div class="labelkey key">AppAccount Org Model :</div><%--No I18N--%>
 					<div class="labelvalue"> <%=Service.OrgModel.SINGLE.getValue() ==service.getAppaccAccountType()  ? "Single" : Service.OrgModel.MULTIPLE.getValue() ==service.getAppaccAccountType() ? "Multiple" : "None"%>
 					</div>
 					<%
-					}
-														if(service.isServiceOrgEnabled()) {
-															OrgType stype = null;
-															int orgTypeInt = service.getParentServiceOrgType();
-															if(orgTypeInt != -1) {
-																stype = OrgType.valueOf(orgTypeInt, true, false);
-															}
-					%>
+										}
+											if(service.isServiceOrgEnabled()) {
+												OrgType stype = null;
+												int orgTypeInt = service.getParentServiceOrgType();
+												if(orgTypeInt != -1) {
+													stype = OrgType.valueOf(orgTypeInt, true, false);
+												}
+												
+										%>
 					<div class="labelkey key">Parent ServiceOrg  :</div><%--No I18N--%>
-					<div class="labelvalue"> <%=(stype != null ? stype.name() : "None" )%><%-- NO OUTPUTENCODING --%>
+					<div class="labelvalue"> <%=(stype != null ? stype.name() : "None" ) %><%-- NO OUTPUTENCODING --%>
 					</div>
+					<%} %>
 					<%
-					}
-					%>
-					<%
-					if(service.isAppAccountEnabled()) {
-															OrgType stype = null;
-															int orgTypeInt = service.getParentAppAccountOrgType();
-															if(orgTypeInt != -1) {
-																stype = OrgType.valueOf(orgTypeInt, true, true);
-															}
-					%>
+											if(service.isAppAccountEnabled()) {
+												OrgType stype = null;
+												int orgTypeInt = service.getParentAppAccountOrgType();
+												if(orgTypeInt != -1) {
+													stype = OrgType.valueOf(orgTypeInt, true, true);
+												}
+												
+										%>
 					<div class="labelkey key">Parent AppAccount Type  :</div><%--No I18N--%>
-					<div class="labelvalue"> <%=(stype != null ? stype.name() : "None" )%><%-- NO OUTPUTENCODING --%>
+					<div class="labelvalue"> <%=(stype != null ? stype.name() : "None" ) %><%-- NO OUTPUTENCODING --%>
 					</div>
-					<%
-					}
-					%>
+					<%} %>
 					<div class="labelkey key">Public Key :</div><%--No I18N--%>
 					
 					<div class="pkvalue"><%=IAMEncoder.encodeHTML(IAMUtil.isValid(publickey) ? publickey : "None")%></div>
@@ -376,12 +381,12 @@
 						<div class="apikeytitle" style="width: 25%;">Is Default</div>
 					</div>
 					<%
-					Map<String, Role> rolesCache = Util.getRoleCache();
-																Collection<Role> rolesList = rolesCache.values();
-																int rolecnt = 0;
-																for (Role r : rolesList) {
-																	if (r.getServiceId() == service.getServiceId()) {
-																		rolecnt++;
+						Map<String, Role> rolesCache = Util.getRoleCache();
+													Collection<Role> rolesList = rolesCache.values();
+													int rolecnt = 0;
+													for (Role r : rolesList) {
+														if (r.getServiceId() == service.getServiceId()) {
+															rolecnt++;
 					%>
 					<div class="apikeycontent content1">
 						<div class="apikey" style="width: 34%;"><%=IAMEncoder.encodeHTML(r.getRoleName())%></div>
@@ -390,17 +395,17 @@
 						<div class="clrboth"></div>
 					</div>
 					<%
-					}
-																}
-																if (rolecnt == 0) {
+						}
+													}
+													if (rolecnt == 0) {
 					%>
 			<div class="apikeycontent content1" style="text-align:center;height:15px;padding:5px 0px;">No Roles Defined</div><%--No I18N--%>
 					<%
-					}
+						}
 					%>
 					
 					<%
-										if(service.isAppAccountEnabled()) {
+											if(service.isAppAccountEnabled()) {
 										%>
 					
 					<div class="roleHeader">
@@ -411,10 +416,10 @@
 						<div class="apikeytitle" style="width:37%;">ZARID</div> <%--No I18N--%>
 					</div>
 					<%
-					int approlecnt = 0;
-																if (appRoles != null) {
-																for (com.zoho.accounts.AppResourceProto.App.Role r : appRoles) {
-																	approlecnt++;
+						int approlecnt = 0;
+													if (appRoles != null) {
+													for (com.zoho.accounts.AppResourceProto.App.Role r : appRoles) {
+														approlecnt++;
 					%>
 					<div class="apikeycontent content1">
 						<div class="apikey" style="width: 34%;"><%=IAMEncoder.encodeHTML(r.getRoleName())%></div>
@@ -422,14 +427,14 @@
 					<div class="clrboth"></div>
 					</div>
 					<%
-					}
-																}
-																if (approlecnt == 0) {
+						}
+													}
+													if (approlecnt == 0) {
 					%>
 				<div class="apikeycontent content1" style="text-align:center;height:15px;padding:5px 0px;">No AppAccount  Defined</div><%--No I18N--%>
 								<%
-								}
-																							}
+									}
+																	}
 								%>
 					
 				</div>
@@ -500,44 +505,45 @@
 						<div class="labelkey">Org Type :</div><%--No I18N--%>
 					<div class="labelvalue radiobutton"><input type="radio" name="orgType" value="<%=Service.OrgType.APPACCOUNT.getValue()%>" onchange="showDivByID('appRoolediv');hideDivByID('serviceparentorgdiv');showDivByID('serviceparentorgappdiv');" <%=(!service.isServiceOrgEnabled() && service.isAppAccountEnabled() ? "checked=\"checked\"" : "" )%>  > AppAccount<input onchange="hideDivByID('appRoolediv');showDivByID('serviceparentorgdiv');hideDivByID('serviceparentorgappdiv');" type="radio" name="orgType" value="<%=Service.OrgType.SERVICEORG.getValue()%>" <%=(!service.isAppAccountEnabled() && service.isServiceOrgEnabled() ? "checked=\"checked\"" : "" )%> > ServiceOrg <%--No I18N--%><%-- NO OUTPUTENCODING --%>
 					
-					<%
-										if(service.isServiceOrgEnabled() && service.isAppAccountEnabled()) {
-										%>
+					<%if(service.isServiceOrgEnabled() && service.isAppAccountEnabled()) {
+						%>
 							<input type="radio" name="orgType" value="<%=Service.OrgType.APPACCOUNT_SERVICEORG.getValue()%>" onchange="showDivByID('appRoolediv');showDivByID('serviceparentorgdiv');showDivByID('serviceparentorgappdiv');" checked="checked">  > AppAccount & ServiceOrg <%--No I18N--%><%-- NO OUTPUTENCODING --%>
 						<%
-						}
+					}
 						%>
 						<input type="radio" name="orgType" value="<%=Service.OrgType.ADMIN_TOOL.getValue()%>" onchange=");hideDivByID('appRoolediv');hideDivByID('serviceparentorgdiv');hideDivByID('serviceparentorgappdiv');" <%=(!service.isServiceOrgEnabled() && !service.isAppAccountEnabled() ? "checked=\"checked\"" : "" )%>  >  Admin Tool/Internal App(No DB) <%-- NO OUTPUTENCODING --%><%--No I18N--%> 
 					</div>
 					
 					<%
-										if(service.isServiceOrgEnabled()){
-										%>
+					
+									if(service.isServiceOrgEnabled()){
+					
+					%>
 					<div class="labelkey">ServiceOrg Org Model :</div><%--No I18N--%>
 					<div class="labelvalue radiobutton"><input type="radio" name="serviceorgaccounttype" value="<%=Service.OrgModel.SINGLE.getValue()%>" <%=(service.getServiceOrgAccountType() ==Service.OrgModel.SINGLE.getValue() ? "checked=\"checked\"" : "" )%> > Single <input type="radio" name="serviceorgaccounttype" value="<%=Service.OrgModel.MULTIPLE.getValue()%>" <%=(service.getServiceOrgAccountType() ==Service.OrgModel.MULTIPLE.getValue() ? "checked=\"checked\"" : "" )%>> Multiple</div><%--No I18N--%><%-- NO OUTPUTENCODING --%>
-					<%
-					}
-												if(service.isAppAccountEnabled()){
+					<% 
+									}
+									if(service.isAppAccountEnabled()){
+									
 					%>
 					<div class="labelkey">AppAccount Org Model :</div><%--No I18N--%>
 					<div class="labelvalue radiobutton"><input type="radio" name="appaccaccounttype" value="<%=Service.OrgModel.SINGLE.getValue()%>" <%=(service.getAppaccAccountType() ==Service.OrgModel.SINGLE.getValue() ? "checked=\"checked\"" : "" )%> > Single <input type="radio" name="appaccaccounttype" value="<%=Service.OrgModel.MULTIPLE.getValue()%>" <%=(service.getAppaccAccountType() ==Service.OrgModel.MULTIPLE.getValue() ? "checked=\"checked\"" : "" )%>> Multiple</div><%--No I18N--%><%-- NO OUTPUTENCODING --%>
 					<%
-					}
+									}
 					%>
 					
-					<div id="appRoolediv" <%=!service.isAppAccountEnabled() ? "style=\"display: none;\"" :""%> >
+					<div id="appRoolediv" <%=!service.isAppAccountEnabled() ? "style=\"display: none;\"" :"" %> >
 
 							<%
-							StringBuilder roles = new StringBuilder();
-												if(appRoles != null)  {
-													for(com.zoho.accounts.AppResourceProto.App.Role rol :  appRoles) {
-														if(roles.length() > 0 ){
-															roles.append(",");
-														}
-														roles.append(rol.getRoleName());
-													}
-												}
-							%>					
+								StringBuilder roles = new StringBuilder();
+							if(appRoles != null)  {
+								for(com.zoho.accounts.AppResourceProto.App.Role rol :  appRoles) {
+									if(roles.length() > 0 ){
+										roles.append(",");
+									}
+									roles.append(rol.getRoleName());
+								}
+							}%>					
 						<div class="labelkey">Existing AppAccount roles :</div><%--No I18N--%>
 						<div class="labelvalue">
 							<input name="existAppAccRoles" type="text" class="input" disabled="disabled" value="<%=IAMEncoder.encodeHTMLAttribute(roles.toString())%>">
@@ -561,38 +567,39 @@
 						</div>
 					</div>
 					
-					<div id="serviceparentorgdiv" <%=!service.isServiceOrgEnabled() ? "style=\"display: none;\"" :""%> >
+					<div id="serviceparentorgdiv" <%=!service.isServiceOrgEnabled() ? "style=\"display: none;\"" :"" %> >
 						<div class="labelkey">Parent ServiceOrg : </div><%--No I18N--%>
 						<div class="labelvalue choosen-style">
 							<select name="parentOrgtype" style="width:250px;" class="chosen-serType chosen-oath-admin-select labelvalue" tabindex="6">
-								<option value="-1" <%=(service.getParentServiceOrgType() == -1)  ? "selected=\"selected\"" :""%> > None</option><%--No I18N--%>
-					        	<%
-					        	for(OrgType st : OrgType.values()) {
-					        				        			if(st.isServiceOrg()) {
+								<option value="-1" <%=(service.getParentServiceOrgType() == -1)  ? "selected=\"selected\"" :"" %> > None</option><%--No I18N--%>
+					        	<% 
+					        		for(OrgType st : OrgType.values()) {
+					        			if(st.isServiceOrg()) {
 					        	%>
 					        			<option value="<%=st.getType()%>" <%=((service.getParentServiceOrgType() == st.getType())  ? "selected=\"selected\"" :"" )%> > <%=IAMEncoder.encodeHTML(st.name() +"(" + st.getServiceName() +")")%></option><%-- NO OUTPUTENCODING --%>
 					        	<%
-					        	}
-					        				        		}
+					        		}
+					        		}
 					        	%>
 							</select>
 						</div>
 					</div>
 					
-					<div id="serviceparentorgappdiv" <%=!service.isAppAccountEnabled() ? "style=\"display: none;\"" :""%> >
+					<div id="serviceparentorgappdiv" <%=!service.isAppAccountEnabled() ? "style=\"display: none;\"" :"" %> >
 		<div class="labelkey">Parent AppAccount :</div><%--No I18N--%>
 		<div class="labelvalue choosen-style">
 			<select name="parentappOrgtype" style="width:250px;" class="chosen-serType1 chosen-oath-admin-select labelvalue" tabindex="6">
 			<option value="-1" > None</option> <%--No I18N--%>
-	        	<%
-	        	for(OrgType st : OrgType.values()) {
-	        		        			if(st == OrgType.BCOrgType || st == OrgType.DEFAULT || st == OrgType.ACCOUNTS || !st.isAppAccountType()) {
-	        		        				continue;
-	        		        			}
+	        	<% 
+	        		for(OrgType st : OrgType.values()) {
+	        			if(st == OrgType.BCOrgType || st == OrgType.DEFAULT || st == OrgType.ACCOUNTS || !st.isAppAccountType()) {
+	        				continue;
+	        			}
+	        			
 	        	%>
-	        			<option value="<%=st.getType()%>" <%=((service.getParentAppAccountOrgType() == st.getType())  ? "selected=\"selected\"" :"" )%> ><%=st.name() +"(" + st.getServiceName() +")"%></option><%-- NO OUTPUTENCODING --%>
+	        			<option value="<%=st.getType() %>" <%=((service.getParentAppAccountOrgType() == st.getType())  ? "selected=\"selected\"" :"" )%> ><%=st.name() +"(" + st.getServiceName() +")"%></option><%-- NO OUTPUTENCODING --%>
 	        	<%
-	        	}
+	        		}
 	        	%>
 			</select>
 		</div>
@@ -601,7 +608,7 @@
 		<div class="labelvalue">
 			<select name="service" style="width: 200px;">
 				<%
-				for(HandlerObject.Services serviceName : AccountsInternalConst.HandlerObject.values()) {
+				for(AccountsInternalConst.Services serviceName : AccountsInternalConst.Services.values()) {
 				%>
 					<option value="<%= serviceName.getValue() %>"><%=serviceName.name()%></option>><%--No I18N--%>
 				<% 
@@ -637,3 +644,4 @@
 	    var isAppAccountEnabled = <%=isAppAccount%>
 	
     </script>
+    <%} %>

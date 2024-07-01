@@ -38,7 +38,7 @@
      </div>
      <br />
      <div class="labelkey">Enter Admin password :</div> <%-- No I18N --%>
-     <div class="labelvalue"><input type="password" id="tfapassword" class="input" onkeyup="if(event.keyCode==13) saveTFAAdmin();"/></div>
+     <div class="labelvalue"><input type="password" autocomplete="off" id="tfapassword" class="input" onkeyup="if(event.keyCode==13) saveTFAAdmin();"/></div>
      <div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="saveTFAAdmin();">
 			<span class="btnlt"></span>
@@ -52,7 +52,7 @@
 	 <div class="labelkey">Email id or zuid :</div> <%-- No I18N --%> 
 	 <div class="labelvalue"><input type="text" id="reset_email" class="input" autocomplete="off"/></div>
 	  <div class="labelkey">Enter Admin password :</div> <%-- No I18N --%>
-     <div class="labelvalue"><input type="password" id="tfareset_pass" class="input"/></div>
+     <div class="labelvalue"><input type="password" autocomplete="off" id="tfareset_pass" class="input"/></div>
      <div class="labelkey">&nbsp;</div>
      <div class="labelvalue"><button style="background-color: red;color: #FFFFFF;border:1px solid red" onclick="resetTFA()" >Reset</button></div> <%-- No I18N --%>
 	<div class="labelkey">Response From Server :</div> <%-- No I18N --%>
@@ -170,7 +170,7 @@
 	
 	 <div class="password_space">
 	 	<div class="labelkey">Enter Admin password :</div> <%-- No I18N --%>
-     	<div class="labelvalue"><input type="password" id="tfa_rec_password" class="input" onkeyup="if(event.keyCode==13) generateAdminRecoveryCode();"/></div>
+     	<div class="labelvalue"><input type="password" autocomplete="off" id="tfa_rec_password" class="input" onkeyup="if(event.keyCode==13) generateAdminRecoveryCode();"/></div>
      </div>
      
      <div class="accbtn Hbtn">

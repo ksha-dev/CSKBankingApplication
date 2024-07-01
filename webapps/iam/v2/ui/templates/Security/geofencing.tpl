@@ -3,6 +3,7 @@
 		 var i18nGeofencingkeys = {
  				"IAM.CHOOSE.COUNTRIES" : '<@i18n key="IAM.CHOOSE.COUNTRIES" />',
  				"IAM.LAST.CHANGED" : '<@i18n key="IAM.LAST.CHANGED" />',
+ 				"IAM.REMOVE.GEOFENCING" : '<@i18n key="IAM.REMOVE.GEOFENCING" />',
  				"IAM.ERROR.FIELD.SELECT.LEAST" : '<@i18n key="IAM.ERROR.FIELD.SELECT.LEAST" />',
  				"IAM.SETTINGS.AUTHORIZED.SECONDS.AGO" : '<@i18n key="IAM.SETTINGS.AUTHORIZED.SECONDS.AGO" />',
  				"IAM.GEOFENCING.SELECTED.COUNTED" : '<@i18n key="IAM.GEOFENCING.SELECTED.COUNTED" />',
@@ -12,7 +13,12 @@
  				"IAM.GEOFENCING.ALLOWED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE" : '<@i18n key="IAM.GEOFENCING.ALLOWED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE" />',
  				"IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY" : '<@i18n key="IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY" />',
  				"IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE" : '<@i18n key="IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE" />',
+ 				"IAM.GEOFENCING.RESTRICTED.COUNTRY" : '<@i18n key="IAM.GEOFENCING.RESTRICTED.COUNTRY" />',
+ 				"IAM.GEOFENCING.ALLOWED.COUNTRY" : '<@i18n key="IAM.GEOFENCING.ALLOWED.COUNTRY" />',
+ 				"IAM.GEOFENCING.RESTRICTED.COUNTRIES.COUNT" : '<@i18n key="IAM.GEOFENCING.RESTRICTED.COUNTRIES.COUNT" />',
+ 				"IAM.GEOFENCING.ALLOWED.COUNTRIES.COUNT" : '<@i18n key="IAM.GEOFENCING.ALLOWED.COUNTRIES.COUNT" />',
  				"IAM.GEOFENCING.CURRENT.COUNTRY.NOT.IN.RESTRICTED.LIST.ERROR" : '<@i18n key="IAM.GEOFENCING.CURRENT.COUNTRY.NOT.IN.RESTRICTED.LIST.ERROR" />',
+ 				"IAM.GEOFENCING.ERROR.COUNTRY.LIMIT" : '<@i18n key="IAM.GEOFENCING.ERROR.COUNTRY.LIMIT" />',
  				"IAM.GEOFENCING.CURRENT.COUNTRY.NOT.IN.ALLOWED.LIST.ERROR" : '<@i18n key="IAM.GEOFENCING.CURRENT.COUNTRY.NOT.IN.ALLOWED.LIST.ERROR" />' 
 		};
 	</script>
@@ -34,6 +40,7 @@
 				<div id="get_geofencing_data">
 					<div id="country_field_cont">
 						<div class="textbox_label"><@i18n key="IAM.COUNTRY.TITLE" /></div>
+						<input type="hidden" id="geo_fencing_group" />
 						<select id="country_list_for_geo_fencing" onchange="remove_error();setValueInSelectedList();" multiple embed-icon-class="flagIcons" searchable="true">
                       		<#list Countries as countrydata>
                       			<option value="${countrydata.getISO2CountryCode()}" id="${countrydata.getISO2CountryCode()}" >${countrydata.getDisplayName()}</option>
@@ -115,6 +122,7 @@
 		</div>
 		
 		<div id="empty_geofencing">
+				<div id="org_geo_fencing_rest_warn" class="wrng_text_block" style="display:none;"><span class="icon_warnn icon-warningfill"></span><span class="geofencing_strict_msg"><@i18n key="IAM.ORG.GEO.FENCING.RESTRICT.EMPTY.WARN" /></span></div>
 				<div id="no_geofencing_add_here" class="box_content_div">
 					<div class="no_data no_geofencing"></div>
 					<button type="submit" class="primary_btn_check center_btn" onclick="showGeoFencingPopup()" id="set_geofencing"><span><@i18n key="IAM.GEOFENCING.ENABLE.BUTTON" /> </span></button>
@@ -124,7 +132,8 @@
 		<div class="box_info flex_container" id="geofencing_stored_data">
 			<div class="password_name_and_time">
 				<div class="box_head"><@i18n key="IAM.GEOFENCING" /></div>
-				<div class="box_discrption" id="modified_time" style="">Last changed  1 year ago</div>
+				<div class="box_discrption" id="modified_time" style=""></div>
+				<div class="box_discrption hide" id="disabled_text_with_country" style=""></div>
 			</div>
 			<div class="access_option">
 				<span class="info_tag blue_tag"><@i18n key="IAM.GEOFENCING.TAG.BROWSER" /></span>
@@ -134,6 +143,7 @@
 				<button class="primary_btn_check center_btn " id="edit_geo_fencing_button" onclick="showGeoFencingPopup(true)"><@i18n key="IAM.GEOFENCING.BUTTON.EDIT" /></button>
 			</div>
 		</div>
+		<div id="geo_fencing_rest_configured_warn" class="wrng_text_block" style="display:none;"><span class="icon_warnn icon-warningfill"></span><span class="geofencing_strict_msg"><@i18n key="IAM.ORG.GEO.FENCING.RESTRICT.CONFIGURED.WARN" /></span></div>
 		<div class="no_data_text box_bottom_content" id="usecase_abt_geofencing" style="background:#F3F3F3;padding: 12px 16px;">
 			<div class="flag_list"></div>
 			<div class="overflow_count hide">

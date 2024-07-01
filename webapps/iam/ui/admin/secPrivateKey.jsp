@@ -1,7 +1,7 @@
 <%-- $Id$ --%>
 <%@page import="com.zoho.accounts.dcl.DCLUtil"%>
 <%@page import="com.zoho.accounts.SystemResourceProto.DCLocation"%>
-<%@page import="com.zoho.accounts.agent.AuthUtil"%>
+<%@page import="com.zoho.accounts.internal.AuthUtil"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="java.util.logging.Logger"%>
 <%@page import="java.security.PublicKey"%>

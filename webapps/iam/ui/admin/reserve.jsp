@@ -21,7 +21,7 @@
 		    <div>Unreserve</div>
 		</div>
 		<div class="labelkey">Enter Admin password :</div>
-		<div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="reserveUser(document.reserve)">
 			<span class="btnlt"></span>

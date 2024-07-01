@@ -44,7 +44,7 @@
 	
 	if(uri.equals(cPath + "/ui/configure/mobile/login")){//No I18N
 		
-		if(!IAMUtil.isCurrentUserAllowed(OrgPolicy.Policy.ALLOW_CONFIGURE_PRIMARY_MOBILE_NUMBER.getName())) {
+		if (!IAMUtil.checkOrgPolicy(user, OrgPolicy.Policy.ALLOW_SMS_OPERATIONS.getName()) || !IAMUtil.checkOrgPolicy(user, OrgPolicy.Policy.ALLOW_CONFIGURE_PRIMARY_MOBILE_NUMBER.getName())) {
 			blockMobileNumberAddition = true;
 			long orgContactZuid = Util.ORGAPI.getOrg(IAMUtil.getLong(user.getZoid())).getOrgContact();
 			orgContact = (orgContactZuid != -1) ? Util.USERAPI.getUserFromZUID(String.valueOf(orgContactZuid)).getContactEmail() : null;
@@ -61,7 +61,7 @@
 				long orgContactZuid = Util.ORGAPI.getOrg(IAMUtil.getLong(user.getZoid())).getOrgContact();
 				orgContact = (orgContactZuid != -1) ? Util.USERAPI.getUserFromZUID(String.valueOf(orgContactZuid)).getContactEmail() : null;
 			}
-			if(!IAMUtil.isCurrentUserAllowed(OrgPolicy.Policy.ALLOW_CONFIGURE_RECOVERY_MOBILE_NUMBER.getName())) {
+			if (!IAMUtil.checkOrgPolicy(user, OrgPolicy.Policy.ALLOW_SMS_OPERATIONS.getName()) || !IAMUtil.checkOrgPolicy(user, OrgPolicy.Policy.ALLOW_CONFIGURE_RECOVERY_MOBILE_NUMBER.getName())) {
 				blockMobileNumberAddition = true;
 				long orgContactZuid = Util.ORGAPI.getOrg(IAMUtil.getLong(user.getZoid())).getOrgContact();
 				orgContact = (orgContactZuid != -1) ? Util.USERAPI.getUserFromZUID(String.valueOf(orgContactZuid)).getContactEmail() : null;

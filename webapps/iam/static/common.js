@@ -210,7 +210,7 @@ function loadui(url, fnctName,panel_id) {
     if(fromService) {
     	window.location.href = contextpath+url;
     } else {
-    	var resp = getOnlyGetPlainResponse(contextpath+url,"");
+    	var resp = getOnlyGetPlainResponse(contextpath+url,"", true);
     	    if(panel_id && IsJsonString(resp.trim())){
     	        var json = JSON.parse(resp.trim());
     	        if(json.cause && json.cause.trim() === "invalid_password_token") {
@@ -442,13 +442,17 @@ function getPlainResponse(action, params) {
     return objHTTP.responseText;
 }
 
-function getOnlyGetPlainResponse(action, params) {
+function getOnlyGetPlainResponse(action, params, csrfNeeded) {
     if(params.indexOf("&") === 0) {
 	params = params.substring(1);
     }
     var objHTTP,result;objHTTP = xhr();
     objHTTP.open('GET', action, false);
     objHTTP.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8');
+    
+	if(csrfNeeded){
+		objHTTP.setRequestHeader('X-ZCSRF-TOKEN',csrfParam);
+	}
     if(isEmpty(params)) {
         params = "__d=e"; //No I18N
     }

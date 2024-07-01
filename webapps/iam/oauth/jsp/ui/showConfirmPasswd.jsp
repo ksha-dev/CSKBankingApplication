@@ -6,13 +6,13 @@
 <%@page import="com.zoho.accounts.internal.util.AccountsInternalConst"%>
 <%@page import="com.adventnet.iam.security.SecurityUtil"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
 String cPath = request.getContextPath();
 String cssurl_st = cPath+"/static";//No I18N
 String jsurl = cPath+"/static";//No I18N
 String email = ActionContext.getContext() != null? (String) ActionContext.getContext().get("EMAIL") : ""; //No I18N
+String scopeDetailsParam = request.getAttribute("scopeDetailsParam") != null ? (String) request.getAttribute("scopeDetailsParam") : null;
 %>
 <html>
 <head>
@@ -21,6 +21,9 @@ String email = ActionContext.getContext() != null? (String) ActionContext.getCon
  <link href="<%=cssurl_st%>/mobilelogin.css" type="text/css" rel="stylesheet" /><%-- NO OUTPUTENCODING --%>
  <script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
  <script src="<%=jsurl%>/common.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+ <script type="text/javascript" src="<%=cPath%>/encryption/script"></script>
+ <script type="text/javascript" src="<%=cPath%>/v2/components/js/security.js"></script>
+ <%-- <script src="${SCL.getStaticFilePath("/v2/components/js/security.js")}"></script> --%>
 <script>
 
 function getcsrfParams() {
@@ -50,32 +53,36 @@ function getcsrfParams() {
 			document.getElementById("pwd").focus();
         	return false;
     	}
-	$.ajax({
 		
-		type: "POST",//NO I18N
-		    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/approve/internal", //NO I18N
-		    data: "<s:property escapeHtml="false" value="queryParams"/>&" + getcsrfParams()+"&is_ajax=true&cPass=" + euc(paswd),//NO I18N
-		    //data: getcsrfParams()+"&is_ajax=true&cPass=" + paswd,//NO I18N
-		    dataType  : "json",//NO I18N
-		    success: function(data, status, xnr) {
-		        if(data.redirect_uri) {
-		        	window.location.replace(data.redirect_uri);
-		        } else {
-		        	showmsg(data.message);
-		        }
-		    },
-		    error: function(data, textStatus, errorThrown){
-		    	showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>');
-		    }
+		encryptData.encrypt([paswd]).then(function(encryptedpassword) {
+			encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			$.ajax({
+				
+				type: "POST",//NO I18N
+				    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/approve/internal", //NO I18N
+				    data: "approvedScope=<%=scopeDetailsParam%>&" + getcsrfParams()+"&is_ajax=true&cPass=" + euc(encryptedpassword),//NO I18N
+				    //data: getcsrfParams()+"&is_ajax=true&cPass=" + paswd,//NO I18N
+				    dataType  : "json",//NO I18N
+				    success: function(data, status, xnr) {
+				        if(data.redirect_uri) {
+				        	window.location.replace(data.redirect_uri);
+				        } else {
+				        	showmsg(data.message);
+				        }
+				    },
+				    error: function(data, textStatus, errorThrown){
+				    	showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>');
+				    }
 
-		});
+				});
+		})
 }
 	
 	function createandSubmitOpenIDForm(idpProvider) {
     	if(idpProvider != null) {
     		var form = document.createElement("form");
     		var action =  "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/approve/internal?"; //NO I18N
-    		var param = "<s:property escapeHtml="false" value="queryParams"/>&" + getcsrfParams()+"&fs_request=true"; //NO I18N
+    		var param = "approvedScope=<%=scopeDetailsParam%>&"+ getcsrfParams()+"&fs_request=true"; //NO I18N
     		action = action  + param;
     		form.setAttribute("id", idpProvider + "form");
     		form.setAttribute("method", "POST");
@@ -274,9 +281,6 @@ background-color: #f7f7f7;
 		<div style="font-size: 14px; margin:10px 0px 20px 0px;"><%=Util.getI18NMsg(request, "IAM.OAUTH.VERIFY.MOBILEAPP")%></div>
 	 	<div>
 			<div id="password" style="width:80%; margin:0px auto; background-color:#fff;padding-bottom: 20px; padding-top: 10px;">
-				<div style="padding:5px 0px 10px 0px;">
-					<img src="<s:property escapeHtml="false" value="PHOTO_URL"/>" id="circle" alt="Smiley face" height="100" width="100">
-				</div>
 				<div class="forgot_sub"><%=Util.getI18NMsg(request,"IAM.TFA.HI.USERNAME", email)%>, </div>
 				<span id="msgpanel" class="hide"><%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%></span>
 				<div class="field_label">

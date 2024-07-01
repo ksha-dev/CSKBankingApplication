@@ -8,15 +8,26 @@ window.ZADefaultCountry = '${default_country_code}';
 window.ZADefaultState = "";
 window.ZACountryStateDetails = ${country_state_details};
 window.loadCountryOptions = false;
+<#if signup_defaultmode?has_content>
+	window.signup_defaultmode = "${signup_defaultmode}";
+</#if>
 var uriPrefix = '${uri_prefix}';
 var captchaPrefix = '${captcha_prefix}';
 var isCDNEnabled = Boolean("<#if isCDNEnabled>true</#if>");
 var temp_token = '${tempToken}';
 var loginIdChanged =false;
+var isMobile = parseInt('${isMobile}');
+var isSplitfield = Boolean("<#if isSplitfiled>true</#if>");
+var SplitInputClone;
 var showMobileNoPlaceholder = Boolean("<#if showMobileNoPlaceholder>true</#if>");
 var otp_length=${otp_length};
+var zero_included_countrylist = ${zero_included_countrylist};
 <#if (('${load_country}')?has_content)>
 	window.loadCountryOptions = "${load_country}";
+</#if>
+var resIntegrity = {};
+<#if (('${resIntegrity}')?has_content)>
+	resIntegrity = ${resIntegrity};		
 </#if>
 var iam_contextpath = "";
 window.requireEnabled = typeof window.require==='function'&&typeof window.requirejs==='function' && window.requirejs.config != undefined;
@@ -68,6 +79,10 @@ function zaOnLoadHandler() {
 			}
 			style.href = cssURLs[i]; 
 			style.rel = "stylesheet"; 
+			if(resIntegrity && resIntegrity[cssURLs[i]]) {
+				style.integrity = resIntegrity[cssURLs[i]];
+				style.crossOrigin = "anonymous";	// No I18N
+			}
 			docHead.appendChild(style); 
 		}
 	}
@@ -114,6 +129,10 @@ function zaOnLoadHandler() {
 function includeScript(url, callback) {
 	var script = document.createElement("script"); 
 	script.src = url; 
+	if(resIntegrity && resIntegrity[url]) {
+		script.integrity = resIntegrity[url];
+		script.crossOrigin = "anonymous"; //No I18N
+	}
 	if (callback) { 
 		script.onload = script.onreadystatechange = function() { 
 			if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {

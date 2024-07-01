@@ -1,4 +1,8 @@
 <%-- $Id$ --%>
+<%@page import="com.zoho.iam2.rest.ProtoUtil"%>
+<%@page import="com.adventnet.iam.ServiceOrgMember"%>
+<%@page import="com.adventnet.iam.AccountMember"%>
+<%@page import="com.zoho.accounts.internal.util.CloseAccountInfo"%>
 <%@page import="com.adventnet.iam.IAMException.IAMErrorCode"%>
 <%@page import="com.zoho.logs.common.jsonorg.JSONException"%>
 <%@page import="com.zoho.accounts.AccountsConstants"%>
@@ -19,7 +23,6 @@
 <%@page import="java.util.List"%>
 <%@page import="com.adventnet.iam.User"%>
 <%@page import="com.zoho.accounts.AccountsConstants.ZIDType"%>
-<%@page import="com.zoho.accounts.AccountsProto.Account.AppAccount.AppAccountService.AccountMember"%>
 <%@page import="com.zoho.accounts.Accounts.RESOURCE.APPACCOUNTMEMBER"%>
 <%@page import="com.adventnet.iam.internal.CloseAccountHandlerDispatcher"%>
 <%@page import="java.util.stream.Collectors"%>
@@ -40,9 +43,14 @@
 <%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder,com.adventnet.iam.IAMUtil"%>
 
-<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script><%-- NO OUTPUTENCODING --%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script><%-- NO OUTPUTENCODING --%>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" ></link><%-- NO OUTPUTENCODING --%>
+<%
+    String cPath = request.getContextPath();
+    String cssurl =  cPath+"/styles";	//No I18N
+    String jsurl = cPath+"/static";		//No I18N
+%>
+<script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+<link href="<%=cssurl%>/select2.min.css" rel="stylesheet" />	<%-- NO OUTPUTENCODING --%>
+<script src="<%=jsurl%>/select2.min.js"></script>	<%-- NO OUTPUTENCODING --%>
 
 <script src="closeaccount.js" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
 <link href="closeaccount.css"  rel="stylesheet" type="text/css"></link><%-- NO OUTPUTENCODING --%>
@@ -149,7 +157,10 @@
 					appAccounts.forEach(aAcc -> portalIds.add(aAcc.getZaaid()));
 				}
 			} else {
-				List<ServiceOrg> serviceOrgs = u.isOrgAdmin() ?  getServiceOrgs(orgType.getType(), u.getZOID()) : Util.serviceOrgAPI.getServiceOrgs(orgType.getType(), u.getZUID());
+				//Supported listing only service orgs of the given user.
+				//Handling org-users portal needs additional validations. As this is only for handler testing, the current support should be enough.
+				//If need to test for org user's portal, app team can add the OrgAdmin to that zsoid and test the handler for that portal.
+				List<ServiceOrg> serviceOrgs = Util.serviceOrgAPI.getServiceOrgs(orgType.getType(), u.getZUID());
 				if(serviceOrgs != null) {
 					serviceOrgs.forEach(sOrg -> portalIds.add(sOrg.getZsoid()));
 				}
@@ -187,13 +198,13 @@
 				
 				else if ("precheck".equals(panel)) {
 			String zidToClose = u.getZuid(); 
-			User currentUser = IAMUtil.getCurrentUser();
-			String requestId = CloseAccountInternalUtil.getRequestId(String.valueOf(zidToClose));
-			if(!Util.isValid(requestId))
-			{
-			 requestId = CloseAccountInternalUtil.initiateRequest(String.valueOf(zidToClose),true);
+			CloseAccountInfo caInfo = CloseAccountInternalUtil.getRequest(String.valueOf(zidToClose));
+			if(caInfo == null ) {
+				//TODO: avoid populating all the details as done for a normal user initiated flow.
+				caInfo = CloseAccountInternalUtil.initiateRequest(String.valueOf(zidToClose),true);
 			}
-			AccountCloseType closeType = CloseAccountInternalUtil.getAccountCloseType(requestId);
+			String requestId = caInfo.getRequestID();
+			AccountCloseType closeType = caInfo.getCloseType();
 			
 			long zid = Long.valueOf(request.getParameter("zid"));
 			String handler = request.getParameter("handlerType");
@@ -207,13 +218,25 @@
 				if(orgType == null || (!u.isOrgUser() && orgType.isAppAccountType())) {
 					orgAccounts = Collections.singletonList(sName);
 				} else if (orgType.isAppAccountType()) {
-					AppAccount appAccount = Util.appAccountVOAPI.getAppAccount(orgType.getType(), zid);
-					appAccounts = Collections.singletonList(appAccount);
+					//Only is_member check and no admin check, as it is pre-close check handlers.
+					if( isAppAccountMember( orgType, zid, u.getZUID(), false )){
+						AppAccount appAccount = Util.appAccountVOAPI.getAppAccount(orgType.getType(), zid);
+						appAccounts = Collections.singletonList(appAccount);						
+					} else {
+						//Member Validation failure
+						out.println("Error : input user not part of zid");  //NO I18N
+						return;
+					}
 				} else if (orgType.isServiceOrg()) {
-					ServiceOrg serviceOrg = Util.serviceOrgAPI.getServiceOrg(orgType.getType(), zid);
-					serviceOrgs = Collections.singletonList(serviceOrg);
+				    if( isServiceOrgMember(orgType, zid, u.getZUID() , false )){
+                        ServiceOrg serviceOrg = Util.serviceOrgAPI.getServiceOrg(orgType.getType(), zid);
+                        serviceOrgs = Collections.singletonList(serviceOrg);
+					} else {
+						//Member Validation failure
+						out.println("Error : input user not part of zid");  //NO I18N
+						return;
+					}
 				}				
-				requestId = CloseAccountInternalUtil.getRequestId(String.valueOf(zidToClose));
 				CloseAccountHandlerDispatcher.enQ(handlerType, zidToClose, closeType, requestId ,serviceOrgs, appAccounts, orgAccounts, devSetupUrl);
 			}
 			Thread.sleep(3000);
@@ -221,8 +244,7 @@
 			if(!isValidStatusCode(res)) {
 				out.print(getInvalidErrorCodeMsg());
 			}
-			
-			String paidStatus = CloseAccountInternalUtil.isPaidAccount(requestId, String.valueOf(zid));
+
 			String refreshUrl = request.getRequestURL()+"?"+request.getQueryString() + ((isRefresh) ? "" : "&requestId="+requestId+"&refresh=true");	//No I18N
 			boolean isCloseMem = HandlerType.pre_close_members_check.equals(handlerType);
 			String nextPage = request.getRequestURL()+"?type="+type+"&value="+IAMEncoder.encodeURL(value)+"&sname="+sName+"&zid="+zid+"&requestId="+requestId+"&panel="+(isCloseMem?"userslist":"closeacc");	//No I18N
@@ -249,11 +271,27 @@
 					
 	else if("userslist".equals(panel)) {	//No I18N
 			String zid = request.getParameter("zid");
+			long zidLong = Long.parseLong(zid);
 			String requestId = request.getParameter("requestId");
 		%>	
 		<div style="margin-left: 30%; margin-bottom:30px;" class="subtitle">Select Users To Close</div> 
 		<div style="width:500px; height:500px; border-style:solid; border-width:thin;margin-left:22%;overflow:scroll;">	
 		<%
+		if (orgType.isAppAccountType()) {
+			//Only is_member check and no admin check, as its only for listing members here
+			if( !isAppAccountMember( orgType, zidLong, u.getZUID(), false )){
+				//Member Validation failure
+				out.println("Error : input user not part of zid");  //NO I18N
+				return;
+			}
+		} else if (orgType.isServiceOrg()) {
+		    if( !isServiceOrgMember(orgType, zidLong, u.getZUID() , false )){
+				//Member Validation failure
+				out.println("Error : input user not part of zid");  //NO I18N
+				return;
+			}
+		}				
+
 
 		String nextPage = "type="+type+"&value="+IAMEncoder.encodeURL(value)+"&sname="+sName+"&zid="+zid+"&panel=closeacc";	//No I18N
 		if(Util.isValid(devSetupUrl)) {
@@ -288,36 +326,80 @@
 				
 			else if ("closeacc".equals(panel)) {
 			String zid = request.getParameter("zid");
+			long zidLong = Long.parseLong(zid);
 			String m = request.getParameter("members");
 			
 			String zidToClose = u.getZuid(); 			
 			User currentUser = IAMUtil.getCurrentUser();
-			String requestId = CloseAccountInternalUtil.getRequestId(zidToClose);
-			AccountCloseType closeType = CloseAccountInternalUtil.getAccountCloseType(requestId);
+			CloseAccountInfo caInfo = CloseAccountInternalUtil.getRequest(zidToClose);
+			String requestId = caInfo.getRequestID();
+			AccountCloseType closeType = caInfo.getCloseType();
 			HandlerType handlerType = (m == null) ? HandlerType.close_account : HandlerType.close_members; 
-			
+			boolean checkIsAdmin = handlerType == HandlerType.close_account;
 			if(!isRefresh) {
 				List<AppAccount> appAcc = null;
 				List<ServiceOrg> serOrg = null;
 				List<String> orgOrPersonalService = null;
-				List<User> users = null;
 				
 				if (orgType == null) {
 					orgOrPersonalService = Collections.singletonList(sName);
 				} else if(orgType.isAppAccountType()) {
-					AppAccount aAcc = Util.appAccountVOAPI.getAppAccount(orgType.getType(), Long.valueOf(zid));
-					if(aAcc !=null) {
-						appAcc = Collections.singletonList(aAcc);
+					if( isAppAccountMember( orgType, zidLong, u.getZUID(), checkIsAdmin )){
+						AppAccount aAcc = Util.appAccountVOAPI.getAppAccount(orgType.getType(), Long.valueOf(zid));
+						if(aAcc !=null) {
+							appAcc = Collections.singletonList(aAcc);
+						}
+					} else {
+						//Member/Admin Validation failure
+						if(checkIsAdmin){							
+							out.println("Error : input user is not admin of given zid");    //NO I18N
+						} else {
+							out.println("Error : input user not part of zid");    //NO I18N
+						}
+						return;
 					}
 				} else if(orgType.isServiceOrg()) {
-					ServiceOrg sOrg = Util.serviceOrgAPI.getServiceOrg(orgType.getType(), Long.valueOf(zid));
-					if(sOrg != null) {
-						serOrg = Collections.singletonList(sOrg);
+					if( isServiceOrgMember(orgType, zidLong, u.getZUID(), checkIsAdmin )){
+						ServiceOrg sOrg = Util.serviceOrgAPI.getServiceOrg(orgType.getType(), Long.valueOf(zid));
+						if(sOrg != null) {
+							serOrg = Collections.singletonList(sOrg);
+						}
+					} else {
+						//Member/Admin Validation failure
+						if(checkIsAdmin){							
+							out.println("Error : input user is not admin of given zid");    //NO I18N
+						} else {
+							out.println("Error : input user not part of zid");    //NO I18N
+						}
+						return;
 					}
 				}
 				if(Util.isValid(m)) {
 					String[] members = m.split(",");
-					//users = Util.USERAPI.getUsers(members);
+					//Validating if ZUID given for close-member are part of the org under testing
+					Long [] memZuids = Stream.of(members).map(e -> Long.parseLong(e)).toArray(Long[]::new);
+					List<User> users = Util.USERAPI.getUsers(memZuids);
+					if(users != null){
+						for(User memUser : users){
+							if(u.isOrgUser()){
+								if( !u.getZoid().equals(memUser.getZoid()) ){
+									out.println("Error : input member :" + memUser.getZUID() + ", is not part of org of input user");    //NO I18N
+									return;
+								}
+								String memEmail = memUser.getVerifiedPrimaryEmail();
+							    if(!Util.isValid(memEmail) ||  !memEmail.endsWith("@zohotest.com") ){
+									out.println("Error : input member :" + memUser.getZUID() + ", is not a zohotest.com account");    //NO I18N
+									return;							    	
+							    }
+							} else if(u.getZUID() != memUser.getZUID()){
+								out.println("Error : input member :" + memUser.getZUID() + ", is not the input user");    //NO I18N
+								return;								
+							}
+						}
+					} else {
+						out.println("Error : invalid input members");    //NO I18N
+						return;								
+					}
 					CloseAccountInternalUtil.addUsersSelectedToDelete(requestId, Arrays.asList(members));
 				}
 				if(handlerType == HandlerType.close_members)
@@ -351,7 +433,7 @@
 	if(user == null) {
 		return "No User found";	//No I18N
 	}
-	String email = user.getPrimaryEmail();
+	String email = user.getVerifiedPrimaryEmail();
 	if(email==null || !email.matches("[\\w]([\\w\\-\\.\\+\\']*)@zohotest.com$")) {
 		return "Only zohotest.com emails allowed";	//No I18N
 	} else if(user.isOrgUser() && !user.isOrgAdmin()) {
@@ -380,7 +462,7 @@
 }%>
 
 <%!private static List<ServiceOrg> getServiceOrgs(int typeId, long zoid) throws Exception {
-	List<ServiceOrg> sOrgs = new ArrayList<>();
+	List<ServiceOrg> sOrgs = new ArrayList<>();	
 	Iterator<UserLite> ulItr = Util.ORGAPI.getOrgUserLitesIterator(zoid);
 	while(ulItr.hasNext()){
 		List<ServiceOrg> sOrgsUnderZuid = Util.serviceOrgAPI.getServiceOrgs(typeId, ulItr.next().getZuid());
@@ -409,6 +491,7 @@
 }%>
 
 <%!private static List<User> getUsersUnderPortal(OrgType orgType, User u, long zid) throws Exception {
+    //No user_vs_zid validation as this returns only the list of member in the org, under the input email.
 	List<User> usersUnderPortal = new ArrayList<>();
 	List<Long> usersUnderOrg = new ArrayList<>();
 	if(u.isOrgUser()) {
@@ -492,3 +575,36 @@
 	return "<div style='margin-left: 20%; margin-bottom:30px;' class='subtitle'>Custom status code not allowed.<br> Kindly check <a href='https://learn.zoho.com/portal/zohocorp/manual/guide/article/close-account-testing-setup#_Toc5n4zqimadtr3'>here</a> for allowed status codes.</div>";	//No I18N
 }	%>
 
+<%!
+	private static boolean isAppAccountMember(OrgType orgType, long zid, long zuid, boolean doAdminCheck) throws IAMException {
+		AccountMember accMem = Util.appAccountVOAPI.getMember(orgType.getType(), zid, zuid);
+		if(accMem != null && accMem.isActive()){
+			if(!doAdminCheck) {
+				return true;
+			}
+			List<String> memberZaridList = accMem.getZarids();
+			AppAccount appAccount = Util.appAccountVOAPI.getAppAccount(orgType.getType(), zid);
+			List<String> appAdminZarids = ProtoUtil.getAppAccountAdminRoleZarid(appAccount.getAppName());
+			if(appAdminZarids != null && !appAdminZarids.isEmpty() && memberZaridList != null && !memberZaridList.isEmpty()) {
+				for(String zarid : appAdminZarids) {
+					if(memberZaridList.contains(zarid)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		return false;
+	}
+
+	private static boolean isServiceOrgMember(OrgType orgType, long zid, long zuid, boolean doAdminCheck) throws IAMException {
+		ServiceOrgMember sorgMem = Util.serviceOrgAPI.getMember(orgType.getType(), zid, zuid );
+		if(sorgMem != null && sorgMem.isActive()){
+			if(doAdminCheck) {
+				return sorgMem.isAdmin();		
+			}
+			return true;		
+		}
+		return false;
+	}
+%>

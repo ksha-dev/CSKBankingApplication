@@ -72,7 +72,7 @@
 					</dl>
 					<dl class="za-password-container">
 						<dd>
-							<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength()"  tabindex="1">
+							<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength()"  tabindex="1">
 							<div class="pwdparent"><div id="pwdstrength"></div><div class="pwdtext"></div></div>
 						<div class="field-msg1">
 							<div id="show-password" onclick="togglePasswordField(${signup.minpwdlen});" class="column show-password">

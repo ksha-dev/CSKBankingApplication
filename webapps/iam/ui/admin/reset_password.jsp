@@ -33,7 +33,7 @@
 		</div>
 		<div id="resetoption">
 		<div class="labelkey">Enter User's new password :</div>
-		<div class="labelvalue"><input type="password" class="input" name="password"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" class="input" name="password"/></div>
 		</div>
 		<div id="valPeriod" style="display: none;">
 		<div class="labelkey">select validity period for password reset link :</div> <%--No I18N--%>
@@ -54,7 +54,7 @@
 		<div class="labelkey">Reason :</div> <%--No I18N--%>
 		<div class="labelvalue"><textarea name="reason" class="txtarea tmpcolor"  onfocus="clearsampletxt(this)" placeholder="Enter the reason with support ticket ID"></textarea></div><%--No I18N--%>
 		<div class="labelkey">Enter Admin password :</div>
-		<div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick='resetPassword(document.resetpassword,"<%=IAMEncoder.encodeJavaScript(serviceUrl)%>")'>
 			<span class="btnlt"></span>

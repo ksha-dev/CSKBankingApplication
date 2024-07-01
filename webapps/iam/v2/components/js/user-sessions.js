@@ -51,7 +51,7 @@ function load_Sessionsdetails(Policies,Active_Sessions)
 		var device_class="device_"+current_session.device_info.device_img;//No I18N
 		$("#activesession_entry"+count).attr("onclick","show_all_sessions("+count+");");
 		
-		addDeviceIcon($("#activesession_entry"+count+" .device_pic"), current_session.device_info);
+		SessionTabAddDeviceIcon($("#activesession_entry"+count+" .device_pic"), current_session.device_info);
 
 		$("#activesession_entry"+count+" .device_name").html(current_session.device_info.device_name);
 		$("#activesession_entry"+count+" .device_time").html(current_session.created_time_elapsed);
@@ -228,6 +228,7 @@ function deleteSelectedSessions()
 		$(".full_view_side_info .all_elements_space").html("");
 		$(".Field_session").removeClass("selected_device_entry");
 		$("#sessions_box").unbind("click").focus();
+		$(".blur").unbind();
 	}, 300);
  }
  
@@ -254,12 +255,11 @@ function commonTetradSlide(classes,footer,closingCallback,slideCallback,id){
 					}
 				},200);
 			}
+			//  	($(".ztopbar").length)? $(".ztopbar").height() +"px" : "0px"  this line for both clientportal wiht header and without header
 			if(isMobile	&& screen.width<500) {
-				$(ele).css({"top": "48px", "left": "0px","height":"100%", "width":"100%", "z-index": "1","padding-bottom": "110px"});//No I18N	
-				if(footer){$("#user_sessions_footer").css({"width":"100%"});}
+				$(ele).css({"top":($(".ztopbar").length)? $(".ztopbar").height() +"px" : "0px" , "left": "0px","height":"100%", "width":"100%", "z-index": "1","padding-bottom": "110px"});//No I18N	
 			} else {
-				$(ele).css({"top": "48px", "left": $("#mainmenupanel").css("width"),"height":"100%", "width":'calc( 100% - '+$("#mainmenupanel").css("width")+')', "z-index": "1","padding-bottom": "110px"});//No I18N	
-				if(footer){$("#user_sessions_footer").css({"width":'calc( 100% - '+$("#mainmenupanel").css("width")+')'});}
+				$(ele).css({"top": ($(".ztopbar").length)? $(".ztopbar").height() +"px" : "0px" , "left": '',"height":"100%", "width":"", "z-index": "1","padding-bottom": "110px"});//No I18N	
 			}
 			if($("#"+ele.id +" ."+classes).length > 1 && footer && (id=='' || id==undefined) && !$("#sideview").hasClass("animationClosed") ){
 				$("#"+ele.parentElement.id +" .tetraSlideFooter").slideDown();
@@ -482,13 +482,14 @@ function close_user_sessions_bigview() {
 			$("#useractivesessionstab_space").next().css("margin-top","30px");
 			$("#user_sessions_close_megaview").hide();
 			$("#sessions_box").css({"top": position.top, "left":position.left, "width":div.css("width")});//No I18N
+			$("#sessions_box").removeClass("big_box_full_view")
 			setTimeout(function () 
 			{
 				$("#other_sesion .checkbox").hide();
 				$("#other_sesion .select_holder").addClass("remove0width");
 				$("#all_sessions_active .device_div").removeClass("slide");
 				div.css("height","unset");//no i18n
-				$("#sessions_box").removeClass("big_box_full_view").css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
+				$("#sessions_box").css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
 			}, 200);
 			$("html").removeClass("donnotscroll");
 			if(Object.keys(sessions_data.activesessions.sessions).length>3)
@@ -501,13 +502,13 @@ function close_user_sessions_bigview() {
 			$("#user_sessions_close_megaview").hide();
 			$("#useractivesessionstab_space").next().css("margin-top","30px");
 			$("#sessions_box").css({"top": position.top, "left":position.left, "width": div.css("width")});//No I18N
+			$("#sessions_box").removeClass("big_box_full_view");
 			setTimeout(function () 
 			{
 				$("#other_sesion .checkbox").hide();
 				$("#other_sesion .select_holder").addClass("remove0width");
 				$("#all_sessions_active .device_div").removeClass("slide");
 				div.css("height","unset");//no i18n
-				$("#sessions_box").removeClass("big_box_full_view");
 				$("#sessions_box").css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
 			}, 200);
 			$("html").removeClass("donnotscroll");
@@ -540,6 +541,7 @@ function reintSessionFullView() {
 function handleSessionAlerts(sessionObj) {
 	var init = function(threshold, utilised, isDaylimit) {
 		var isError = threshold === utilised;
+		var isWarningBanner = (utilised / threshold) < 0.8;
 		var prefix = isDaylimit ? "IAM.SESSION_ALERT.DAILY" : "IAM.SESSION_ALERT.MAX_SESSION"; //No I18n
 		prefix += isError ? ".ERROR" : ".WARN"; //No I18n
 		var remaining = threshold - utilised;
@@ -568,7 +570,7 @@ function handleSessionAlerts(sessionObj) {
 			$('#ss_alert_learn_doc').show();//No I18n
 			$('#ss_alert_learn_doc').attr("href", sessionObj.max_session.link); //No I18n
 		}
-		$('.session-alert').addClass(isError ? 'error': 'warn'); //No I18n
+		$('.session-alert').addClass(isWarningBanner ? 'warn': 'error'); //No I18n
 		$('.session-alert').css('display', 'table'); //No I18n
 		setTimeout(function() {
 			document.getElementById("session_circle").setAttribute("stroke-dasharray",(2 * Math.PI * 40 * (utilised / threshold))+" "+(2 * Math.PI * 40)); //No I18n
@@ -588,416 +590,6 @@ function handleSessionAlerts(sessionObj) {
 		$('.session-alert').removeClass('error warn');
 	}
 } 
-
-
-/***************************** Active Authtokens *********************************/
-
-
-function load_Authtokensdetails(Policies,Auth_tokens)
-{
-	if(de("auth_tokens_exception"))
-	{
-		$("#auth_tokens_exception").remove();
-		$("#authokens_nodata").removeClass("hide");
-	}
-	if(Auth_tokens.exception_occured!=undefined	&&	Auth_tokens.exception_occured)
-	{
-		$("#auth_tokens_box .box_info" ).after("<div id='auth_tokens_exception' class='box_content_div'>"+$("#exception_tab").html()+"</div>" );
-		$("#auth_tokens_exception #reload_exception").attr("onclick","reload_exception(ActiveAuthtokens,'auth_tokens_box')");
-		$("#authokens_nodata").addClass("hide");
-		return;
-	}
-
-	if(Auth_tokens!=undefined && !jQuery.isEmptyObject(Auth_tokens))
-	{
-		$("#authokens_nodata").hide();
-		$("#all_set_api_tokens").show();
-		
-		var tokens=timeSorting(Auth_tokens);
-		$("#all_set_api_tokens").html("");
-		var count =0;
-		for(iter=0;iter<Object.keys(tokens).length;iter++)
-		{
-			count++;
-			var current_apitoken=Auth_tokens[tokens[iter]];
-			apitoken_format = $("#empty_apitoken_format").html();
-			$("#all_set_api_tokens").append(apitoken_format);
-			
-			$("#all_set_api_tokens #api_token").attr("id","api_token"+count);
-			$("#all_set_api_tokens #select_apitoken_").attr("id","select_apitoken_"+count);
-			$("#all_set_api_tokens #apitoken_info").attr("id","apitoken_info"+count);
-			if(count > 3)
-			{
-				$("#api_token"+count).addClass("authweb_entry_hidden");  
-			}
-			var name;
-			if(current_apitoken.authtoken_name.indexOf(" ")!=-1)
-			{
-				var temp_name=current_apitoken.authtoken_name.split(" ");
-				name=(temp_name[0][0]+temp_name[1][0]).toUpperCase();
-			}
-			else
-			{
-				name=(current_apitoken.authtoken_name).substring(0,2).toUpperCase();
-			}
-
-			if(de("select_apitoken_"+count))
-			{
-				$("#select_apitoken_"+count+" .checkbox_check").attr("id",tokens[iter]);
-			}
-			$("#api_token"+count).attr("onclick","show_removeapitoken("+count+");");
-			$("#api_token"+count+" .info_tab .email_dp").addClass(color_classes[gen_random_value()]);
-		    $("#api_token"+count+" .info_tab .email_dp").html(name);
-		    $("#api_token"+count+" .info_tab .authtoken_name").html(current_apitoken.authtoken_name);
-		    if(current_apitoken.authtoken_name!=current_apitoken.authtoken_ticket)
-		    {
-		    	$("#apitoken_info"+count+" #pop_up_name").html(current_apitoken.authtoken_name);
-		    }
-		    else
-		    {
-		    	$("#apitoken_info"+count+" #authoken_name").remove();
-		    }
-		    $("#api_token"+count+" .info_tab .authtoken_time").html(current_apitoken.created_time_elapsed);
-		    $("#apitoken_info"+count+" #pop_up_generatedtime").html(current_apitoken.created_time_formated);
-		    $("#apitoken_info"+count+" #pop_up_lasttime").html(current_apitoken.last_accesed_time);
-		    $("#apitoken_info"+count+" #pop_up_scope").html(current_apitoken.authtoken_scope);
-		    $("#apitoken_info"+count+" #token_view").attr("id","token_view_"+count);
-		    $("#apitoken_info"+count+" #token_hide").attr("id","token_hide_"+count);
-		    $("#apitoken_info"+count+" #token_hide_"+count+" .blue").attr("onclick","token_hide('"+count+"')"); 
-		    $("#apitoken_info"+count+" #token_view_"+count+" .blue").attr("onclick","show_token_full('"+count+"','"+tokens[iter]+"')"); 
-		    $("#apitoken_info"+count+" #pop_up_ticket").html(current_apitoken.authtoken_ticket);
-
-		    if(current_apitoken.location!=undefined)
-			{
-				$("#api_token"+count+" .asession_location").removeClass("location_unavail");
-				$("#api_token"+count+" .asession_location").html(current_apitoken.location.toLowerCase());
-				$("#apitoken_info"+count+" #pop_up_location").removeClass("unavail");
-				$("#apitoken_info"+count+" #pop_up_location").html(current_apitoken.location.toLowerCase());
-			}
-		    
-		    if(current_apitoken.last_accessed_ip!=undefined && (current_apitoken.last_accessed_device!=undefined && current_apitoken.last_accessed_device!=""))
-		    {
-		    	$("#apitoken_info"+count+" #pop_up_lastIP").html(current_apitoken.last_accessed_ip);
-		    	$("#apitoken_info"+count+" #pop_up_last_device").html(current_apitoken.last_accessed_device);
-		    }
-		    else
-		    {
-		    	$("#apitoken_info"+count+" .usage_exist").hide();
-		    }
-		    $("#apitoken_info"+count+" #authoken_remove").attr("onclick","deleteToken('"+tokens[iter]+"');");
-
-
-		}
-		if(count>3)
-		{
-			$("#api_token_viewall").show();
-		}
-	}
-	else
-	{
-		$("#authokens_nodata").show();
-		$("#all_set_api_tokens").hide();
-		$("#api_token_viewall").hide();
-	}
-}
-
-function display_removeselected_apitokens()
-{
-	var selected = [];
-	$('#view_api_tokens_remove input:checked').each(function() {
-	    selected.push($(this).attr('id'));
-	});
-	if(selected.length > 0)
-	{
-		$("#deleted_selected_apitokens").show();
-		if(isMobile){
-			$(".delete_all_space .red_btn").hide();
-		}
-	}
-	else
-	{
-		$("#deleted_selected_apitokens").hide();
-		if(isMobile){
-			$(".delete_all_space .red_btn").show();
-		}
-	}
-}
-
-function deleteAlltokens() 
-{
-	new URI(ActiveAuthtokensObj,"self","self").DELETE().then(function(resp)	//No I18N
-			{
-				SuccessMsg(getErrorMessage(resp));
-				var dataKeys = Object.keys(sessions_data.authtokens);
-				for(var a=0; a<dataKeys.length; a++)
-				{
-					delete sessions_data.authtokens[dataKeys[a]];
-				}
-				load_Authtokensdetails(sessions_data.Policies,sessions_data.authtokens);
-				closeview_all_apitokens_acc();
-			},
-			function(resp)
-			{
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else
-				{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			});
-}
-
-function deleteSelectedAuthtokens()
-{
-	var selected = [];
-	$('#view_api_tokens_remove input:checked').each(function() {
-	    selected.push($(this).attr('id'));
-	});
-	
-	new URI(ActiveAuthtokensObj,"self","self",selected).DELETE().then(function(resp)	//No I18N
-			{
-				SuccessMsg(getErrorMessage(resp));
-				for(i=0;i<selected.length;i++)
-				{
-					delete sessions_data.authtokens[selected[i]];
-				}				
-				load_Authtokensdetails(sessions_data.Policies,sessions_data.authtokens);
-				close_apitoken_screen();
-				$("#deleted_selected_apitokens").hide();
-				if(($("#api_tokens_more").is(":visible")))
-				{
-					var lenn=Object.keys(sessions_data.authtokens).length;
-					if(lenn>0)
-					{
-						show_all_apitokens();
-					}
-					else
-					{
-						closeview_all_apitokens_acc();
-					}
-				}
-
-			},
-			function(resp)
-			{
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else
-				{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			});
-}
-
-function close_apitoken_screen()
-{
-	popupBlurHide("#popup_active-authtokens_contents",function(){		//No I18N
-		$("#apitoken_popup_head").html(""); 
-		$("#apitoken_popup_info").html(""); 
-	});
-
-	
-}
-
-
-function show_token_full(count,token)
-{
-	new URI(ActiveAuthtokensObj,"self","self",token).GET().then(function(resp)	//No I18N
-			{
-				if($("#api_tokens_more").is(":visible")){
-					$("#api_tokens_more #token_view_"+count).hide();
-					$("#api_tokens_more #token_hide_"+count+" #pop_up_clear_ticket").html(resp.clear_token);
-					$("#api_tokens_more #token_hide_"+count).css("display","inline-block");
-				}
-				else{
-					$("#popup_active-authtokens_contents #token_view_"+count).hide();
-					$("#popup_active-authtokens_contents #token_hide_"+count+" #pop_up_clear_ticket").html(resp.clear_token);
-					$("#popup_active-authtokens_contents #token_hide_"+count).css("display","inline-block");
-				}
-			},
-			function(resp)
-			{
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else
-				{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			});
-
-}
-
-function token_hide(count)
-{
-	if($("#api_tokens_more").is(":visible")){
-		$("#api_tokens_more #token_view_"+count).show();
-		$("#api_tokens_more #token_hide_"+count).hide();
-		$("#api_tokens_more #token_hide_"+count+" #pop_up_clear_ticket").html("");
-	}
-	else{
-		$("#popup_active-authtokens_contents #token_view_"+count).show();
-		$("#popup_active-authtokens_contents #token_hide_"+count).hide();
-		$("#popup_active-authtokens_contents #token_hide_"+count+" #pop_up_clear_ticket").html("");
-	}
-	
-}
-
-function show_removeapitoken(id)
-{
-	
-	$("#popup_active-authtokens_contents #apitoken_popup_head").html($("#api_token"+id+" .authtoken_div").html()); //load into popuop
-	$("#popup_active-authtokens_contents #apitoken_popup_info").html($("#apitoken_info"+id).html()); //load into popuop
-	popup_blurHandler('6');
-
-	$("#popup_active-authtokens_contents").show(0,function(){
-		$("#popup_active-authtokens_contents").addClass("pop_anim");
-	});
-	closePopup(close_apitoken_screen,"popup_active-authtokens_contents");//No I18N
-	$("#popup_active-authtokens_contents #authoken_remove").focus();
-}
-
-function deleteToken(token) 
-{    
-	if($("#api_tokens_more").is(":visible")){
-		disabledButton($("#api_tokens_more .aw_info:visible"));	
-	}
-	else{
-		disabledButton($("#apitoken_popup_info"));
-	}
-	new URI(ActiveAuthtokensObj,"self","self",token).DELETE().then(function(resp)	//No I18N
-			{
-				SuccessMsg(getErrorMessage(resp));
-				delete sessions_data.authtokens[token];
-				load_Authtokensdetails(sessions_data.Policies,sessions_data.authtokens);
-				close_apitoken_screen();
-				if($("#api_tokens_more").is(":visible"))
-				{
-					var lenn=Object.keys(sessions_data.authtokens).length;
-					if(lenn>0){
-						$("#api_tokens_more").hide();
-						$("#view_api_tokens_remove").html("");
-						$("#api_tokens_more .select_holder").hide();
-						show_all_apitokens();
-					}
-					else{
-						$(".blur").css({"z-index":"6","opacity":".5"});
-						closeview_all_apitokens_acc();
-					}
-					removeButtonDisable($("#api_tokens_more .aw_info"));
-				}
-				else{
-					removeButtonDisable($("#apitoken_popup_info"));	
-				}
-
-			},
-			function(resp)
-			{
-				if($("#api_tokens_more").is(":visible"))
-				{
-					removeButtonDisable($("#api_tokens_more .aw_info"));
-				}
-				else{
-					removeButtonDisable($("#apitoken_popup_info"));
-				}
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else
-				{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			});
-    
-}
-
-
-function closeview_all_apitokens_acc()
-{
-	$(".blur").css("opacity","0");
-	popupBlurHide("#api_tokens_more",function(){ //No I18N 
-		$("#view_api_tokens_remove").html("");
-		$("#api_tokens_more .select_holder").hide();
-	});
-}
-
-function show_all_apitokens()
-{
-	$("#view_api_tokens_remove").html($("#all_set_api_tokens").html()); //load into popuop
-
-	
-	popup_blurHandler('6');
-	
-	$("#view_api_tokens_remove .authweb_entry_hidden").show();
-	//$("#view_api_tokens_remove .Field_session").after( "<br />" );
-	$("#view_api_tokens_remove .Field_session").removeAttr("onclick");
-	
-	
-	
-	$("#api_tokens_more").show(0,function(){
-		$("#api_tokens_more").addClass("pop_anim");
-	});
-	
-	
-	
-	$("#view_api_tokens_remove .Field_session").click(function(event){
-		if($(event.target).parents().hasClass("select_holder")){
-			return;
-		}
-		if($(event.target).parents().hasClass("authtoken_container")||$(event.target).hasClass("authtoken_container")){	
-			return;
-		}
-		var id=$(this).attr('id');
-		$("#view_api_tokens_remove .Field_session").addClass("autoheight");
-		$("#view_api_tokens_remove .aw_info").slideUp("fast");
-		$("#view_api_tokens_remove .activesession_entry_info").show();
-		if($("#view_api_tokens_remove #"+id).hasClass("web_email_specific_popup"))
-		{
-			$(".aw info a").unbind();
-			$("#view_api_tokens_remove #"+id+" .aw_info").slideUp("fast",function(){
-				$("#view_api_tokens_remove #"+id).removeClass("web_email_specific_popup");
-				$("#view_api_tokens_remove .Field_session").removeClass("autoheight");
-			});
-		}
-		else
-		{
-			$("#view_api_tokens_remove .Field_session").removeClass("web_email_specific_popup");		
-			$("#view_api_tokens_remove #"+id).addClass("web_email_specific_popup");
-			$("#view_api_tokens_remove #"+id+" .activesession_entry_info").hide();	
-			$("#view_api_tokens_remove #"+id+" .aw_info .hide").hide();	
-			$("#view_api_tokens_remove #"+id+" .aw_info").slideDown("fast",function(){
-				control_Enter(".aw_info a") //No I18N
-				$("#view_api_tokens_remove .Field_session").removeClass("autoheight");
-			});
-			
-		
-		}
-		
-		
-	});
-	$("#api_tokens_more .select_holder").show();
-	closePopup(closeview_all_apitokens_acc,"api_tokens_more");//No I18N
-	
-	$("#api_tokens_more").focus();
-	
-	
-}
-
-
 
 /***************************** Active HISTORY *********************************/
 
@@ -1037,10 +629,10 @@ function load_History()
 			}
 			$("#activehistory_entry"+count).attr("onclick","show_selected_history("+count+");");
 			$("#activehistory_entry"+count+" .history_div i[class^='product-icon'],#activehistory_entry"+count+" .history_div i[class*=' product-icon']").addClass("product-icon-"+current_history.service_name.toLowerCase().replace(/\s/g, ''));
-			$("#activehistory_entry"+count+" .history_div .authtoken_name").html(current_history.service_name);
+			$("#activehistory_entry"+count+" .history_div .authtoken_name").html(current_history.service_display_name);
 			$("#activehistory_entry"+count+" .history_div .authtoken_time").html(current_history.created_time_elapsed);
 			var device_class="device_"+(current_history.device_info.device_img).toLowerCase().replace(/\s/g, '');//No I18N
-			addDeviceIcon($("#activehistory_entry"+count+" .activesession_entry_info .history_device"),current_history.device_info);
+			SessionTabAddDeviceIcon($("#activehistory_entry"+count+" .activesession_entry_info .history_device"),current_history.device_info);
 			$("#activehistory_entry"+count+" .activesession_entry_info .history_device").attr("title",current_history.device_info.device_name);
 			var os_class=(current_history.device_info.os_img);
 			$("#activehistory_entry"+count+" .activesession_entry_info .asession_os").addClass("icon-os_"+os_class);
@@ -1092,7 +684,7 @@ function load_History()
 			$("#activehistory_info"+count+" #pop_up_browser .asession_browser_popup").addClass("icon-"+browser_class);
 			$("#activehistory_info"+count+" #pop_up_browser .asession_browser_popup").html(fontIconBrowserToHtmlElement[browser_class]);
 			$("#activehistory_info"+count+" #pop_refer").html(current_history.referrer);
-			addDeviceIcon($("#activehistory_info"+count+" #pop_up_device .asession_device_popup"),current_history.device_info);
+			SessionTabAddDeviceIcon($("#activehistory_info"+count+" #pop_up_device .asession_device_popup"),current_history.device_info);
 			$("#activehistory_info"+count+" #pop_up_device").append(current_history.device_info.device_name);
 			
 		}
@@ -1400,18 +992,8 @@ function deleteApp(e,client_zid,index)
 	new URI(ConnectedAppsOBJ,"self","self",client_zid).DELETE().then(function(resp)	//No I18N
 			{
 				SuccessMsg(getErrorMessage(resp));
-				for ( i=0; i < sessions_data.connectedapps.length; i++) //due to sorting we need to find the new index.
-				{
-				   if ( sessions_data.connectedapps[i].client_zid== client_zid) 
-				   {
-					   index=i;
-				   }
-				}
-				delete sessions_data.connectedapps[index];
-				
+				sessions_data.connectedapps	= sessions_data.connectedapps.filter(function(data) {return data.client_zid!= client_zid;})
 				load_connected_apps_details(sessions_data.Policies,sessions_data.connectedapps);	
-				
-				
 				closeview_selected_connected_apps_view();
 				if($("#connected_apps_web_more").is(":visible")==true)
 				{
@@ -1425,8 +1007,6 @@ function deleteApp(e,client_zid,index)
 						closeview_connected_apps_view();
 					}
 				}
-
-
 			},
 			function(resp)
 			{
@@ -1640,7 +1220,7 @@ function load_App_Logins_details(Policies,App_logins_details)
 				}
 				if(current_device.device_info.device_img!=""  &&  current_device.device_info.device_img!=undefined)
 				{
-					addDeviceIcon($("#App_logins_info"+count+" #Devices_entry"+devices_count+" .device_pic") , current_device.device_info);
+					SessionTabAddDeviceIcon($("#App_logins_info"+count+" #Devices_entry"+devices_count+" .device_pic") , current_device.device_info,true);
 					if(current_device.device_info.device_model==""	||	current_device.device_info.device_model==undefined)
 					{
 						$("#App_logins_info"+count+" #Devices_entry"+devices_count+" #pop_up_model").html(deviceImgToDeviceModelJson[current_device.device_info.device_img]?deviceImgToDeviceModelJson[current_device.device_info.device_img]:unknown_device);
@@ -1686,7 +1266,7 @@ function load_App_Logins_details(Policies,App_logins_details)
 				}
 				else if(!current_device.device_info.is_primary)
 				{
-					$("#App_logins_info"+count+" #Devices_entry"+devices_count+" #terminate_device").attr("onclick","delete_current_device_entry("+count+","+devices_count+",\'"+product[iter]+"\',\'"+current_device.client_id+"\',\'"+current_device.refresh_token_hash+"\');");
+					$("#App_logins_info"+count+" #Devices_entry"+devices_count+" #terminate_device").attr("onclick","delete_current_device_entry("+count+","+devices_count+",\'"+product[iter]+"\',\'"+current_device.client_id+"\',\'"+current_device.refresh_token_hash+"\',\'"  + app_logins_sort[devices_iter]+"\');");
 					$("#App_logins_info"+count+" #Devices_entry"+devices_count+" #current_mfadevice").remove();
 					$("#App_logins_entry"+count+" #product_oneauthsignin").remove();
 					$("#App_logins_info"+count+" #Devices_entry"+devices_count+" #device_oneauthsignin").remove();
@@ -1789,11 +1369,13 @@ function closeApp_logins_bigview()
 	var position = $("#userapplogins_space")[0].getBoundingClientRect();
 	$("#app_login_close_megaview").hide();
 	ele.css({"top": position.top, "left": position.left, "width":$("#userapplogins_space").css("width")});//No I18N
+	ele.removeClass("big_box_full_view");
 	setTimeout(function () 
-	{
+	{	
+		$("#userapplogins_space").next().css("margin-top","");
 		$("#display_App_logins .allowed_ip_entry_hidden").slideUp(200);
 		$("#userapplogins_space").css("height","unset");
-		ele.removeClass("big_box_full_view").css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
+		ele.css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
 	}, 200);
 	$("html").removeClass("donnotscroll");
 	if(Object.keys(sessions_data.applogins).length>3)
@@ -1905,57 +1487,17 @@ function show_all_App_logins(id)
 
 
 
-function closeTetraSlide(callback){
-	if($(".big_box_full_view").is(":visible") || $("#sideview").is(":visible") ){
-		$("#sideview").removeClass("show_sideview");
-		$("html").removeClass("donnotscroll");
-		setTimeout(function(){
-			if($(".big_box_full_view").is(":visible")){
-				var popupId  = $(".big_box_full_view").prop("id");
-				var id = $(".big_box_full_view").closest(".tetraSlideParent").prop("id");
-		 		var position = $("#"+id)[0].getBoundingClientRect();
-		 		$(".full_view_more_first,.full_view_more_second").hide();
-		 		$("#sideview").html("").hide();
-		 		$("#"+popupId+ " .tetraSlideFooter").hide();
-				$("#"+popupId+ " .tetraSlideClose").hide();
-				$("#"+popupId).css({"top": position.top, "left":position.left, "width":$("#"+id).css("width")});//No I18N
-				setTimeout(function () 
-			    {
-					$("#"+popupId).removeClass("big_box_full_view").css({"top":"unset", "left":"unset", "width":"auto", "height":"auto","position":"relative","padding-bottom":"30px"});	//No I18N
-					$("#"+id + " .tetraSlideExtra").slideUp(200);
-					$("#"+id).next().attr("style","");
-			 		if($("#"+popupId+ " .tetraElements").removeClass("selected_device_entry").length > 3){
-						$("#"+popupId+ " .tetraViewMore").show();	 
-					}
-					$("#"+id+" .checkbox").hide();
-					$("#"+id+" .info_tab").children(".slide").removeClass("slide");
-					$("#"+id+" .select_holder").addClass("remove0width");
-					$("#"+id).css("height","unset");//no i18n
-			 		if(callback != undefined){
-						callback();	 
-					}
-			 	}, 200);
-		 	}	
-		},200);
-	}
-}
 
-
-
-function delete_current_device_entry(parent_id,device_id,product_name,client_id,refresh_token_hash)
+function delete_current_device_entry(parent_id,device_id,product_name,client_id,refresh_token_hash,arrayIndex)
 {
 	new URI(Applogin_devices,"self","self",refresh_token_hash,client_id).DELETE().then(function(resp)	//No I18N
 			{
 				SuccessMsg(getErrorMessage(resp));
-				//var deleted=false;
-				sessions_data.applogins[product_name].splice(device_id-1,1);
-				//sessions_data.applogins[product_name].length--;
-				//sessions_data.applogins[product_name].splice(device_id-1,1);
+				sessions_data.applogins[product_name].splice(parseInt(arrayIndex),1);
 				
 				if(sessions_data.applogins[product_name].length==0)
 				{
 					delete sessions_data.applogins[product_name];
-					//deleted=true;
 				}
 				
 				
@@ -1964,14 +1506,14 @@ function delete_current_device_entry(parent_id,device_id,product_name,client_id,
 				$("#display_App_logins .allowed_ip_entry_hidden").show();
 				
 				var count=Object.keys(sessions_data.applogins).length;
-				var sideView_id;
+				var sideView_id="";
 				if($(".App_logins_web_more_first").is(":visible"))
 				{
-					sideView_id=".App_logins_web_more_first";//No I18N
+					sideView_id="#sideview .App_logins_web_more_first";//No I18N
 				}
 				else
 				{
-					sideView_id=".App_logins_web_more_second";//No I18N
+					sideView_id="#sideview .App_logins_web_more_second";//No I18N
 
 				}
 				if(count==0)
@@ -1981,16 +1523,18 @@ function delete_current_device_entry(parent_id,device_id,product_name,client_id,
 					load_App_Logins_details(sessions_data.Policies,sessions_data.applogins);
 					return;
 				}
-				else if($(sideView_id+" .device_entry").length>1)
+				else if($(sideView_id).find(".device_entry").length>1)
 				{
-					$(sideView_id+" #Devices_entry"+device_id).remove();
-					$(sideView_id+" .box_info .devicelogin_details .device_time").html($(sideView_id+" .device_entry").length+" "+Devices)
-					if($(sideView_id+" .device_entry").length==1)
+					$(sideView_id).find("#Devices_entry"+device_id).remove();
+					$(sideView_id).find(".box_info .devicelogin_details .device_time").html($(sideView_id).find(".device_entry").length+" "+Devices);
+					$("#app_login_sideview .menu_header .device_time").html($(sideView_id).find(".device_entry").length+" "+Devices);
+					$("#app_login_sideview #Devices_entry"+device_id).remove();
+					if($(sideView_id).find(".device_entry").length==1)
 					{
-						$(sideView_id+" .device_entry").click();
+						$(sideView_id).find(".device_entry").click();
 					}
 				}
-				else if($(sideView_id+" .device_entry").length==1)
+				else if($(sideView_id).find(".device_entry").length==1)
 				{
 					$("#App_logins_entry"+parent_id).remove();
 					closeview_App_logins_view();
@@ -1998,34 +1542,7 @@ function delete_current_device_entry(parent_id,device_id,product_name,client_id,
 				load_App_Logins_details(sessions_data.Policies,sessions_data.applogins);
 				$("#display_App_logins .allowed_ip_entry_hidden").show();
 				$("#App_logins_viewmoew").hide();
-				event.stopPropagation()
-				
-				
-				
-			/*	if($("#App_logins_web_more").is(":visible")==true)
-				{
-					 $("#view_all_App_logins").html("");
-					 show_all_App_logins();
-					if(!deleted)
-					{
-						$("#view_all_App_logins #App_logins_entry"+parent_id).click();
-					}
-				}
-				else
-				{
-					if(deleted)
-					{
-						if(sessions_data.applogins[product_name] == undefined){
-							closeview_selected_App_logins_view();	
-						}
-					}
-					else
-					{
-						$("#App_logins_current_info #Devices_entry"+device_id).remove();
-					}
-				}*/
-				
-
+				event.stopPropagation();
 			},
 			function(resp)
 			{
@@ -2042,9 +1559,10 @@ function delete_current_device_entry(parent_id,device_id,product_name,client_id,
 			});
 }
 
-function addDeviceIcon(element, device_info){
+function SessionTabAddDeviceIcon(element, device_info,isAppLogins){
 	var img = device_info.device_img;
 	var os = device_info.os_img;
+	var deviceType = device_info.device_type ? device_info.device_type.toLowerCase() : "";
 	const paths = new Map([
 		  ["windows", 5],
 		  ["linux", 5],
@@ -2054,14 +1572,18 @@ function addDeviceIcon(element, device_info){
 		  ["ipad", 7],
 		  ["windowsphone", 8],
 		  ["samsungtab", 6],
-		  ["samsung", 5],
+		  ["samsung", 8],
 		  ["android", 8],
-		  ["pixel", 6],
+		  ["pixel", 8],
 		  ["oppo", 8],
 		  ["vivo", 6],
 		  ["androidtablet",6],
-		  ["oneplus", 7],
-		  ["mobile", 7]
+		  ["oneplus", 9],
+		  ["mobile", 7],
+		  ["iphone13", 4],
+		  ["iphone14", 8],
+		  ["s23ultra", 8],
+		  ["s20fe5g", 9]
 		]);
 	
 	var no_of_paths;
@@ -2077,13 +1599,40 @@ function addDeviceIcon(element, device_info){
 	} else if (img == "vivo" || img == "ipad" || img == "samsungtab" || img == "samsung" || img == "pixel" || img == "oppo" || img == "oneplus") { //No I18N
 		no_of_paths = paths.get(img);
 		icon_class = img;
-	}else if (img == "googlenexus" || (img == "mobiledevice" && os == "android")) { //No I18N
+	}else if (img == "googlenexus" || (img == "mobiledevice" && (os == "android" || deviceType == "android")) ) { //No I18N
 		no_of_paths = paths.get("android");
 		icon_class = "android_uk"; //No I18N
 	} 
 	else if (img == "mobiledevice") { //No I18N
 		no_of_paths = paths.get("mobile");
 		icon_class = "mobile_uk"; //No I18N
+	}
+	
+	if(isAppLogins && device_info.device_model){ //only for applogins the device_info which as device_model value
+		var deviceModel = device_info.device_model.toLowerCase();
+		deviceModel = deviceModel.replace(/\s+/g, '');
+		if((/iphone13|iphone13pro|iphone13promax|iphone13mini|iphone14|iphone14plus/).test(deviceModel)){
+			icon_class = "iphone_13"; //No I18N
+			no_of_paths = paths.get("iphone13");
+		} else if((/iphone14pro|iphone14promax|iphone15|iphone15plus|iphone15pro|iphone15promax|iphone15,4|iphone15,5|iphone16,1|iphone16,2/).test(deviceModel)){
+			icon_class = "iphone_14"; //No I18N
+			no_of_paths = paths.get("iphone14");
+		} else if((/sm-s918b/).test(deviceModel)){
+			icon_class = "samsung_s23_ultra"; //No I18N
+			no_of_paths = paths.get("s23ultra");
+		} else if((/sm-s908e/).test(deviceModel)){
+			icon_class = "samsung_s22_ultra"; //No I18N
+			no_of_paths = paths.get("s23ultra");
+		} else if((/sm-g781b/).test(deviceModel)){
+			icon_class = "samsung_s20"; //No I18N
+			no_of_paths = paths.get("s20fe5g");
+		} else if((/pixel7pro|gp4bc|ge2ae/).test(deviceModel)){
+			icon_class = "pixelpro"; //No I18N
+			no_of_paths = paths.get("pixel");
+		} else if((/pixel7|gvu6c|gqml3/).test(deviceModel)){
+			icon_class = "pixel"; //No I18N
+			no_of_paths = paths.get("pixel");
+		}
 	} 
 	
 	element.addClass("deviceicon-"+ icon_class);
@@ -2221,4 +1770,3 @@ function closeview_all_tpHistoy()
 		$("#view_all_tpHistory").html("");
 	});
 }
-

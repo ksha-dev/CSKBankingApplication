@@ -86,7 +86,7 @@ if(request.getAttribute("statuscode") != null) {
 			}else if(OAuthErrorCode.inactive_user.equals(errorCode)){
 				errorMessage = I18NUtil.getMessage("USER.NOT.ACTIVE");
 			} else if(OAuthErrorCode.untrusted_request_domain.equals(errorCode)){
-				errorMessage = I18NUtil.getMessage("IAM.PORTAL.UNTRUSTED.DOMAIN");
+				errorMessage = I18NUtil.getMessage("IAM.UNTRUSTED.DOMAIN.TITLE");
 			} else{
 				errorMessage = I18NUtil.getMessage(errorCode.getDescription());
 			}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="WorkbenchPreferenceDialog.dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="10"/>
+		<item key="DIALOG_Y_ORIGIN" value="10"/>
+		<item key="DIALOG_WIDTH" value="728"/>
+		<item key="DIALOG_HEIGHT" value="535"/>
+		<item key="DIALOG_FONT_NAME" value="1|Barlow|14.0|0|GTK|1|"/>
+	</section>
+	<section name="ImportExportAction">
+		<section name="ImportExportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="20"/>
+			<item key="DIALOG_Y_ORIGIN" value="20"/>
+			<item key="DIALOG_WIDTH" value="700"/>
+			<item key="DIALOG_HEIGHT" value="550"/>
+			<item key="DIALOG_FONT_NAME" value="1|Barlow|14.0|0|GTK|1|"/>
+		</section>
+	</section>
+</section>

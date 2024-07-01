@@ -26,11 +26,9 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 
 	boolean isIAMAdmin = request.isUserInRole("IAMAdmininistrator");
     boolean isIAMUser = request.isUserInRole("IAMUser");
-    boolean isMarketingAdmin = request.isUserInRole("MarketingAdmin");
     boolean isIAMOperator = request.isUserInRole("IAMOperator");
     boolean isSupportAdmin = request.isUserInRole("SupportAdmin");
     boolean isIAMServiceAdmin = request.isUserInRole(Role.IAM_SERVICE_ADMIN);
-    boolean isLegalAdmin = request.isUserInRole("LegalAdmin");
     boolean isOAuthAdmin = request.isUserInRole("OAuthAdmin");
     boolean isDomainAdmin = request.isUserInRole("IAMDomainAdmin");
     boolean isIAMSupportAdmin = request.isUserInRole("IAMSupportAdmin");
@@ -44,7 +42,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 %>
 
     <script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
-    <script src="<%=wmsjsurl%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+    <script src="<%=wmsjsurl%>" integrity="<%=wmsjsintegrity%>" crossorigin="anonymous" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
     <script src="<%=jsurl%>/chosen.jquery.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
     <link href="<%=cssurl%>/chosen.css" type="text/css" type="text/css" rel="stylesheet" /> <%-- NO OUTPUTENCODING --%>
     
@@ -104,7 +102,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
   						<div class="pane1 mnavi system-mainnavi">
     						<ul>
     							<li><a id="home" href="<%=cPath%>/u/h"><span class="mnavi-icon mnavi-org-icon"></span><%=Util.getI18NMsg(request, "IAM.MENU.DASHBOARD")%></a></li><%-- NO OUTPUTENCODING --%>
-								<%	if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isLegalAdmin || isOAuthAdmin || isDomainAdmin || isIAMSupportAdmin || isIAMCacheAdmin || isClearCacheOperator || isIAMTemplateAdmin) {
+								<%	if(isIAMAdmin || isIAMUser || isIAMOperator || isSupportAdmin || isIAMServiceAdmin || isOAuthAdmin || isDomainAdmin || isIAMSupportAdmin || isIAMCacheAdmin || isClearCacheOperator || isIAMTemplateAdmin) {
                     			%>
     							<li><a href="<%=cPath%>/admin"><span class="mnavi-icon mnavi-admin-icon"></span><%=Util.getI18NMsg(request, "IAM.ADMIN")%></a></li><%-- NO OUTPUTENCODING --%>
     							<%}%>
@@ -278,7 +276,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 				<div class="mrpcontentdiv">
 	    			<table cellspacing="5" cellpadding="0" border="0" width="100%">
 						<tr><td align="right">Admin password :</td><%--No I18N--%>
-						<td><input type="password" id="verifypwd" class="input"></td></tr>
+						<td><input type="password" autocomplete="off" id="verifypwd" class="input"></td></tr>
 	    			</table>
 	    			<div class="mrpBtn">
 						<input type="button" value="Verify" id="continuebtn"/>
@@ -314,6 +312,7 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
 <script>
     window.onload=function() {
 		try {
+			WmsLite.setClientSRIValues(<%=wmsSRIValues%>);
 			WmsLite.setNoDomainChange();
 			WmsLite.setConfig(64);//64 is value of WMSSessionConfig.CROSS_PRD
 	    	WmsLite.registerZuid('AC',"<%=zuId%>","<%=IAMEncoder.encodeJavaScript(user.getLoginName())%>", true);
@@ -324,6 +323,6 @@ dc = dc.equals("DEP") ? "" : (dc + " - ");
     window.onresize=function() {
     	setWindowSize();
     }
-    window.setInterval("watchHash()", 1000);
+    window.setInterval(watchHash, 1000);
 </script>
 </html>

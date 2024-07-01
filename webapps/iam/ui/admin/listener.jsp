@@ -62,7 +62,7 @@ if("edit".equals(type)){
 			</tr>
 			<tr>
 			<td class="usrinfotdlt">Enter Admin Password</td> <%--No I18N--%>
-			<td><input type="password" class="input" name="pwd"/></td>
+			<td><input type="password" autocomplete="off" class="input" name="pwd"/></td>
 			</tr>
 			</table>
 			<div class="accbtn Hbtn">
@@ -150,7 +150,7 @@ else if("view".equals(type)){
 		<div class="labelkey">Statement Pattern :</div>
 		<div><textarea class="txtarea" name="resourcepattern" cols="22" rows="1"></textarea></div>
 		<div class="labelkey">Admin Password :</div>
-		<div class="labelvalue"><input type="password" name="pwd" class="input"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" name="pwd" class="input"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="submitlistener(document.addlistener)">
 			<span class="btnlt"></span>

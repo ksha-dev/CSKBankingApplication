@@ -65,7 +65,12 @@ body {
 	<%}%>
 		<div style="float:left;" id="ztb-logo">
 			<%if(Util.isZoho()){ %>
-				<span class="accountslogo commonlogo" ></span>
+				<span class="icon-Accounts-whiteBG zoho_topbar_logo">
+					<span class="path1"></span>
+					<span class="path2"></span>
+					<span class="path3"></span>
+					<span class="accounts_heading"></span>
+				</span>
 			<%} else{%>
 				<img src="<%=imgurl%>/newZoho_logo.svg" id="ztb-logo-rebrand" style="margin-top: 3px;margin-left: 8px;max-height: 34px;">
 			<%} %>

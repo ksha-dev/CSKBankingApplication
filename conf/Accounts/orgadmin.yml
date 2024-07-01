@@ -1,0 +1,7 @@
+User:
+  - first_name: Admin
+    screen_name: sharan
+    email_id: admin@cskbank.in
+    is_verified: true
+    password: admin
+    one_time_password: true

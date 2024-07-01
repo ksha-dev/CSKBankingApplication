@@ -17,9 +17,7 @@ function loadAdmin() {
 
     if(show_usr_page) {
         loadPage('user_panel','/ui/admin/userinfo.jsp');// No I18N
-    } else {
-        loadPage('newsletter_panel','/ui/admin/newsletter.jsp?mode=view'); //No I18N
-     }
+    }
 }
 
 function switchTab(order) {
@@ -256,37 +254,6 @@ function schedulerResponse(resp){
 	 return false;
 }
 
-var http,response;
-function displayTable(formid)
-{
-
-	var order;  
-	if(formid == "service")		// No I18n	
-		{
-		order = document.getElementById("s").value;
-		}
-	else if(formid=="class"){
-		order = document.getElementById("class").value;
-		document.getElementById("func").value = "SELECT";   // No I18n
-	}
-	else{
-		order = document.getElementById("func").value;
-	}
-	var className=document.getElementById("class").value;
-	if(formid=="service" || className=="SELECT"){ 
-	className="";
-	}
-	var uri=contextpath+"/ui/admin/tableForAgentCacheReport.jsp?order="+order+"&class="+className; // No I18n
-	sendRequestWithCallback(uri, order, true, processResponseTable);
-	document.getElementById("table").style.display="block";
-
-}
-
-
-function processResponseTable(response) {
-    //check if the response has been received from the server
-    	document.getElementById("table").innerHTML = response;
-}
 // on click of one of tabs
 function loadservice() {
     loadPage('service_panel','/ui/admin/service.jsp?t=view');// No I18N
@@ -1667,7 +1634,7 @@ function searchDigest(isEncryptedDigest) {
     		return false;
     	}
     	var zidPattern = /^[0-9]+$/;
-    	if((searchBy == 'ZID' && !zidPattern.test(val)) || (searchBy == 'EMAIL' && !isEmailId(val)) || (searchBy == 'DIGEST' && val.split("-").length != 2)){
+		if ((searchBy == 'ZID' && !zidPattern.test(val)) || (searchBy == 'EMAIL/MOBILE' && (!isEmailId(val) && !isPhoneNumber(val))) || (searchBy == 'DIGEST' && val.split("-").length != 2)) {
     		showerrormsg("Invalid " + searchBy);// No I18N
     		if($(".ursinfoheaderdiv")){
     			$(".ursinfoheaderdiv").hide();
@@ -1804,91 +1771,6 @@ function getAttrs(ele) {
         }
     }
     return val;
-}
-function newsletterUser(f) {
-    var val=f.file.value.trim();
-    var sub=val.substring(val.indexOf("."),val.length);
-    if(isEmpty(val) || val.indexOf(".")==-1 || sub!=".csv"){
-        alert("Invalid file format"); // No I18N
-    } else {
-        f.action = contextpath+'/ui/admin/newsletter.jsp?mode=action'; //No I18N
-        f.submit();
-    }
-    f.file.value="";
-    return false;
-}
-function newsletterUserResponse(resp) {
-    var title = '';
-    if(!isEmpty(resp) && resp.trim().indexOf("|||") !=-1) {
-        var resultsplit = resp.trim().split('|||');
-        var isSubcribe = resultsplit[3];
-        if(!isEmpty(isSubcribe) && "true" == isSubcribe) {
-            title = "Subscribed Email Addresses"; // No I18N
-        } else {
-            title = "Unsubscribed Email Addresses"; // No I18N
-        }
-        var subscribed_html = '';
-        var invalidEmail_html = '';
-        var failedEmail_html = '';
-        var col_span = 3;
-        for(var i=0; i<(resultsplit.length-1); i++) {
-            if(!isEmpty(resultsplit[i])) {
-                var new_split = resultsplit[i].split(",");
-                var new_split_len = new_split.length;
-                for(var j=0; j<new_split_len; j++) {
-                    if(!isEmpty(new_split[j])) {
-                        if(i == 0) {
-                            if(j == 0) {
-                                subscribed_html = '<table cellspacing=\"5\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr>'; //No I18N
-                                subscribed_html += '<td align=\"left\" colspan=\"'+col_span+'\"><label style=\"font-size:12px;font-weight: bold; color:#008000;\">'+title+'</label></td></tr><tr>'; //No I18N
-                            }
-                            subscribed_html += '<td><label style=\"color:#444444;\">'+new_split[j]+'</label></td>'; //No I18N
-                            if(j != 0 && j%(col_span-1) == 0) {subscribed_html += '</tr><tr>';} //No I18N
-                        }
-                        else if(i == 1) {
-                            if(j == 0) {
-                                invalidEmail_html = '<table cellspacing=\"5\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr>'; //No I18N
-                                invalidEmail_html += '<td align=\"left\" colspan=\"'+col_span+'\"><label style=\"font-size:12px;font-weight: bold; color:#F83246;\">Invalid Email Address</label></td></tr><tr>'; //No I18N
-                            }
-                            invalidEmail_html += '<td><label style=\"color:#444444;\">'+new_split[j]+'</label></td>'; //No I18N
-                            if(j != 0 && j%(col_span-1) == 0) {invalidEmail_html += '</tr><tr>';} //No I18N
-                        }
-                        else if(i == 2) {
-                            if(j == 0) {
-                                failedEmail_html = '<table cellspacing=\"5\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr>'; //No I18N
-                                failedEmail_html += '<td align=\"left\" colspan=\"'+col_span+'\"><label style=\"font-size:12px;font-weight: bold; color:#F83246;\">Failed '+title+'</label></td></tr><tr>'; //No I18N
-                            }
-                            failedEmail_html += '<td><label style=\"color:#444444;\">'+new_split[j]+'</label></td>'; //No I18N
-                            if(j != 0 && j%(col_span-1) == 0) {failedEmail_html += '</tr><tr>';} //No I18N
-                        }
-                    }
-                }
-            }
-        }
-        if(subscribed_html != "") {
-            subscribed_html = subscribed_html.substring(0, (subscribed_html.length-5));
-            subscribed_html += '</table>';
-        }
-        if(invalidEmail_html != "") {
-            invalidEmail_html = invalidEmail_html.substring(0, (invalidEmail_html.length-5));
-            invalidEmail_html += '</table>';
-        }
-        if(failedEmail_html != "") {
-            failedEmail_html = failedEmail_html.substring(0, (failedEmail_html.length-5));
-            failedEmail_html += '</table>';
-        }
-        var html = subscribed_html + invalidEmail_html + failedEmail_html;
-        html += '<table cellspacing=\"5\" cellpadding=\"0\" border=\"0\" width=\"100%\"><tr><td align=\"center\"><input type=\"button\" value=\"Close\" onclick=\"closeNewsletterResult()\"/></td></tr></table>'; //No I18N
-        de('newsl_admin_main').innerHTML = html;
-        de('newsl_admin_title').innerHTML = title + " Result"; // No I18N
-        de('opacity').style.display = ''
-        de('admin_newsl_div').style.display = 'block'; // No I18N
-    }
-}
-function getNewsletterUsers(f) {
-    f.action = contextpath+'/ui/admin/newsletter.jsp?mode=read&read=true';
-    f.submit();
-    return false;
 }
 function downloadLoginDetails(f) {
 	var uid = f.uid.value.trim();
@@ -2896,11 +2778,7 @@ function validateinputsonaddingoauthconfigurations(locations_count){
 			return;
 		}	
 		params += "&subconfigtype=" + euc(subconfigtype) + "&subconfigvalue=" + euc(subconfigvalue) + "&inputownvalue=" + euc(inputownvalue) ;  // No I18N
-	} else if (configtype == 3){
-		var unifiedsecret = oauthconfigform.unifiedsecret.checked;
-		params += "&unifiedsecret=" + euc(unifiedsecret); // No I18N
-	}
-	else if (configtype == 4){
+	} else if (configtype == 4){
 		var redirecturl = oauthconfigform.redirecturl.value;
 		if(!redirecturl || redirecturl.trim() == "" ) {
 			alert('Enter valid redirect url value');	// No I18N
@@ -3206,9 +3084,23 @@ function validateRESTInputs() {
 				if(json.httpResponseCode == 200 || json.httpResponseCode == 404 ||json.response == "success") {
 					showsuccessmsg("Operation is success. See the result in response"); // No I18N
 					var jsonData1 = buildDom(json,false);
-					de("jsonresponse").innerHTML = jsonData1.innerHTML; //No I18N
-					de("jsonresponselabel").style.display = "block";
-					setupArrowClick();
+					de("parsedresponse").innerHTML = jsonData1.innerHTML; //No I18N
+					de("rawresponse").textContent = JSON.stringify(json);  //No I18N
+					de("jsonresponsediv").style.display = "block";
+					de("parsedjsonresponse").style.display = "block";
+					de("rawjsonresponse").style.display = "none";
+					de("errordiv").style.display = "none";
+					if(methodval == "get"){
+						var checkbox = de("togglebutton").querySelector("input[type='checkbox']");  //No I18N
+						if(checkbox.checked){
+  							checkbox.checked = !checkbox.checked;
+  						}
+						de("togglebuttondiv").style.display = "block";
+						setupArrowClick();
+					}
+					else{
+						de("togglebuttondiv").style.display = "none";
+					}
 					return;
 				} else if(json.response == "error") {	// No I18N
 					if(json.message == "invalid_data") {
@@ -3232,14 +3124,30 @@ function validateRESTInputs() {
 						return;
 					}
 				else{
-					de("jsonresponse").innerHTML = "Please check the URI"; //No I18N
-					de("jsonresponselabel").style.display = "block";
+					de("jsonresponsediv").style.display = "none";
+					de("parsedjsonresponse").style.display = "none";
+					de("rawjsonresponse").style.display = "none";
+					de("togglebuttondiv").style.display = "none";
+					de("errordiv").innerHTML = "Please check the URI"; //No I18N
+					de("errordiv").style.display = "block";
 				}
 			},
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader("X-ZCSRF-Token", csrfParam);
 			}
 		});
+	}
+}
+
+function showRaworParsed(){
+	var toggleButton = de("togglebutton").querySelector("input[type='checkbox']");  //No I18N
+	if (toggleButton.checked) {
+		de("parsedjsonresponse").style.display = "none";
+		de("rawjsonresponse").style.display = "block";
+	}
+	else{
+		de("parsedjsonresponse").style.display = "block";
+		de("rawjsonresponse").style.display = "none";
 	}
 }
 
@@ -4308,6 +4216,7 @@ function bindCustomChecker(sel){
 function  showOAuthDesc(f) {
 	var scopeName = f.scopename.value.trim();
 	var desc = f.desc.value.trim();
+	var isExposed = f.isExposed.value.trim();
 	var custom = f.custom1.checked;
 	var read = f.read1.checked;
 	var create = f.create1.checked;
@@ -4356,6 +4265,17 @@ function  showOAuthDesc(f) {
 	}
 }
 
+function changeSubmitType(f){
+	var isExposed = f.value.trim();
+	if(isExposed == 0 || isExposed == 2 || isExposed == 4){
+		$(".scopeTypeDescOFF").hide();
+		$(".scopeTypeDescON").show();
+	} else {
+		$(".scopeTypeDescOFF").show();
+		$(".scopeTypeDescON").hide();
+	}
+}
+
 function addOAuthScope(f, oldScopeId) {
     var serviceId = f.serviceid.value.trim();
     if(isEmpty(serviceId)) {
@@ -4367,11 +4287,28 @@ function addOAuthScope(f, oldScopeId) {
     var internal = f.internal.value.trim();
     var desc = f.desc.value.trim();
     var scopeExposedType = f.isExposed.value.trim();
+    var scopeDescRequired = scopeExposedType == 0 || scopeExposedType == 2 || scopeExposedType ==4;
 	var read = f.read1 != null ?f.read1.checked : false;
 	var create = f.create1 != null ? f.create1.checked : false;
 	var update = f.update1 != null ? f.update1.checked : false;
 	var del = f.delete1 != null ? f.delete1.checked : false;
 	var custom = f.custom1 != null ? f.custom1.checked : false;
+	var checkedOps = '';
+	if(read){
+		checkedOps += "READ,";//No I18N
+	}
+	if(create){
+		checkedOps +="CREATE,";//No I18N
+	}
+	if(update){
+		checkedOps += "UPDATE,";//No I18N
+	}
+	if(del){
+		checkedOps += "DELETE,";//No I18N
+	}
+	if(custom){
+		checkedOps += "CUSTOM,";//No I18N
+	}
     if(isEmpty(scopeName)) {
         showerrormsg("Please enter valid scopeName"); // No I18N
         f.scope.focus();
@@ -4380,14 +4317,17 @@ function addOAuthScope(f, oldScopeId) {
     if(isEmpty(desc)) {
         desc = scopeName;
     }
-    var params = "serviceid=" + euc(serviceId) + "&scopename=" + euc(scopeName) + "&desc=" + euc(desc) + "&isExposed=" + scopeExposedType + "&internal=" + euc(internal) + "&" + csrfParam; //No I18N
+    var params = "serviceid=" + euc(serviceId) + "&scopename=" + euc(scopeName) + "&desc=" + euc(desc) + "&isExposed=" + scopeExposedType + "&internal=" + euc(internal) + "&checkedops=" + euc(checkedOps)+ "&" + csrfParam; //No I18N
+    if(!(read || create || update || del || custom)){
+   	 showerrormsg("Scope should be valid in atleast one operation"); // No I18N
+        return false;
+    }
     
     if(!isEmpty(oldScopeId)) {
         params += "&oldScopeId=" + euc(oldScopeId.trim()); //No I18N
-        if(!(read || create || update || del || custom)){
-        	 showerrormsg("Scope should be valid in atleast one operation"); // No I18N
-             return false;
-        }
+    }
+    if(scopeDescRequired){
+        if(!isEmpty(oldScopeId)) {
         if(read){
         	params += "&READ="+euc(read);
         }
@@ -4448,6 +4388,7 @@ function addOAuthScope(f, oldScopeId) {
 		}
     	params = params + "&isI18N=" + f.isI18N.checked + "&ALL=" + euc(ALL) + "&WRITE=" + euc(WRITE) + "&READ=" + euc(READ) + "&CREATEUPDATE=" + euc(CREATEUPDATE) + "&CREATE=" + euc(CREATE) + "&UPDATE=" + euc(UPDATE) + "&DELETE=" + euc(DELETE) + "&CUSTOM=" + euc(CUSTOM);//No I18N
     }
+    }
     var resp = getPlainResponse(contextpath + "/admin/oauthscope/add", params); //No I18N
     var sresult=resp.split('-');
     resp=sresult[0].trim();
@@ -4456,9 +4397,12 @@ function addOAuthScope(f, oldScopeId) {
         if(isEmpty(oldScopeId)) {
             showsuccessmsg(scopeName+" scope created successfully"); //No I18N
             loadui('/ui/admin/oauthScope.jsp?t=view'); //No I18N
-        } else {
+        } else if(scopeDescRequired){
             showsuccessmsg(scopeName+" scope updated successfully"); //No I18N
             loadui('/ui/admin/oauthScope.jsp?t=editdesc&scopeid='+sresult[2]); //No I18N
+        } else {
+        	showsuccessmsg(scopeName+" scope updated successfully"); //No I18N
+        	loadui('/ui/admin/oauthScope.jsp?t=view'); //No I18N
         }
         clearSelectedAppServers("Do you want to clear cache in all app servers",false,iplist);// No I18N
     } else {
@@ -6096,4 +6040,18 @@ function getClientScopes() {
 	textarea.value = resp;
 	textarea.style.height = 0;
 	textarea.style.height = (textarea.scrollHeight) + "px";
+}
+
+function showBulkScopeAddition() {
+	de('showBulkAdd').style.display='none';
+	de('showSingleAdd').style.display='block';
+	de('bulkscopeupdate').style.display='block';
+	de('individualscopeadd').style.display='none';
+}
+
+function showIndividualScopeAddition() {
+	de('showSingleAdd').style.display='none';
+	de('showBulkAdd').style.display='block';
+	de('bulkscopeupdate').style.display='none';
+	de('individualscopeadd').style.display='block';
 }

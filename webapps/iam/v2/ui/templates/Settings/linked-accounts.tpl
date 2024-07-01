@@ -7,8 +7,8 @@ var csrfCookieName = "${za.csrf_cookieName}";
 				"IAM.VIEWMORE.ACCOUNTS" : '<@i18n key="IAM.VIEWMORE.ACCOUNTS" />'
 		};
 		
- var fontIconIdpNameToHtmlElement = {
- 	"GOOGLE_SMALL":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
+var fontIconIdpNameToHtmlElement = {
+	"GOOGLE_SMALL":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
  	"AZURE_SMALL":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
  	"LINKEDIN_SMALL":'',
  	"FACEBOOK_SMALL":'',
@@ -34,7 +34,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 		"linux": "",
 		"googlechrome":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
 		"safari":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
-		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
+		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
 		"microsoftedge":'<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
 		"internetexplorer":"",
 		"opera": '<span class="path1"></span><span class="path2"></span>',
@@ -80,52 +80,52 @@ var csrfCookieName = "${za.csrf_cookieName}";
 						<div class="box_discrption"><@i18n key="IAM.LINKEDACCOUNTS.DESCRIPTION" /></div>
 					</div>
 					
-					<div id="saml_enforced_wrapper">
+					<div id="saml_enforced_wrapper" class="hide saml_enforced_wrapper">
 						<span class="icon-warningfill"></span> 
 						<p><@i18n key="IAM.LINKEDACCOUNTS.SAML.ENFORCED"/></p>
 					</div>
 					<!-- listing all possible idps for this dc -->
-					<div id="all_idps" style="padding-bottom: 30px; display: block;">
+					<!-- <div id="all_idps" style="padding-bottom: 30px; display: block;">
 					
 					<#if google>
 					<div class="idp_option" onclick="thirdparty_authentication('GOOGLE');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.GOOGLE" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.GOOGLE" /></div>					
 					</div>
 					</#if>
 					
 					<#if azure>
 					<div class="idp_option" onclick="thirdparty_authentication('AZURE');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.MICROSOFT" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.MICROSOFT" /></div>					
 					</div>
 					</#if>
 					
 					<#if linkedin>
 					<div class="idp_option" onclick="thirdparty_authentication('LINKEDIN');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.LINKEDIN" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.LINKEDIN" /></div>					
 					</div>
 					</#if>
 					
 					<#if facebook>
 					<div class="idp_option" onclick="thirdparty_authentication('FACEBOOK');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.FACEBOOK" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.FACEBOOK" /></div>					
 					</div>
 					</#if>
 							
 					<#if twitter>
 					<div class="idp_option" onclick="thirdparty_authentication('TWITTER');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.TWITTER" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.TWITTER" /></div>					
 					</div>
 					</#if>
 					
 					<#if yahoo>
 					<div class="idp_option" onclick="thirdparty_authentication('YAHOO');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.YAHOO" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.YAHOO" /></div>					
 					</div>
 					</#if>
 					
@@ -133,53 +133,53 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if slack>
 					<div class="idp_option" onclick="thirdparty_authentication('SLACK');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.SLACK" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.SLACK" /></div>					
 					</div>
 					</#if>
 					
 					<#if douban>
 					<div class="idp_option" onclick="thirdparty_authentication('DOUBAN');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.DOUBAN" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.DOUBAN" /></div>					
 					</div>
 					</#if>
 					
 					<#if baidu>
 					<div class="idp_option" onclick="thirdparty_authentication('BAIDU');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.BAIDU" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.BAIDU" /></div>					
 					</div>
 					</#if>
 					
 					<#if weibo>
 					<div class="idp_option" onclick="thirdparty_authentication('WEIBO');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.WEIBO" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.WEIBO" /></div>					
 					</div>
 					</#if>
 					
 					<#if wechat>
 					<div class="idp_option" onclick="thirdparty_authentication('WECHAT');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.WECHAT" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.WECHAT" /></div>					
 					</div>
 					</#if>
 					
 					<#if qq>
 					<div class="idp_option" onclick="thirdparty_authentication('QQ');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.QQ" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.QQ" /></div>					
 					</div>
 					</#if>
 					
 					<#if apple>
 					<div class="idp_option" onclick="thirdparty_authentication('APPLE');">
 					<div class="idp_font_icon"></div>
-					<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.APPLE" /></div>					
+					<div class="idp_name"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.APPLE" /></div>					
 					</div>
 					</#if>
 								
-					</div>
+					</div> -->
 					
 					
 					<div id="no_linkedaccount" class="box_content_div">
@@ -212,7 +212,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 								<span class="path3"></span>
 								<span class="path4"></span>
 							</div>
-							<div class="idp_name text_google"><@i18n key="IAM.GOOGLE" /></div>
+							<div class="idp_name text_google"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.GOOGLE" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -226,7 +226,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 								<span class="path3"></span>
 								<span class="path4"></span>
 							</div>
-							<div class="idp_name text_azure"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.MICROSOFT" /></div>
+							<div class="idp_name text_azure"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.MICROSOFT" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -234,8 +234,9 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if linkedin>
 					<div class="idp_option idp_opt_slide idp_linkedin" onclick="thirdparty_authentication('LINKEDIN');">
 						<div class="idp_center">
-							<div class="idp_font_icon icon-linkedIn_L"></div>
-						</div>				
+							<div class="idp_font_icon icon-linkedin_small"></div>
+							<div class="idp_name text_linkedid"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.LINKEDIN" /></div>
+						</div>
 					</div>
 					</#if>
 					
@@ -243,7 +244,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_fb" onclick="thirdparty_authentication('FACEBOOK');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-facebook_small"></div>
-							<div class="idp_name text_fb"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.FACEBOOK" /></div>	
+							<div class="idp_name text_fb"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.FACEBOOK" /></div>	
 						</div>				
 					</div>
 					</#if>
@@ -252,7 +253,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_twitter" onclick="thirdparty_authentication('TWITTER');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-twitter_small"></div>
-							<div class="idp_name text_twitter"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.TWITTER" /></div>			
+							<div class="idp_name text_twitter"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.TWITTER" /></div>			
 						</div>		
 					</div>
 					</#if>
@@ -260,7 +261,8 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if yahoo>
 					<div class="idp_option idp_opt_slide idp_yahoo" onclick="thirdparty_authentication('YAHOO');">
 						<div class="idp_center">
-							<div class="idp_font_icon icon-yahoo_L"></div>
+							<div class="idp_font_icon icon-yahoo_small"></div>
+							<div class="idp_name text_yahoo"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.YAHOO" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -268,13 +270,14 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if slack>
 					<div class="idp_option idp_opt_slide idp_slack" onclick="thirdparty_authentication('SLACK');">
 						<div class="idp_center">
-							<div class="idp_font_icon multi_colour_icon icon-slack_L">
+							<div class="idp_font_icon multi_colour_icon icon-slack_small">
 								<span class="path1"></span>
 								<span class="path2"></span>
 								<span class="path3"></span>
 								<span class="path4"></span>
 								<span class="path5"></span>
 							</div>
+							<div class="idp_name text_slack"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.SLACK" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -283,7 +286,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_douban" onclick="thirdparty_authentication('DOUBAN');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-douban_small"></div>
-							<div class="idp_name"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.DOUBAN" /></div>
+							<div class="idp_name text_douban"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.DOUBAN" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -301,7 +304,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 								<span class="path7"></span>
 								<span class="path8"></span>
 							</div>
-							<div class="idp_name text_qq"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.QQ" /></div>
+							<div class="idp_name text_qq"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.QQ" /></div>
 						</div>			
 					</div>
 					</#if>
@@ -310,7 +313,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_wechat" onclick="thirdparty_authentication('WECHAT');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-wechat_small"></div>
-							<div class="idp_name text_wechat"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.WECHAT" /></div>
+							<div class="idp_name text_wechat"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.WECHAT" /></div>
 						</div>					
 					</div>
 					</#if>
@@ -325,7 +328,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 								<span class="path4"></span>
 								<span class="path5"></span>
 							</div>
-							<div class="idp_name text_weibo"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.WEIBO" /></div>	
+							<div class="idp_name text_weibo"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.WEIBO" /></div>	
 						</div>				
 					</div>
 					</#if>
@@ -333,16 +336,8 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if baidu>
 					<div class="idp_option idp_opt_slide idp_baidu" onclick="thirdparty_authentication('BAIDU');">
 						<div class="idp_center">
-							<div class="idp_font_icon multi_colour_icon icon-baidu_L">
-								<span class="path1"></span>
-								<span class="path2"></span>
-								<span class="path3"></span>
-								<span class="path4"></span>
-								<span class="path5"></span>
-								<span class="path6"></span>
-								<span class="path7"></span>
-								<span class="path8"></span>
-							</div>
+							<div class="idp_font_icon multi_colour_icon icon-baidu_small"></div>
+							<div class="idp_name text_baidu"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.BAIDU" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -360,6 +355,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_intuit" onclick="thirdparty_authentication('INTUIT');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-intuit_small"></div>
+							<div class="idp_name text_intuit"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.INTUIT" /></div>
 						</div>					
 					</div>
 					</#if>
@@ -368,6 +364,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_adp" onclick="thirdparty_authentication('ADP');">
 						<div class="idp_center">
 							<div class="idp_font_icon icon-adp_small"></div>
+							<div class="idp_name text_adp"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.ADP" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -375,20 +372,12 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<#if feishu>
 					<div class="idp_option idp_opt_slide idp_feishu" onclick="thirdparty_authentication('FEISHU');">
 						<div class="idp_center">
-							<div class="idp_font_icon multi_colour_icon icon-feishu_L">
+							<div class="idp_font_icon multi_colour_icon icon-feishu_small">
 								<span class="path1"></span>
 								<span class="path2"></span>
 								<span class="path3"></span>
-								<span class="path4"></span>
-								<span class="path5"></span>
-								<span class="path6"></span>
-								<span class="path7"></span>
-								<span class="path8"></span>
-								<span class="path9"></span>
-								<span class="path10"></span>
-								<span class="path11"></span>
-								<span class="path12"></span>
 							</div>
+							<div class="idp_name text_feishu"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.FEISHU" /></div>
 						</div>				
 					</div>
 					</#if>
@@ -397,7 +386,7 @@ var csrfCookieName = "${za.csrf_cookieName}";
 					<div class="idp_option idp_opt_slide idp_github" onclick="thirdparty_authentication('GITHUB');">
 						<div class="idp_center">
 							<div class="idp_font_icon multi_colour_icon icon-github_small"></div>
-							<div class="idp_name text_github"><@i18n key="IAM.IDENTITY.PROVIDER.NAME.GITHUB" /></div>
+							<div class="idp_name text_github"><@i18n key="IAM.FEDERATED.SIGNIN.WITH.GITHUB" /></div>
 						</div>				
 					</div>
 					</#if>

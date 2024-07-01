@@ -1,5 +1,15 @@
 //$Id$
 var resendTimer, resendtiming, altered;
+var ReverseAuth = ZResource.extendClass({
+	resourceName: "DeviceRevAuth", //No I18N
+	path: "device" //No I18N
+});
+var ReverseVerify = ZResource.extendClass({
+	resourceName: "DeviceRevVerify", //No I18N
+	path: "device/verify", //No I18N
+	identifier: "token", //No I18N
+	attrs : ["token", "code"] //No I18N
+});
 /////////////////
 var Account = ZResource.extendClass({
 	resourceName: "Account",//No I18N
@@ -18,9 +28,9 @@ var Mfa = ZResource.extendClass({
 	parent : User
 });
 var MfaTOTP=  ZResource.extendClass({ 
-	resourceName: "MFAOTP",//No I18N
+	resourceName: "TOTP",//No I18N
 	attrs : ["code"], // No i18N
-	path : 'otp',// No i18N
+	path : 'totp',// No i18N
 	parent : Mfa
 });
 var MfaMobile = ZResource.extendClass({ 
@@ -60,11 +70,6 @@ var BackupCodesStatus = ZResource.extendClass({
 	  attrs : ["status"], //No I18N
 	  parent : BackupCodes
 });
-
-function isValidSecurityKeyName(val){
-	var pattern = /^[0-9a-zA-Z_\-\+\.\$@\,\:\'\!\[\]\|\u0080-\uFFFF\s]+$/;
-	return pattern.test(val.trim());
-}
 
 function isOTPValid(code , istotp){
 	if(code.length != 0){
@@ -168,6 +173,9 @@ function popup_blurHandler(ind) {
 		if($(".msg-popups .swap-desc1:visible").length){
 			$(".msg-popups .cancel-btn").click();
 		}
+		if($(".qr-cont-wrap.qr-exp:visible").length){
+			collapseQR();
+		}
 	})
 }
 function closePopup(){
@@ -207,13 +215,66 @@ function submitForm(event){
 	event.target.querySelector(".verify-btn").click(); //No I18N
 }
 var prevSelect;
+var selectObj = {};
 function selectandslide(e) {
+if(isPhased){
+	var parID = $(e.target).closest(".modes-container")[0].id
+	var prevSelet;
+	if(selectObj[parID] != undefined){
+		prevSelet = selectObj[parID];
+	}
+	//for unselecting the selected number or device
+	if(e.target.parentNode.classList.contains("sms-container") || e.target.parentNode.classList.contains("oneauth-container")){
+		if(e.target.parentNode.querySelector(".verified-selected")){
+			e.target.parentNode.querySelector(".verified-selected").classList.remove("verified-selected") //No I18N
+			$(".pref-info.pref").remove();
+			smsPrevSelect = "";
+		}
+	} 
+	//actual selectandslide
+	if(prevSelet != undefined && prevSelet.parentNode.classList.contains("oneauth-container")){
+		if(!mfaData.devices|| !mfaData.devices.count){
+			$(e.target.nextElementSibling).slideDown(250);
+			if (prevSelet.nextElementSibling != e.target.nextElementSibling ) {
+				prevSelet.querySelector(".tag").style.opacity = "1"; //No I18N
+				$(prevSelet.nextElementSibling).slideUp(250, function(){
+				});
+				prevSelet.classList.remove("empty-oneauth-header"); //No I18N
+			}
+		}else if(mfaData.devices.count){
+			$(e.target.nextElementSibling).slideDown(250);
+			if (prevSelet.nextElementSibling != e.target.nextElementSibling ) {
+				prevSelet.querySelector(".tag").style.opacity = "1"; //No I18N
+				$(prevSelet.nextElementSibling).slideUp(250);
+			}
+		}
+	} else if(e.target.parentNode.classList.contains("oneauth-container") && (!mfaData.devices|| !mfaData.devices.count)){ //No I18N
+		e.target.querySelector(".tag").style.opacity = "0" //No I18N
+		$(e.target.nextElementSibling).slideDown(250, function(){
+				//e.target.nextElementSibling.style.overflow="unset"; //No I18N
+		});
+		e.target.classList.add("empty-oneauth-header"); //No I18N
+		$(e.target).children(".add-oneauth").slideDown(200);
+		!isMobile && showReverseSignin();
+		if (prevSelet != undefined && prevSelet.nextElementSibling != e.target.nextElementSibling) {
+			$(prevSelet.nextElementSibling).slideUp(250);
+			prevSelet.querySelector(".down-arrow").classList.remove("up"); //No I18N
+		}
+	} else {
+		$(e.target.nextElementSibling).slideDown(250);
+		if (prevSelet != undefined && prevSelet.nextElementSibling != e.target.nextElementSibling) {
+			$(prevSelet.nextElementSibling).slideUp(250);
+			prevSelet.querySelector(".down-arrow").classList.remove("up"); //No I18N
+		}
+	}
+	selectObj[parID] = e.target;
+} else {
 	//temporary handling for one-header click
-	if(e.target.classList.contains("one-header") && e.target.parentNode.classList.contains("empty-oneauth-header")){ //No I18N
+	if(e.target.classList.contains("oneauth-head-text") && e.target.closest(".empty-oneauth-header") != null){ //No I18N
 		window.open("https://zurl.to/mfa_banner_oaweb", "_blank"); //No I18N
 		return;
 	}
-	if(e.target.classList.contains("add-oneauth") || e.target.classList.contains("download") || e.target.classList.contains("common-btn")){ //No I18N
+	if(e.target.classList.contains("add-oneauth") || e.target.classList.contains("down-badges") || e.target.classList.contains("download") || e.target.classList.contains("common-btn")){ //No I18N
 		return;
 	}
 	//for unselecting the selected number or device
@@ -265,279 +326,10 @@ function selectandslide(e) {
 		}
 	}
 	prevSelect = e.target;
+	}
+
 }
 
-/*function phoneSelectformat(option) {
-	var spltext;
-	if (!option.id) {
-		return option.text;
-	}
-    spltext = option.text.split("(");
-    var num_code = $(option.element).attr("data-num");
-    var string_code = $(option.element).attr("value");
-    var ob ='<div class="pic flag_' + string_code +'" ></div><span class="cn">' + spltext[0] + "</span><span class='cc'>" + num_code + "</span>";
-    return ob;
-}
-function selectFlag(e) {
-	var flagpos = "flag_" + $(e).val().toUpperCase(); //No I18N
-	$(".select2-selection__rendered").attr("title", "");
-	e.parent().siblings(".select2").find("#selectFlag").attr("class", ""); //No I18N
-	e.parent().siblings(".select2").find("#selectFlag").addClass("selectFlag");
-	e.parent().siblings(".select2").find("#selectFlag").addClass(flagpos);
-}
-function codelengthChecking(length_id, changeid) {
-	var code_len = $(length_id).attr("data-num").length;
-	var length_ele = $(length_id).parent().siblings("#" + changeid);
-    length_ele.removeClass("textindent58");
-    length_ele.removeClass("textindent66");
-    length_ele.removeClass("textindent78");
-    if (code_len == "3") {
-		length_ele.addClass("textindent66");
-	} else if (code_len == "2") {
-		length_ele.addClass("textindent58");
-	} else if (code_len == "4") {
-		length_ele.addClass("textindent78");
-	}
-	length_ele.focus();
-}
-
-var isMobileSelectInit = false;
-function mobileSelectInit() {
-	$(document.confirm_form.countrycode)
-          .select2({
-            width: "82px", //No I18N
-            templateResult: phoneSelectformat,
-            templateSelection: function (option) {
-              selectFlag($(option.element));
-              codelengthChecking(option.element, "mobile_input"); //No I18N
-              return $(option.element).attr("data-num");
-            },
-            language: {
-              noResults: function () {
-                return I18N.get("IAM.NO.RESULT.FOUND");
-              }
-            },
-            escapeMarkup: function (m) {
-              return m;
-            }
-          })
-          .on("select2:open", function () {
-            $(".select2-search__field").attr("placeholder", I18N.get("IAM.SEARCHING"));
-		});
-    $("#select_phonenumber .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-    selectFlag($(document.confirm_form.countrycode).find("option:selected"));
-	$(".select2-selection__rendered").attr("title", "");
-	$(document.confirm_form.countrycode).on("select2:close", function (e) {
-		$(e.target).siblings("input").focus();
-    });
-    phonePattern.intialize(document.confirm_form.countrycode);
-    if(!showMobileNoPlaceholder){
-		$("#mobile_input").on("input", function(event){
-			numbOnly(event);
-		})
-	}
-	splitField.createElement("otp_split_input", {
-		splitCount: 7,
-        charCountPerSplit: 1,
-        isNumeric: true,
-        otpAutocomplete: true,
-        customClass: "customOtp",  //No I18N
-        inputPlaceholder: "&#9679;",
-        placeholder: I18N.get("IAM.ENTER.CODE")
-	});
-	$("#otp_split_input .splitedText").attr("onkeydown", "clearError('#otp_split_input', event)");
-}
-var recMobiles =[];
-function addNewNumber(e) {
-	$(document.verify_sms_form).hide();
-	$(".new-number button.back-btn").hide();
-	if(mobCount>0){
-		$(".new-number button.back-btn").show();
-	}
-	if(e.target.parentNode.classList.contains("already-verified")){
-		$(".already-verified").slideUp(200);
-		$(document.confirm_form).show();
-	}
-	if(e.target.parentNode.classList.contains("already-verified-recovery")){
-		$(".already-verified-recovery").slideUp(200);
-		$(document.confirm_form).slideDown(200);
-	}
-	if(e.target.parentNode.classList.contains("add-new-cont")){
-		if(mfaData.otp && mfaData.otp.show_suggestion){
-			selectRecoveryNumbers(true);
-		}else{
-			$(document.confirm_form).show();
-		}
-	}
-	if(recMobiles.length<1){
-		$(".already-added-but").hide();
-	}
-	$(".totp-container, .oneauth-container, .yubikey-container").slideUp(200);
-	$(".add-new-number").slideUp(200);
-	$(".new-number").slideDown(200, function(){
-		$("#mobile_input").val("").focus();
-	});
-	if(nModes > 1){
-		$(".sms-container").css("border-bottom","1px solid #d8d8d8")
-		$(".show-all-modes-but").slideDown(200);
-	}
-	if (!isMobileSelectInit) {
-		mobileSelectInit();
-		if(!IPcountry == ""){
-			$(document.confirm_form.countrycode).val(IPcountry);
-			$(document.confirm_form.countrycode).trigger('change');
-		}
-		if(mfaData.otp && mfaData.otp.recovery_count){
-			$(".already-added-but").show();
-          	recMobiles =  mfaData.otp.recovery_mobile.map(function(arrEle){
-					return arrEle.r_mobile;
-			})
-		}
-		isMobileSelectInit = true;
-	}
-}
-
-var swapElement;
-function showConfirmSwap(e){
-	if(e.target.classList.contains("verified-checkbox")){
-		var swap = e.target.parentNode.dataset.swapnumber;
-		var arrpos = e.target.parentNode.dataset.recArr;
-		swapElement = e.target.parentNode;
-	}else{
-		var swap = e.target.dataset.swapnumber;
-		var arrpos = e.target.dataset.recArr;
-		swapElement = e.target;
-	}
-	if(mfaData.modes.length == 0){
-		document.querySelector(".swap-desc1").textContent = I18N.get("IAM.MFA.ANNOUN.SMS.SWAP.DESC.NEW"); //No I18n
-		$(".confirm-swap").html("<span></span>"+I18N.get("IAM.MFA.CHANGE.ENABLE.MFA")); //No I18n
-	}
-	document.querySelector(".msg-popups .popup-icon").classList.remove("icon-success")  //No I18n
-	document.querySelector(".msg-popups .popup-heading").textContent = I18N.get("IAM.MFA.ANNOUN.SMS.SWAP.HEADING");  //No I18n
-	document.querySelector(".msg-popups .popup-body").innerHTML = document.querySelector(".number-swap").innerHTML;  //No I18n
-	document.querySelector(".msg-popups .pop-close-btn").style.display = "none";
-	document.querySelector(".confirm-swap").dataset.swap = swap; //No I18N
-	document.querySelector(".confirm-swap").dataset.swapArr = arrpos; //No I18N
-	popup_blurHandler(6);
-	$(".msg-popups").slideDown(300);
-	$(".msg-popups").focus();
-}
-function swapNumber(e){
-	e.target.setAttribute("disabled","");
-	e.target.children[0].classList.add("loader");
-	mnumb = e.target.dataset.swap;
-	arraypos = e.target.dataset.swapArr;
-	var payload = MobileMakeMfa.create();
-	payload.PUT("self","self",mnumb.split("-")[1]).then(function(resp){ //No I18N
-		if(resp.code == "MOB201"){
-		e.target.removeAttribute("disabled");
-		e.target.children[0].classList.remove("loader");
-		if(mfaData.modes.length==0){
-			showSuccessMfapop();
-			return;
-		}
-		$(".msg-popups").slideUp();
-		removeBlur();
-		showErrMsg(resp.localized_message,true);
-		if(mobCount){
-			mfaData.otp.mobile.push(mfaData.otp.recovery_mobile[arraypos]);
-			mfaData.otp.count = mobCount + 1;
-		} else {
-			mfaData.otp.mobile =  [mfaData.otp.recovery_mobile[arraypos]];
-			mfaData.otp.count = 1;
-		}
-		addConfiguredMobile({"mobile":[mfaData.otp.recovery_mobile[arraypos]], "count":1 }, true); //No I18n
-		$(swapElement).animate({ "padding": "0px" , "height": "0px" , "font-size":"0px"}, 200, function(){ $(this).remove()})
-		smsPrevSelect ="";
-		recMobiles = recMobiles.filter(function(ele){ return ele!== mnumb})
-		mfaData.otp.recovery_mobile[arraypos] = {};
-		newSms = $(".already-verified .verified-numb-cont")[0];
-		$(".new-number").slideUp();
-		$(".already-verified-recovery").hide();
-		$(".already-verified").slideDown(250,function(){
-			newSms.click();
-		});
-		} else {
-			e.target.removeAttribute("disabled");
-			e.target.children[0].classList.remove("loader");
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") {
-				showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-			}else{
-				classifyError(resp);
-			}
-		}
-	}, function(resp){
-		e.target.removeAttribute("disabled");
-		e.target.children[0].classList.remove("loader");
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") {
-			showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-		}else{
-			classifyError(resp);
-		}
-	});
-}
-
-function smsAlreadyStepBack(){
-	$(".new-number").slideUp(250);
-	$(".sms-container .mode-header").click();
-	$(".already-verified").slideDown(250);
-}
-function selectAlreadyNumbers() {
-	$(".new-number").slideUp();
-	$(".sms-body .already-verified, .sms-container .mode-header").slideDown(200);
-	$(".totp-container, .oneauth-container, .yubikey-container").slideDown(200);
-	$(".sms-container.mode-cont").css("border-bottom", "1px solid #d8d8d8");
-	$(".enable-mfa").show();
-}
-function selectRecoveryNumbers(isSuggestion, isAlready){
-	var parCont = document.querySelector(".already-verified-recovery"); //No I18n
-	if( !parCont.querySelector(".verified-numb-cont")){
-		for(i = 0; i < mfaData.otp.recovery_mobile.length; i++){
-			var verifiedCont = document.querySelector(".verified-numb-cont").cloneNode(true); //No I18N
-			var numb = mfaData.otp.recovery_mobile[i].r_mobile.split("-");
-			var displayNo = "+"+numb[0]+" "+numb[1];
-			verifiedCont.querySelector(".verified-number").textContent = displayNo; //No I18N
-			verifiedCont.querySelector(".added-period").textContent = mfaData.otp.recovery_mobile[i].created_time_elapsed; //No I18N
-			verifiedCont.querySelector(".delete-icon").style.display = "none";
-			verifiedCont.dataset.swapnumber = mfaData.otp.recovery_mobile[i].r_mobile;
-			verifiedCont.dataset.recArr = i;
-			verifiedCont.addEventListener("click", showConfirmSwap)
-			verifiedCont.style.display = "flex";
-			parCont.insertBefore(verifiedCont, parCont.querySelector(".add-new-number-but")); //No I18N
-		}
-	}
-	if(isSuggestion){
-		parCont.querySelector(".suggest-recovery-desc").style.display="block";
-	}else if(isAlready){
-		parCont.querySelector(".already-recovery-desc").style.display="block";
-		parCont.querySelector(".verified-recovery-desc").style.display="none";
-		parCont.querySelector(".suggest-recovery-desc").style.display="none";
-	}else{
-		parCont.querySelector(".suggest-recovery-desc").style.display="none";
-		parCont.querySelector(".already-recovery-desc").style.display="none";
-		if(mfaData.otp.recovery_count === 1){
-			parCont.querySelector(".verified-recovery-desc.one").style.display="block";
-		}else{
-			parCont.querySelector(".verified-recovery-desc").style.display="block";
-		}	
-	}
-	if(parCont.querySelector(".verified-selected")){
-		parCont.querySelector(".verified-selected").classList.remove("verified-selected"); //No i18n
-	}
-	$(document.confirm_form).slideUp(200);
-	$(parCont).slideDown(200);
-}
-	  
-function isRecoveryNumber(mobNumber){
-	for(y=0; y<recMobiles.length; y++){
-		if(recMobiles[y] == mobNumber){
-			selectRecoveryNumbers(false, true);
-			return true;
-		}
-	}
-	return false;
-}
-*/
 var hardKeyTransition;
 function addNewYubikey(e) {
 	if(e.target.parentNode.classList.contains("already-yubikey-conf")){
@@ -609,10 +401,18 @@ function configureYubikey(e)
 		show_error_msg("#yubikey_input", I18N.get("IAM.MFA.YUBIKEY.INVALID.YUBIKEY_NAME.ERROR"));//No I18N
 		return false;
 	} else {
+		yname  = name.toUpperCase();
 		if(mfaData.yubikey && mfaData.yubikey.yubikey){
-			yname  = name.toUpperCase();
 			for(y=0;y<mfaData.yubikey.count;y++){
-				if(mfaData.yubikey.yubikey[y].key_name && mfaData.yubikey.yubikey[y].key_name.toUpperCase() === yname) {
+				if(mfaData.yubikey.yubikey[y].key_name && decodeHTML(mfaData.yubikey.yubikey[y].key_name.toUpperCase()) === yname) {
+					show_error_msg("#yubikey_input", I18N.get("IAM.WEBAUTHN.ERROR.DUPLICATE.PASSKEY"));//No I18N
+					return false;
+				}
+			}
+		}
+		if(mfaData.passkey && mfaData.passkey.passkey){
+			for(y=0;y<mfaData.passkey.count;y++){
+				if(mfaData.passkey.passkey[y].key_name && decodeHTML(mfaData.passkey.passkey[y].key_name.toUpperCase()) === yname) {
 					show_error_msg("#yubikey_input", I18N.get("IAM.WEBAUTHN.ERROR.DUPLICATE.PASSKEY"));//No I18N
 					return false;
 				}
@@ -692,134 +492,7 @@ function numbOnly(e){
 	e.target.value = e.target.value.slice(0, e.target.value.length).replace(/[^0-9]/gi, "");
 }
 var encKey;
-/*
-var mobile="";
-var mobObject = {};
-function sendSms(e){
-	if(document.querySelector(".sms-container .send_otp_btn").disabled){
-		return false;
-	}
-	altered = false;
-	mobile = $("#mobile_input").val().replace(/[+ \[\]\(\)\-\.\,]/g,'');
-	if(mobile == ""){
-		show_error_msg("#mobile_input",I18N.get("IAM.ERROR.EMPTY.FIELD")); //No I18n
-		return false;
-	}
-	if(isPhoneNumber(mobile)){
-		var dialingCode = $('#countNameAddDiv option:selected').attr("data-num");
-		mobObject.r_mobile = dialingCode.split("+")[1]+"-"+mobile;
-		if(!(isRecoveryNumber(mobObject.r_mobile))){
-		e.target.setAttribute("disabled",'');
-		e.target.querySelector("span").classList.add("loader","miniloader","leftMargin"); //No i18N
-		$(".resend_otp").html("<div class='loader nonclic'></div>"+I18N.get('IAM.GENERAL.OTP.SENDING'));
-		$(".resend_otp").addClass("nonclickelem");
-        var countryCode = $('#countNameAddDiv option:selected').attr("id");
-        var params = {"mobile":mobile,"countrycode":countryCode}; //No I18N
-        mobObject.country_code = countryCode;
-        var payload = MfaMobile.create(params);
-        var otpform = document.verify_sms_form;
-		otpform.querySelector(".valuemobile").textContent = dialingCode+" "+mobile; //No I18N
-		document.querySelectorAll(".otp_split_input_otp").forEach(function(eachEle){ eachEle.value =""; }); //No i18n
-		clearError("#otp_split_input") //No i18n
-		payload.POST("self","self","mode").then(function(resp){ //No I18N
-			$(document.confirm_form).slideUp(200, function(){
-				e.target.removeAttribute("disabled");
-				e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
-			});
-			$(otpform).slideDown(200);
-			var mfaMobile=resp.mfamobile;
-			mobObject.e_mobile = mfaMobile.encryptedMobile;
-			encKey = mfaMobile.encryptedMobile;
-			setTimeout(function(){
-				$(".resend_otp").html("<div class='tick nonclic'></div>"+I18N.get('IAM.GENERAL.OTP.SUCCESS'));
-				setTimeout(function(){
-				resendOtpChecking();
-				}, 1000);
-				}, 800);
-		},
-		function(resp){
-			e.target.removeAttribute("disabled");
-			e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") {
-				showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-			}else{
-				classifyError(resp, "#mobile_input"); //No I18n
-			}
-			
-		});
-		}
-	}
-	else{
-		show_error_msg("#mobile_input",I18N.get("IAM.PHONE.ENTER.VALID.MOBILE_NUMBER")); //No I18n
-	}
-}
 
-function verifySmsOtp(e){
-	var code = $("#otp_split_input_full_value").val();
-	if(code == ""){
-		show_error_msg("#otp_split_input", I18N.get("IAM.ERROR.EMPTY.FIELD"));//No I18N
-		return;
-	}
-	if(!isOTPValid(code)){
-		show_error_msg("#otp_split_input", I18N.get("IAM.ERROR.VALID.OTP"));//No I18N
-		return;
-	}
-	e.target.setAttribute("disabled",'');
-	e.target.querySelector("span").classList.add("loader","miniloader"); //No i18N
-	var param = { "code":code }; //No I18N
-	var payload = MfaMobile.create(param); 
-	payload.PUT("self","self","mode",encKey).then(function(resp){       //No I18N
-		if(resp.code === "MOB201"){
-			e.target.removeAttribute("disabled");
-			e.target.querySelector("span").classList.remove("loader","miniloader"); //No i18N
-			$(".verify-btn").html("<div class='verified_tick'></div>"+I18N.get('IAM.VERIFIED')); //No I18N
-			if(mfaData.modes.length==0){
-				showSuccessMfapop();
-				return;	
-			}
-			mobObject.created_time_elapsed = I18N.get("IAM.JUST.NOW"); //No I18N
-			if(mobCount){
-				mfaData.otp.mobile.push(mobObject);
-				mfaData.otp.count = mobCount + 1;
-			} else {
-				if(mfaData.hasOwnProperty("otp")){
-					Object.assign(mfaData.otp, {"mobile":[mobObject]});
-				}else{
-					mfaData.otp = {"mobile":[mobObject]};
-				}
-				Object.assign(mfaData.otp, {"count":1});  //No I18n
-				mobCount = 0;
-			}
-			addConfiguredMobile({"mobile":[mobObject]}, true);
-			mobObject = {};
-			newSms = $(".already-verified .verified-numb-cont")[0];
-			setTimeout(function(){
-				$(".new-number").slideUp(250);
-				$(".already-verified").slideDown(250,function(){
-					newSms.click();
-				});
-				document.querySelectorAll(".otp_split_input_otp").forEach(function(eachEle){ eachEle.value =""; }); //No i18n
-				$(".verify-btn").html("<span></span>"+I18N.get('IAM.NEW.SIGNIN.VERIFY'));
-				resendtiming = 1;
-				$(".verify_sms_form").hide();
-				$("#mobile_input").val("");
-				$(".confirm_form").show();
-				
-			}, 1500);
-		}
-	},
-	function(resp)
-	{
-		e.target.removeAttribute("disabled");
-		e.target.querySelector("span").classList.remove("loader","miniloader"); //No i18N
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") {
-			showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-		}else{
-			classifyError(resp,"#otp_split_input") //No I18N
-		}
-	});	
-}
-*/
 function allowSubmit(e) {
 	if(mobile === e.target.value || mobile === ""){
 		altered=false;
@@ -884,7 +557,7 @@ function addNewTotp(e){
 	var payload = MfaTOTP.create();
 	payload.POST("self","self","mode").then(function(resp){ //No I18N
 		
-		var mfaTOTP=resp.mfaotp[0]; 
+		var mfaTOTP=resp.totp[0]; 
 		de('gauthimg').src="data:image/jpeg;base64,"+mfaTOTP.qr_image;
 		var key=mfaTOTP.secretkey;
 		var displaykey = "<span>"+key.substring(0, 4)+"</span>"+"<span style='margin-left:5px'>"+key.substring(4, 8)+"</span>"+"<span style='margin-left:5px'>"+key.substring(8,12)+"</span>"+"<span style='margin-left:5px'>"+key.substring(12)+"</span>"; //No I18N
@@ -972,34 +645,6 @@ function selectNumberDevice(e){
 	}
 }
 
-/*function resendSms(){
-	if($(".resend_otp").is(":visible")){
-		$(".resend_otp").addClass("nonclickelem");
-		$(".resend_otp").html("<div class='loader nonclic'></div>"+I18N.get('IAM.GENERAL.OTP.SENDING'));
-	}
-	var parms = {};
-	var payload = MfaMobile.create(parms);
-	
-	payload.PUT("self","self","mode",encKey).then(function(resp){ //No I18N
-		setTimeout(function(){
-				$(".resend_otp").html("<div class='tick nonclic'></div>"+I18N.get('IAM.GENERAL.OTP.SUCCESS'));
-				setTimeout(function(){
-				resendOtpChecking();
-				}, 1000);
-				}, 800);
-	},
-	function(resp){
-		$(".resend_otp").removeClass("nonclickelem");
-		$(".resend_otp").html(I18N.get("IAM.NEW.SIGNIN.RESEND.OTP"));
-		resendTiming = 1; 
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") {
-			showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-		}else{
-			classifyError(resp);
-		}
-	});
-}
-*/
 function showPreferedInfo(parentEle){
 	var sibEle = parentEle.querySelector(".delete-icon"); //No I18N
 	var newEle = document.querySelector(".pref-info").cloneNode(true)  //No I18N
@@ -1052,107 +697,6 @@ function handleDelete(e, dfunc, mode){
 	
 }
 
-/*function prefDeleteNumbList(content){
-	$(".delete-popup .popup-heading").text(I18N.get("IAM.MFA.DEL.PREF.NUMB"));
-	$(".delete-desc").html(I18N.get("IAM.MFA.DEL.PREF.NUMB.DESC",content));  //No I18n
-	$(".delete-desc").css("font-weight","normal")
-	var delPrefCont = document.createElement("DIV");
-	delPrefCont.classList.add("delpref-cont") //No I18n
-	var delPrefdesc = document.createElement("DIV");
-	$(delPrefdesc).addClass("delpref-desc");
-	delPrefdesc.textContent = I18N.get("IAM.SELECT.NEW.PREF.NUMB");
-	delPrefCont.append(delPrefdesc);
-	for(x=0; x<mfaData.otp.mobile.length; x++){
-		if(Object.keys(mfaData.otp.mobile[x]).length !== 0 && !mfaData.otp.mobile[x].is_primary){
-			var verifiedCont = document.querySelector("#verifiedNumb").cloneNode(true); //No I18N
-			var numb = mfaData.otp.mobile[x].r_mobile.split("-");
-			var displayNo = "+"+numb[0]+" "+numb[1];
-			verifiedCont.querySelector(".verified-number").textContent = displayNo; //No I18N
-			verifiedCont.querySelector(".added-period").textContent = mfaData.otp.mobile[x].created_time_elapsed; //No I18N
-			verifiedCont.querySelector(".verified-checkbox").dataset.enckey = mfaData.otp.mobile[x].e_mobile;
-			verifiedCont.querySelector(".delete-icon").style.display = "none"; // No I18N
-			verifiedCont.dataset.pos = x;
-			verifiedCont.style.display = "flex";
-			delPrefCont.append(verifiedCont);
-		}
-	}
-	var exisnode = $(".popup-body .delete-desc")[0]
-	exisnode.parentNode.insertBefore(delPrefCont, exisnode.nextSibling);
-}
-function deletePhNumber(e){
-
-	var isPrefDel=e.target.getAttribute("isPrefDel")?true:false;
-	var enckey = deleteEvent.dataset.enckey;
-	$(".confirm-delete-btn").attr("disabled","");
-	$(".confirm-delete-btn span")[0].classList.add("loader"); // No I18N
-
-	if(isPrefDel){
-		primenc = document.querySelector(".delpref-cont .verified-selected").dataset.enckey; // No I18N
-		var uri = new URI(MfaMobile,"self","self","mode",enckey).addQueryParam("primary", primenc); // No I18N
-	} else {
-		var uri = new URI(MfaMobile,"self","self","mode",enckey); // No I18N
-	}
-	uri.DELETE().then(function(resp){
-		if(resp.code === "MOB206"){
-			if(isPrefDel){
-				var parnod = document.querySelector(".delpref-cont .verified-selected").parentNode // No I18N
-				mfaData.otp.mobile[parnod.dataset.pos].is_primary = true;
-				document.querySelector("#verifiedNumb"+parnod.dataset.pos+" .delete-icon").dataset.primary = true; // No I18N
-			}
-			$(".delete-popup").slideUp(250, function(){ // No I18N
-				$(".delpref-cont").remove(); // No I18N
-			});
-			removeBlur();
-			if(isPrefDel){
-				showErrMsg(I18N.get("IAM.MFA.DEL.PREF.SUCC.MSG"), true);
-			}else{
-				showErrMsg(resp.localized_message, true);
-			}
-			
-			$(deleteEvent).parent().animate({ "padding": "0px" , "height": "0px" , "font-size":"0px"}, 200, function(){ 
-				$(this).remove()
-				if(!$(".modes-container .verified-selected:visible").length){ // No I18N
-				$(".sms-container .mode-header").click(); // No I18N
-				smsPrevSelect = "";
-			}
-			})
-			$(".confirm-delete-btn span")[0].classList.remove("loader"); // No I18N
-			$(".confirm-delete-btn").removeAttr("disabled");
-			arraypos = deleteEvent.dataset.pos;
-			mfaData.otp.mobile[arraypos] ={};
-			mfaData.otp.count -= 1;
-			mobCount -= 1;
-			if ($(".sms-container .mode-header-texts span:visible").length > 1){ // No I18N
-				document.querySelectorAll(".sms-container .mode-header-texts span")[1].remove(); // No I18N
-			}
-			var headerText = getModeHeaderText(mobCount, mobileHeader)
-			if(headerText instanceof HTMLElement){ 
-				document.querySelector(".sms-container .mode-header-texts").append(headerText);//No I18N
-			}
-			if(mobCount == 1){
-				$(".sms-container .already-desc.many").hide(); // No I18N
-				$(".sms-container .already-desc.one").show(); // No I18N
-				$(".sms-container .new-added-desc").hide(); // No I18N
-			}
-			if(mobCount < 1){
-				$(".already-verified").slideUp(250);
-				$(".add-new-number").slideDown(250);
-			}
-		}
-	},function(resp){
-		$(".confirm-delete-btn span")[0].classList.remove("loader"); // No I18N
-		$(".confirm-delete-btn").removeAttr("disabled"); // No I18N
-		document.querySelector(".confirm-delete-btn").removeAttribute("disabled"); // No I18N
-		cancelDelete();
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") { // No I18N
-			showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), false, resp); //No I18n
-		}else{
-			classifyError(resp);
-		}
-	})
-	isPrefDel?e.target.removeAttribute("isPrefDel"):false;
-}
-*/
 function deleteYubikey(){
 	var e_keyname = deleteEvent.dataset.eyubikeyid;
 	new URI(MfaYubikey,"self","self","mode",e_keyname).DELETE().then(function(resp){  //No I18n
@@ -1266,6 +810,17 @@ function deleteOneAuth(){
 			}
 			if(devCount < 1){
 				$(".already-verified-app").slideUp(250);
+				if(isPhased){
+					document.querySelector(".oneauth-container .mode-header").classList.add("empty-oneauth-header"); //No I18N
+				$(".oneauth-container .splitback").slideDown(200, function(){ //No I18N
+					if(rev == undefined){
+						rev =reverseSignin();
+						rev.init();
+					}
+				});
+				document.querySelector(".oneauth-container .tag").style.opacity = "0" //No I18N
+				document.querySelector(".oneauth-container .oneauth-desc").style.display = "block";
+				}else{
 				$(".oneauth-container .mode-header").children(".add-oneauth").slideDown(200, function(){ //No I18N
 					document.querySelector(".add-new-oneauth").style.overflow="unset"; //No I18N
 					document.querySelector(".add-qr").classList.add("qr-anim") //No I18N
@@ -1275,6 +830,8 @@ function deleteOneAuth(){
 				document.querySelector(".oneauth-container .mode-icon").classList.add("mode-icon-large")//No I18N
 				document.querySelector(".oneauth-container .mode-header-texts").classList.add("oneauth-head-text"); //No I18N
 				document.querySelector(".oneauth-container .oneauth-desc").style.display = "block";
+				}
+
 			}
 
 		}
@@ -1304,10 +861,10 @@ function getModeHeaderText(count, modeHeaderObject){
 }
 
 function cancelDelete(){
-	$(".delete-popup").slideUp(300, function(){
+	$(".delete-popup").slideUp(200, function(){
 		$(".delpref-cont").remove();
+		removeBlur();
 	});
-	removeBlur();
 	$(".delete-cancel-btn").unbind();
 }
 
@@ -1330,7 +887,9 @@ function showTotpOtp(){
 		$(".show-all-modes-but").slideDown(200);
 	}
 	$(".new-totp-codes").slideUp(200);
-	$(document.verify_totp_form).slideDown(200);
+	$(document.verify_totp_form).slideDown(200, function(){
+		$(".new-totp .totp_split_input_otp")[0].focus();
+	});
 }
 function verifyTotpCode(e){
 	e.preventDefault();
@@ -1425,14 +984,6 @@ function displayAlreadyConfigured(mode, modeData){
 		document.querySelector(".already-totp-conf").style.display = "block"; //No I18N
 		}
 		break;
-/*		case "otp": //No I18N
-		$(".sms-container").insertBefore($(".mode-cont")[styleOrder]);
-		styleOrder++;
-		if(addConfiguredMobile(modeData)){
-		document.querySelector(".add-new-number").style.display ="none"; //No I18N
-		document.querySelector(".already-verified").style.display = "block"; //No I18N
-		}
-		break;*/
 		case "devices": //No i18n
 		$(".oneauth-container").insertBefore($(".mode-cont")[styleOrder]);
 		styleOrder++;
@@ -1467,65 +1018,7 @@ function addConfiguredTotp(modeData){
 		return false;
 	}
 }
-/*var mobCount;
-function addConfiguredMobile(modeData, isNew){
-	if(document.querySelector(".sms-container")){
-	mobCount = mobCount == undefined ? modeData.count : mobCount + 1;
-	if(mobCount){
-		var headerText = getModeHeaderText(mobCount, mobileHeader)
-		//// op /////
-		if ($(".sms-container .mode-header-texts span:visible").length > 1){
-			document.querySelectorAll(".sms-container .mode-header-texts span")[1].remove();
-		}
-		document.querySelector(".sms-container .mode-header-texts").append(headerText);//No I18N
-	}
-	if(mobCount == 1){
-		if(isNew){
-			$(".already-verified .already-desc").hide();
-			$(".already-verified .new-added-desc.one").show();
-		} else {
-			$(".already-verified .already-desc.one").show();
-		}
-	}else if(mobCount>1){
-		if(isNew){
-			$(".already-verified .already-desc").hide();
-			$(".already-verified .new-added-desc.many").show();
-		} else {
-			$(".already-verified .already-desc.many").show();
-		}
-	}
-	
-	for(i = 0; i < modeData.mobile.length;i++){
-		var verifiedCont = document.querySelector("#verifiedNumb").cloneNode(true); //No I18N
-		var numb = modeData.mobile[i].r_mobile.split("-");
-		var displayNo = "+"+numb[0]+" "+numb[1];
-		
-		verifiedCont.querySelector(".verified-number").textContent = displayNo; //No I18N
-		verifiedCont.querySelector(".added-period").textContent = I18N.get("IAM.USER.CREATED.TIME.ADDED", modeData.mobile[i].created_time_elapsed); //No I18N
-		verifiedCont.querySelector(".delete-icon").dataset.enckey = modeData.mobile[i].e_mobile;
-		verifiedCont.querySelector(".verified-checkbox").dataset.enckey = modeData.mobile[i].e_mobile;
-		if(modeData.mobile[i].hasOwnProperty("is_primary")){
-			verifiedCont.querySelector(".delete-icon").dataset.primary = "true" // No I18N
-		}else{
-			verifiedCont.querySelector(".delete-icon").dataset.primary = "false" // No I18N
-		}
-		if(isNew){
-			verifiedCont.querySelector(".delete-icon").dataset.pos = (mfaData.otp.mobile.length)-1; //No I18N
-			verifiedCont.id = verifiedCont.id + ((mfaData.otp.mobile.length)-1);
-		} else{
-			verifiedCont.id = verifiedCont.id + i;
-			verifiedCont.querySelector(".delete-icon").dataset.pos = i; //No I18N
-		}
-		//need to check and set if new number is added  //No I18n
-		var exisnode = document.querySelector(".already-verified .descriptions"); //No I18n
-		verifiedCont.style.display = "flex";
-		exisnode.parentNode.insertBefore(verifiedCont, exisnode.nextSibling);
-	}
-	return true;
-	} else {
-		return false;
-	}
-}*/
+
 var primDev;
 var devCount;
 function addConfiguredDevice(modeData){
@@ -1726,7 +1219,7 @@ function showErrMsg(msg, isSuccessMsg, isRelogin){
 	setTimeout(function() {
 		document.getElementById("error_space").classList.remove("show_error");//No I18N
 		document.getElementById("error_space").removeEventListener("click", reloginRedirect);
-	}, 5000);;
+	}, getToastTimeDuration(msg));;
 }
 function classifyError(resp, siblingClassorID){
 	if(resp.status_code && resp.status_code === 0){
@@ -1738,7 +1231,7 @@ function classifyError(resp, siblingClassorID){
 	}else if(resp.localized_message){
 		showErrMsg(resp.localized_message)
 	}else{
-		showErrMsg(I18N.get("IAM.ERROR.USER.ACTION"));
+		showErrMsg(I18N.get("IAM.ERROR.GENERAL"));
 	}
 }
 	  
@@ -1847,13 +1340,19 @@ function updateBackupStatus(mode){
 	payload.PUT("self","self").then(function(resp){ //No I18N
 	});
 }
-var pmail, userName;
+var pmail, userName, recHelp, newCodesHelp ;
 function show_backup(resp){
+	if($(".msg-popups .popup-body").hasClass("succ-popup")){
+		$(".succ-popup").removeClass("succ-popup");
+		$(".msg-popups .popup-header").show();
+	}
 	var codes = resp.recovery_code;
 	var recoverycodes = codes.split(":");
 	var createdtime = resp.created_date;
 	pmail = resp.primary_email;
 	userName = resp.user;
+	recHelp = "https://zurl.to/mfa_banner_bvc_rec" //No I18N
+	newCodesHelp = "https://zurl.to/mfa_banner_bvc_gen" //No I18N
 	var res ="<ol class='bkcodes'>"; //No I18N
 	var recCodesForPrint = "";
 	for(idx in recoverycodes){
@@ -1880,31 +1379,41 @@ function show_backup(resp){
 }
 var recTxt;
 function formatRecoveryCodes(createdtime, recoverycodes){
-	recTxt  = I18N.get('IAM.TFA.BACKUP.ACCESS.CODES')+"\n"+pmail+"\n\n"; //No I18n
+	recTxt = I18N.get("IAM.MFA.BACKUPCODE.FILE.TEXT")+"\n\n\n"; //No I18N
+	recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES") + "\n"; //No I18N
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES").split("").forEach(function(){recTxt=recTxt+"-"}); //No I18N
+	recTxt = recTxt + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT1") + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT3") + "\n# " //No I18N
+					+ I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES3") + "\n# " + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES4") + "\n\n\n"; //No I18N
+	recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE") + "\n";		//No I18n
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+	recTxt = recTxt + "\n" + I18N.get("IAM.GENERAL.USERNAME") + ": " + pmail + "\n"; //No I18N
+	
+	recTxt = recTxt + I18N.get("IAM.GENERATE.ON") + ": " + createdtime + "\n\n"; //No I18N
 	recoverycodes = recoverycodes.split(",");
 	for(var idx=0; idx < recoverycodes.length; idx++){
 		var recCode = recoverycodes[idx];
 		if(recCode != ""){
-			recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18n
+			recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18N
 		}
 	}
-	recTxt += "\n\n"+ I18N.get('IAM.GENERATEDTIME') +" : " +createdtime; //No I18n
+	recTxt = recTxt + "\n\n\n" + I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK") + "\n"; //No I18N
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+	recTxt = recTxt + "\n\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK"), recHelp) + "\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK"),newCodesHelp);	//No I18n
 }
 function copy_code_to_clipboard (createdtime, recoverycodes) {
 	if(recTxt == undefined){
 		formatRecoveryCodes(createdtime, recoverycodes);
 	}
-   	var elem = document.createElement('textarea');
-   	elem.value = recTxt;
-   	document.body.appendChild(elem);
-   	elem.select();
-   	document.execCommand('copy'); //No I18n
-   	document.body.removeChild(elem);
-   	$(".copy_to_clpbrd").hide();
-   	$(".code_copied").show();
-   	$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
-	$(".down_copy_proceed").hide();
-	$(".cont-signin").show();
+	navigator.clipboard.writeText(recTxt).then(function () {
+		$(".copy_to_clpbrd").hide();
+		$(".code_copied").show();
+		$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
+		$(".down_copy_proceed").hide();
+		$(".cont-signin").show();
+	}).catch(function(){
+		//error occured while copying
+		showErrMsg(I18N.get("IAM.ERROR.GENERAL"))
+	});
 }
 function remove_copy_tooltip() {
 	$(".copy_to_clpbrd").show();
@@ -1932,8 +1441,7 @@ function showOneauthPop(){
 	document.querySelector(".msg-popups").style.maxWidth = "660px"; //No I18N
 	document.querySelector(".msg-popups .popup-icon").classList.remove("icon-success")  //No I18n
 	document.querySelector(".msg-popups .popup-header").style.display = "none";
-	
-	//document.querySelector(".msg-popups .popup-heading").textContent = I18N.get("IAM.MFA.ANNOUN.ONEAUTH.SETUP.HEAD");  //No I18n
+
 	document.querySelector(".msg-popups .popup-body").innerHTML = document.querySelector(".oneauth-popup").innerHTML;  //No I18n
 	document.querySelector(".msg-popups .popup-body").classList.add("padding-oneauthpop");  //No I18n
 	document.querySelector(".msg-popups .pop-close-btn").style.display = "block";
@@ -1998,3 +1506,539 @@ function resetTooltipText(element) {
 	}, 300);
 	return;
 }
+function tempBack(e){
+	h11 && clearTimeout(h11);
+	$(".splitback .qr-image").addClass("filt");
+	$(".splitback .qr-refresh").css("pointer-events", "auto");
+	$(".splitback .icon-Reload").css("animation", "");
+	if(e.target.getAttribute("data-status") != "invalid"){
+		$(".splitback .restart-txt").show();
+		$(".msg-cont").removeClass("help");
+		$(".msg-cont #r-step").text(rev.getCurrentStep())
+		$(".msg-cont").slideDown(200);
+		$(".rev .qr-cont-wrap").removeClass("active-qr")
+		if(mfaData && mfaData.devices && mfaData.devices.count > 0){
+			$(".warning-msg.resume-msg").slideDown(200);
+			$(".warning-msg #r-step").text(rev.getCurrentStep())
+		}
+		$(".install-step .link-btn").hide();
+	}
+	$(".splitback .qr-refresh").addClass("show");
+	$(".reverse-container").slideUp(500);
+	$(".modes-container:first-child .rev .mode-header").click();
+	$(".flex-container .modes-container:first-child").slideDown(500);
+	$(".succfail-btns").fadeIn(500);	
+}
+
+function resumeStep(){
+	$(".flex-container .modes-container:first-child").slideUp(500);
+	$(".reverse-container").slideDown(500, function(){
+		if(rev.getCurrentStep() == 3){
+			$(".rev_split_input_otp")[0].focus();
+		}
+	})
+	$(".succfail-btns").fadeOut(500);
+}
+
+/**
+ * Help animation
+ * 
+ * help() params should include msg
+ * help() params can include help btn text, success action text, fail action text, timer, succFunc action, failFunc action
+ * 
+ * retuns *initTimer - can be used to start the timer. Note - expand animation will be calculated by default before this.
+ * 		  *destroyHelp - can be used to destroy help expand , timer  
+ */
+   // var inveranim, initialanim;
+var openTimer = {};
+
+    function help(id, params) {
+        var msg, succTxt, failTxt, btnTxt, helpTimer,helpcode;
+        var ide = document.getElementById(id);
+        function defaultHelpSucc(e){
+			val = e.target.dataset.value === "true" && true;
+			helpAnswer(e, val)
+		}
+		function defaultHelpFail(e){
+			val = e.target.dataset.value === "false" && false;
+			helpAnswer(e, val)
+		}
+		function defaultShowQR(e){
+			val = e.target.dataset.value === "ans" && "ans"; //No I18N
+			helpAnswer(e, val)
+		}
+        if(Object.keys(params).length >= 1){
+            msg = decodeHTML(params.msg); //mandatory
+            succTxt = params.hasOwnProperty("succTxt") ? params.succTxt : "Yes" //No I18N
+            failTxt = params.hasOwnProperty("failTxt") ? params.failTxt : "No" //No I18N
+            btnTxt = params.hasOwnProperty("btnTxt") ? params.btnTxt : "Help" //No I18N
+            helpTimer = params.helpTimer ? params.helpTimer : "60000" //in milliseconds
+            helpCode = params.helpCode ? params.helpCode : "default" //No I18N
+            succFunc = params.succFunc ? params.succFunc : defaultHelpSucc;
+            failFunc = params.failFunc ? params.failFunc : defaultHelpFail;
+            trueNo = params.trueNo ? params.trueNo : undefined;
+            falseYes = params.falseYes ? params.falseYes : undefined;
+        }
+        var helpAns = document.createElement("div");
+        helpAns.classList.add("help-ans"); //No I18N
+        var newHelp = document.querySelector(".help-cont").cloneNode(true); //No I18N
+        newHelp.style.display= "block";
+        newHelp.querySelector(".help-btn .help-btn-txt").textContent = btnTxt; //No I18N
+        if(succTxt != ''){
+			newHelp.querySelector(".help-actions .h-btn.succ").textContent = succTxt; //No I18N
+		} else {
+			newHelp.querySelector(".help-actions .h-btn.succ").style.display= "none";
+		}
+        if(failTxt != ''){
+			newHelp.querySelector(".help-actions .h-btn.fail").textContent = failTxt; //No I18N
+		} else {
+			newHelp.querySelector(".help-actions .h-btn.fail").style.display= "none";
+		}
+        newHelp.querySelector(".help-actions").dataset.helpCode = helpCode; //No I18N 
+        newHelp.querySelector(".help-content .help-desc").textContent = msg; //No I18N
+        newHelp.querySelector(".help-actions .h-btn.succ").addEventListener("click", defaultHelpSucc) //No I18N
+        newHelp.querySelector(".help-actions .h-btn.fail").addEventListener("click", defaultHelpFail) //No I18N
+		helpAns.append(newHelp);
+        ide.style.visibility = "hidden";
+        ide.append(helpAns);
+        
+        var box = ide.querySelector(".help-box"); //No I18N
+        var wrapper = ide.querySelector(".help-wrap"); //No I18N
+        var btn = ide.querySelector(".help-btn"); //No I18N
+        var bord = ide.querySelector(".help-border"); //No I18N
+		ide.style.height =  btn.clientHeight + "px"
+        function ease(v, pow = 4) {
+            return 1 - Math.pow(1 - v, pow);
+        }
+
+        function createKeyframeAnimation() {
+            var helpEase = document.querySelector('.help-ease'+ id); //No I18N
+            if (helpEase) {
+                return helpEase;
+            }
+            helpEase = document.createElement('style');
+            helpEase.classList.add('help-ease'+id); //No I18N
+
+            cstate = btn.getBoundingClientRect();
+            estate = box.getBoundingClientRect();
+            x= cstate.width / estate.width,
+            y= cstate.height / estate.height
+
+            var animation = '';
+            var inverseAnimation = '';
+
+            for (var step = 0; step <= 100; step++) {
+                var easedStep = ease(step / 100).toFixed(5);
+                const xScale = (x + (1 - x) * easedStep).toFixed(5);
+                const yScale = (y + (1 - y) * easedStep).toFixed(5);
+                if (step == 0) {
+                    initialanim = "transform: scale("+ xScale +","+ yScale +");" //No I18N
+                }
+                animation += step +"% {transform: scale("+ xScale +","+ yScale +");}" //No I18N
+                const invXScale = 1 / xScale;
+                const invYScale = 1 / yScale;
+                if (step == 0) {
+                    inveranim = "transform: scale("+ invXScale +","+ invYScale +");" //No I18N
+                }
+                inverseAnimation += step +"% {transform: scale("+ invXScale +","+ invYScale +");}" //No I18N
+            }
+            wrapper.setAttribute("style", inveranim);
+            box.setAttribute("style", initialanim);
+            helpEase.textContent = "@keyframes helpAnimation {"  //No I18N
+                + animation + "}"
+                + "@keyframes helpContentsAnimation {"  //No I18N
+                + inverseAnimation +
+                "}"
+            document.body.append(helpEase);
+
+            bord.style.width = cstate.width +3+ "px";
+            bord.style.height = cstate.height +2+ "px";
+            bord.querySelector("svg").style.width = cstate.width + 3 + "px";
+            bord.querySelector("svg").style.height = cstate.height + 2 + "px";
+            bord.querySelector("rect").style.width = cstate.width + "px";
+            bord.querySelector("rect").style.height = cstate.height + "px";
+            setTimeout(function(){
+                ide.style.visibility = "unset";
+            }, 200)
+        }
+        function setAnswer(str, cl){
+			var m = document.createElement("div");
+			m.style.display="none";
+			m.classList.add(cl);
+			if(str.indexOf("\:") > 0){
+				var k = str.split("\:");
+				str = str.substring(str.indexOf("\:")+2);
+				var s = document.createElement("span")
+				s.classList.add("ans-list-head"); //No I18N
+				s.textContent = decodeHTML(k[0]);
+				m.append(s);
+			}
+			var l = str.split(".");
+			l.forEach(function(eac){
+				if(eac.trim() !== ""){
+					var s = document.createElement("span")
+					s.classList.add("ans-list"); //No I18N
+					s.innerHTML = decodeHTML(eac);
+					m.append(s);
+				}
+			})
+			return m;
+		}
+		createKeyframeAnimation();
+			var parClient = newHelp.getBoundingClientRect();
+            newHelp.style.transform = "translateZ("+ (parClient.height/2) +"px)" //No I18N
+            ide.querySelector(".help-ans").style.height = parClient.height + "px";
+            ide.querySelector(".help-ans").style.position = "absolute";
+            var newE = document.querySelector(".ans-cont").cloneNode(true); //No I18N
+            newE.style.display = "flex";
+            newE.style.transform = "rotateX(-90deg) translateZ(-"+ (parClient.height/2) +"px)" //No I18N
+            newE.style.minHeight  = parClient.height + "px"; //No I18N
+            ide.querySelector(".help-ans").append(newE); //No I18N
+            var newEle = document.querySelector(".ans-cont").cloneNode(true); //No I18N
+            newEle.classList.add("find", "down"); //No I18N
+            newEle.style.display = "flex";
+            newEle.style.minHeight  = parClient.height + "px"; //No I18N
+            newEle.querySelector(".help-actions").dataset.helpCode = helpCode; //No I18N
+            newEle.querySelector(".help-actions").addEventListener("click", defaultShowQR) //No I18N
+            ansTxt = newEle.querySelector(".ans-txt"); //No I18N
+            if(trueNo){
+				ansTxt.append(setAnswer(trueNo, "trueNo")); //No I18N
+			}
+			if(falseYes){
+				ansTxt.append(setAnswer(falseYes, "falseYes")); //No I18N
+			}
+            ide.append(newEle);
+
+        btn.addEventListener("click", toggleHelp);
+        bord.addEventListener("click", toggleHelp);
+        btn.dataset.id = id;
+        bord.dataset.id = id;
+        ide.dataset.initialanim = initialanim;
+        ide.dataset.inveranim =inveranim;
+        return {
+            initTimer: function(){
+				var tempSDA = 100
+				rect = bord.querySelector("rect") //No I18N
+				rect.style.strokeWidth = "2";
+                rect.style.strokeDashoffset = "101";
+                $(ide).fadeIn(200);
+                stepRate = helpTimer/100;
+                rect.style.transition = stepRate+"ms all linear"; //No I18N
+                clearInterval(openTimer);
+                openTimer = setInterval(function(){
+					if(tempSDA == 1){
+						ide.querySelector(".help-border").click(); //No I18N
+					}
+					if(tempSDA == 0){
+						clearInterval(openTimer);
+					}
+					rect.style.strokeDashoffset =  tempSDA--;
+				}, stepRate)
+            },
+            destroyHelp: function(){
+                clearInterval(openTimer);
+                openTimer = null;
+                rect = bord.querySelector("rect") //No I18N
+                rect.style.strokeWidth = "1";
+                rect.style.strokeDashoffset = "0";
+                rect.style.transition = "none" //No I18N
+                ide.querySelectorAll(".ans-txt div").forEach(function(eac){eac.style.display="none";})
+                ide.querySelector(".ans-cont.find .help-actions").style.display="none";
+                ide.querySelector(".help-ans").classList.remove("flip-trans"); //No I18N
+				ide.querySelector(".ans-cont.find").classList.add("down"); //No I18N
+				ide.querySelectorAll(".help-actions .h-btn").forEach(function(eac){eac.classList.remove("opac0")}) //No I18N
+				ide.querySelector(".help-load").classList.remove("opac1"); //No I18N
+				if(box.classList.contains("help-expand")){
+					btn.click();
+				}
+				
+            }
+        }
+    }
+
+    function toggleHelp(e) {
+        var parHelp = e.target.closest("#"+ e.target.dataset.id) //No I18N
+        box = parHelp.querySelector(".help-box") //No I18N
+        bord = parHelp.querySelector(".help-border") //No I18N
+        wrap = parHelp.querySelector(".help-wrap") //No I18N
+        rect = bord.querySelector("rect") //No I18N
+        if (box.classList.contains("help-expand")) {
+			parHelp.style.height = parHelp.querySelector(".help-btn").clientHeight - 16 + "px"; //16 top and bottom padding
+            if(rect.style.strokeDashoffset == 0){
+            	rect.style.strokeWidth = "1";
+            }
+           	bord.style.opacity = "1";
+           	box.style.border = "1px solid transparent";
+            box.setAttribute("style", parHelp.dataset.initialanim);
+            wrap.setAttribute("style", parHelp.dataset.inveranim);
+            box.classList.remove("help-expand") //No I18N
+            wrap.classList.remove("help-wrap-expand") //No I18N
+            clearInterval(openTimer);
+        } else {
+			clearInterval(openTimer);
+			openTimer = null;
+			parHelp.style.height = "auto";
+            bord.style.opacity = "0";
+            box.style.border = "1px solid rgb(19 147 255)";
+            box.style.transform = "scale(1,1)"; //No I18N
+            wrap.style.transform = "scale(1,1)"; //No I18N
+            window.getComputedStyle(box).transform;
+            box.classList.add("help-expand") //No I18N
+            wrap.classList.add("help-wrap-expand") //No I18N
+            window.getComputedStyle(box).transform;
+            rect.style.strokeDashoffset = "0";
+        }
+    }
+    function helpQuestLoad(parhelp){
+		parhelp.querySelectorAll(".h-btn").forEach(function(each){ //No I18N
+			each.classList.toggle("opac0") //No I18N
+		})
+		parhelp.querySelector(".help-load").classList.toggle("opac1") //No I18N
+	}
+	var MFACheckClicks = 0
+    function helpAnswer(e, val){
+		helpcode = e.target.parentNode.dataset.helpCode;
+		var topPar = e.target.parentNode.closest(".helpcont"); //No I18N
+		switch(helpcode){
+			case "q1": //No I18N
+				if(val == true){
+					forcedStep("1", {});
+					'murphy' in window && sendMurphyMsg("I_rev_help1_yes") //No I18N
+				} else {
+					topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+					topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+					setTimeout(function(){
+						$(topPar.querySelector(".ans-cont.find .ans-txt .trueNo")).slideDown(400);
+					}, 500);
+					'murphy' in window && sendMurphyMsg("I_rev_help1_no") //No I18N
+				}
+				break;
+			case "q2": //No I18N
+				if(val == true){
+					helpQuestLoad(topPar.querySelector(".help-cont")); //No I18N
+					rev.checkDownload().then(function(resp){
+						$(".step3-container .step3-body").hide();
+						$(".step3-container .step3-qr").show();
+						data={};
+						data.qr = "new"; //No I18N
+						forcedStep("2", data);
+					}).catch(function(resp){
+						helpQuestLoad(topPar.querySelector(".help-cont")); //No I18N
+						if(resp.errors[0].code === "IN103"){
+							document.querySelector("body"); //No I18N
+						}else if(resp.errors[0].code === "D102"){
+							topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+							topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+							$(".step1-qr .cont-desc").show()
+							$(".step1-qr .new-desc").hide()
+							setTimeout(function(){
+							$(topPar.querySelector(".ans-cont.find .ans-txt .falseYes")).slideDown(400);
+							$(topPar.querySelector(".ans-cont.find .help-actions")).slideDown(200);
+							}, 500);
+						}else{
+							classifyError(resp);
+						}
+					})
+					'murphy' in window && sendMurphyMsg("I_rev_help2_yes") //No I18N
+				} else if(val == "ans"){ //No I18N
+					step = 1
+					$(".step"+step+"-container .step"+step+"-qr").slideDown(200, function (){
+						rev.stepSuccess(2,1, function(){
+							h2.destroyHelp();
+							rev.refresh(e, undefined, step)
+						});
+					});
+					$(".step"+step+"-container .step"+step+"-body").slideUp(200);
+					'murphy' in window && sendMurphyMsg("I_rev_help2_ans") //No I18N
+				} else {
+					helpQuestLoad(topPar.querySelector(".help-cont")); //No I18N
+					topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+					topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+					$(".step1-qr .cont-desc").show()
+					$(".step1-qr .new-desc").hide()
+					setTimeout(function(){
+						$(topPar.querySelector(".ans-cont.find .ans-txt .trueNo")).slideDown(400);
+						$(topPar.querySelector(".ans-cont.find .help-actions")).slideDown(200);
+					}, 500);
+					'murphy' in window && sendMurphyMsg("I_rev_help2_no") //No I18N
+				}
+				break;
+			case "q3": //No I18N
+				if(val == true){
+					topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+					topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+					setTimeout(function(){
+						$(topPar.querySelector(".ans-cont.find .ans-txt .falseYes")).slideDown(300);
+					}, 500);
+					'murphy' in window && sendMurphyMsg("I_rev_help3_yes") //No I18N
+				} else if(val == "ans"){ //No I18N
+					step = 3
+					$(".step"+step+"-container .step"+step+"-qr").slideDown(200, function (){
+						h3.destroyHelp();
+					});
+					$(".step"+step+"-container .step"+step+"-body").slideUp(200);
+					rev.refresh(e, undefined, step)
+					'murphy' in window && sendMurphyMsg("I_rev_help3_ans") //No I18N
+				} else {
+					topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+					topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+					setTimeout(function(){
+						$(topPar.querySelector(".ans-cont.find .ans-txt .trueNo")).slideDown(400);
+						$(topPar.querySelector(".ans-cont.find .help-actions")).slideDown(200);
+					}, 500);
+					'murphy' in window && sendMurphyMsg("I_rev_help3_no") //No I18N
+				}
+				break;
+			case "q4": //No I18N
+				if(val == true){
+					helpQuestLoad(topPar.querySelector(".help-cont")); //No I18N
+					rev.checkMFA().then(function(){
+						//success handled in callback
+					}).catch(function(resp){
+						helpQuestLoad(topPar.querySelector(".help-cont")); //No I18N
+						if(!resp.mfadevice[0].is_mfa_activated){
+							topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+							topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+							$(topPar.querySelector(".ans-cont.find .h-btn")).text(decodeHTML(I18N.get("IAM.ENABLED.MFA"))) //No I18N
+							setTimeout(function(){
+								$(topPar.querySelector(".ans-cont.find .ans-txt .falseYes")).slideDown(300);
+								$(topPar.querySelector(".ans-cont.find .help-actions")).slideDown(200);
+							}, 500);
+						}
+					})
+					'murphy' in window && sendMurphyMsg("I_rev_help4_yes") //No I18N
+				} else if(val == "ans"){ //No I18N
+					if(MFACheckClicks >= 0  && MFACheckClicks < 3){
+						helpQuestLoad(topPar.querySelector(".ans-cont.find")) //No I18N
+						rev.checkMFA().then(function(){
+							helpQuestLoad(topPar.querySelector(".ans-cont.find")) //No I18N
+							//success handled in callback
+						}).catch(function(resp){
+							setTimeout(function(){
+								helpQuestLoad(topPar.querySelector(".ans-cont.find")) //No I18N
+								if(!resp.mfadevice[0].is_mfa_activated){
+									$(topPar.querySelector(".ans-cont.find .ans-txt .trueNo")).slideUp(200);
+									$(topPar.querySelector(".ans-cont.find .ans-txt .falseYes")).slideDown(200);
+								}
+							}, 500);
+						})
+						'murphy' in window && sendMurphyMsg("I_rev_help4_ans") //No I18N
+						MFACheckClicks++;
+						if(!document.querySelector(".txt2")){
+							var ansL = document.createElement("span")
+							ansL.classList.add("ans-list","txt2") //No I18N
+							ansL.textContent = I18N.get("IAM.REV.MFA.ENABLE.THROTTLE") //No I18N
+							var ansT = document.createElement("div")
+							ansT.classList.add("thrott"); //No I18N
+							ansT.style.display= "none"
+							ansT.append(ansL)
+							topPar.querySelector(".ans-cont.find .ans-txt").append(ansT) //No I18N
+						}
+					} else if(MFACheckClicks == -1) {
+						helpQuestLoad(topPar.querySelector(".ans-cont.find")) //No I18N
+						'murphy' in window && sendMurphyMsg("I_rev_help4_thrott") //No I18N
+						window.location.href = remindme;
+					} else {
+						$(topPar.querySelector(".ans-cont.find .ans-txt .thrott")).slideDown(200);
+						$(topPar.querySelector(".ans-cont.find .ans-txt .falseYes")).slideUp(200);
+						$(topPar.querySelector(".ans-cont.find .h-btn")).text(I18N.get("IAM.ACCESS.MY.ACC"));
+						MFACheckClicks = -1
+					}
+				} else {
+					topPar.querySelector(".help-ans").classList.add("flip-trans"); //No I18N
+					topPar.querySelector(".ans-cont.find").classList.remove("down"); //No I18N
+					$(topPar.querySelector(".ans-cont.find .h-btn")).text(decodeHTML(I18N.get("IAM.ENABLED.MFA"))) //No I18N
+					setTimeout(function(){
+						$(topPar.querySelector(".ans-cont.find .ans-txt .trueNo")).slideDown(400);
+						$(topPar.querySelector(".ans-cont.find .help-actions")).slideDown(200);
+					}, 500);
+					'murphy' in window && sendMurphyMsg("I_rev_help4_no") //No I18N
+				}
+				break;
+			case "default": //No I18N
+				break;
+		}
+	}
+	function refreshQr(e, type, cStep){
+		e && e.stopPropagation();
+		$(".step"+cStep+"-qr .refresh-txt").hide();
+		$(".step"+cStep+"-qr .qr-refresh").css("pointer-events", "none");
+		$(".step"+cStep+"-qr .icon-Reload").css("animation", "spin 0.8s infinite linear");
+		if(cStep == 1){
+			$(".msg-cont").slideUp(200, function(){
+				$(".msg-cont").removeClass("help");
+				//$(".install-step .link-btn").fadeIn(100);
+			});
+			$(".warning-msg.resume-msg").slideUp(200);
+			rev.reset();
+		}
+		$(".back-arrow-btn").removeAttr("data-status");
+		rev.refresh(e, type, cStep)
+
+	}
+	function wmsConnectionFailure(){
+		rev.setWmsRegistered(false);
+		rev.notifyFailure();
+	}
+    function wmsRegisterSuccess(){
+		rev.setWmsRegistered(true);
+	}
+	function wmsMessageCallBack(msg){
+		rev.wmsMessage(msg);
+	}
+	function showReverseSignin(){
+		step = 1;
+		if((!mfaData.devices|| !mfaData.devices.count)){
+			if(rev == undefined){
+				rev = reverseSignin();
+				rev.init();
+			}
+		} else {
+			$(".step"+step+"-container").addClass("current-step")
+			$(".step"+step+"-container .step"+step+"-qr").slideDown(0);
+			$(".step"+step+"-container .step"+step+"-body").slideUp(0);
+			$(".flex-container .modes-container:first-child").slideUp(500, function(){
+				$(".sms-container, .totp-container, .yubikey-container").slideUp();
+				$(".show-all-modes-but").slideDown();
+				$(".step"+step+"-container .mode-header").click();
+			});
+			$(".reverse-container").slideDown(500, function(){
+				if(rev == undefined){
+					rev = reverseSignin();
+					rev.init();
+				} else {
+					refreshQr(null, "type", 1) //No I18N
+				}
+			});
+		}
+	}
+	function forcedStep(n, data){
+		rev.nextSuccessStep(n, data);
+	}
+	function helpInQR(){
+		$(".install-step .link-btn").fadeOut(100);
+		clearTimeout(h11)
+		$(".msg-cont").addClass("help");
+		$(".msg-cont").slideDown(200);
+	}
+	function expandQR(e){
+		if(e.target.classList.contains("qr-cont-wrap")){
+			tarEle = e.target;
+		} else {
+			tarEle = e.target.closest(".qr-cont-wrap"); //No I18N
+		}
+		if(tarEle.classList.contains("active-qr")){
+		tarEle.querySelector(".tap-txt .icon-expand").classList.add("icon-collapse") //No I18N
+		tarEle.querySelector(".tap-txt .txt").textContent = I18N.get("IAM.SMART.SIGNIN.CANCEL.CONTENT.UPDATE") //No I18N
+		$(tarEle).addClass("qr-exp")
+		popup_blurHandler(5);
+		$(tarEle).attr("onclick", "collapseQR()")
+		}
+	}
+	function collapseQR(){
+		$(".qr-exp").attr("onclick", "expandQR(event)")
+		$(".qr-exp .tap-txt .icon-expand").removeClass("icon-collapse")
+		$(".qr-exp .tap-txt .txt").text(I18N.get("IAM.SMART.SIGNIN.EXPAND.CONTENT.UPDATE"));
+		$(".qr-exp").removeClass("qr-exp")
+		removeBlur();
+	}

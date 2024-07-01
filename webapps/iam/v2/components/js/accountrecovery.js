@@ -7,7 +7,8 @@ var primary_factor_otp_threshold = 4;
 var MFA_otp_threshold = 4;
 var resendcheck = undefined;
 var first_otp_sent = false;
-var prev_MFA_option;
+var prev_TFA_option;
+
 function onRecoveryReady()
 {
 	$("input:not(:radio)").val(""); //No I18N
@@ -41,10 +42,17 @@ function onRecoveryReady()
     wmscallmode,wmscallapp,wmscallid=undefined;
     reload_page ="";
     token = "";
+    
+    type = 0;
+    audio_timer=undefined;
+    captchaType = "";
+    zlabs_captcha_params = "";
+	zlabsCaptchaObj = null;
+
 
     if(isValid(reqCountry))
 	{
-      	reqCountry = reqCountry.toUpperCase();
+      	reqCountry= isPhoneNumber(login_id && login_id.split("-")[1]) ? $("#country_code_select  option[value = " + "'+" + login_id.split("-")[0] + "']").attr("id").toUpperCase() : reqCountry.toUpperCase() ;
       	$('#country_code_select option:selected').removeAttr('selected');
       	$("#country_code_select #"+reqCountry).prop('selected', true);
       	$("#country_code_select #"+reqCountry).trigger('change');
@@ -52,6 +60,7 @@ function onRecoveryReady()
 	
 	if(isValid(login_id)	&&	(isUserName(login_id) || isEmailId(login_id) || isPhoneNumber(login_id.split('-')[1])))
 	{
+		login_id= isPhoneNumber(login_id.split("-")[1]) ? login_id.split("-")[1] : login_id;
 		$("#login_id").val(login_id);
 	}
 	
@@ -60,6 +69,8 @@ function onRecoveryReady()
 		renderUV("#country_code_select", true, "#login_id", "left", "flagIcons", true, true, "country_implement", undefined, "data-num", "value", "data-num");//no i18n
 		$(".select_container--country_implement").hide();
 		uvselect.setIntentForCntyCode("country_code_select"); //no i18N 
+	}else if(isMobile){
+		mobileflag();
 	}
     $("#select2-country_code_select-container").html($("#country_code_select").val());
     $("#country_code_select").change(function()
@@ -97,6 +108,7 @@ function format (option)
 function changeCountryCode()
 {
 	$('.select_country_code').text($('#country_code_select').val());
+	mobileflag();
 }
 
 
@@ -133,14 +145,14 @@ function showTopNotification(msg)
 {
 	$(".alert_message").html(msg);
 	$(".Alert").css("top","20px");//No i18N
-	window.setTimeout(function(){$(".Alert").css("top","-100px")},5000);
+	window.setTimeout(function(){$(".Alert").css("top","-150px")},5000);
 }
 
 function showTopErrNotification(msg)
 {
 	$(".error_message").html(msg);
 	$(".Errormsg").css("top","20px");//No i18N
-	window.setTimeout(function(){$(".Errormsg").css("top","-100px")},5000);
+	window.setTimeout(function(){$(".Errormsg").css("top","-150px")},5000);
 }
 
 
@@ -161,7 +173,7 @@ function input_checking()
 	if(!isCountrySelected)
 	{
 		var reqUrl = "/accounts/public/api/locate"; // no i18n
-		callRequestWithCallback(reqUrl,"",true,handleRequestCountryCode, undefined, false, false); // no i18n
+		callRequestWithCallback(reqUrl,"",true,handleRequestCountryCode, undefined, false); // no i18n
 		isCountrySelected = true;
 	}
 	if((check==true)&&(a))
@@ -169,12 +181,14 @@ function input_checking()
 		try{
 			$(".select_container_cntry_code").show();
 			//$(".select_container_cntry_code ~ input").attr("style","text-indent:105px !important");//no i18N
-			uvselect.setIntentForCntyCode("country_code_select"); //no i18N
 			if(isMobile)
 			{
+				$(".MobflagContainer").show()
 		  		$('.select_country_code,#country_code_select').show();
 		  		$("#login_id").addClass("textindent62");
-		  	}
+		  	}else{
+				uvselect.setIntentForCntyCode("country_code_select"); //no i18N  
+			}
 		}
 		catch(err)
 		{
@@ -184,12 +198,16 @@ function input_checking()
 	}
 	else if(check==false)
 	{
+		$(".MobflagContainer").hide();
 		$('#country_code_select').hide();
 		$('.select_country_code,#country_code_select,.select2').hide();
 		$(".select_container_cntry_code").hide();
-		uvselect.setIntentForCntyCode("country_code_select"); //no i18N 
-		uvselect.setIntentForCntyCode("country_code_select"); //no i18N
+		if(!isMobile){
+			uvselect.setIntentForCntyCode("country_code_select"); //no i18N 
+			uvselect.setIntentForCntyCode("country_code_select"); //no i18N
+		}
 		//$(".select_container_cntry_code ~ input").attr("style","text-indent:10px");//no i18n
+		$("#login_id").removeClass("textindent62");
 		if($("#login_id").hasClass("placedHolder")){
 			destroyPlaceholderPattern(document.login_id_container.countryselect, $("#login_id").val(), "#login_id"); //no i18n
 		}
@@ -314,7 +332,8 @@ function clear_allerrors()
 function accountLookup(e)
 {
 	e.preventDefault();
-	if($("#captcha_container").is(":hidden"))
+	removeCaptchaError('captcha');//no i18n
+	if(!$("#captcha_container").is(":visible") &&  !$("#zlabs_captcha_container").is(":visible"))	//if captcha is not visible then it is simple lookup call
 	{
 		hip_required=false;
 		var LOGIN_ID = $("#login_id").val().trim();
@@ -329,7 +348,7 @@ function accountLookup(e)
 			showCommonError("login_id",I18N.get("IAM.PHONE.ENTER.VALID.MOBILE_NUMBER"));//no i18n
 			return false;
 		}
-		if((!isUserName(LOGIN_ID) && !isEmailId(LOGIN_ID))	&&	(!isPhoneNumber(LOGIN_ID.split("-")[1]?LOGIN_ID.split("-")[1]:LOGIN_ID.split("-")[0]))) {
+		if((!isUserName(LOGIN_ID) && !isEmailId(LOGIN_ID))	&&	(!isPhoneNumber(LOGIN_ID.split("-")[1]?LOGIN_ID.split("-")[1]:LOGIN_ID.split("-")[0])) || isPhoneNumber(LOGIN_ID.split('-')[1]) && LOGIN_ID.split('-')[0].includes("+")) {
 			showCommonError("login_id",I18N.get("IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER"));//no i18n
 			return false;
 		}
@@ -345,24 +364,32 @@ function accountLookup(e)
 	else
 	{
 		removeCaptchaError();
-		var captchavalue = $("#captcha").val();
+		var captcha_verify_url,params;
+		if ($("#zlabs_captcha_container").is(":visible")) 
+		{
+			captcha_verify_url=submit_zlabs_capctha(recoveryUri);
+		}
+		else
+		{
+			var captchavalue = $("#captcha").val();
 		if(!isValid(captchavalue)) 
 		{
 			showCommonError("captcha",I18N.get("IAM.SIGNIN.ERROR.CAPTCHA.REQUIRED"));//no i18n
 			$("#captcha_container #captcha").focus();
 			return false;
 		}
-		if( /[^a-zA-Z0-9\-\/]/.test( captchavalue ) || captchavalue.length<6) {
-			changeHip();
+		if( !(/^[a-zA-Z0-9]*$/.test( captchavalue )) || captchavalue.length<6) {
 			showCommonError("captcha",I18N.get("IAM.SIGNIN.ERROR.CAPTCHA.INVALID"));//no i18n
 			return false;
 		}
-		$("#nextbtn span").addClass("zeroheight");
-		$("#nextbtn").addClass('changeloadbtn');
-		$("#nextbtn").attr("disabled", true);
-		var captcha_verify_url = recoveryUri + "/v2/lookup/"+login_id+"/captcha"; //no i18N
-		var params = "captcha=" + captchavalue + "&cdigest=" + cdigest + "&token=" + token; //no i18N
-		callRequestWithCallback(captcha_verify_url, params ,true, handleRecoveryDetails);//No I18N
+			$("#nextbtn span").addClass("zeroheight");
+			$("#nextbtn").addClass('changeloadbtn');
+			$("#nextbtn").attr("disabled", true);
+			var captcha_verify_url = recoveryUri + "/v2/lookup/"+login_id+"/captcha"; //no i18N
+			var params = "captcha=" + captchavalue + "&cdigest=" + cdigest + "&token=" + token; //no i18N
+		}
+		callRequestWithCallback(captcha_verify_url, params ,true, handleRecoveryDetails);
+
 	}
 	return false;
 }
@@ -375,11 +402,13 @@ function update_user_info(user_id)
 }
 
 function identifyEmailOrNum(login_id){
-	var userLogin = login_id;
-	if(isPhoneNumber(userLogin.split('-')[1])){
-		return "+"+userLogin.split('-')[0]+" "+userLogin.split('-')[1];
-	}else{
-		return userLogin;
+	if(isValid(login_id)){
+		var userLogin = login_id;
+		if(isPhoneNumber(userLogin.split('-')[1])){
+			return "+"+userLogin.split('-')[0]+" "+userLogin.split('-')[1];
+		}else{
+			return userLogin;
+		}
 	}
 }
 
@@ -404,13 +433,36 @@ function change_user()
     	uID = uID.split(" ")[1];
     	isCountrySelected = true;
     }
+    if($("#zlabs_captcha_container").is(":visible")		&&		$(".audio").hasClass("play_motion"))
+	{
+		zlabsCaptchaObj.sound.pause();
+		$(".audio_bar").removeClass("audio_animation");
+		$(".audio").removeClass("play_motion");
+	}
+
 	onRecoveryReady();
 	
 	clear_user_info();
+	
+	$("#zlabs_captcha_container").removeClass("no_restriction_error");
+	
 	$("#login_id_container").show();
 	$("#lookup_div .head_info").show();
 	$(".recover_sections").hide();
 	$("#captcha_container").hide();
+	
+	$(".lookup_head").show();
+	$(".capatcha_head").hide();
+	$("#zlabs_captcha_container").hide();
+	$("#lookup_div #nextbtn").show();
+	$(".shine_cover").removeClass("shine");
+	$(".Z_captcha_result_container, .Z_captcha_error_container").hide();
+	$(".Captcha_btns").show();
+	$(".succ_icon").removeClass("success_animation");
+	$(".Z_captcha_result_container").removeClass("Z_captcha_noHeaddesc");
+
+	
+	
 	$("#lookup_div").show();
 	$("#login_id")[0].classList.value="textbox";
 	$("#login_id").val(uID).focus();
@@ -435,7 +487,7 @@ function fetchLookupDetails(loginID)
 		lookup_url = recoveryUri + "/v2/lookup/"+digest_id+"?mode=digest"; //no i18N
 	}
 	else{
-		$("#login_id").val(loginID)
+		$("#login_id").val(isPhoneNumber(login_id.split("-")[1]) ? login_id.split("-")[1] : login_id);
 		lookup_url = recoveryUri + "/v2/lookup/"+loginID+"?mode=primary"; //no i18N
 	}
 	callRequestWithCallback(lookup_url, "" ,true, handleLookupDetails);//No I18N
@@ -444,9 +496,6 @@ function fetchLookupDetails(loginID)
 
 function handleLookupDetails(resp)
 {
-	$("#nextbtn span").removeClass("zeroheight");
-	$("#nextbtn").removeClass("changeloadbtn");
-	$("#nextbtn").attr("disabled", false);
 	$(".recovery_container").css("visibility","visible");
 	hideCommonLoader();
 	if(IsJsonString(resp)) 
@@ -458,6 +507,11 @@ function handleLookupDetails(resp)
 			zuid = jsonStr.lookup.identifier;
 			if(digest_id.length>0 && jsonStr.lookup.token==undefined)// if new token is preset then its a new request
 			{
+				$("#nextbtn span").removeClass("zeroheight");
+				$("#nextbtn").removeClass("changeloadbtn");
+				$("#nextbtn").attr("disabled", false);
+				
+				
 				head_token = jsonStr.lookup.jwt;
 				serviceName = jsonStr.lookup.service_name;
 				serviceUrl = jsonStr.lookup.service_url;
@@ -477,36 +531,43 @@ function handleLookupDetails(resp)
 					mfa_modes = jsonStr.lookup.modes;
 					initialize_MFAModes();
 				}
-				update_user_info(jsonStr.lookup.login_id);
+				update_user_info(jsonStr.lookup.loginid);
 			}
-			else{			
+			else{	
 					login_id=jsonStr.lookup.loginid;
 					token = jsonStr.lookup.token;
-					changeHip("captcha_img","captcha");//no i18n
-					$("#captcha_container").show();
-					$("#lookup_div .head_info").hide();
-					update_user_info();
-					$("#login_id_container").hide();
-					/* this case we show loading gif on entire page. loading gif hide function(hideCommonLoader) took some time to hide that gif so we should add delay to focus function */ 
-					setTimeout(function(){$("#captcha_container #captcha").focus();},150);
-					$("#login_id").attr("disabled", true);
+	
+					//changeHip("captcha_img","captcha");//no i18n
+					//$("#captcha_container").show();
+					if(!isClientPortal	&&	ZlabsCapthca_enabled)//when zlabs capctha is enabled for client portal we can remove and just call showZLabsCaptcha();
+					{
+						showZLabsCaptcha(false,true,false);
+					}
+					else
+					{
+						$("#nextbtn span").removeClass("zeroheight");
+						$("#nextbtn").removeClass("changeloadbtn");
+						$("#nextbtn").attr("disabled", false);
+						
+						
+						changeHip("captcha_img","captcha");//no i18n
+						$("#captcha_container").show();
+						$("#lookup_div .head_info").hide();
+						update_user_info();
+						$("#login_id_container").hide();
+						/* this case we show loading gif on entire page. loading gif hide function(hideCommonLoader) took some time to hide that gif so we should add delay to focus function */ 
+						setTimeout(function(){$("#captcha_container #captcha")[0].focus();},150);
+						$("#login_id").attr("disabled", true);
+	
+					}
 			}
 		}
 		else
 		{
-			if(	jsonStr.errors!=undefined && (jsonStr.errors[0].code=="SI502"	||	jsonStr.errors[0].code=="AR103"))//custom sso auth restriction
-			{
-				login_id=$("#login_id").val().trim();
-				update_user_info();
-				$("#lookup_err_div .head_info").html(jsonStr.localized_message);
-				if($("#lookup_err_div .head_info span").length)// check if we have an contact email id avaible
-				{
-					$("#lookup_err_div .head_info span").css({"color":"#000000e6","margin-top":"20px","display":"inline-block"})
-				}
-				$("#lookup_div").hide();
-				$("#lookup_err_div").show();
-				
-			}
+			$("#nextbtn span").removeClass("zeroheight");
+			$("#nextbtn").removeClass("changeloadbtn");
+			$("#nextbtn").attr("disabled", false);
+			
 			if(jsonStr.cause==="throttles_limit_exceeded")
 			{
 				showCommonError("login_id",jsonStr.localized_message);//no i18n
@@ -579,11 +640,42 @@ function handleLookupDetails(resp)
 			else if(errorCode == "IN108"){
 				hip_required=true;
 				login_id=$('#login_id').val();
+				login_id=  isPhoneNumber(login_id) ?  $("#country_code_select").val().split("+")[1] + '-' + login_id : login_id ;
 				token=JSON.parse(resp).token;
 				$(".user_info > .menutext").text(login_id);
 				$(".user_info").show();
-				changeHip("captcha_img","captcha");//No i18N
-				$("#captcha_container").show();
+				
+				
+				//changeHip("captcha_img","captcha");//No i18N
+				//$("#captcha_container").show();
+				
+				$(".lookup_head").hide();
+				$(".capatcha_head").show();
+				
+				if(!isClientPortal	&&	ZlabsCapthca_enabled)//when zlabs capctha is enabled for client portal we can remove and just call showZLabsCaptcha();
+				{
+					
+					$("#lookup_div #nextbtn").hide();
+					showZLabsCaptcha();
+					setFooterPosition();//chnage foorter postion if needed
+				}
+				else
+				{
+					$("#nextbtn span").removeClass("zeroheight");
+					$("#nextbtn").removeClass("changeloadbtn");
+					$("#nextbtn").attr("disabled", false);
+					
+					changeHip("captcha_img","captcha");//no i18n
+					$("#captcha_container").show();
+					$("#lookup_div .head_info").hide();
+					update_user_info();
+					$("#login_id_container").hide();
+					/* this case we show loading gif on entire page. loading gif hide function(hideCommonLoader) took some time to hide that gif so we should add delay to focus function */ 
+					setTimeout(function(){$("#captcha_container #captcha").focus();},150);
+					$("#login_id").attr("disabled", true);
+
+				}
+				
 				$("#lookup_div .head_info").hide();
 				$("#login_id_container").hide();
 				$("#captcha_container #captcha").focus();
@@ -612,10 +704,37 @@ function handleLookupDetails(resp)
 	}
 	else 
 	{
+		$("#nextbtn span").removeClass("zeroheight");
+		$("#nextbtn").removeClass("changeloadbtn");
+		$("#nextbtn").attr("disabled", false);
+		
 		showCommonError("login_id",I18N.get("IAM.ERROR.GENERAL"));//no i18n
 	}
 	return false;
 }
+
+
+
+function show_captcha(is_zlabs_capctha)
+{
+		if(is_zlabs_capctha)
+		{
+			$("#zlabs_captcha_container").show();
+			$("#lookup_div #nextbtn, .lookup_head").hide();
+			$(".capatcha_head").show();
+		}
+		$("#nextbtn span").removeClass("zeroheight");
+		$("#nextbtn").removeClass("changeloadbtn");
+		$("#nextbtn").attr("disabled", false);
+		
+		$("#lookup_div .lookup_head .head_info").hide();
+		update_user_info();
+		$("#login_id_container").hide();
+		$("#captcha_container #captcha").focus();
+		$("#login_id").attr("disabled", true);
+}
+
+
 
 function Refresh()
 {
@@ -644,7 +763,7 @@ function changeHip(cImg,cId)
 
 function showHip(cdigest, cImg) 
 {
-	 var captcha_resp = isValid(cdigest) ? doGet(uriPrefix + '/webclient/v1/captcha/'+cdigest) : "";//no i18n
+	 var captcha_resp = isValid(cdigest) ? doGet(uriPrefix + '/webclient/v1/captcha/'+cdigest,"darkmode="+Boolean(isDarkMode)) : "";//no i18n
 	 if(IsJsonString(captcha_resp)) {
 		 captcha_resp = JSON.parse(captcha_resp);
 	 }
@@ -658,7 +777,7 @@ function showHip(cdigest, cImg)
 	 $('.reloadcaptcha').attr("title", I18N.get("IAM.NEW.SIGNIN.TITLE.RANDOM"));
 	 captchaImgEle.setAttribute("align", "left");
 	 captchaImgEle.setAttribute("src", captchimgsrc);
-	 if(!isMobile){ $(captchaImgEle).css("mix-blend-mode","multiply");}//no i18N
+	 if(!isMobile && !isDarkMode){ $(captchaImgEle).css("mix-blend-mode","multiply");}//no i18N
 	 $(hipRow).html(captchaImgEle);
 }
 
@@ -667,7 +786,7 @@ function handleChangeHip(resp)
 	if(IsJsonString(resp)) {
 		var jsonStr = JSON.parse(resp);
 		var statusCode = jsonStr.status_code;
-		if(jsonStr.cause==="throttles_limit_exceeded"){
+		if(jsonStr.cause==="throttles_limit_exceeded"){ // unreachable
 			cdigest = '';
 			showHip(cdigest); //no i18N 
 			showCaptcha(I18N.get("IAM.NEXT"),false);;//no i18N
@@ -730,14 +849,80 @@ function handleRecoveryDetails(resp)
 				zuid=jsonStr.captchaverificationauth[0].identifier;
 				hip_required=false;
 			}
-			lookToForgotPassword(jsonStr,statusCode);
+			if ($("#zlabs_captcha_container").is(":visible")) 
+			{
+				$("#zlabs_captcha_container").removeClass("height_set");
+				$(".img, .audio, .Captcha_btns").slideUp();
+				$(".Z_captcha_result_container").slideDown(function()
+				{
+					$(".succ_icon").addClass("success_animation");
+				});
+				
+				$(".ZCaptcha_desc div").hide();
+				$(".Z_captcha_result_container").addClass("Z_captcha_noHeaddesc");
+				
+				setTimeout(function(){
+					$(".shine_cover").removeClass("shine");
+					$(".succ_icon").removeClass("success_animation");
+					$(".Z_captcha_result_container").hide();
+					$(".Captcha_btns").show();
+					lookToForgotPassword(jsonStr,statusCode);
+				},3000);//set time out for css animation to end
+			}
+			else
+			{
+				lookToForgotPassword(jsonStr,statusCode);
+			}
+
+		}
+		else if(	jsonStr.errors!=undefined && (jsonStr.errors[0].code=="SI502"	||	jsonStr.errors[0].code=="AR103"))//custom sso auth restriction
+		{
+			if ($("#zlabs_captcha_container").is(":visible")) 
+			{
+				
+					$("#zlabs_captcha_container").removeClass("height_set");
+					$(".ZCaptcha_desc div").hide();
+					$("#captcha").blur();
+					$("#captcha_container").addClass("margin_for_captcha_errors");
+					
+					$(".capatcha_head").hide();
+					$("#zlabs_captcha_container").addClass("no_restriction_error");
+					
+					$(".Z_captcha_error_container .Z_captcha_reject_header").html($("#lookup_err_div #headtitle").html());//removing the a tag and keeping it separate
+					$(".Z_captcha_reject_header").show();
+					$(".Z_captcha_error_container .Z_captcha_error_msg").html(jsonStr.localized_message);//removing the a tag and keeping it separate
+					$("#try_signin").css("display","hide");
+					
+					$(".img, .audio, .Captcha_btns").slideUp();
+					$(".Z_captcha_error_container").slideDown();
+			}
+			else
+			{
+				$("#lookup_err_div .head_info").html(jsonStr.localized_message);
+				if($("#lookup_err_div .head_info span").length)// check if we have an contact email id avaible
+				{
+					$("#lookup_err_div .head_info span").css({"color":"#000000e6","margin-top":"20px","display":"inline-block"})
+				}
+				$("#lookup_div").hide();
+				$("#lookup_err_div").show();
+			}
+			
+			
 		}
 		else if(jsonStr.cause==="throttles_limit_exceeded")
 		{
-			$("#captcha").blur();
-			$("#captcha_container").addClass("margin_for_captcha_errors");
-			$("#captcha_container + .captchafielderror").addClass("commonErrorlabelForCaptcha").html(jsonStr.localized_message).slideDown(200);
-			return false;
+			if ($("#zlabs_captcha_container").is(":visible")) 
+			{
+				$("#zlabs_captcha_container").removeClass("height_set");
+				$(".Z_captcha_error_container .Z_captcha_error_msg").html(jsonStr.localized_message);
+				$(".ZCaptcha_desc div").hide();
+				$(".img, .audio, .Captcha_btns").slideUp();
+				$(".Z_captcha_error_container").slideDown();
+				return false;
+			}
+				$("#captcha").blur();
+			    $("#captcha_container").addClass("margin_for_captcha_errors");
+				$("#captcha_container + .captchafielderror").addClass("commonErrorlabelForCaptcha").html(jsonStr.localized_message).slideDown(200);
 		}
 		else if(jsonStr.errors[0].code == 'U400' || jsonStr.errors[0].code == 'U301'){//No I18Nn //dc switch
 			handleLookupDetails(resp);
@@ -747,20 +932,51 @@ function handleRecoveryDetails(resp)
 			$("#login_id_container .fielderror").html(jsonStr.localized_message).addClass("errorlabel").show();
 		}
 		else if(jsonStr.errors[0].code == 'IN107'){ //invalid captcha
-			$('.reloadcaptcha').click();
-			showCommonError("captcha",jsonStr.localized_message);//no i18n
+			if (!$("#zlabs_captcha_container").is(":visible")) 
+			{
+				$('.reloadcaptcha').click();
+				showCommonError("captcha",jsonStr.localized_message);//no i18n
+			}
+			else
+			{
+				setTimeout(function(){
+					$(".shine_cover").removeClass("shine");
+					showZcaptchaError(jsonStr.localized_message,true);
+				},800);//set time out for css animation to end
+				
+			}
 		}
 		else
 		{
 			//policy errors
 			$("#captcha").blur();
 			$("#captcha_container").addClass("margin_for_captcha_errors");
+			if ($("#zlabs_captcha_container").is(":visible")) 
+			{
+				$("#zlabs_captcha_container").removeClass("height_set");
+				$(".ZCaptcha_desc div").hide();
+				$(".Z_captcha_error_container .Z_captcha_error_msg").html(jsonStr.localized_message);
+				$(".img, .audio, .Captcha_btns").slideUp();
+				$(".Z_captcha_error_container").slideDown();
+				return false;
+			}
 			$("#captcha_container + .captchafielderror").addClass("commonErrorlabelForCaptcha").html(jsonStr.localized_message).slideDown(200);
 		}
 	}
 	else 
 	{
-		showCommonError("captcha",I18N.get("IAM.ERROR.GENERAL"));//no i18n
+		if ($("#zlabs_captcha_container").is(":visible")) 
+		{
+			$(".ZCaptcha_desc div").hide();
+			$("#zlabs_captcha_container").removeClass("height_set");
+			$(".Z_captcha_error_container .Z_captcha_error_msg").html(I18N.get("IAM.ERROR.GENERAL"));
+			$(".img, .audio, .Captcha_btns").slideUp();
+			$(".Z_captcha_error_container").slideDown();
+		}
+		else
+		{
+			showCommonError("captcha",I18N.get("IAM.ERROR.GENERAL"));//no i18n
+		}
 	}
 	return false;
 	
@@ -803,6 +1019,11 @@ function last_pwd_ckeck()
 		showCommonError("last_password",I18N.get("IAM.ERROR.ENTER_PASS")); //no i18n
 		return false;
 	}
+	else if(PASSWORD.length>=250)
+	{
+		showCommonError("last_password",I18N.get("IAM.AC.RECOVER.OLD_PASSWORD.ERROR.DESCRIPTION.TOO.LONG")); //no i18n
+		return false;
+	}
 	$("#last_pwd_submit span").addClass("zeroheight");
 	$("#last_pwd_submit").addClass('changeloadbtn');
 	$("#last_pwd_submit").attr("disabled", true);
@@ -810,9 +1031,15 @@ function last_pwd_ckeck()
 	var pwd_verify_url = recoveryUri + "/v2/primary/"+zuid+"/password"; //no i18N
 	pwd_verify_url+="?cli_time=" + new Date().getTime();//no i18N
 	//pwd_verify_url += "digest="+digest;//no i18n
-	var jsonData = {'passwordrecoveryauth':{'password':PASSWORD }};//no i18n
 	
-	callRequestWithCallback(pwd_verify_url,JSON.stringify(jsonData),true,handleLastPasswordDetails,undefined,true);
+	encryptData.encrypt([PASSWORD]).then(function(encryptedpassword) {
+		encryptedpassword =  typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+		var jsonData = { 'passwordrecoveryauth': { 'password': encryptedpassword } };//no i18n
+		callRequestWithCallback(pwd_verify_url, JSON.stringify(jsonData), true, handleLastPasswordDetails, undefined, true);
+		return false;
+	}).catch(function(error) {
+		showCommonError("last_password", I18N.get("IAM.ERROR.GENERAL")) //no i18N
+	});
 	return false;
 }
 
@@ -911,6 +1138,9 @@ function last_pwd_response(resp)
 		}
 		else
 		{
+			var error_resp = jsonStr.errors[0];
+			var errorCode=error_resp.code;
+			var errorMessage = jsonStr.localized_message;
 			if(jsonStr.cause==="throttles_limit_exceeded")
 			{
 				showTopErrNotification(errorMessage);
@@ -919,9 +1149,19 @@ function last_pwd_response(resp)
 				$("#last_pwd_audit").attr("disabled", false);
 				return false;
 			}
-			var error_resp = jsonStr.errors[0];
-			var errorCode=error_resp.code;
-			var errorMessage = jsonStr.localized_message;
+			else if(errorCode=="SI505") //signin blocked due to multiple tries
+			{
+				$(".recover_sections,.service_logo").hide();
+				$(".error_header_container .error_header").hide();
+				$(".error_header_container .error_SI505").show();
+				$(".error_portion .error_desc").addClass("red_text");
+				$(".error_portion .error_desc").html(errorMessage);
+				$(".error_portion .domain_wait_warn").hide();
+				$(".error_portion .bottom_option").hide();
+				$(".error_portion #try_again").show();
+				$(".error_portion").show();
+				return false;
+			}
 			showTopErrNotification(errorMessage);
 		}
 	}
@@ -1542,19 +1782,25 @@ function call_recusernameScreen()
 	}
 	if(recovery_modes.lookup_id.data[0].email!=undefined)
 	{
-		var email_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mail/"+recovery_modes.lookup_id.data[0].e_email; //no i18N
-		var jsonData = {'emailrecoveryauth':{'email_id':recovery_modes.lookup_id.data[0].email }};//no i18n
-		
-		callRequestWithCallback(email_verify_url,JSON.stringify(jsonData),true,handleUsernameConfirm,undefined,true);
-		return false;
+		encryptData.encrypt([recovery_modes.lookup_id.data[0].email]).then(function(encryptedloginid) {
+			encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+			var email_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mail/"+recovery_modes.lookup_id.data[0].e_email; //no i18N
+			var jsonData = {'emailrecoveryauth':{'email_id':encryptedloginid }};//no i18n
+			callRequestWithCallback(email_verify_url,JSON.stringify(jsonData),true,handleUsernameConfirm,undefined,true);
+			return false;
+		});
+
 	}
 	else
 	{
-		var mobile_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mobile/"+recovery_modes.lookup_id.data[0].e_mobile; //no i18N
-		var jsonData = {'mobilerecoveryauth':{'mobile':recovery_modes.lookup_id.data[0].r_mobile }};//no i18n
-		
-		callRequestWithCallback(mobile_verify_url,JSON.stringify(jsonData),true,handleUsernameConfirm,undefined,true);
-		return false;
+		encryptData.encrypt([recovery_modes.lookup_id.data[0].r_mobile]).then(function(encryptedloginid) {
+			encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+			var mobile_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mobile/"+recovery_modes.lookup_id.data[0].e_mobile; //no i18N
+			var jsonData = {'mobilerecoveryauth':{'mobile':encryptedloginid }};//no i18n
+			callRequestWithCallback(mobile_verify_url,JSON.stringify(jsonData),true,handleUsernameConfirm,undefined,true);
+			return false;
+		});
+
 	}
 }
 
@@ -1936,6 +2182,7 @@ function show_recovery_email_confirmationscreen(email_data,isLookupId)
 	}
 	else{
 		$("#email_confirm_div,#email_confirm_div #confirm_reocvery_email").show();
+		$("#email_confirm").focus();
 	}
 }
 
@@ -1952,16 +2199,19 @@ function email_confirmation(isLookupId)
 	$("#emailconfirm_action").addClass("changeloadbtn");
 	$("#emailconfirm_action").attr("disabled", true);
 	
-	var email_enc=$("#confirm_reocvery_email .fieldcontainer #selected_encrypt_email").val();
 	
-	var email_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mail/"+email_enc; //no i18N
-	var jsonData = {'emailrecoveryauth':{'email_id':email_confirm }};//no i18n
+	encryptData.encrypt([email_confirm]).then(function(encryptedloginid) {
+		encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var email_enc=$("#confirm_reocvery_email .fieldcontainer #selected_encrypt_email").val();
+		var email_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mail/"+email_enc; //no i18N
+		var jsonData = {'emailrecoveryauth':{'email_id':encryptedloginid }};//no i18n
+		callRequestWithCallback(email_verify_url,JSON.stringify(jsonData),true,function(resp){
+			handleEmailConfirm(resp,isLookupId);
+		},undefined,true);
+		return false;
+	});
 	
-	callRequestWithCallback(email_verify_url,JSON.stringify(jsonData),true,function(resp){
-		handleEmailConfirm(resp,isLookupId);
-	},undefined,true);
 	
-	return false;
 }
 
 function handleEmailConfirm(resp,isLookupId)
@@ -2181,6 +2431,7 @@ function show_recovery_mobilenum_confirmationscreen(mob_data,isLookupId)
 	}
 	else{
 		$("#mobile_confirm_div,#mobile_confirm_div #confirm_reocvery_mobile").show();
+		$("#mobile_confirm").focus();
 	}
 }
 
@@ -2203,16 +2454,18 @@ function mobile_confirmation(isLookupId)
 		$("#mobconfirm_action").addClass("changeloadbtn");
 		$("#mobconfirm_action").attr("disabled", true);
 	}
-
-	var mobile_enc=$("#confirm_reocvery_mobile .fieldcontainer #selected_encrypt_mobile").val();
 	
-	var mobile_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mobile/"+mobile_enc; //no i18N
-	var jsonData = {'mobilerecoveryauth':{'mobile':mobile_confirm }};//no i18n
-	callRequestWithCallback(mobile_verify_url,JSON.stringify(jsonData),true,function(resp){
-		handleMobileConfirm(resp,isLookupId);
-	},undefined,true);
-	
-	return false;
+	encryptData.encrypt([mobile_confirm]).then(function(encryptedloginid) {
+		encryptedloginid = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var mobile_enc=$("#confirm_reocvery_mobile .fieldcontainer #selected_encrypt_mobile").val();
+		var mobile_verify_url = recoveryUri + "/v2/primary/"+zuid+"/mobile/"+mobile_enc; //no i18N
+		var jsonData = {'mobilerecoveryauth':{'mobile':encryptedloginid }};//no i18n
+		callRequestWithCallback(mobile_verify_url,JSON.stringify(jsonData),true,function(resp){
+			handleMobileConfirm(resp,isLookupId);
+		},undefined,true);
+		
+		return false;
+	});
 }
 
 
@@ -2320,6 +2573,10 @@ function rec_mobile_confimation_action()
 
 function show_recDeviceScreen()
 {
+	if($("#recovery_device_select ~ .uvselect").length || $("#recovery_device_select ~ .devicelist").length){
+		show_RECScreen();
+		return false;
+	}
 	var mzadevice = recovery_modes.mzadevice.data;
 	var isSecondaryDevice=false;
 	var optionElem = '';
@@ -2345,7 +2602,6 @@ function show_recDeviceScreen()
 			isMobile ? mobileviewDevices("#recovery_device_select") : renderUV("#recovery_device_select", false, "", "", "", false, false, "Mobile", true, null, null, "value")//no i18n
 			  if($("#recovery_device_select option").length<=1){
 					$("#recovery_device_select .selectbox_arrow").hide();
-					$('#recovery_device_select').addClass("nonclickelem")
 			  }
 		}
 		catch(err)
@@ -2366,19 +2622,30 @@ function show_recDeviceScreen()
 			});
 		}
 	}
-	
+	prev_TFA_option = undefined;
 	changeRECOVERYSecDevice($('#recovery_device_select'));//no i18N
 }
 function changeRECOVERYSecDevice(elem)
 {
 	updatedevices(elem);
 	var version = $(elem).children("option:selected").attr('version');
+	if($(elem).children("option:selected").val() == prev_TFA_option){
+		return false;
+	}else{
+		prev_TFA_option = $(elem).children("option:selected").val();
+		resendRecoveryPush(elem);
+	}
+}
+function resendRecoveryPush(elem){
 	var device_index = $(elem).children("option:selected").val();
 	mzadevicepos = device_index;
 	enableRECOVERYMyZohoDevice(device_index);
 }
-
-
+function show_RECScreen() {
+	$("#recovery_device_div").show();
+	$("#other_options_div").hide();
+	$("#contact_support_div").hide();
+}
 
 function enableRECOVERYMyZohoDevice(device_index)
 {
@@ -2453,7 +2720,7 @@ function handleRECOVERYdeviceDetails(resp)
 						clearInterval(resendTimer);
 						if(jsonStr.devicerecoveryauth.rnd){
 							$('#recovery_device_div .resendotp').removeClass('nonclickelem');
-							$('#recovery_device_div .rnd_resend_push').attr("onclick" , "changeRECOVERYSecDevice($('#recovery_device_select'))")
+							$('#recovery_device_div .rnd_resend_push').attr("onclick" , "resendRecoveryPush($('#recovery_device_select'))")
 							$('#recovery_device_div .resendotp').css("display", "none");
 							$('#recovery_device_div .rnd_resend_push').css("display", "block");
 						}else{
@@ -2648,7 +2915,7 @@ function show_MfaTotpScreen()
 	$(".recover_sections").hide();
 	$("#mfa_totp_section").show();
 	splitField.createElement('mfa_totp',{
-		"splitCount":6,				// No I18N
+		"splitCount":totp_size,				// No I18N
 		"charCountPerSplit" : 1,	// No I18N
 		"isNumeric" : true,			// No I18N
 		"otpAutocomplete": true,	// No I18N
@@ -2657,7 +2924,8 @@ function show_MfaTotpScreen()
 		"placeholder":I18N.get("IAM.VERIFY.CODE")				// No I18N
 	});
 	$("#mfa_totp .splitedText").attr("onkeypress","clearCommonError('mfa_totp')");
-	$("#mfa_totp").click();
+	setTimeout(function(){$("#mfa_totp").click();},150);
+	
 }
 
 function mfa_totp_confimration()
@@ -2668,7 +2936,7 @@ function mfa_totp_confimration()
 		showCommonError("mfa_totp",I18N.get("IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY"));//no i18n
 		return false;
 	}
-	if($("#mfa_totp_full_value~input").length > totp.length) 
+	if(totp_size > totp.length) 
 	{
 		showCommonError("mfa_totp",I18N.get("IAM.ERROR.VALID.OTP"));//no i18n
 		return false;
@@ -2704,7 +2972,7 @@ function show_MfaOtpScreen()
 		"placeholder":I18N.get("IAM.VERIFY.CODE")				// No I18N
 	});
 	$("#mfa_otp .splitedText").attr("onkeypress","clearCommonError('mfa_otp')");
-	$("#mfa_otp").click();
+	setTimeout(function(){$("#mfa_otp").click();},150);
 
 	if(mfa_modes.otp.data.length==1)
 	{
@@ -2815,6 +3083,7 @@ function handleMFA_otp_Confirm(resp)
 				$("#mfa_otp_section #mfa_otp_confirm").show();
 				$(".recover_sections").hide();
 				$("#mfa_otp_section").show();
+				$("#mfa_otp").click();
 			}
 			else
 			{
@@ -2897,6 +3166,10 @@ function mfa_otp_confimration()
 
 function show_MfaDeviceScreen()
 {
+	if($("#mfa_device_select ~ .uvselect").length || $("#mfa_device_select ~ .devicelist").length){
+		showMFA_screen();
+		return false;
+	}
 	var isSecondaryDevice = false;
 	var optionElem = '';
 	showGif();
@@ -2919,7 +3192,6 @@ function show_MfaDeviceScreen()
 			isMobile? mobileviewDevices("#mfa_device_select") : renderUV("#mfa_device_select", false, "", "", "", false, false, "Mobile", true, null, null, "value")//no i18n
 			  if($("#mfa_device_select option").length<=1){
 					$("#mfa_device_select ~ .selectbox_arrow").addClass("hideArrow");
-					$('#mfa_device_select').addClass("nonclickelem")
 			  }
 		}
 		catch(err)
@@ -2941,22 +3213,41 @@ function show_MfaDeviceScreen()
 		}
 		
 	}
-	
+	prev_TFA_option = undefined;
 	changeMFADevice($('#mfa_device_select'));//no i18N
 	return false;
+}
+function showMFA_screen() {
+	$("#mfa_device_section").show();
+	$("#mfa_device_options_slide").hide();
+	$("#other_mfaoptions_div").hide();
+	$(".show_mfa_support_options").hide();
+	if (prefoption === "push") {
+		$("#mfa_device_push_slide").show();
+	} else if (prefoption === "totp") {//no i18n
+		$("$mfa_device_totp_slide").show();
+	} else {
+		$("#mfa_device_qr_slide").show();
+	}
 }
 function changeMFADevice(elem)
 {
 	show_device_prefmode();
 	updatedevices(elem);
-	if($(elem).children("option:selected").val() == prev_MFA_option){return false;}
+	if($(elem).children("option:selected").val() == prev_TFA_option){
+		return false;
+	}else{
+		prev_TFA_option = $(elem).children("option:selected").val();
+		resendMFAPush(elem);
+	}
 	var version = $(elem).children("option:selected").attr('version');
+}
+function resendMFAPush(elem){
 	var device_index = $(elem).children("option:selected").val();
 	mzadevicepos = device_index;
 	enableMFAMyZohoDevice(device_index);
-	if(prev_MFA_option == undefined){prev_MFA_option = $(elem).children("option:selected").val();}
+	if(prev_TFA_option == undefined){prev_TFA_option = $(elem).children("option:selected").val();}
 }
-
 function enableMFAMyZohoDevice(device_index)
 {
 	var devicedetails = mfa_modes.mzadevice.data[parseInt(device_index)];
@@ -2999,7 +3290,7 @@ function handleMFA_ACDetails(resp)
     			if(prefoption==="totp")
     			{
     				splitField.createElement('mfa_device_totp',{
-    					"splitCount":6,					// No I18N
+    					"splitCount":totp_size,					// No I18N
     					"charCountPerSplit" : 1,		// No I18N
     					"isNumeric" : true,				// No I18N
     					"otpAutocomplete": true,		// No I18N
@@ -3225,7 +3516,7 @@ function handle_alternate_TOTPCode()
 			if(prefoption =="push")//show in mfa_device_options_slide
 			{
 				splitField.createElement('verify_device_totp',{
-					"splitCount":6,					// No I18N
+					"splitCount":totp_size,					// No I18N
 					"charCountPerSplit" : 1,		// No I18N
 					"isNumeric" : true,				// No I18N
 					"otpAutocomplete": true,		// No I18N
@@ -3243,7 +3534,7 @@ function handle_alternate_TOTPCode()
 			else	//show in full screen
 			{
 				splitField.createElement('mfa_device_totp',{
-					"splitCount":6,					// No I18N
+					"splitCount":totp_size,					// No I18N
 					"charCountPerSplit" : 1,		// No I18N
 					"isNumeric" : true,				// No I18N
 					"otpAutocomplete": true,		// No I18N
@@ -3329,7 +3620,7 @@ function mfa_devicetotp_confimration(is_othermodes)
 			showTopErrNotification(I18N.get("IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY"));
 			return false;
 		}
-		if($("#verify_device_totp_full_value~input").length > totp.length) 
+		if(totp_size > totp.length) 
 		{
 			showTopErrNotification(I18N.get("IAM.ERROR.VALID.OTP"));//no i18n
 			return false;
@@ -3353,7 +3644,7 @@ function mfa_devicetotp_confimration(is_othermodes)
 			showCommonError("mfa_device_totp",I18N.get("IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY"));//no i18n
 			return false;
 		}
-		if($("#mfa_device_totp_full_value~input").length > totp.length) 
+		if(totp_size > totp.length) 
 		{
 			showCommonError("mfa_device_totp",I18N.get("IAM.ERROR.VALID.OTP"));//no i18n
 			return false;
@@ -3391,6 +3682,7 @@ function isVerifiedFromDevice(prefmode,isMyZohoApp,WmsID,is_recoverymode)
 		wmscallmode=prefmode;wmscallapp=isMyZohoApp;wmscallid=WmsID;
 		try 
 		{
+			WmsLite.setClientSRIValues(wmsSRIValues);
 			WmsLite.setNoDomainChange();
 	 		WmsLite.registerAnnon('AC', WmsID ); //No I18N
 	 		isWmsRegistered=true;
@@ -3435,12 +3727,16 @@ function isVerifiedFromDevice(prefmode,isMyZohoApp,WmsID,is_recoverymode)
 	{
 		wmscount++;
 		var callIntervalTime = wmscount < 6 ? 5000 : 25000;
-		_time = setInterval("isVerifiedFromDevice(\""+prefmode+"\","+isMyZohoApp+",\""+WmsID+"\","+is_recoverymode+")", callIntervalTime);//No I18N
+		_time = setInterval(function () {
+			isVerifiedFromDevice(prefmode, isMyZohoApp, WmsID, is_recoverymode);
+		}, callIntervalTime);
 		return false;
 	}
 	else
 	{
-		_time = setInterval("isVerifiedFromDevice(\""+prefmode+"\","+isMyZohoApp+",\""+WmsID+"\","+is_recoverymode+")", 3000);//No I18N
+		_time = setInterval(function () {
+			isVerifiedFromDevice(prefmode, isMyZohoApp, WmsID, is_recoverymode);
+		}, 3000);
 	}
 	return false;
 }
@@ -3753,14 +4049,19 @@ function chnage_password(e)
 	$("#reset_password_submit").addClass("changeloadbtn");
 	$("#reset_password_submit").attr("disabled", true);
 	
-
-	var reset_pwd_url = recoveryUri + "/v2/reset/"+zuid+"/password"; //no i18N
-	var jsonData = {'password':{'newpassword':new_password}};//no i18n
-	reset_pwd_url+="?cli_time=" + new Date().getTime();//no i18N
 	
-	callRequestWithCallback(reset_pwd_url,JSON.stringify(jsonData),true,handleresetpassword,"PUT",true);//no i18N
-
-	return false;
+	encryptData.encrypt([new_password]).then(function(encryptedpassword) {
+		encryptedpassword =  typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+		var reset_pwd_url = recoveryUri + "/v2/reset/"+zuid+"/password"; //no i18N
+		var jsonData = {'password':{'newpassword':encryptedpassword}};//no i18n
+		reset_pwd_url+="?cli_time=" + new Date().getTime();//no i18N
+		
+		callRequestWithCallback(reset_pwd_url,JSON.stringify(jsonData),true,handleresetpassword,"PUT",true);//no i18N
+		
+		return false;
+	}).catch(function(error) {
+		showCommonError("last_password", I18N.get("IAM.ERROR.GENERAL")) //no i18N
+	});
 	
 }
 

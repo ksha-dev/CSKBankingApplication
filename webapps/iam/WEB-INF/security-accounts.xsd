@@ -6,7 +6,7 @@
      		<xs:attribute name="sl_auth">
 				<xs:simpleType>
        				<xs:restriction base="xs:string">
-	       				<xs:pattern value="fs_required|passexp_required|fs_optional|mfaauth_required|ms_optional|pa_required|pa_optional|tfatemp_required|tfatemp_optional|tfaauth_optional|tfaauth_required|invite_required|invite_optional|smartsignin_optional|smartsignin_required|customauth_required|customauth_optional|signup_required|actrefToken_optional|oauth_required|mobileLogin_required|oauth_optional"/>
+	       				<xs:pattern value="fs_required|passexp_required|fs_optional|mfaauth_required|ms_optional|pa_required|pa_optional|tfatemp_required|tfatemp_optional|tfaauth_optional|tfaauth_required|invite_required|invite_optional|smartsignin_optional|smartsignin_required|customauth_required|customauth_optional|signup_required|actrefToken_optional|oauth_required|mobileLogin_required|oauth_optional|tmpticket_required"/>
         			</xs:restriction>
      			</xs:simpleType>
      		</xs:attribute>

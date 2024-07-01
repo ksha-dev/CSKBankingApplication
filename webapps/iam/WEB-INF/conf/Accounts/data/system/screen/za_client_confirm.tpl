@@ -33,7 +33,7 @@
 							</div>
 							<div class="label">
 		    				<div class="inlineLabel"><@i18n key="IAM.LABEL.ENTER.ZOHO.PASSWORD"/> </div>
-								<input type="password" name="password" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
+								<input type="password" name="password" autocomplete="off" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
 							</div>
 							<div class="label">
 		    					<div class="inlineLabel">&nbsp;</div>

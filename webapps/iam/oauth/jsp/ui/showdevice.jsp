@@ -19,6 +19,18 @@ if(IAMUtil.isValid(zaid)){
 <meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
 <link href="<%=cssurl%>/oauthdevice.css" type="text/css" rel="stylesheet"  /><%-- NO OUTPUTENCODING --%>
+<style>
+@media only screen and (max-width: 420px){
+.logo {
+	    margin: unset;
+	}
+	.logout-wrapper {
+	    position: absolute !important;
+	    top: 20px !important;
+	    right: 10px !important;
+	}
+}
+</style>
 <script type="text/javascript">
 function submitDeviceCode() {
 	
@@ -124,14 +136,8 @@ $(function()
     	$(".wrap").css("min-height", offset);	//No I18N
 	});
 	
+
 	
-
-		$(".profile_pic").css({"background":'url("<%=cPath%>/file?fs=thumb&ID=<%=user.getZUID()%>")no-repeat transparent 0px 0px', "background-size":"100%"});   <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
-
-	<%if(isMobile) 
-	{%>
-		$(".profile_pic_enlarge").css({"background":'url("<%=cPath%>/file?fs=thumb&ID=<%=user.getZUID()%>")no-repeat transparent 0px 0px', "background-size":"100%"});   <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
-	<%}%>
 	$("input").keypress(function(){
 		
 		
@@ -140,10 +146,6 @@ $(function()
 	
 	});
 	
-    $("#log_out").click(function(){
-    	var logoutUrl = '<%=IAMUtil.getLogoutURL(com.zoho.accounts.internal.util.Util.getAppName(request.getParameter("servicename")), "/oauth/v3/device")%>';
-    	window.parent.location.href = logoutUrl;
-    });
 	
     $('#verify_code').keyup(function()
 	{
@@ -182,14 +184,6 @@ $(function()
         e.preventDefault();
     });
     
-    $('.profile_pic').click(function(){
-    	
-    	$('.mob_logout').show();
-    });
-    
-    $('.exit_profile').click(function(){
-    	$('.mob_logout').hide();
-    });
 
 });
 </script>
@@ -205,32 +199,8 @@ $(function()
             <span class="top_msg"></span>
         </div>
         </div>
-         <%if(!isMobile) {%>
-		    <div class="profile">
-                <span class="profile_pic"></span>
-                <span class="profile_name"><%=IAMEncoder.encodeHTML(user.getDisplayName())%></span>
-                <span class="hide logout" id="log_out"><%=Util.getI18NMsg(request, "IAM.SIGN.OUT")%></span>
-            </div>
-		
-		<%}
-        else
-        {	
-        %>
-		    <div class="mob_profile">
-            	<span class="profile_pic"></span>
-            </div>
-            <div class="mob_logout">
-            	<div class="exit_profile"><span class="close_X"></span></div>
-            	<span class="profile_pic_enlarge"></span>
-            	<div class="profile_info">
-            		<div class="white mob_name"><%=IAMEncoder.encodeHTML(user.getDisplayName())%></div>
-            		<div class="white mob_emailid"><%=IAMEncoder.encodeHTML(user.getPrimaryEmail())%></div>
-            		<button class="btn log_out" id="log_out"><%=Util.getI18NMsg(request, "IAM.SIGN.OUT")%></button>
-        		</div>
-        	</div>
-       <% 	
-        }
-        %>
+         <%@include file="../../../ui/unauth/announcement-logout.jspf"%>
+        
             <div id="device_container" style="display:none;"></div>
 		<div class="container" id="device_verification_container">
             

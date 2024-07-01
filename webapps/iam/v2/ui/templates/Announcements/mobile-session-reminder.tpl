@@ -4,8 +4,8 @@
 	<title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=2.0" />
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-    <link href="${SCL.getStaticFilePath("/v2/components/css/product-icon.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/css/${customized_lang_font}" />
+    <@resource path="/v2/components/css/product-icon.css" />
 	
 	<style>
 	   body {
@@ -145,8 +145,8 @@
 			    return false;
 			}
 	</script>
-	<link rel="stylesheet" href="${SCL.getStaticFilePath("/v2/components/css/mobile-session-reminder.css")}" type="text/css"/>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/mobile-session-reminder.js")}" type="text/javascript"></script>
+	<@resource path="/v2/components/css/mobile-session-reminder.css" />
+	<@resource path="/v2/components/js/mobile-session-reminder.js" />
 </head>
 <body>
 	<#include "../zoho_line_loader.tpl">
@@ -166,6 +166,12 @@
 					<span class="path8"></span>
 					<span class="path9"></span>
 					<span class="path10"></span>
+					<span class="path11"></span>
+					<span class="path12"></span>
+					<span class="path13"></span>
+					<span class="path14"></span>
+					<span class="path15"></span>
+					<span class="path16"></span>
 				</i>
 	             <span class="display_name">${appname}</span>
 	         </div>

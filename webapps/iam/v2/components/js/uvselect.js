@@ -53,6 +53,7 @@ var uvselect = {
 	escapeHTML : function (value) 
 	{
 		if(value) {
+			value = value.split("#").join("&#x23;");
 			value = value.split("<").join("&lt;");
 			value = value.split(">").join("&gt;");
 			value = value.split("\"").join("&quot;");	//No I18N
@@ -61,7 +62,6 @@ var uvselect = {
 			//value = value.split("@").join("\x40");
 			value = value.split("@").join("&#x40;");
 			value = value.split("+").join("&#x2b;");
-			value = value.split("#").join("&#x23;");		
 	    }
 	    return value;
 	},
@@ -69,6 +69,7 @@ var uvselect = {
 	decodeHTML : function (value) 
 	{
 		if(value) {
+			value = value.split("&#x23;").join("#");
 			value = value.split("&lt;").join("<");
 			value = value.split("&gt;").join(">");
 			value = value.split("&quot;").join("\"");	//No I18N
@@ -77,7 +78,6 @@ var uvselect = {
 			//value = value.split("@").join("\x40");
 			value = value.split("&#x40;").join("@");
 			value = value.split("&#x2b;").join("+");
-			value = value.split("&#x23;").join("#");			
 	    }
 	    return value;
 	},
@@ -154,7 +154,7 @@ var uvselect = {
 	},
 	
 	setIntentForCntyCode :  function (id) {
-		var length_ele = uvselect[id].select.siblings('input:first'); //No I18n
+		var length_ele = uvselect[id].select.siblings('input:first').attr("jsid") ? uvselect[id].select.siblings('input:first') : uvselect[id].select.parent().siblings('input:first');//no i18n
 		length_ele.removeClass("uvtextindent0 uvtextindent2 uvtextindent3 uvtextindent4");
 		if($(".uvselect[jsid="+id+"]").is(':visible')){
 			var value_len = uvselect.getSelectInputByID(id).val().length;
@@ -592,6 +592,8 @@ var uvselect = {
 		    select_input.val(edited_selection_Text);
 		}
 		
+		select_input.change();
+		
 		var selectbox = uvselect.getSelectboxByID(id)[0];
 		//Pending Feature Handlings
 		if(uvselect[id].editSelectionMarkup){
@@ -932,6 +934,9 @@ var uvselect = {
 	    }*/
 	},
 	destroySelectDropdown : function(id) {
+		if(uvselect[id] && uvselect[id]["onDropdown:close"]){
+    		uvselect[id]["onDropdown:close"].call(this);
+		}
 		var t = uvselect.getSelectboxByID(id).removeClass("selectbox--open selectbox--open-reverse"); //No I18n
 		if(uvselect[id] && uvselect[id]["country-code"]) {
 			t.parent().siblings().is('input') ? t.parent().siblings("input[jsid="+id+"]").removeClass("selectbox--open selectbox--open-reverse") : $("#"+id).parent().siblings("input[jsid="+id+"]").removeClass("selectbox--open selectbox--open-reverse"); //No I18n
@@ -1042,6 +1047,7 @@ var uvselect = {
 	selectFlag : function(id){				
 		var select_icon = uvselect.getSelectboxByID(id).children('.leading_icon'); //No i18N
 		//var flag_code = ischaracter(uvselect[id].select.find(":selected").attr("value")) ? uvselect[id].select.find(":selected").attr("value") : uvselect[id].select.find(":selected").attr("data-num"); //No i18N
+		if(uvselect[id].select){
 		var flag_code = uvselect[id].select.find(":selected").attr(uvselect[id].flagCodeAttr);
 		
 		/*if(uvselect[id]["country-code"] || uvselect[id].select.attr("country-code")){
@@ -1049,6 +1055,7 @@ var uvselect = {
 		}*/
 		select_icon[0].innerHTML = "";		// removes the old flag icon //No i18N
 		if(flag_code){addFlagIcon(select_icon, flag_code);}
+		}
 	},
 	selectServiceIcon : function(id){
 		var servicepos = "product-icon-"+$(".select_input[jsid="+id+"]").attr("data-service").toLowerCase();//No i18N
@@ -1783,7 +1790,6 @@ var uvselect = {
 					selected.push(value);
 					if(uvselect[id]["custom-option-templateSelection"]){												
 						var custom_option = uvselect[id]["custom-option-templateSelection"].call(this, value);
-	    				//console.log(custom_option);
 	    				uvselect.addCustomCardToMultiSelect(input_element, value, custom_option);							    				
 					} else {
 						uvselect.addCardToMultiSelect(input_element, value, value);
@@ -1821,7 +1827,11 @@ var uvselect = {
 /*This method just calls the initialize method with the Obj of the select html element with which it is invoked.
 */
 $.fn.uvselect = function(obj) {
-	return uvselect.initialize(this,obj);	
+	select_ele = this;
+	select_ele.each(function(ind){
+		uvselect.initialize($(select_ele[ind.toString()]),obj);	
+	});
+	return this;	
 };
 /*function ischaracter(obj){
 	var reg = /^[A-Za-z]+$/;

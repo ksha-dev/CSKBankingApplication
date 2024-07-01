@@ -84,27 +84,6 @@
 		<param name="use_homeurl" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-     <url path="/cu/[0-9]+/register.js" method="get,options">
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="loadcss" type="boolean" />
-      <param name="signinSignup" type="boolean" />
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="tvisit" type="boolean" description="Registration tracker cookie will be added on response to track the registration page bounce rate." />
-      <param name="mobile" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
-      <param name="getticket" type="boolean" />
-      <param name="appname" regex="iamcleartextpattern" />
-      <param name="client_portal" type="boolean" />
-      <param name="loginurl" regex="url" max-len="50000" />
-      <param name="msignup" type="boolean" />
-      <param name="dcc"  type="boolean"/>
-      <param name="mobile_only" type="boolean" />
-      <param name="partner_domain" regex="domain" />
-      <param name="hide_signup" type="boolean" />
-      <param name="IAM_CID" max-len="100" regex="iamcleartextpattern" />
-      <param name="confirm_redirect_url" regex="serviceurl"  max-len="50000"/>
-      <param name="load_country" type="boolean" description="To disable load country optiones"/>
-    </url>
     <url path="/accounts/register" method="GET" redirect="/register">
       <param name="username" regex="username_or_email" />
       <param name="portal" max-len="100" regex="iamcleartextpattern" />
@@ -126,27 +105,7 @@
 		<param name="is_android" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/register" method="GET">
-      <param name="username" regex="username_or_email" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="mozilla" type="boolean" />
-      <param name="hash" regex="csapikey" secret="true" max-len="128" />
-      <param name="timestamp" type="long" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
-      <param name="getticket" type="boolean" />
-      <param name="appname" regex="iamcleartextpattern" />
-      <param name="email" regex="email" trim="true" />
-      <param name="from_sign_in" type="boolean" description="To identify req is redirected from Login screen" />
-      <param name="msignup" type="boolean" />
-      <param name="IAM_CID" max-len="100" regex="iamcleartextpattern" />
-      <param name="confirm_redirect_url" regex="serviceurl"  max-len="50000"/>
-      <param name="load_country" type="boolean" description="To disable load country optiones"/>
-    </url>
     <url path="/accounts/validate/register.ac" https="true" method="options" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="To handle Preflighted request for CORS">
-      <response disable-safe-headers="X-Frame-Options" />
-    </url>
-    <url path="/cu/[0-9]+/validate/register.ac" https="true" method="options" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="To handle Preflighted request for CORS">
       <response disable-safe-headers="X-Frame-Options" />
     </url>
     <url path="/accounts/validate/register.ac" https="true" method="post" duration="60" threshold="40" lock-period="60" dos-cookie="true">
@@ -174,35 +133,7 @@
       <param name="IAM_CID" max-len="100" regex="iamcleartextpattern" />
       <param name="confirm_redirect_url" regex="serviceurl"  max-len="50000"/>
     </url>
-    <url path="/cu/[0-9]+/validate/register.ac" https="true" method="post" duration="60" threshold="40" lock-period="60" dos-cookie="true">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="portalname" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="DIGEST" regex="digest" max-len="512" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="username" regex="username" trim="true" />
-      <param name="email" regex="email" trim="true" />
-      <param name="_corsfn" regex="simplestring" />
-      <param name="_pmsg" type="boolean" />
-      <param name="emailormobile" regex="iamcleartextpattern" />
-      <param name="loginurl" regex="url" max-len="50000" />
-      <param name="password" regex="password" max-len="250" secret="true" />
-      <param name="mobile" regex="phone" />
-      <param name="confirmMobile" regex="phone" />
-      <param name="country_code" regex="country" />
-      <param name="confirm_country_code" regex="country" />
-      <param name="firstname" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="lastname" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="r_.*" max-len="500" name-regex="true" xss="antisamyfilter" description="Resource specific fields" max-occurrences="10" trim="true" />
-      <param name="x_.*" max-len="1000" name-regex="true" xss="antisamyfilter" description="Service teams custom fields" max-occurrences="15" />
-      <param name="mobile_only" type="boolean" />
-      <param name="domain" regex="domain" />
-      <param name="IAM_CID" max-len="100" regex="iamcleartextpattern" />
-      <param name="confirm_redirect_url" regex="serviceurl"  max-len="50000"/>
-    </url>
     <url path="/accounts/regaudit/customfield" method="options" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="To handle Preflighted request for CORS">
-      <response disable-safe-headers="X-Frame-Options" />
-    </url>
-     <url path="/cu/[0-9]+/regaudit/customfield" method="options" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="To handle Preflighted request for CORS">
       <response disable-safe-headers="X-Frame-Options" />
     </url>
     <url path="/accounts/regaudit/customfield" method="post" description="registration page customfield audit called" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
@@ -212,17 +143,7 @@
       <param name="_corsfn" regex="simplestring" />
       <param name="_pmsg" type="boolean" />
     </url>
-     <url path="/cu/[0-9]+/regaudit/customfield" method="post" description="registration page customfield audit called" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="field" max-len="100" regex="simplestring" trim="true" />
-      <param name="error" max-len="100" type="cleartext:removehtmlentities" trim="true" />
-      <param name="_corsfn" regex="simplestring" />
-      <param name="_pmsg" type="boolean" />
-    </url>
     <url path="/accounts/register.ac" https="true" method="options" description="To handle Preflighted request for CORS">
-      <response disable-safe-headers="X-Frame-Options" />
-    </url>
-    <url path="/cu/[0-9]+/register.ac" https="true" method="options" description="To handle Preflighted request for CORS">
       <response disable-safe-headers="X-Frame-Options" />
     </url>
     <url path="/accounts/register.ac" https="true" method="post">
@@ -252,10 +173,6 @@
       <param name="otp" regex="[0-9]{7}" />
       <param-group name="signupparamas"/>
     </url>
-    <url path="/cu/[0-9]+/register.ac" https="true" method="post">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param-group name="signupparamas"/>
-    </url>
     <url path="/accounts/captcha" method="get" duration="5" threshold="500" lock-period="10">
       <response disable-safe-headers="X-Frame-Options" />
       <param name="cdigest" regex="digest" max-len="512" />
@@ -265,15 +182,6 @@
       <param name="width" type="int" />
       <param name="height" type="int" />
 	  <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
-    <url path="/cu/[0-9]+/captcha" method="get" duration="5" threshold="500" lock-period="10">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="cdigest" regex="digest" max-len="512" />
-      <param name="action" regex="newcaptcha" />
-      <param name="_corsfn" regex="simplestring" />
-      <param name="_pmsg" type="boolean" />
-      <param name="width" type="int" />
-      <param name="height" type="int" />
     </url>
     <url path="/accounts/signin.js">
       <param name="portal" max-len="100" regex="iamcleartextpattern" />
@@ -287,19 +195,6 @@
       <param name="load_css" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-     <url path="/cu/[0-9]+/signin.js">
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="client_portal" type="boolean" />
-      <param name="loadcss" type="boolean" />
-      <param name="includeSignup" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
-      <param name="load_iframe" type="boolean" />
-      <param name="appname" regex="iamcleartextpattern" />
-    </url>
-    
-	<url path="/accounts/client/v2/[0-9]+/jwt/auth" description="Authentication using JWT">
-   		 <param name="user_token" regex="iamcleartextpattern" max-len="500" min-len="1" secret="true" />
-	</url>
 	
     <url path="/accounts/signin" method="get,options">
       <response disable-safe-headers="X-Frame-Options" />
@@ -315,18 +210,6 @@
 		<param name="hidetitle" type="boolean" />
 		<param-group name="loginparams"/>
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
-    <url path="/cu/[0-9]+/signin" method="get,options">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="hideidp" type="boolean" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="client_portal" type="boolean" />
-      <param name="load_iframe" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
-      <param name="appname" regex="iamcleartextpattern" />
-      <param name="_hn" type="boolean" />
-      <param name="frame" type="boolean" />
-      <param name="dcc"  type="boolean"/>
     </url>
     <url path="/accounts/signin.ac" https="true" method="post" csrf="false">
       <param name="grant_type" max-len="100" regex="iamcleartextpattern" />
@@ -348,23 +231,6 @@
       <param name="load_css" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/signin.ac" https="true" method="post" csrf="false">
-      <param name="grant_type" max-len="100" regex="iamcleartextpattern" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="username" regex="username_or_email" />
-      <param name="password" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
-      <param name="cdigest" regex="digest" max-len="512" />
-      <param name="captcha" regex="hipstring" max-len="10" />
-      <param name="sremember" type="boolean" />
-      <param name="is_ajax" type="boolean" />
-      <param name="client_portal" type="boolean" />
-      <param name="state" regex="iamcleartextpattern" />
-      <param name="_corsfn" regex="simplestring" />
-      <param name="_pmsg" type="boolean" />
-      <param name="load_iframe" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" />
-      <param name="appname" regex="iamcleartextpattern" />
-    </url>
     <url path="/accounts/password/forgot">
       <response disable-safe-headers="X-Frame-Options" />
       <param name="_hn" type="boolean" />
@@ -375,14 +241,6 @@
 		<param name="hide_signup" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/password/forgot">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="_hn" type="boolean" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="client_portal" type="boolean" />
-      <param name="zaaid" max-len="100" regex="simplestring" />
-      <param name="dcc"  type="boolean"/>
-    </url>
     <url path="/accounts/password.ac" https="true" method="post" csrf="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
       <param name="recovery" regex="username_or_email" />
       <param name="portal" max-len="100" regex="iamcleartextpattern" />
@@ -391,14 +249,6 @@
       <param name="client_portal" type="boolean" />
       <param name="zaaid" max-len="100" regex="simplestring" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
-    <url path="/cu/[0-9]+/password.ac" https="true" method="post" csrf="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
-      <param name="recovery" regex="username_or_email" />
-      <param name="portal" max-len="100" regex="iamcleartextpattern" />
-      <param name="cdigest" regex="digest" max-len="512" />
-      <param name="captcha" regex="hipstring" max-len="10" min-occurrences="1" />
-      <param name="client_portal" type="boolean" />
-      <param name="zaaid" max-len="100" regex="simplestring" />
     </url>
     <url path="/accounts/oauthcallback.dc" description="OpenID/OAuth sign-in across different Data Centers" method="post" csrf="false">
       <param name="digest" regex="digest" max-len="512" />
@@ -420,13 +270,7 @@
       <param name="redirecturl" regex="url" max-len="50000" />
       <param name="dcc"  type="boolean"/>
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
-    
-     <url path="/cu/[0-9]+/w/pl/a" description="add new user password Link">
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" max-len="50000" />
-      <param name="dcc"  type="boolean"/>
-    </url>   
+    </url>  
   
     <url path="/accounts/w/pl/u" description="add new user password Link" method="get,options">
       <response disable-safe-headers="X-Frame-Options" />
@@ -452,14 +296,6 @@
       <param name="digest" regex="digest" max-len="512" />
       <param name="redirecturl" regex="url" max-len="50000" />
     </url>
-    
-     <url path="/cu/[0-9]+/addpass.ac" https="true" csrf="true" method="post">
-      <param name="password" regex="password" max-len="250" secret="true" />
-      <param name="cpassword" regex="password" max-len="250" secret="true" />
-      <param name="is_ajax" type="boolean" />
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" max-len="50000" />
-    </url>
  
     <url path="/accounts/i/a" description="accept account invitation" sl_auth="invite_optional" authentication="optional" method="get,options">
       <param name="digest" regex="digest" max-len="512" />
@@ -472,13 +308,6 @@
       <param name="digest" regex="digest" max-len="512" />
       <param name="redirecturl" regex="url"/>
       <param name="servicename" max-len="100" regex="servicename" />
-      <param name="r" type="boolean" />
-      <param name="showoi" type="boolean" />
-    </url>
-    
-    <url path="/cu/[0-9]+/i/a" description="accept account invitation" sl_auth="invite_optional" authentication="optional" method="get,options">
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" />
       <param name="r" type="boolean" />
       <param name="showoi" type="boolean" />
     </url>
@@ -519,17 +348,7 @@
       <param name="r" type="boolean" />
     </url>
     
-     <url path="/cu/[0-9]+/c/e" description="accept client account confirmation" authentication="optional">
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" />
-      <param name="r" type="boolean" />
-    </url>
-    
     <url path="/accounts/secureconfirm.ac" method="post" csrf="true" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="validate password and accept account confirmation">
-      <param name="digest" regex="digest"  max-len="512" min-occurrences="1" />
-      <param name="password" regex="oldpassword" max-len="250" secret="true" min-occurrences="1" />
-    </url>
-    <url path="/cu/[0-9]+/secureconfirm.ac" method="post" csrf="true" https="true" duration="60" threshold="40" lock-period="60" dos-cookie="true" description="validate password and accept account confirmation">
       <param name="digest" regex="digest"  max-len="512" min-occurrences="1" />
       <param name="password" regex="oldpassword" max-len="250" secret="true" min-occurrences="1" />
     </url>
@@ -540,7 +359,6 @@
 		<param name="password" regex="password" max-len="250" secret="true" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/accounts/[0-9]+/home" description="Sample home page for client users." authentication="optional" />
     <url path="/cu/[0-9]+/w/c/a" description="accept account confirmation" authentication="optional">
       <response disable-safe-headers="X-Frame-Options"/>
       <param name="digest" regex="digest" max-len="512" />
@@ -600,12 +418,6 @@
       <param name="servicename" max-len="100" regex="servicename" />
       <param name="digest" regex="digest" max-len="512" />
     </url>
-    <url path="/cu/[0-9]+/reset.ac" https="true" method="post" csrf="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
-      <param name="password" regex="password" max-len="250" secret="true" />
-      <param name="cpassword" regex="password" max-len="250" secret="true" />
-      <param name="servicename" max-len="100" regex="servicename" />
-      <param name="digest" regex="digest" max-len="512" />
-    </url>
     <url path="/accounts/password/reset" https="true" method="get" block-referrer="true">
       <response disable-safe-headers="X-Frame-Options" />
       <param name="servicename" max-len="100" regex="servicename" />
@@ -635,17 +447,6 @@
       <param name="client_portal" regex="iamcleartextpattern" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/password2.ac" https="true" method="post" csrf="true" duration="60" threshold="40" lock-period="60" dos-cookie="true">
-      <param name="field" regex="iamcleartextpattern" />
-      <param name="passwordhistory" regex="iamcleartextpattern" />
-      <param name="getquestion" type="cleartext:removehtmlentities" />
-      <param name="securityqa1" regex="password" max-len="250" secret="true" />
-      <param name="securityqa" regex="iamcleartextpattern" />
-      <param name="radio-box" regex="iamcleartextpattern" />
-      <param name="recovery" regex="username_or_email" />
-      <param name="portal" regex="iamcleartextpattern" />
-      <param name="client_portal" regex="iamcleartextpattern" />
-    </url>
     <url path="/accounts/i/au" description="add new user via invitation" https="true"  method= "get" block-referrer="true">
       <response disable-safe-headers="X-Frame-Options" />
       <param name="digest" regex="digest" max-len="512"  mask="partial" preserve-chars="2,5" preserve-chars-limit="30"/>
@@ -654,25 +455,12 @@
       <param name="language" regex="language" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/i/au" description="add new user via invitation" https="true"  method= "get">
-      <response disable-safe-headers="X-Frame-Options" />
-      <param name="digest" regex="digest" max-len="512"  mask="partial" preserve-chars="2,5" preserve-chars-limit="30"/>
-      <param name="redirecturl" regex="url" max-len="50000" />
-      <param name="dcc"  type="boolean"/>
-      <param name="language" regex="language" />
-    </url>
     <url path="/accounts/adduser.ac" https="true" csrf="true" method="post">
       <param name="password" regex="password" max-len="250" secret="true" />
       <param name="digest" regex="digest" max-len="512" />
       <param name="redirecturl" regex="url" max-len="50000" />
       <param name="cpassword" regex="password" max-len="250" secret="true" />
 		<param name="is_ajax" type="boolean" />
-    </url>
-    <url path="/cu/[0-9]+/adduser.ac" https="true" csrf="true" method="post">
-      <param name="password" regex="password" max-len="250" secret="true" />
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" max-len="50000" />
-      <param name="cpassword" regex="password" max-len="250" secret="true" />
     </url>
     <url path="/accounts/registerbyinvite.ac" https="true" method="post" csrf="true">
       <param name="digest" regex="digest" max-len="512" trim="true" />
@@ -691,42 +479,12 @@
       <param name="lastname" max-len="100" regex="iamcleartextpattern" trim="true" />
 		<param name="tos_required" type="boolean" />
     </url>
-    <url path="/cu/[0-9]+/registerbyinvite.ac" https="true" method="post" csrf="true">
-      <param name="digest" regex="digest" max-len="512" trim="true" />
-      <param name="password" regex="password" max-len="250" secret="true" />
-      <param name="repassword" regex="password" max-len="250" secret="true" />
-      <param name="cdigest" regex="digest" max-len="512" />
-      <param name="captcha" regex="hipstring" max-len="10" />
-      <param name="r_.*" max-len="500" name-regex="true" xss="antisamyfilter" description="Resource specific fields" max-occurrences="10" trim="true" />
-      <param name="x_.*" max-len="1000" name-regex="true" xss="antisamyfilter" description="Service teams custom fields" max-occurrences="15" />
-      <param name="newsletter" type="boolean" />
-      <param name="hash" regex="csapikey" secret="true" max-len="128" />
-      <param name="timestamp" type="long" />
-      <param name="is_ajax" type="boolean" />
-      <param name="fullname" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="firstname" max-len="100" regex="iamcleartextpattern" trim="true" />
-      <param name="lastname" max-len="100" regex="iamcleartextpattern" trim="true" />
-    </url>
     <url path="/accounts/i/p/a" description="add personal user new user via invitation" https="true" authentication="optional" method="get,options">
       <param name="digest" regex="digest" max-len="512" />
       <param name="redirecturl" regex="url" max-len="50000" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
-    <url path="/cu/[0-9]+/i/p/a" description="add personal user new user via invitation" https="true" authentication="optional" method="get,options">
-      <param name="digest" regex="digest" max-len="512" />
-      <param name="redirecturl" regex="url" max-len="50000" />
-    </url>
     <url path="/accounts/client/authtoken" method="post" csrf="false" duration="10" threshold="5" lock-period="60" dos-cookie="true">
-      <param name="portal" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
-      <param name="username" regex="username_or_email" />
-      <param name="password" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
-      <param name="client_portal" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" min-occurrences="1" />
-      <param name="desc" regex="iamcleartextpattern" min-occurrences="1" />
-      <param name="email" regex="username_or_email" />
-      <param name="grant_type" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
-    </url>
-    <url path="/cu/[0-9]+/client/authtoken" https="true" method="post" csrf="false" duration="10" threshold="5" lock-period="60" dos-cookie="true">
       <param name="portal" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
       <param name="username" regex="username_or_email" />
       <param name="password" regex="oldpassword" max-len="250" min-occurrences="1" secret="true" />
@@ -746,22 +504,9 @@
       <param name="email" regex="username_or_email" />
       <param name="grant_type" max-len="100" regex="iamcleartextpattern" />
     </url>
-    <url path="/cu/[0-9]+/client/internal/authtoken" method="post" csrf="false" internal="true" scoped-services="ZohoCRM">
-      <param name="portal" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
-      <param name="username" regex="username_or_email" />
-      <param name="password" regex="oldpassword" max-len="250" secret="true" />
-      <param name="client_portal" type="boolean" />
-      <param name="scopes" regex="scope_with_servicename" split="," max-occurrences="20" min-occurrences="1" />
-      <param name="desc" regex="iamcleartextpattern" min-occurrences="1" />
-      <param name="email" regex="username_or_email" />
-      <param name="grant_type" max-len="100" regex="iamcleartextpattern" />
-    </url>
     <url path="/accounts/client/authtoken/delete" method="post" csrf="false" duration="10" threshold="5" lock-period="60" dos-cookie="true">
       <param name="portal" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
-    <url path="/cu/[0-9]+/client/authtoken/delete" method="post" csrf="false" duration="10" threshold="5" lock-period="60" dos-cookie="true">
-      <param name="portal" max-len="100" regex="iamcleartextpattern" min-occurrences="1" />
     </url>
 
     <url path="/accounts/choose.dc">
@@ -785,10 +530,6 @@
 		<param name="redirecturl"  xss="antisamyfilter" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
 	</url>
-	<url path="/cu/[0-9]+/login" description="add personal user new user via invitation" >
-		<param name="state" regex="digest" max-len="5000" />
-		<param name="redirecturl"  xss="antisamyfilter" />
-	</url>
 	<url path="/accounts/extoauth/clientrequest" description="add personal user new user via invitation" method="get">
 		<param name="portal" max-len="100" regex="iamcleartextpattern" />
 		<param name="client_portal" type="boolean" />
@@ -810,14 +551,6 @@
 		<param name="frame" type="boolean" />
 		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
 	</url>
-	<url path="/cu/[0-9]+/extoauth/clientrequest" description="add personal user new user via invitation" method="get">
-		<param name="state" regex="digest" max-len="5000" />
-		<param name="redirecturl"  xss="antisamyfilter" />
-	</url>
-	<url path="/cu/[0-9]+/extoauth/clientrequest" description="add personal user new user via invitation" method="post" csrf="false">
-		<param name="state" regex="digest" max-len="5000" />
-		<param name="redirecturl"  xss="antisamyfilter" />
-	</url>
 	<url path="/accounts/extoauth/clientcallback" description="add personal user new user via invitation" ignore-extraparam="true" >
 		<param name="state" regex="digest" max-len="5000" />
 		<param name="redirecturl"  xss="antisamyfilter" />
@@ -837,17 +570,11 @@
 		<param name="accounts-server" regex="iamcleartextpattern" max-len="100" />
 		<param name="location" regex="iamcleartextpattern" />
 	</url>
-	<url path="/cu/[0-9]+/extoauth/clientcallback" description="add personal user new user via invitation" >
-		<param name="state" regex="digest" max-len="5000" />
-		<param name="redirecturl"  xss="antisamyfilter" />
-	</url>
 	<url path="/accounts/clienterror" description="add personal user new user via invitation">
 		<param name="error" regex="iamcleartextpattern" max-len="100" />
 		<param name="iamexp" type="boolean"/>
 		<param name="info" regex="iamcleartextpattern"/>
 	</url>
-	
-	<url path="/cu/[0-9]+/clienterror" description="add personal user new user via invitation" />
 	
 	<url path="/accounts/csamlresponse/${ZID}" url-type="multiple" description="process the clinet saml authentication response" method="get">
        <param-group name="samlresponseparams"/>

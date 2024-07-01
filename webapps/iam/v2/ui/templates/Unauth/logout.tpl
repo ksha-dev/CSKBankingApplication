@@ -56,7 +56,7 @@
 	<#if (idp)?has_content>
 	<head>
 		<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+		<@resource path="/v2/components/css/${customized_lang_font}" />
 		<style >
 		@font-face{
 			font-family:Announcement;

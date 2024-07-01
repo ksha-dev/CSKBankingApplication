@@ -18,7 +18,7 @@
                 <div class="labelkey">Enter EMAIL of the User :</div> <%--No I18N--%>
 		<div class="labelvalue"><input type="text" name="emailid" class="input" autocomplete="off"/></div>               
 		 <div class="labelkey">Enter Admin password :</div> <%--No I18N--%>
-                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="deleteOrg(document.deleteorg)">
 			<span class="btnlt"></span>
@@ -40,7 +40,7 @@
                 <div class="labelkey">Enter Email Address :</div> <%--No I18N--%>
                 <div class="labelvalue"><input type="text" name="user" class="input" autocomplete="off"/></div>
                 <div class="labelkey">Enter Admin password :</div> <%--No I18N--%>
-                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="dissociateUserFromOrg(document.dissociateuserfromorg)">
 			<span class="btnlt"></span>

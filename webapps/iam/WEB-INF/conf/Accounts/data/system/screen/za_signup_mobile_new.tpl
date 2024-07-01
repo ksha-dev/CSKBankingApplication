@@ -59,7 +59,7 @@
 					<dl class="za-password-container za-placeholder-icon">
 						<dd class="input">
 							<label class="placeholder"><@i18n key="IAM.PASSWORD" /></label>
-							<input type="password" tabindex="1" name="password" onkeyup="checkPasswordStrength(${signup.minpwdlen},true)" > <span class='showpassword' style="display: none;" onclick='showPassword(this,true)'></span>
+							<input type="password" autocomplete="off" tabindex="1" name="password" onkeyup="checkPasswordStrength(${signup.minpwdlen},true)" > <span class='showpassword' style="display: none;" onclick='showPassword(this,true)'></span>
 						</dd>
 					</dl>
 				</div>

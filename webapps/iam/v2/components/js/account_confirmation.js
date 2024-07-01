@@ -52,33 +52,131 @@ function confirmAccount(){
 		var pass=$(".textbox_div:last");
 	}
 	disabledButton(document.confirm_form.confirm_btn);
-	
-	var payload = accConfirmObj.create(parms);	
-	payload.PUT(digest).then(function(resp){		//No I18N
-		if(resp.code === "AC200"){
-			redirectUrl = resp.confirmation.redirectUrl;
-			removeButtonDisable(document.confirm_form.confirm_btn);
-			showSuccessSignin();
+		
+	encryptData.encrypt([parms.password]).then(function(encryptedpassword) {
+		if(encryptData.isValidData(encryptedpassword)){
+			parms.password = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
 		}
-	},
-	function(resp){
-		removeButtonDisable(document.confirm_form.confirm_btn);
-		$(".pass_allow_indi").removeClass("show_pass_allow_indi");
-		if(resp.errors[0]){
-			if(pass.hasClass("textbox_div")){
-				pass.append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
-				pass.focus();
+		var payload = accConfirmObj.create(parms);	
+		payload.PUT(digest).then(function(resp){		//No I18N
+			if(resp.code === "AC200"){
+				redirectUrl = resp.confirmation.redirectUrl;
+				removeButtonDisable(document.confirm_form.confirm_btn);
+				showSuccessSignin();
+			}
+		},
+		function(resp){
+			removeButtonDisable(document.confirm_form.confirm_btn);
+			$(".pass_allow_indi").removeClass("show_pass_allow_indi");
+			if(resp.errors[0]){
+				if(pass.hasClass("textbox_div")){
+					pass.append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+					pass.focus();
+				}
+				else{
+					pass.parent().append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+				}
 			}
 			else{
-				pass.parent().append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+				$(".textbox_div:last").append("<span class='err_text'>"+network_common_err+"</span>");
 			}
-		}
-		else{
-			$(".textbox_div:last").append("<span class='err_text'>"+network_common_err+"</span>");
-		}
+		});
 	});
 }
 
+var passwordObj = ZResource.extendClass({
+	resourceName: "AccountPassword",//No I18N
+	identifier: "digest",	//No I18N  
+	attrs:["password"]
+});
+function addPassword(){
+	err_remove();
+	var parms={};
+	if(!hasPassword){
+		  var pass = $("#passs_input");
+		  var conf_pass = $("#confirm_pass_input");
+		  if(validatePasswordPolicy().getErrorMsg(pass.val()))
+			{
+				$(pass).focus();
+				return false;
+			}
+		  if(conf_pass.val()==""){
+			  $("#confirm_pass_input").parent().append("<span class='err_text'>"+reenter_err+"</span>");
+			  $("#confirm_pass_input").focus();
+			  return false;
+		  }
+		  if(pass.val() != conf_pass.val()){
+			  $("#confirm_pass_input").parent().append("<span class='err_text'>"+password_mismatch_err+"</span>");
+			  $("#confirm_pass_input").focus();
+			  return false;
+		  }
+		  var parms=
+		  {
+				  "password":pass.val()//No I18N
+		  };
+	}
+	else if(isPasswordRequired){
+		var pass = $("#confirm_pass_input");
+
+		  if(pass.val()==""){
+			  pass.parent().append("<span class='err_text'>"+current_pass_err+"</span>");
+			  pass.focus();
+			  return false;
+		  }
+		  if(pass.val().length < min_length){
+			  pass.parent().append("<span class='err_text'>"+enter_valid_pass+"</span>");
+			  pass.focus();
+			  return false;
+		  }
+		  var parms=
+		  {
+				  "password": pass.val()	//No I18N
+		  };
+	}
+	else{
+		var pass=$(".textbox_div:last");
+	}
+	disabledButton(document.confirm_form.confirm_btn);
+	
+	encryptData.encrypt([parms.password]).then(function(encryptedpassword) {
+		if(encryptData.isValidData(encryptedpassword)){
+			parms.password = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+		}
+		var payload = passwordObj.create(parms);
+		payload.PUT(digest).then(function(resp){
+			if(resp.code === "AC200"){
+				redirectUrl = resp.accountpassword.redirectUrl;
+				removeButtonDisable(document.confirm_form.confirm_btn);
+				if(!hasPassword) {
+					showSuccessSignin();
+				} else {
+					redirectLink(redirectUrl,this);
+				}	
+			}
+		},
+		function(resp){
+			removeButtonDisable(document.confirm_form.confirm_btn);
+			$(".pass_allow_indi").removeClass("show_pass_allow_indi");
+			if(resp.errors[0]){
+				if(pass.hasClass("textbox_div")){
+					pass.append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+					pass.focus();
+				}
+				else{
+					pass.parent().append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+				}
+			}
+			else{
+				$(".textbox_div:last").append("<span class='err_text'>"+network_common_err+"</span>");
+			}
+		});
+	});
+}
+
+function logout_olduser(link) {
+	window.open(link+"&serviceurl="+ encodeURIComponent(window.location.href),"_self");
+}
+				
 function showSuccessSignin(){
 	show_blur_screen();
 	 $("#result_popup").show(0,function()

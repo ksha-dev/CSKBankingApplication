@@ -55,6 +55,13 @@
 		                        <a style="text-decoration:none;color: #ffffff;display: inline-block;border-top:14px solid #339E72;border-right:40px solid #339E72;border-bottom:14px solid #339E72;border-left:40px solid #339E72;font-size: 16px;font-weight: 600;font-family: 'Open Sans','Trebuchet MS',sans-serif;color: #ffffff;background-color:#339E72;" href="${ztpl.DIGEST_URL}"><@i18n key="${CTA}" /></a>
 		                    </td>
 	                    </tr>
+	                    <#if ztpl.EMAIL_DETACH_URL?has_content>
+	                    <tr>
+		                    <td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
+		                        <@i18n key="IAM.EMAIL.NOT.AWARE.DETACH" arg0="${ztpl.EMAIL_DETACH_URL}"/>
+		                    </td>
+		                </tr>
+		                </#if>
 	                    <tr>
 		                    <td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
 		                        <@i18n key="IAM.NEW.MAIL.TPL.UKNOWN.ACTION.TEXT" arg0="${ztpl.SUPPORT_EMAIL_ID}"/>

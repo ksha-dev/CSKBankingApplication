@@ -4,10 +4,29 @@
 			<div class="group_info_div">
 				
 				<div class="group_info_basic">
+				<div class="info_group_dp_parent">
 					<div class="info_group_dp icon-camera" id="edit_grp_dp">
 						<div class="bg_blur_grp"></div>
-						<img onerror="setDefault_dp(this)" class="profile_picture"></img>
+						<img onerror="setNoImgClass(this);setDefault_dp(this);" onload="fitPicture(this)" class="profile_picture">
 					</div>
+					<div class="drop-down-container">
+						<span class="drop-down-arrow" ></span>
+						<div class="drop-down">
+							<div class="drop-down-item upload-group-photo">
+								<span class="icon-Upload-new"></span>
+								<div class="drop-down-text"><@i18n key="IAM.UPLOAD.NEW"/></div>
+							</div>
+							<div class="drop-down-item view-group-photo">
+								<span class="icon-expand_picture"></span>
+								<div class="drop-down-text"><@i18n key="IAM.PHOTO.EXPAND.PICTURE"/></div>
+							</div>
+							<div class="drop-down-item delete-group-photo">
+								<span class="icon-Remove"></span>
+								<div class="drop-down-text"><@i18n key="IAM.REMOVE"/></div>
+							</div>
+						</div>
+					</div>
+				</div>
 					<span class="info_group_details">
 						<div class="info_group_name"></div>
 						<div class="info_group_discription empty_dis"></div>	

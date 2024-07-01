@@ -7,10 +7,11 @@
 <%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="com.zoho.accounts.AccountsConfiguration"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@ include file="../../../static/includes.jspf" %>
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/product-icon.css")%>" type="text/css" rel="stylesheet"  /><%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/product-icon.css") %><%-- NO OUTPUTENCODING --%>
 <%if(isCDNEnabled){%>
-<link href="<%=StaticContentLoader.getStaticFilePath("/css/oauth.css")%>" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/css/oauth.css") %> <%-- NO OUTPUTENCODING --%>
 <%}else{ %>
 <link href="<%=cssurl%>/oauth.css" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
 <%}%>
@@ -64,7 +65,7 @@ body
 .container {
     display: block;
     height: auto;
-    max-width: 800px;
+    width: auto;
     padding-top: 130px;
     margin-right: 5%;
     margin-left: 50%;
@@ -201,7 +202,6 @@ body
   .container{
   	width:70%;
   	margin:auto;
-  	float:right;
   }
 }
 @media only screen and (max-width: 420px) {
@@ -300,7 +300,7 @@ body
 .center_logo {
 	display: block;
 	margin: auto;
-	width: 80px;
+	width: 100px;
 }
 .orgdescription {
     height: 16px;
@@ -400,7 +400,7 @@ li {
 					</div>
 					<div class="error_icon" style="background: url('<%=StaticContentLoader.getStaticFilePath("/images/Link.png")%>') no-repeat #FFDFDF 18px 18px; background-size: 24px;"></div> <%-- NO OUTPUTENCODING --%>
 					<div class="heading center_text"><%=I18NUtil.getMessage("IAM.ACCOUNT.RECOVERY.ERROR.ACCOUNT.INVALID.HEADER")%></div> <!-- Invalid URL -->
-					<div class="discription center_text"><span id="responseError"></span><div class="reasons_div" id="reasons_div"><%=I18NUtil.getMessage("IAM.CROSS.ORG.INVALID.INVITATION.REASONS")%></div></div>
+					<div class="discription center_text"><span id="responseError"></span><div class="reasons_div" id="reasons_div"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION.REASONS")%></div></div>
 					<button class="btn green center_btn" onclick="homepage()"><%=I18NUtil.getMessage("IAM.GROUPINVITATION.GO.TO.ACCOUNTS")%></button>
 	</div>
       
@@ -410,33 +410,37 @@ li {
 						<div class="zoho_logox center_logo"></div>
 					</div>
 					<div class="error_icon" style="background: url('<%=StaticContentLoader.getStaticFilePath("/images/Link.png")%>') no-repeat #FFDFDF 18px 18px; background-size: 24px;"></div> <%-- NO OUTPUTENCODING --%>
-					<div class="heading center_text"><%=I18NUtil.getMessage("IAM.ACCOUNT.RECOVERY.ERROR.ACCOUNT.INVALID.HEADER")%></div> <!-- Invalid URL -->
 					<% switch(error.getErrorCode()){ 
 					case invalid_user:
 						String forEmail = request.getAttribute("forEmail") != null ? (String)request.getAttribute("forEmail") : null;
 					%>
-					<div class="discription center_text"><%=I18NUtil.getMessage("IAM.ROLE.RENEW.INVALID.USER", forEmail)%></div>
+					<div class="heading center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.USER.HEADER")%></div>
+					<div class="discription center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.USER", forEmail)%></div>
 					<%
 					break;
 					case already_verified:
 						%>
-					<div class="discription center_text"><%=I18NUtil.getMessage("IAM.ROLE.RENEW.LINK.EXPIRED")%></div>
+					<div class="heading center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION.HEADER")%></div>
+					<div class="discription center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVITATION.EXPIRED")%></div>
 					<%
 					break;
 					case inactive_user:
 						%>
+						<div class="heading center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.USER.HEADER")%></div>
 						<div class="discription center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.USER.ACCOUNT.INACTIVE", Util.getSupportEmailId())%></div>
 						<%
 						break;
 					case no_org:
 						%>
+						<div class="heading center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION.HEADER")%></div>
 						<div class="description center_text"> <%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.NO.ORG", serviceName, remoteService)%></div>
 						<%
 						break;
 					default:
 						%>
-						<div class="discription center_text"><%=I18NUtil.getMessage("IAM.CROSS.ORG.INVALID.INVITATION", remoteService)%>
-							<div class="reasons_div" style="display: block;"><%=I18NUtil.getMessage("IAM.CROSS.ORG.INVALID.INVITATION.REASONS")%></div>
+						<div class="heading center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION.HEADER")%></div>
+						<div class="discription center_text"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION")%>
+							<div class="reasons_div" style="display: block;"><%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION.REASONS")%></div>
 						</div>
 					<%
 					} %>
@@ -527,9 +531,9 @@ li {
 		  document.getElementById("showprompt").style.display="none";
 		  document.getElementById("errorBlock").style.display="";
 		  if(jsonResp.status == "already_verified"){
-			  document.getElementById("responseError").append("<%=I18NUtil.getMessage("IAM.ROLE.RENEW.LINK.EXPIRED")%>");
+			  document.getElementById("responseError").append("<%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVITATION.EXPIRED")%>");
 		  } else {
-			  document.getElementById("responseError").innerHTML = "<%=I18NUtil.getMessage("IAM.CROSS.ORG.INVALID.INVITATION", remoteService)%>";
+			  document.getElementById("responseError").innerHTML = "<%=I18NUtil.getMessage("IAM.OAUTH.CROSS.ORG.INVALID.INVITATION")%>";
 			  document.getElementById("reasons_div").style.display="block";
 		  }
 	  }

@@ -1,0 +1,142 @@
+system.testapp:
+  client_name: Testing app
+  client_type: 22
+  zid: 1001
+  max_token_limit: 25
+  scopes:
+    - AaaServer.profile.READ
+system.cliqmeetingroomapp:
+  class_path: com.zoho.accounts.internal.oauth2.oauthapp.AppAccountMeetingRoomHelper
+  client_name: Cliq Meeting Rooms
+  client_type: 28
+  zid: 1008
+  scopes:
+    - ZohoChat.LiveMedia.ALL 
+    - ZohoChat.CalendarEvents.ALL
+    - ZohoChat.SmartRooms.ALL
+    - ZohoChat.MediaSession.READ
+    - ZohoChat.MediaSession.UPDATE
+system.shiftsKioskapp:
+  class_path: com.zoho.accounts.internal.oauth2.oauthapp.DefaultServiceOrgHelper
+  client_name: Shifts Kiosk App
+  client_type: 23
+  zid: 101
+  scopes:
+    - ZohoShifts.kiosk.ALL
+system.mailWordPress:
+  client_name: Mail Word Press Application
+  client_type: 22
+  zid: 1005
+  scopes:
+    - VirtualOffice.messages.CREATE
+    - VirtualOffice.accounts.READ
+system.Site24x7DeskApp:
+  client_name: ManageEngine Site24x7 Deskapp
+  client_type: 22
+  zid: 1014
+  scopes:
+    - Site24x7.Reports.Read
+    - Site24x7.Admin.Read
+system.connectOutlook:
+  client_name: Connect Outlook Calendar Add-in
+  client_type: 22
+  zid: 21
+  scopes:
+    - ZohoPulse.networklist.ALL
+    - ZohoPulse.userDetail.ALL
+    - ZohoPulse.events.ALL
+    - ZohoPulse.integration.ALL
+system.connectUserSync:
+  client_name: Connect User Sync Application
+  client_type: 22
+  zid: 21
+  scopes:
+    - ZohoPulse.networkAdmin.ALL
+    - ZohoPulse.networklist.ALL
+    - ZohoDirectory.UsersIntegration.ALL
+    - ZohoDirectory.OrgsIntegration.ALL
+    - ZohoOne.UsersIntegration.ALL
+    - ZohoOne.OrgsIntegration.ALL
+    - ZohoCreator.meta.ALL
+    - ZohoPC.files.ALL
+system.zdkcli:
+  client_name: ZDK
+  client_type: 22
+  zid: 5
+  scopes:
+    - ZohoCRM.settings.ALL
+    - ZohoCRM.org.READ
+    - ZohoCRM.users.ALL
+    - ZohoCRM.zdk.push.READ
+    - ZohoCRM.zdk.push.CREATE
+    - ZohoCRM.zdk.pull.READ
+    - ZohoCRM.zdk.init.READ
+    - ZohoCRM.zdk.init.CREATE
+system.ZDMEDataSync:
+  client_name: ME Cloud Admin Panel Data Sync
+  client_type: 23
+  zid: 1023
+  scopes:
+    - ZBSM.MESYNC.ALL
+system.BooksCLI:
+  client_name: Zoho Books CLI
+  client_type: 22
+  zid: 13
+  scopes:
+    - ZohoBooks.settings.READ
+    - ZohoBooks.customfunctions.READ
+    - ZohoBooks.customfunctions.CREATE
+    - ZohoBooks.customfunctions.UPDATE
+    - ZohoBooks.customfunctions.DELETE
+    - ZohoExpense.settings.READ
+    - ZohoExpense.customfunctions.READ
+    - ZohoExpense.customfunctions.CREATE
+    - ZohoExpense.customfunctions.UPDATE
+    - ZohoExpense.customfunctions.DELETE
+    - ZohoInventory.settings.READ
+    - ZohoInventory.customfunctions.READ
+    - ZohoInventory.customfunctions.CREATE
+    - ZohoInventory.customfunctions.UPDATE
+    - ZohoInventory.customfunctions.DELETE
+    - ZohoInvoice.settings.READ
+    - ZohoInvoice.customfunctions.READ
+    - ZohoInvoice.customfunctions.CREATE
+    - ZohoInvoice.customfunctions.UPDATE
+    - ZohoInvoice.customfunctions.DELETE
+    - ZohoSubscriptions.settings.READ
+    - ZohoSubscriptions.customfunctions.READ
+    - ZohoSubscriptions.customfunctions.CREATE
+    - ZohoSubscriptions.customfunctions.UPDATE
+    - ZohoSubscriptions.customfunctions.DELETE
+    - ZohoPayroll.settings.READ
+    - ZohoPayroll.customfunctions.READ
+    - ZohoPayroll.customfunctions.CREATE
+    - ZohoPayroll.customfunctions.UPDATE
+    - ZohoPayroll.customfunctions.DELETE
+    - ZohoPOS.settings.READ
+    - ZohoPOS.customfunctions.READ
+    - ZohoPOS.customfunctions.CREATE
+    - ZohoPOS.customfunctions.UPDATE
+    - ZohoPOS.customfunctions.DELETE
+system.ZohoQEngine:
+  class_path: com.zoho.accounts.internal.oauth2.oauthapp.DefaultServiceOrgHelper
+  client_name: ZohoQEngine
+  client_type: 22
+  zid: 86
+  scopes:
+    - ZohoQEngine.agent.ALL
+    - ZohoQEngine.agent.preview.ALL
+    - ZohoQEngine.agent.testplan.ALL
+    - ZohoFiles.files.ALL
+system.ZohoQEngineTunnel:
+  class_path: com.zoho.accounts.internal.oauth2.oauthapp.DefaultServiceOrgHelper
+  client_name: ZohoQEngine Tunnel
+  client_type: 22
+  zid: 86
+  scopes:
+    - ZohoQEngine.agent.ALL
+    - ZohoQEngine.agent.preview.ALL
+    - ZohoQEngine.agent.testplan.ALL
+    - ZohoFiles.files.ALL
+
+

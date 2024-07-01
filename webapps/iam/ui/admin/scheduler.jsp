@@ -297,7 +297,7 @@ String t = request.getParameter("t");//No I18N
 							    calendar.setTimeInMillis(System.currentTimeMillis());
 			%>
 						<td>Ex : <%=IAMEncoder.encodeHTML(formatter.format(calendar.getTime()))%></td></tr>	<%--No I18N--%>
-						<tr><td align='right'>Admin Password :</td><td><input type='password' class='input' id='pwd'/></td></tr>	<%--No I18N--%>
+						<tr><td align='right'>Admin Password :</td><td><input type='password' autocomplete='off' class='input' id='pwd'/></td></tr>	<%--No I18N--%>
 					</table>
 					<%	if (request.isUserInRole("IAMAdmininistrator") || request.isUserInRole("IAMSystemAdmin")) {	%>
 					<div class='mrpBtn'><input type='submit' value='Add'/> <input type='button' value='Cancel' onclick='addNewScheduler("hide")' /></div>

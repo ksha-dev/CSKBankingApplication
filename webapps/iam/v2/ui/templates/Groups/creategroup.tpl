@@ -9,7 +9,7 @@
 			<div id="create_grp_dp">
 				<div class="group_dp icon-camera" onclick="openUploadPhoto('group','new');" id="edit_grp_dp">
 					<div class="bg_blur_grp"></div>
-					<img onerror="setDefault_dp(this)" src='${SCL.getStaticFilePath("/v2/components/images/group_2.png")}'class="profile_picture"></img>
+					<img onerror="setDefault_dp(this)" onload="fitPicture(this)" src='${SCL.getStaticFilePath("/v2/components/images/group_2.png")}'class="profile_picture">
 				</div>
 				
 				<form name="Grp_photo" method="post" id="new_grp_photo_form" enctype="multipart/form-data" target="dummy" onSubmit="return false;">
@@ -58,8 +58,7 @@
 							<div class="contacts_place"></div>
 				    					    		
 							<#if ! no_orgusers>
-								<textarea tabindex="0" class="deleteacc_cmnd big_textare" data-validate="zform_field" onkeypress="remove_error()" autocomplete="email" name="" placeholder='<@i18n key="IAM.GROUP.MEMBER.EMAIL_ADDRESS" /> <@i18n key="IAM.GROUP.EMAIL_USECOMMA" />'></textarea>
-								<div class="memidex"><@i18n key="IAM.ORGPOLICY.PERSONALGROUP.INVITATION" /></div>
+								<div class="memidex textbox_align" ><@i18n key="IAM.ORGPOLICY.PERSONALGROUP.INVITATION" arg0=org_name/></div>
 							</#if>
 					</div>		
 					

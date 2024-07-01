@@ -35,7 +35,7 @@
 					</dl>
 					<dl class="za-password-container">
 						<dd>
-							<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength(${signup.minpwdlen})" onfocus="hideMsg(this,${signup.minpwdlen});" tabindex="1" onblur="hideLenError(this,${signup.minpwdlen})">
+							<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength(${signup.minpwdlen})" onfocus="hideMsg(this,${signup.minpwdlen});" tabindex="1" onblur="hideLenError(this,${signup.minpwdlen})">
 						<div class="field-msg">
 							<div onclick="togglePasswordField(${signup.minpwdlen});" id="show-password" class="column show-password">
                                 <span id="show-password-icon" class="icon-medium uncheckedpass"></span>

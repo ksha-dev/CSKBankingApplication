@@ -26,9 +26,9 @@
         </div>
 		<div class="labelmain" id="searchDigest">
 			<div class="labelkey">
-	    		<select id="mode" class="inputSelect chosen-select unauthinputSelect-tfa" style="background-color: white;width: 98px;b;background-position-x: 19px;">
+	    		<select id="mode" class="inputSelect chosen-select unauthinputSelect-tfa" style="background-color: white;width: 161px;background-position-x: 83px;">
 	    			<option value="ZID" <%if("ZID".equals(type)){ %>selected<%} %>>ZID</option> <%--No I18N--%>
-	    			<option value="EMAIL" <%if("EMAIL".equals(type)){ %>selected<%} %>>EmailId</option> <%--No I18N--%>
+	    			<option value="EMAIL/MOBILE" <%if("EMAIL/MOBILE".equals(type)){ %>selected<%} %>>EmailId / MobileNo</option> <%--No I18N--%>
 	    			<option value="DIGEST" <%if("DIGEST".equals(type)){ %>selected<%} %>>Digest</option> <%--No I18N--%>
 	    		</select>
 	    	</div>
@@ -63,7 +63,7 @@
 			Criteria criteria;
 			if (type.equals("ZID")) {
 				criteria = new Criteria(DIGEST.ZID,value);
-			} else if (type.equals("EMAIL")) {
+			} else if (type.equals("EMAIL/MOBILE")) {
 				criteria = new Criteria(DIGEST.EMAIL_ID,value);
 			} else {
 				criteria = new Criteria(DIGEST.DIGEST,CryptoUtil.EAREncrypt(com.adventnet.iam.internal.Util.IAM_SECRET_KEYLABEL, value,true));
@@ -86,7 +86,7 @@
 			    		<table class="usremailtbl" cellpadding="4">
 		    				<tr>
 		    					<td class="usrinfoheader">ZID</td> <%--No I18N--%>
-								<td class="usrinfoheader">Email Address</td> <%--No I18N--%>
+								<td class="usrinfoheader">Email / Mobile</td> <%--No I18N--%>
 								<td class="usrinfoheader">Digest Type</td> <%--No I18N--%>
 								<td class="usrinfoheader">Encrypted Digest</td> <%--No I18N--%>
 								<td class="usrinfoheader">Is Validated</td> <%--No I18N--%>

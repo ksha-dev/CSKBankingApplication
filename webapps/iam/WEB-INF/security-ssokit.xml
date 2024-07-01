@@ -19,12 +19,12 @@
 			<inputstream type="JSONObject" template="sso_profile_json" max-len="-1" />
 		</url>
 
-		<url path="/ssokit/v1/user/self/closeaccount" method="post" authentication="required" csrf="false" oauthscope="closeaccount" operation-type="CREATE" duration="1" threshold="10"  user="true" lock-period="5" description="Verify user to close the account" >
+		<url path="/ssokit/v1/user/self/closeaccount" method="post" authentication="required" csrf="false" api="true" oauthscope="closeaccount" operation-type="CREATE" duration="1" threshold="10"  user="true" lock-period="5" description="Verify user to close the account" >
 			<param-group name="clientrequest"/>
 			<inputstream type="JSONObject" template="ssokit_close_account_json" max-len="-1" />
 		</url>
 
-		<url path="/ssokit/v1/user/self/closeaccount/${iambase64}" method="put" url-type="dynamic" authentication="required" csrf="false" oauthscope="closeaccount" operation-type="UPDATE" duration="1" threshold="10"  user="true" lock-period="5" description="To close user account" >
+		<url path="/ssokit/v1/user/self/closeaccount/${iambase64}" method="put" url-type="dynamic" authentication="required" csrf="false" api="true" oauthscope="closeaccount" operation-type="UPDATE" duration="1" threshold="10"  user="true" lock-period="5" description="To close user account" >
 			<param-group name="clientrequest"/>
 			<inputstream type="JSONObject" template="ssokit_close_account_json" max-len="-1" />
 		</url>
@@ -47,7 +47,7 @@
 
 		Enable only for arattai setup -->
 
-		<!-- Zoho Mail Team Requirement -->	
+		<!-- Zoho Mail Team Requirement -->
 		<url path="/ssokit/v1/user/self/mobile" method="post" csrf="false" authentication="required" oauthscope="mobilerecovery" operation-type="CREATE" description="To send OTP SMS">
 			<inputstream type="JSONObject" template="ssokit_mobile_json" max-len="-1"/>
 		</url>
@@ -61,6 +61,7 @@
        
 		<!-- SSOKit Captcha Support -->
 		<url path="/ssokit/v1/captcha/${digest_in_url}" method="get">
+			<param name="darkmode" type="boolean" />
 		</url>
 		
 		<url path="/ssokit/v1/captcha" method="post">
@@ -112,6 +113,7 @@
 			<key name="first_name" regex="iamcleartextpattern" min-len="1" />
 			<key name="last_name" regex="iamcleartextpattern" />
 			<key name="display_name" regex="iamcleartextpattern" max-len="50" />
+			<key name="time_zone" regex="timezone" />
 		</jsontemplate>
 
 		<jsontemplate name="ssokit_mobile_json">

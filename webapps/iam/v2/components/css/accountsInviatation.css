@@ -169,6 +169,8 @@ body .org_invite_bg {
 body .show_error {
   top: 60px !important;
 }
+
+/*
 body #error_space {
   position: fixed;
   width: fit-content;
@@ -233,6 +235,7 @@ body #error_space .cross_mark_success:after {
   top: 0px;
   left: 1px;
 }
+*/
 body .button {
   height: 40px;
   padding-left: 32px;
@@ -424,8 +427,14 @@ body .container {
   box-sizing: border-box;
   box-shadow: 3px 6px 30px #00000008;
   position: relative;
-  background-color:rgb(255 255 255)
+  background-color:rgb(255 255 255);
 }
+
+body .org_inv_container {
+  border-radius: 8px;  
+  box-shadow: 3px 6px 20px 0px rgba(0, 0, 0, 0.08);
+}
+
 body .org_merge_container
 {
 	min-height: 350px;
@@ -437,6 +446,28 @@ body .container .invite_details {
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
+}
+
+body .org_inv_container .invite_details .invited_service_info{
+	float: right;
+}
+
+body .org_inv_container .invite_details .invited_service_info .invited_service_logo{
+	font-size: 20px;
+    float: right;
+}
+
+body .org_inv_container .invite_details .invited_service_info .invited_service_name{
+	font-size:14px;
+	font-weight:600;	
+	float: right;
+    margin-top: 2px;
+    margin-left: 8px;
+}
+
+body .org_inv_container .invite_details {
+  padding: 30px 40px 0 40px;
+  margin:0px;
 }
 
 body .org_merge_container .org_merge_invite_details, body .org_merge_container .org_merge_details 
@@ -471,6 +502,16 @@ body .container .invite_details .org_Displaypicture {
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
+body .org_inv_container .invite_details .org_Displaypicture {
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;  
+  border: 1px solid #E7EFF6;
+  margin-bottom: 10px; 
+  background-color: #EEF8FF;
+  margin:0;
+  margin-bottom: 10px;
+}
 body .container .invite_details .sorg_Displaypicture {
   display: block;
   height: 80px;
@@ -496,6 +537,13 @@ body .container .invite_details .org_icon {
   font-weight: 500;
   transition: all 0.3s ease;
 }
+body .org_inv_container .invite_details .org_icon {
+  height: 52px;
+  width: 52px;
+  line-height: 52px;
+  color: #1389E3;
+}
+
 body .container .invite_details .sorg_icon {
   width: 100%;
   height: 100%;
@@ -515,6 +563,12 @@ body .container .invite_details .org_Name {
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
+
+body .org_inv_container .invite_details .org_Name {
+  margin-bottom: 8px;
+  line-height: 18px;
+  text-align: left;
+}
 body .container .invite_details .Invitedby_Name {
   display: block;
   font-size: 14px;
@@ -522,6 +576,13 @@ body .container .invite_details .Invitedby_Name {
   text-align: center;
   line-height: 20px;
   color: rgba(0, 0, 0, 0.5);
+}
+body .org_inv_container .invite_details .Invitedby_Name {
+  font-size: 12px;
+  text-align: left;
+  line-height: 14px;  
+  color: black;
+  word-break: break-word;
 }
 body .container .invite_details .Invitedby_Name b {
   color: black;
@@ -787,9 +848,23 @@ body .container .content_box {
   box-sizing: border-box;
   padding: 40px;
   position: relative;
-  margin: -2px;
-  width: 600px;
+  margin: -2px; 
 }
+body .org_inv_container .content_box {
+	padding: 30px 40px;
+	border: none;
+}
+
+body .org_inv_container .dashed_separator{
+	width: calc(100% - 40px);
+	position:relative;
+	left:20px;
+	margin-top:30px;
+	border-top:1px dashed #CDCDCD;
+}
+
+
+
 body .container .content_box .content_box_header {
   display: block;
   font-size: 18px;
@@ -797,15 +872,26 @@ body .container .content_box .content_box_header {
   font-weight: 600;
   margin-bottom: 10px;
 }
+body .org_inv_container .content_box .content_box_header {
+  font-size: 16px;
+  line-height: 18px;	
+}
 body .container .content_box .content_box_discription {
   display: block;
   font-size: 14px;
   line-height: 24px;
   font-weight: 500;
   color: #444444;
+  word-wrap: break-word;
+}
+body .org_inv_container .content_box .content_box_discription {
+  line-height: 22px;
+  font-weight: 400;
 }
 body .container .content_box .action_elements {
   display: block;
+  margin-top: 10px;
+  font-size: 0;
 }
 body .container .content_box .org_merge_note {
   margin: 0px;
@@ -1046,6 +1132,12 @@ body .blue_btn {
   margin-right: 20px;
   font-family: "ZohoPuvi";
 }
+
+.org_inv_container .blue_btn{
+	height: 38px;
+	margin-right: 6px;
+}
+
 body .logout_btn
 {
 	margin: 20px auto;
@@ -1097,6 +1189,9 @@ body .container .grey_btn, body .container .red_btn {
   font-family: "ZohoPuvi";
 }
 
+body .org_inv_container .grey_btn{
+	 height: 38px;
+}
 
 
 body .container .red_btn
@@ -1447,13 +1542,14 @@ body .container .fed_text {
 body .container .hide {
   display: none;
 }
-@media screen and (min-width: 435px) and (max-width: 900px) {
+@media only screen and (max-width: 900px) {
   body .result_popup {
     max-width: 560px;
     width: 90%;
   }
 }
-@media only screen and (max-width: 419px) {
+
+@media only screen and (max-width: 600px) {
   body {
     width: 96%;
     margin: auto;
@@ -1510,7 +1606,7 @@ body .container .hide {
   display: block;
   font-size: 14px;
   line-height: 24px;
-  font-weight: 500;
+  font-weight: 400;
   position: relative;
   text-align: center;
   margin-top: 15px;
@@ -3126,15 +3222,15 @@ span.select2-dropdown.select2-dropdown--below, span.select2-dropdown.select2-dro
 
 .hover-tool-tip {
 	position: absolute;
-    top: 15px;
-    left: 335px;
+    top: 0px;
+    left: 0px;
     background: #fff;
     padding: 20px;
     box-shadow: 0px 0px 10px #0000001a;
     transition: opacity 0.1s;
     border-radius: 5px;
     z-index: 9;
-    opacity: 0;
+    display:none;
 }
 .hover-tool-tip::after {
     content: "";
@@ -3143,7 +3239,7 @@ span.select2-dropdown.select2-dropdown--below, span.select2-dropdown.select2-dro
     height: 0;
     margin-left: -8px;
     top: 25px;
-    left: 0;
+    left: 0px;
     box-sizing: border-box;
     border: 6px solid black;
     border-color: #ffffff transparent transparent #ffffff;

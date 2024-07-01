@@ -3,10 +3,6 @@
 <security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
     <urls>
     <url path="/rest/user/sessions" method="delete" csrf="true" https="true" sl_auth="pa_required"/>
-
-    <url path="/rest/user/password/verify" https="true" authentication="optional" sl_auth="customauth_optional" user-needed="true" method="post" csrf="true"  duration="5" threshold="50" lock-period="10">
-        <param name="password" regex="oldpassword" max-len="250" secret="true" />
-     </url>
    
    <url path="/rest/announcement/recovery" method="post" csrf="true" https="true" authentication="required" duration="15" threshold="10" lock-period="30">
      <param name="email_or_mobile" regex="email_or_mobile" />

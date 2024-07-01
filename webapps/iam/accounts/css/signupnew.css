@@ -4,7 +4,7 @@
 body {
 	margin: 0px;
 }
-
+input, textarea, button {font-family: inherit}
 @font-face {
 	font-family: 'signin';
 	src: url('../../images/fonts/signin.eot');
@@ -45,6 +45,7 @@ body {
 }
 
 @font-face {
+	/*======Font file Version : Sign-in-v1.14 1===============*/
   font-family: 'signinicon';
   src:  url('../../v2/components/images/fonts/signinicon.eot');
   src:  url('../../v2/components/images/fonts/signinicon.eot') format('embedded-opentype'),
@@ -201,6 +202,7 @@ body {
 .icon2-adp_small:before {
   color: #ffffff;
   content: "\e91a";
+  font-size:12px;
 }
 .icon2-apple_small:before {
   content: "\e91b";
@@ -211,7 +213,7 @@ body {
 }
 .icon2-baidu_small:before {
   content: "\e91c";
-  color:rgb(35, 25, 220);
+  color:#2319DC;
 }
 .icon2-baidu_L .path1:before {
   content: "\e94e";
@@ -253,7 +255,7 @@ body {
   color: rgb(225, 6, 1);
 }
 .icon2-douban_small:before {
-  color: #ffffff;
+  color: #29983b;
   content: "\e91d";
 }
 .icon2-facebook_small:before {
@@ -266,22 +268,22 @@ body {
 }
 .icon2-feishu_small .path2:before {
   content: "\e920";
-  margin-left: -1.26953125em;
+  margin-left: -1em;
   color: rgb(51, 112, 255);
 }
 .icon2-feishu_small .path3:before {
   content: "\e921";
-  margin-left: -1.26953125em;
+  margin-left: -1em;
   color: rgb(19, 60, 154);
 }
 .icon2-feishu_small .path4:before {
   content: "\e922";
-  margin-left: -1.26953125em;
+  margin-left: -1em;
   color: rgb(19, 60, 154);
 }
 .icon2-feishu_small .path5:before {
   content: "\e923";
-  margin-left: -1.26953125em;
+  margin-left: -1em;
   color: rgb(19, 60, 154);
 }
 .icon2-google_small .path1:before {
@@ -304,9 +306,9 @@ body {
   color: rgb(234, 67, 53);
 }
 .icon2-intuit_small:before {
-  color: #3D5796;
+  color: #ffffff;
   content: "\e928";
-  font-size:40px;
+  font-size:8px;
 }
 .icon2-linkedin_small:before {
   color: #ffffff;
@@ -322,64 +324,64 @@ body {
 }
 .icon2-qq_small .path2:before {
   content: "\e92b";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(0, 0, 0);
 }
 .icon2-qq_small .path3:before {
   content: "\e92c";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(255, 255, 255);
 }
 .icon2-qq_small .path4:before {
   content: "\e92d";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(250, 171, 7);
 }
 .icon2-qq_small .path5:before {
   content: "\e92e";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(0, 0, 0);
 }
 .icon2-qq_small .path6:before {
   content: "\e92f";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(255, 255, 255);
 }
 .icon2-qq_small .path7:before {
   content: "\e930";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(235, 25, 35);
 }
 .icon2-qq_small .path8:before {
   content: "\e931";
-  margin-left: -0.841796875em;
+  margin-left: -1em;
   color: rgb(235, 25, 35);
 }
 .icon2-slack_small .path1:before {
   content: "\e932";
-  color: rgb(224, 30, 90);
+  color:#E01E5A;
 }
 .icon2-slack_small .path2:before {
   content: "\e933";
   margin-left: -1em;
-  color: rgb(54, 197, 240);
+  color:#36C5F0;
 }
 .icon2-slack_small .path3:before {
   content: "\e934";
   margin-left: -1em;
-  color: rgb(46, 182, 125);
+  color:#2EB67D;
 }
 .icon2-slack_small .path4:before {
   content: "\e935";
   margin-left: -1em;
-  color: rgb(236, 178, 46);
+  color:#ECB22E;
 }
 .icon2-twitter_small:before {
   color: #ffffff;
-  content: "\e936";
+  content: "\e942";
 }
 .icon2-wechat_small:before {
-  color: #ffffff;
+  color: #2EC100;
   content: "\e937";
 }
 .icon2-weibo_small .path1:before {
@@ -388,22 +390,22 @@ body {
 }
 .icon2-weibo_small .path2:before {
   content: "\e939";
-  margin-left: -1.234375em;
-  color: rgb(230, 22, 45);
+  margin-left: -1em;
+  color:#e60f29;
 }
 .icon2-weibo_small .path3:before {
   content: "\e93a";
-  margin-left: -1.234375em;
-  color: rgb(255, 153, 51);
+  margin-left: -1em;
+  color:#ff9a2f;
 }
 .icon2-weibo_small .path4:before {
   content: "\e93b";
-  margin-left: -1.234375em;
-  color: rgb(255, 153, 51);
+  margin-left: -1em;
+  color:#ff9a2f;
 }
 .icon2-weibo_small .path5:before {
   content: "\e93c";
-  margin-left: -1.234375em;
+  margin-left: -1em;
   color: rgb(0, 0, 0);
 }
 .icon2-azure_small .path1:before {
@@ -523,7 +525,7 @@ dl {
 }
 
 input[type="text"], input[type="email"], input[type="password"], input[type="number"],
-	textarea, select {
+	textarea, select, div[name="otp"] {
 	display: block;
     width: 100%;
     height: 44px;
@@ -539,12 +541,17 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     border: 1px solid #E4E4E4;
     margin-top: 25px;
 }
+#password{
+	padding-right: 50px;
+}
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0px;
 }
-
+input {
+	font-family: 'ZohoPuvi', Georgia;
+}
 .signupbtn {
 	cursor: pointer;
 	display: block;
@@ -587,7 +594,9 @@ a {
 	font-size: 25px;
 	cursor: pointer;
 }
-
+#firstname_div{
+	margin-right:5%;
+}
 .za-fullname-container dd
 {
 	display: flex;
@@ -623,7 +632,23 @@ a {
 	color: #278FDE;
 	display: inline-block;
 }
+.moveRight{
+	float :right;
+	margin-bottom:15px;
+}
 
+#otpfield::after {
+    content: attr(placeholder);
+    height: 54px;
+    line-height: 45px;
+    position: absolute;
+    color: #B9BCBE;
+    z-index: 1;
+    left:50px;
+}
+.hidePlaceHolder::after{
+	z-index: -1 !important;
+}
 #otpfield {
 	margin-bottom: 10px;
 }
@@ -701,46 +726,6 @@ changeloadbtn {
     background-image: url("../images/Flags2x.png");
     background-position: -180px -238px;
 }
-
-.select2-container--open {
-	z-index: 10;
-	background: #FFFFFF;
-	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.13);
-	width: 400px;
-	box-sizing: border-box;
-}
-
-.select2-search__field {
-	width: 440px;
-	height: 32px;
-	border: none;
-	outline: none;
-	background: #F7F7F7;
-	border-radius: 2px;
-	margin: 10px;
-	font-size: 14px;
-	padding: 10.5px 8px;
-}
-
-.select2-results__options {
-	padding-left: 0px;
-}
-
-.select2-results__options {
-	overflow-y: auto;
-	max-height: 200px;
-}
-
-.select2-results__option {
-	list-style-type: none;
-	height: 40px;
-	box-sizing: border-box;
-	padding: 12px 20px;
-	font-size: 14px;
-	line-height: 16px;
-	cursor: pointer;
-}
-
 #country-code, #country-coderecovery ,#country-emailormobile{
 	display: none;
 }
@@ -757,127 +742,26 @@ changeloadbtn {
 	color: black;
 	display: none;
 	z-index: 0;
+	margin-top:2px;
+	margin-left:25px;
 }
-
-.select2 {
-	position: absolute;
-	background: transparent;
-	box-shadow: none;
-	display: none;
-	margin: 2px;
-	font-size: 16px;
+.textindent107 {
+	text-indent: 107px !important;
 }
-
-.select2-results__options {
-	overflow-y: auto;
-	max-height: 200px;
-	margin:0px;
+.textindent50 {
+	text-indent: 85px !important;
 }
-
-.select2-container {
-	width: 460px;
+.mobileselect{
+    position: absolute;
+    width: 85px;
+    height: 40px;
+    margin-top: 0px;
+    opacity: 0;
 }
-
-.country_code {
-	display: block;
-	position: absolute;
-	height: 44px;
-	background-color: transparent;
-	border: none;
-	font-size: 16px;
-	cursor: pointer;
-	transition: all .2s ease-in-out;
-	padding: 0px;
-	margin: 0px 0px;
-	overflow: hidden;
-	width: 0px;
-	outline: none;
-	white-space: nowrap;
-}
-
-.textindent77 {
-	text-indent: 77px !important;
-}
-
-.textindent86 {
-	text-indent: 86px !important;
-}
-
-.textindent95 {
-	text-indent: 95px !important;
-}
-
-#select2-country-code-container, #select2-country-coderecovery-container,#select2-country-emailormobile-container
-	{
-	line-height: 40px;
-	margin-left: 44px;
-    margin-right: 10px;
-}
-
-
-.select2-hidden-accessible
-{
-	visibility: hidden;
-    border: 0px !important;
-    clip: rect(0, 0, 0, 0) !important;
-    height: 1px !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    padding: 0px !important;
-    position: absolute !important;
-    display: none;
-}
-.za-country-container .select2,.za-country_state-container .select2
-{
-	display: block;
-    margin: 0px;
-    line-height: 44px;
-    position: relative;
-    text-indent: 12px;
-    background: #f8f8f8;
-	border: 1px solid #E4E4E4;
-	box-sizing: border-box;
-	border-radius: 2px;
-    margin-top: 25px;
-	cursor: pointer;
-}
-
-#select2-country-container
-{
-	margin-left: 32px;
-}
-
-.selection,.select2-selection
+.selection
 {
 	display:block;
 	outline: none;
-}
-.select2-results__option--highlighted {
-    background: #F4F6F8;
-}
-
-#country+.select2 .select2-selection__arrow,#country_state+.select2 .select2-selection__arrow
-{
-	position: absolute;
-    line-height: 44px;
-    width: 20px;
-    height: 100%;
-    right: 17px;
-}
-
-#country+.select2 .select2-selection__arrow b,#country_state+.select2 .select2-selection__arrow b
-{
-	border-color: transparent #a7a7a7 #a7a7a7 transparent;
-    border-style: solid;
-    transform: rotate(45deg);
-    border-width: 2px;
-    height: 5px;
-    width: 5px;
-    position: relative;
-    border-radius: 1px;
-    display: inline-block;
-	right: 6px;
-	top:-2px;
 }
 .captcha_container {
 	width: 40%;
@@ -948,7 +832,12 @@ changeloadbtn {
 	display: none;
 	left: 45%;
 }
-
+.basic_selectbox{
+	border-radius:2px !important;
+}
+.select_container--country-uv-select, .select_container--state-uv-select{
+	margin-top:25px;
+}
 @keyframes rotate { 
 	0% {
 		transform: rotate(0deg);
@@ -963,17 +852,6 @@ changeloadbtn {
 .name_division {
     flex: 1;
 }
-.za-country_code-container .select2 {
-	width: auto !important;
-	margin: 0px;
-	cursor: pointer;
-}
-
-.za-country_code-container .select2 .selection {
-    background: #f8f8f8;
-    margin: 2px;
-}
-
 .za-confirm {
 	width: 100%;
 	height: 100%;
@@ -1154,7 +1032,7 @@ select{
 	}
 .small_box {
     width: 40px;
-    border-radius: 5px;
+    border-radius: 4px;
     margin-right: 10px;
     margin-bottom: 10px;
     margin-top: 0px;
@@ -1173,9 +1051,8 @@ select{
 		margin: 0px 10px 10px 5px;
 		border-radius: 5px;
 		height: 40px;
-		background-color: #fff;
+		background-color: #F2F2F2;
 	    width: auto;
-	    box-shadow: 0px 0px 2px #00000012, 0px 2px 2px #00000024;
 	    box-sizing:border-box;
 	    padding:11px;
 	}
@@ -1187,8 +1064,7 @@ select{
     color: #646464;
     font-weight: 500;
 }
-.microsoft_fed{ background-color: #302c2c;}
-.large_box.microsoft_fed{border-radius: 0px;}
+.microsoft_fed{ background-color: #2F2F2F;}
 .microsoft_fed_icon
 	{
 	    margin: 6px 0px 8px 1px;
@@ -1212,48 +1088,47 @@ select{
   margin-left: -1em;
   color: rgb(255, 183, 0);
 }	
-.small_box.linkedin_fed{ background-color: #0966C2;}
-.small_box.linkedin_fed .fed_icon{ width: 30px; height: 30px;}
+.small_box.linkedin_fed{ background-color: #0867C2;}
 .large_box.linkedin_fed{
-	    background-color: #ffffff;
-	    border: 1px solid #EEEEEE;
+	    background-color: #0867C2;
 	    box-sizing: border-box;
 }
-
-.linkedin_fed_icon
-	{
-		margin: 6px 6px;
-	}
-.twitter_fed{background-color: #20a4f4;}
+.small_box .linkedin_fed_icon{
+	margin:5px;
+}
+.twitter_fed{background-color: #439EF0;}
 .twitter_fed_icon
 	{
-		margin: 7px 3px 8px 1px;
+		margin: 6px 0px 7px 2px;
 	}
-.wechat_fed{background-color: #00C759;}
-.wechat_fed_icon
-	{
-	    background-position: -10px -38px;
-	    margin: 7px 5px 7px 3px;
-	}
+.wechat_fed{background-color: #ffffff;border:1px solid #E8E8E8;box-sizing:border-box;}
+
 .weibo_fed{background-color: #fff;border: 1px solid #EEEEEE;}
 .weibo_fed_icon
 	{
 	    background-position: -38px -38px;
-	    margin: 4px 5px 5px 3px;
+	    margin: 5px 3px 5px 3px;
 		
 	}
-.douban_fed{background-color: #007601;padding-top:10px;}
-.douban_text{
+.douban_fed{background-color: #ffffff;border:1px solid #E8E8E8;box-sizing:border-box;}
+.douban_text ,.linkedin_text, .intuit_text{
 	color:#ffffff;
 }
-.facebook_fed{background-color: #1874f4;padding: 11px;}
+.douban_fed_icon,.slack_fed_icon{
+	margin-top:5px;
+}
+.slack_text {
+	margin:4px;
+}
+
+.facebook_fed{background-color: #1877F2;padding: 11px;}
 .facebook_fed_icon
 	{
    		margin-bottom: 7px;
 	} 
 .facebook_text{color: #FFFFFF;}
-.slack_fed{background-color: #50144c; color: #fff;padding-top: 10px;}
-.yahoo_fed{background-color:#801cfc; border: none}
+.slack_fed{background-color: #4A154B; color: #fff;padding: 6px;}
+.yahoo_fed{background-color:#7E1FFF; border: none}
 .icon2-yahoo_small:before {
   color: #ffffff;
   content: "\e941";
@@ -1262,10 +1137,10 @@ select{
   color: #ffffff;
   content: "\e95d";
 }
-.qq_fed{background-color: #fff;border: 1px solid #EEEEEE;padding: 8px;}
-.baidu_fed{background-color: #fff;border: 1px solid #EEEEEE;padding: 8px;}
+.qq_fed{background-color: #fff;border: 1px solid #EEEEEE;padding: 10px;}
+.baidu_fed{background-color: #fff;border: 1px solid #EEEEEE;padding: 10px;}
 .apple_fed{padding: 0px;background:#000;}
-.github_fed{background-color:#2F3337;color:#fff;padding:11px;}
+.github_fed{background-color:#171515;color:#fff;padding:11px;}
 .feishu_fed{background-color: #fff;border: 1px solid #EEEEEE;}
 .feishu_fed_icon
 	{
@@ -1276,7 +1151,7 @@ select{
 	}
 .small_box .feishu_fed_icon
 	{
-	    margin: 4px 5px 4px 3px;
+	    margin: 5px;
 		
 	}
 .fed_text
@@ -1284,6 +1159,7 @@ select{
 		text-transform: capitalize;
 		display: inline-block;
 	    margin: 0px 6px;
+	    margin-left:8px;
 	    margin-right: 0px;
 	    font-size: 13px;
 	    line-height: 20px;
@@ -1291,50 +1167,59 @@ select{
 	    letter-spacing: 0px;
 	    float: left;
 	}
+.douban_text, .slack_text{
+	margin-top:4px;
+}
 .adp_fed {
-    background-color: #D0271D;
+    background-color: #D0281C;
 }
 .adp_fed_icon{
-    margin: 7px -20px;
+    margin: 4px -16px;
 } 
 .adp_fed_icon.icon2-adp_L{
 	margin: 9px 1px;
 }
 .intuit_fed.large_box{
 	padding: 0px;
-	background-color: #3D5796;
+	background-color: #236dff;
 }
 .intuit_fed.small_box{
 	padding: 0px;
-	background-color: #ffffff;
+	background-color: #356EF6;
+}
+.intuit_text {
+	margin-left:0px;
 }
 .large_box {
     max-width: 240px;
     width: 46%;
     min-width: 170px;
-    border-radius: 5px;
+    border-radius: 4px;
     height: 40px;
     margin: 0px 0px 20px 10px;
     display: block;
 }
-.linkedin_text,.douban_text,.intuit_text,.adp_text,.small_box .yahoo_text,.baidu_text,.qq_text,.small_box .slack_text,.wechat_text,.twitter_text,.microsoft_text,.feishu_text,.weibo_text,.facebook_text,.small_box .github_text{
+.douban_text,.small_box .yahoo_text,.qq_text,.small_box .slack_text,.wechat_text,.twitter_text,.microsoft_text,.feishu_text,.weibo_text,.facebook_text,.small_box .github_text{
 	display: none;
 }
-.twitter_text,.microsoft_text,.wechat_text{
-	margin:5px;
+.twitter_text,.microsoft_text, .adp_text {
+	margin-left:8px;
+	margin-top:4px;
 	color: #FFFFFF;
 }
+.adp_text{
+	margin-left:20px;
+}
+.wechat_text, .douban_text{
+	color:#000;
+}
 .weibo_text{
-	margin: 4px 0px 4px 6px;
+	margin: 4px 0px 4px 8px;
 }
 .feishu_text {
-    margin: 3px 0px 3px 5px;
+    margin: 3px 0px 3px 8px;
 }
 .yahoo_text{color: #fff;}
-.qq_text{
-	text-transform: uppercase;
-	margin-left:0px;
-}
 .github_text{
 	letter-spacing:-0.24px;
 }
@@ -1347,10 +1232,6 @@ select{
 }
 .large_box .yahoo_fed_icon{
 	background-position: -134px -115px;
-}
-.large_box .linkedin_fed_icon{
-	width: 80px;
-    background-position: -9px -174px;
 }
 .large_box .qq_fed_icon{
 	background-position:-10px -116px;
@@ -1367,8 +1248,7 @@ select{
 }
 .large_box.google_fed{
 	position: relative;
-	background-color: #487cf4;
-	color: #fff;
+	color: #000;
 	padding-left: 20px;
 	box-sizing: border-box;
 	box-shadow: none;
@@ -1489,8 +1369,8 @@ select{
 	margin: 16px 0px;
 	margin-right: 20px;
 	max-width: 510px;
+	word-break: break-word;
 }
-.alert_message span{word-break: break-word}
 #firstname, #lastname{
     display: inline-block;
     margin-top: 0px;
@@ -1510,6 +1390,9 @@ select{
 	background: url('../images/SandClock.png') no-repeat transparent;
 	background-size: auto 92px;
 	background-position:center;
+}
+.basic_selectbox{
+	background:#f8f8f8 !important;
 }
 /* media */
 @media (max-width:570px){.access_denied{width:100%;padding:0px 30px 0px 30px;}}
@@ -1563,55 +1446,11 @@ select{
 	.za-captcha-container{
 		display:none;
 	}
-	.select2-container--open {
-		right: 30px;
-	}
-	.select2-results__option
-	{
-		display: flex;
-		flex-wrap: nowrap;
-	}
-	.za-country_code-container .select2 .selection
-	{
-		background: transparent;
-	}
-	.za-country-container .select2, .za-country_state-container .select2
-	{
-		width: 300px;
-		background-color: #fff;
-		border: none;
-		border-bottom: 2px solid #F4F6F8;
-		border-radius: 0px;
-	}
 	.cn {
 		flex: 1;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		white-space: nowrap;
-	}
-	.select2-search__field
-	{
-		margin:0px;
-	    width: 100%;
-	    display: block;
-	}
-	.select2-container
-	{
-		width: unset;
-	}
-	.select2-search
-	{
-		padding:10px;
-	    display: inline-block;
-		width: 100%;
-	    box-sizing: border-box;
-	}
-	.select2-container--below {
-		right: unset;
-	}
-	#select2-country-code-container, #select2-country-coderecovery-container, #select2-country-emailormobile-container
-	{
-		line-height: 38px;
 	}
 	#captchafield{
 		text-indent: 12px;
@@ -1619,12 +1458,11 @@ select{
 	.za-confirm-container {width: 75%} .za-confirm-container {top: 5%}
 	.tos-signup{gap: 5px}
 }
-.apple_fed,.yahoo_fed,.google_fed.large_box,.intuit_fed.large_box{
+.apple_fed,.yahoo_fed,.google_fed.large_box,.intuit_fed.large_box, .linkedin_fed.large_box, .wechat_fed{
 	padding:10px;
 }
 .apple_fed_icon{
 	transform:scale(0.9);
-	margin-left:2px;
 }
 .yahoo_fed_icon.icon2-yahoo_L,.slack_fed_icon.icon2-slack_L{
 	margin-left:-30px;
@@ -1632,10 +1470,10 @@ select{
 .intuit_fed_icon.icon2-intuit_L{
 	margin-left:-25px;
 }
-.intuit_fed_icon.icon2-intuit_small{
-	margin-left:-20px;
+.small_box .intuit_fed_icon.icon2-intuit_small{
+	margin-left:-15px;
+	margin-top:7px;
 }
-.google_fed.large_box .fed_text{margin-left: 30px;}
 @media screen and (max-width:425px){
 	.large_box{
 		width:90%;
@@ -1645,27 +1483,47 @@ select{
 }
 /* Dark Mode*/
 .darkmode .zoho_logo{background: url('../images/newZoho_logo_dark.svg') no-repeat transparent;}
-.darkmode,.darkmode .inner-container,.darkmode .selection,.darkmode input,.darkmode .za-captcha-container,.darkmode .bg_one,.darkmode .select2-container,.darkmode .za-confirm-container,.darkmode .za-confirm-msg,.darkmode .noteparent{
+.darkmode,.darkmode .inner-container,.darkmode .selection,.darkmode input,.darkmode .za-captcha-container,.darkmode .bg_one,.darkmode .za-confirm-container,.darkmode .za-confirm-msg,.darkmode .noteparent{
     background: #121212;
 }
 .darkmode,.darkmode input,.darkmode .service_name,.darkmode .backup_desc,.darkmode .signin_fed_text,.darkmode .text16,.darkmode #signuplink,.darkmode .backoption,.darkmode .select_country_code,.darkmode .pass_name,.darkmode .verify_title,.darkmode .trydesc,.darkmode .option_title_try,.darkmode .verifyheader{
 	color: #E2E2E2;
 }
-.darkmode .qq_text{
-	color:#000000;
+.darkmode #otpfield{
+	background:transparent;
+	border:1px solid 1px solid #595A62;
 }
 .darkmode .github_fed{background-color: #fff; color: #2F3337;}
 .darkmode .za-confirm-container{
 	box-shadow: 0px 2px 30px #ccc6;
 }
-.darkmode .apple_fed{
+.darkmode .apple_fed, .darkmode .yahoo_fed, .darkmode .facebook_fed, .darkmode .linkedin_fed, .darkmode .twitter_fed,
+.darkmode .intuit_fed, .darkmode .slack_fed, .darkmode .adp_fed{
 	background-color: #fff;
 }
-.darkmode .icon2-apple_small:before {
-  color:#000000;
+.darkmode .google_fed{
+	background-color:#F2F2F2;
 }
-.darkmode .apple_fed .fed_text{
+.darkmode .icon2-apple_small:before, .darkmode .zohosignin:hover, .darkmode .fed_text{
 	color: #000;
+}
+.darkmode .icon2-twitter_small:before{
+	color:#20a4f4;
+}
+.darkmode .icon2-facebook_small:before, .darkmode .intuit_text{
+	color:#1877F2;
+}
+.darkmode .icon2-yahoo_small:before{
+	color:#7E20FF;
+}
+.darkmode .icon2-linkedin_small:before{
+	color:#0A66C2;
+}
+.darkmode .icon2-intuit_small:before{
+	color:#356EF6;
+}
+.darkmode .icon2-adp_small:before{
+	color:#D0281C;
 }
 .darkmode #signuplink a,.darkmode .bluetext,.darkmode .bluetext_action{
 	color: #278FDE;
@@ -1714,12 +1572,7 @@ select{
 	letter-spacing: .3px;
 	font-weight: 300;
 }
-.darkmode .select2-results__option, .darkmode .select2-container--open {
-    background: #636363;
-}
-.darkmode .select2-results__option--highlighted {
-    background: #333333;
-}
+
 .darkmode .weibo_text,.darkmode .feishu_text{
 	color: #000000;
 }
@@ -1733,15 +1586,15 @@ select{
 .darkmode .microsoft_fed{
 	background-color: #fff;
 }
-.darkmode .zohosignin:hover{
-	color:#000000;
-}
 .darkmode .signupbtn{
 	box-shadow: 0px 2px 2px #121212;
 	background-color: #159AFF;
 }
 .darkmode ::selection{color: #e1e1e1; background-color: #1e81b0}
-
+.darkmode #country, .darkmode #country_state{
+	background:transparent;
+	color:#E2E2E2;
+}
 @media only screen and (min-width: 601px) {
 	.darkmode .bg_one{
 		background: #191A23;
@@ -1763,7 +1616,7 @@ select{
 	.darkmode, .darkmode .verifyheader{
 		color: #CECECE;
 	}
-	.darkmode .za-captcha-container>dd>input, .darkmode input[type="text"], .darkmode input[type="password"], .darkmode .za-country-container .select2, .darkmode .za-country_state-container .select2{
+	.darkmode .za-captcha-container>dd>input, .darkmode input[type="text"], .darkmode input[type="password"], .darkmode .selectbox--country-uv-select, .darkmode .selectbox--state-uv-select{
 		background:  #44454F;
 		border: 1px solid #595A62;
 	}
@@ -1779,9 +1632,286 @@ select{
 		opacity: 0.3;
 		color: #cecece;
 	}
-	.darkmode .select2-container, .darkmode .selection, .za-country_code-container .select2 .selection {background: none}
+	.darkmode .selection{background: none}
 	.darkmode .show_hide_password{color: #7D7D84}
 	.darkmode .nonclickelem{color: #a5a5a5}
-	.darkmode .select2-container--open.select2-container, .darkmode .select2-results__option{background: #44454F; }
-	.darkmode .select2-results__option--highlighted {background: #0004;}
+}
+
+
+
+/* =======================================Right to Left Support styling======================================= */
+
+
+[dir=rtl]{
+	@media screen and (max-width:425px){
+		.large_box{
+			margin-right: 5%;
+			margin-left:auto;
+		}
+	}
+	.fed_icon{
+		float: right;
+	}
+	.moveRight{
+		float :left;
+	}
+	#otpfield::after{
+		right:60px;
+		left:0px;
+	}
+	#otpfield{
+		direction:ltr;
+	}
+	.customOtp{
+		text-align:right;
+	}
+	.name_division input, .za-username-container input,.za-email-container input, .za-password-container input, .za-captcha-container input, .za-rmobile-container input, .za-mobile-container input, .za-emailormobile-container input{
+		direction:ltr;
+		text-align:right;
+	} 
+	.signin_fed_text{
+		text-align:right;
+	}
+	.fed_div{
+		float: right;
+	}
+	.textindent50{
+		padding-right:85px !important;
+		text-indent:0px;
+	}
+	.signupotpcontainer, .za-confirm-title, .za-confirm-msg{
+		text-align:right;
+	}
+	.fed_text{
+		margin-left: 0px;
+		margin-right:8px;
+		float: right;
+	}
+	#mobileotp{
+		direction:ltr;
+	}
+	.cn {
+		margin-right: 10px;
+		margin-left:auto;
+	}
+	
+	.textindent107{
+		padding-right:120px !important;
+		text-indent:0px !important;
+	}
+	.zoho_logo{
+		background-position:right;
+	}
+	.signuptitle{
+		text-align:right;
+	}
+	.select_input{
+		text-align:right;
+	}
+	.signupcontainer{
+		text-align:right;
+	}
+	.selectbox_arrow{
+		margin-left:15px;
+		margin-right:auto;
+	}
+	.select_country_code, .select_country-coderecovery {
+		margin-right:25px;
+		margin-left:auto;
+	}
+	.bg_one {
+		right:0px;
+		left:auto;
+	}
+	#firstname_div{
+		margin-left:5%;
+		margin-right:auto;
+	}
+	.twitter_fed_icon{
+		margin-right: -3px;
+		margin-left:auto;
+	}
+	.weibo_fed_icon{
+		margin-right:-3px;
+		margin-left:auto;
+	}
+	.show_hide_password{
+	    left: 15px;
+	    right:auto;
+	}
+	#select2-country-code-container, #select2-country-coderecovery-container, #select2-country-emailormobile-container
+	{
+		margin-right: 32px;
+		margin-left:auto;
+	}
+	#select2-country-container
+	{
+		margin-right: 32px;
+		margin-left:auto;
+	}
+	.fedarrow{
+		transform: rotate(45deg);
+	}
+	.selectFlag{
+		right:12px;
+		left:auto;
+	}
+	#country+.select2 .select2-selection__arrow, #country_state+.select2 .select2-selection__arrow{
+		left:17px;
+		right:auto;
+	}
+	#select2-country-coderecovery-container{
+		margin-left:auto;
+		margin-right:44px;
+	}
+	.captcha_container {
+		padding-left: 12px;
+		padding-right:0px;
+		left: 2px;
+		right:auto;
+	}
+	.icon2-baidu_L.baidu_fed_icon{
+		margin-left:30px;
+	}
+	.adp_fed_icon{
+		margin-left:15px;
+	}
+	.za-refresh-captcha {
+		float: left;
+	}
+	input[type="text"], input[type="email"], input[type="password"], input[type="number"],textarea, select {
+		padding-left: 12px;
+	}
+	#password{
+		padding-right: 10px;
+		padding-left: 50px;
+	}
+	
+	.pic {
+		float: right;
+	}
+
+	.cc {
+		float: left;
+	}
+	.selectFlag {
+		right: 12px;
+		left:auto;
+	}
+	.select2-search__field {
+		padding:10.5px 8px;
+	}
+	.select2-results__options {
+		padding-right: 0px;
+	}
+	.select_country_code{
+		float: right;
+	}
+	#select2-country-code-container, #select2-country-coderecovery-container,#select2-country-emailormobile-container{
+		margin-right: 44px;
+    	margin-left: 10px;
+	}
+	#country+.select2 .select2-selection__arrow,#country_state+.select2 .select2-selection__arrow{
+		left: 17px;
+		right:auto;
+	}
+	#country+.select2 .select2-selection__arrow b,#country_state+.select2 .select2-selection__arrow b{
+		left: 6px;
+	}
+	.blur {
+		right:0px;
+	}
+	.loader {
+		right: 45%;
+		left: 0;
+	}
+	.za-confirm {
+		right: 0px;
+	}
+	.za-confirm-title {
+		text-align: right;
+	}
+	.za-confirm-msg {
+		text-align: right;
+	}
+	.change {
+		margin-right: 10px;
+		margin-left:auto;
+		float: left;
+		padding-top: 0px; padding-left: 14px; padding-bottom: 0px; padding-right: 0px;
+	}
+	.zohosignin .fedarrow{
+		margin-right: 7px;
+		margin-left:auto;
+	}
+	.weibo_font{
+		margin-right: 25px;
+		margin-left:auto;
+	}
+	.fedarrow{
+		border-left: 2px solid #a2a2a2;
+		border-right: none;
+	}
+	.small_box {
+		 margin-left: 10px;
+		margin-right:auto;
+	}
+	.large_box {
+		margin-top: 0px; margin-left: 0px; margin-bottom: 20px; margin-right: 10px;
+	}
+	.weibo_text{
+		margin-top: 4px; margin-left: 0px; margin-bottom: 4px; margin-right: 6px;
+	}
+	.feishu_text {
+	    margin-top: 3px; margin-left: 0px; margin-bottom: 3px; margin-right: 5px;
+	}
+	.qq_text{
+		margin-right:0px;
+	}
+	.zoho_fs_text{
+		margin-right:0px;
+	}
+	.large_box.google_fed{
+		padding-right: 20px;
+		padding-left: 0px;
+	}
+	.large_box .fed_google_large{
+		right: 2px;
+		left:auto;
+	}
+	.more {
+		margin-right: 5px;
+		margin-left:auto;
+	}
+	.tick_icon, .error_icon {
+		float: right;
+	}
+	.alert_message, .error_message {
+		margin-left: 20px;
+		margin-right:auto;
+	}
+	.yahoo_fed_icon.icon2-yahoo_L,.slack_fed_icon.icon2-slack_L{
+		margin-right:-30px;
+		margin-left:auto;
+	}
+	.intuit_fed_icon.icon2-intuit_L{
+		margin-right:-25px;
+		margin-left:auto;
+	}
+	.intuit_fed_icon.icon2-intuit_small{
+		margin-right:-20px;
+		margin-left:auto;
+	}
+	.google_fed.large_box .fed_text{margin-right: 30px;margin-left:auto;}
+	
+	@media (max-width:570px){.access_denied{padding-left: 30px; padding-right: 30px;}}
+	@media only screen and (max-width: 600px) {
+		.select2-container--open {
+			left: 30px;
+			right:auto;
+		}
+		.select2-container--below {
+			left: unset;
+		}
+	}
 }

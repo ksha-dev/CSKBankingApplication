@@ -30,6 +30,8 @@ public String getHTML(String value) {
     String imgurl = cPath+"/v2/components/images"; //No I18N
     String tpkgurl = cPath+"/v2/components/tp_pkg"; //No I18N
     String wmsjsurl = WebClientUtil.getWMSJSURL(request);
+    String wmsjsintegrity = WebClientUtil.getWMSIntegritry(false);
+    String wmsSRIValues = WebClientUtil.getWMSIntegritry(true);
     response.setHeader("Pragma", "no-cache"); // No I18N
    	response.setHeader("Cache-Control", "no-store, no-cache"); // No I18N
 %>

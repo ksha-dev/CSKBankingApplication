@@ -1,19 +1,42 @@
-
-		<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/uv_unauthStatic.css")}" rel="stylesheet"type="text/css">
+		<#if (('${signin.redirectURL}')?has_content)>
+			<script>
+				var load_iframe = parseInt("${signin.load_iframe}");
+				var url = "${signin.redirectURL}";
+				if(url.indexOf("http") != 0) {
+					var serverName = window.location.origin;
+					if (!window.location.origin) {
+						serverName = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+					}
+					if(url.indexOf("/") != 0) {
+						url = "/" + url;
+					}
+					url = serverName + url;
+				}
+				if(load_iframe){
+					window.location.href = url; 
+				}else{
+					window.top.location.href=url;
+				}
+			</script>
+		<#else>
+		<@resource path="/v2/components/css/uvselect.css" />
+		<@resource path="/v2/components/css/flagIcons.css" />
+		<@resource path="/v2/components/css/uv_unauthStatic.css" />
 		<#if (('${signin.css_url}')?has_content)>
 			<link href="${signin.css_url}" type="text/css" rel="stylesheet"/>
 		<#else>
-			<link href="${SCL.getStaticFilePath("/v2/components/css/clientsignin.css")}" type="text/css" rel="stylesheet"/>
+			<@resource path="/v2/components/css/clientsignin.css" />
 		</#if>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/fedsignin.css")}" type="text/css" rel="stylesheet"/>
-        <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-        <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-        <script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
-        <script src="${SCL.getStaticFilePath("/v2/components/js/signin.js")}" type="text/javascript"></script>
-        <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript"></script>
+		<@resource path="/v2/components/css/fedsignin.css" />
+        <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+        <@resource path="/v2/components/js/password_expiry.js" />
+        <@resource path="/v2/components/js/common_unauth.js" />
+        <@resource path="/v2/components/js/uvselect.js" />
+		<@resource path="/v2/components/js/flagIcons.js" />
+		<@resource path="/v2/components/js/signin.js" />
+        <@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+		<script type="text/javascript" src="${signin.uri_prefix}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
 	<meta name="robots" content="noindex, nofollow"/>
 	<script type='text/javascript'>
         	var serviceUrl,serviceName,orgType;
@@ -50,6 +73,9 @@
 			var emailOnlySignin = Boolean("<#if signin.emailOnly>true</#if>");
 			var isMobilenumberOnly = parseInt("${signin.mobileOnly}");
 			var otp_length = ${otp_length};
+			var totp_size = ${signin.totp_size};
+			var canShowResetIP= false;
+			var wmsSRIValues = ${za.wmsSRIValues};
 			
 			I18N.load({
 					"IAM.ERROR.ENTER_PASS" : '<@i18n key="IAM.ERROR.ENTER_PASS" />',
@@ -128,6 +154,57 @@
 					"IAM.PLEASE.CONNECT.INTERNET" : '<@i18n key="IAM.PLEASE.CONNECT.INTERNET"/>',
 					"IAM.EMPTY.BACKUPCODE.ERROR" : '<@i18n key="IAM.EMPTY.BACKUPCODE.ERROR"/>',
 					"IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" : '<@i18n key="IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" />',
+					"IAM.SIGNIN.ERROR.CAPTCHA.INVALID" : '<@i18n key="IAM.SIGNIN.ERROR.CAPTCHA.INVALID" />',
+					"IAM.NEW.SIGNIN.PASSWORD" : '<@i18n key="IAM.NEW.SIGNIN.PASSWORD" />',
+					"IAM.LDAP.PASSWORD.PLACEHOLDER" : '<@i18n key="IAM.LDAP.PASSWORD.PLACEHOLDER" />',
+					"IAM.NEW.SIGNIN.WITH.LDAP" : '<@i18n key="IAM.NEW.SIGNIN.WITH.LDAP" />',
+					"IAM.NEW.SIGNIN.LDAP.HEADER" : '<@i18n key="IAM.NEW.SIGNIN.LDAP.HEADER" />',
+					"IAM.NEW.PASSWORD.EXPIRY.HEAD" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.HEAD" />',
+					"IAM.NEW.PASSWORD.EXPIRY.ONE.TIME.DESC" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.ONE.TIME.DESC" />',
+					"IAM.NEW.PASSWORD.EXPIRY.DESC" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.DESC" />',
+					"IAM.NEW.PASSWORD.EXPIRY.POLICY.UPDATED.DESC" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.POLICY.UPDATED.DESC" />',
+					"IAM.NEW.PASSWORD.NOT.MATCHED.ERROR.MSG" : '<@i18n key="IAM.NEW.PASSWORD.NOT.MATCHED.ERROR.MSG" />',
+					"IAM.PASSWORD.CONFIRM.PASSWORD" : '<@i18n key="IAM.PASSWORD.CONFIRM.PASSWORD" />',
+					"IAM.NEW.PASSWORD.EXPIRY.POLICY.SESSION.TERMINATED" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.POLICY.SESSION.TERMINATED" />',
+					"IAM.NEW.PASSWORD.EXPIRY.PASSWORD.CHANGED.DESC" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.PASSWORD.CHANGED.DESC" />',
+					"IAM.NEW.PASSWORD.EXPIRY.PASSWORD.CHANGED" : '<@i18n key="IAM.NEW.PASSWORD.EXPIRY.PASSWORD.CHANGED" />',
+					"IAM.NEWSIGNIN.USE.ALTER.WAY" : '<@i18n key="IAM.NEWSIGNIN.USE.ALTER.WAY" />',
+					"IAM.NEWSIGNIN.USE.ALTER.WAY.DESC" : '<@i18n key="IAM.NEWSIGNIN.USE.ALTER.WAY.DESC" />',
+					"IAM.NEW.SIGNIN.CONTACT.SUPPORT" : '<@i18n key="IAM.NEW.SIGNIN.CONTACT.SUPPORT" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.MZADEVICE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.MZADEVICE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.TOTP" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.TOTP" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.OTP" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.OTP" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.YUBIKEY" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.YUBIKEY" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.RECOVERYCODE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.RECOVERYCODE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.PASSPHRASE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.PASSPHRASE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.MZADEVICE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.MZADEVICE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.TOTP" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.TOTP" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.OTP" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.OTP" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.YUBIKEY" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.YUBIKEY" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.RECOVERYCODE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.RECOVERYCODE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.PASSPHRASE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC.PASSPHRASE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.TITLE" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.TITLE" />',
+					"IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.SEC.FACTOR.DESC" />',
+					"IAM.NEWSIGNIN.BACKUP.DESC.PASSWORD" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.DESC.PASSWORD" />',
+					"IAM.NEWSIGNIN.BACKUP.DESC.OTP" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.DESC.OTP" />',
+					"IAM.NEWSIGNIN.BACKUP.DESC.JWT" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.DESC.JWT" />',
+					"IAM.NEWSIGNIN.BACKUP.DESC.SAML" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.DESC.SAML" />',
+					"IAM.NEWSIGNIN.VERIFY.FIRST.FACTOR" : '<@i18n key="IAM.NEWSIGNIN.VERIFY.FIRST.FACTOR" />',
+					"IAM.NEWSIGNIN.BACKUP.LAST.DEVICE" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.LAST.DEVICE" />',
+					"IAM.NEWSIGNIN.BACKUP.LAST.DEVICE.DESC" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.LAST.DEVICE.DESC" />',
+					"IAM.CONTACT.SUPPORT.DESC" : '<@i18n key="IAM.CONTACT.SUPPORT.DESC" />',
+					"IAM.CONTACT.EMAIL.US.ON" : '<@i18n key="IAM.CONTACT.EMAIL.US.ON" />',
+					"IAM.CONTACT.SUPPORT.SLA" : '<@i18n key="IAM.CONTACT.SUPPORT.SLA" />',
+					"IAM.CONTACT.SUPPORT.FAQ" : '<@i18n key="IAM.CONTACT.SUPPORT.FAQ" />',
+					"IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH.OTHER.OPTION" : '<@i18n key="IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH.OTHER.OPTION" />',
+					"IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH" : '<@i18n key="IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH" />',
+					"IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH.DESC" : '<@i18n key="IAM.NEWSIGNIN.UNABLE.REACH.ONEAUTH.DESC" />',
+					"IAM.NEWSIGNIN.BACKUP.STEP" : '<@i18n key="IAM.NEWSIGNIN.BACKUP.STEP" />',
+					"IAM.NEW.SIGNIN.USING.TOTP" : '<@i18n key="IAM.NEW.SIGNIN.USING.TOTP" />',
+					"IAM.NEW.SIGNIN.USING.PASSKEY" : '<@i18n key="IAM.NEW.SIGNIN.USING.PASSKEY" />',
+					"IAM.NEW.SIGNIN.ENTER.TOTP.FIRST.FACTOR" : '<@i18n key="IAM.NEW.SIGNIN.ENTER.TOTP.FIRST.FACTOR" />',
+					"IAM.NEW.SIGNIN.USING.ONEAUTH.FIRST.FACTOR" : '<@i18n key="IAM.NEW.SIGNIN.USING.ONEAUTH.FIRST.FACTOR" />',
+					"IAM.NEW.SIGNIN.USING.PASSWORD" : '<@i18n key="IAM.NEW.SIGNIN.USING.PASSWORD" />'
 				});
 			$(document).ready(function() {
 				fediconsChecking();
@@ -200,3 +277,4 @@
 			}
 			
 		</script>
+	</#if>

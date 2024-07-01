@@ -1,4 +1,5 @@
 <%-- $Id$ --%>
+<%@page import="com.zoho.accounts.internal.signin.DataHandler"%>
 <%@page import="com.zoho.accounts.internal.OAuthException.OAuthErrorCode"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="com.adventnet.iam.AccountsURLRule"%>
@@ -27,11 +28,11 @@ if(ex != null && ex.getErrorCode() != null) {
     String errorCode = ex.getErrorCode();
     String requestUri = (String) request.getAttribute("javax.servlet.forward.request_uri");
    	if(errorCode.equals(IAMErrorCode.Z113.getErrorCode())){
-   		if ("/webclient/v1/fsregister/signup".equals(requestUri) || "/webclient/v1/fsregister/associate".equals(requestUri) || "/webclient/v1/fsregister/otp".equals(requestUri) || "/oauth/v2/token/access".equals(requestUri) || "/webclient/v1/announcement/pre/mfa/self/mobile".equals(requestUri) || requestUri.contains("/webclient/v1/announcement/")) {
+   		if ("/webclient/v1/fsregister/signup".equals(requestUri) || "/webclient/v1/fsregister/associate".equals(requestUri) || "/webclient/v1/fsregister/otp".equals(requestUri) || "/oauth/v2/token/access".equals(requestUri) || "/webclient/v1/announcement/pre/mfa/self/mobile".equals(requestUri) || requestUri.contains("/webclient/v1/announcement/") || requestUri.contains("/webclient/v1/emaildetachaction")) {
 			JSONObject jsonresp = new JSONObject();
 			jsonresp.put("response", "error"); // No I18N
 			jsonresp.put("message", I18NUtil.getMessage("IAM.ERROR.SESSION.EXPIRED")); // No I18N
-			if(requestUri.contains("/webclient/v1/announcement/")){
+			if(requestUri.contains("/webclient/v1/announcement/") || requestUri.contains("/webclient/v1/emaildetachaction")){
 				jsonresp.put("redirect_url", "/signin");// No I18N
 				jsonresp.put("code", IAMErrorCode.Z113); //No I18N
 				jsonresp.put("servicename", request.getParameter("servicename")); //No I18N
@@ -40,11 +41,16 @@ if(ex != null && ex.getErrorCode() != null) {
 			response.getWriter().print(jsonresp); // NO OUTPUTENCODING
  			return;
 		}
-		String serviceUrl  = Util.getBackToURL(request.getParameter("servicename"), request.getParameter("serviceurl"));
-		if(!IAMUtil.isTrustedDomain(serviceUrl)) {
-			serviceUrl = Util.getRefererURL(request);
-		}
-		response.sendRedirect(serviceUrl); 
+   		String serviceUrl = null;
+   		if(DataHandler.getInstance().isClientPortal()) {
+   			serviceUrl = com.zoho.accounts.internal.util.Util.getServerURL(request, true);
+   		} else {
+   			serviceUrl  = Util.getBackToURL(request.getParameter("servicename"), request.getParameter("serviceurl"));
+   			if(!IAMUtil.isTrustedDomain(serviceUrl)) {
+   				serviceUrl = Util.getRefererURL(request);
+   			}
+   		}
+		response.sendRedirect(serviceUrl);
         return;
    	}
    	SecurityRequestWrapper req = SecurityRequestWrapper.getInstance(request);
@@ -64,14 +70,21 @@ if(ex != null && ex.getErrorCode() != null) {
    	   		} else {
    	   			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
    				JSONObject jsonresp = new JSONObject();
-   				jsonresp.put("response", "error"); // No I18N
-   				jsonresp.put("code", IAMErrorCode.PP112); //No I18N
-   				jsonresp.put("cause", "invalid_password_token"); // No I18N
-   				jsonresp.put("redirect_url", com.zoho.accounts.internal.util.Util.getReauthUrlPath()); // No I18N
-   				if(errorCode.equals(IAMErrorCode.Z223.getErrorCode())) {
-	   				jsonresp.put("mobile", isMobile); //No I18N
+   				if(rule.getPath().contains("/oauth/mobileapp/verify")) {
+   	   				jsonresp.put("status", "failure"); // No I18N
+   	   				jsonresp.put("error", "invalid_password_token"); //No I18N
+   	   				jsonresp.put("code", IAMErrorCode.PP112); //No I18N
+   	   				jsonresp.put("redirect_url", com.zoho.accounts.internal.util.Util.getReauthUrlPath()); // No I18N
    				} else {
-   					jsonresp.put("message", I18NUtil.getMessage("IAM.ERROR.RELOGIN.REFRESH")); // No I18N
+	   				jsonresp.put("response", "error"); // No I18N
+	   				jsonresp.put("code", IAMErrorCode.PP112); //No I18N
+	   				jsonresp.put("cause", "invalid_password_token"); // No I18N
+	   				jsonresp.put("redirect_url", com.zoho.accounts.internal.util.Util.getReauthUrlPath()); // No I18N
+	   				if(errorCode.equals(IAMErrorCode.Z223.getErrorCode())) {
+		   				jsonresp.put("mobile", isMobile); //No I18N
+	   				} else {
+	   					jsonresp.put("message", I18NUtil.getMessage("IAM.ERROR.RELOGIN.REFRESH")); // No I18N
+	   				}
    				}
    				response.getWriter().print(jsonresp); // NO OUTPUTENCODING
    				return;
@@ -99,7 +112,7 @@ if(ex != null && ex.getErrorCode() != null) {
 			}
 		}
 
-	    if(("/accounts/addpass.ac".equals(rulePath) || Pattern.matches("/accounts/p/[a-zA-Z0-9]+/pconfirm",rulePath) || Pattern.matches("/cu/[a-zA-Z0-9]+/addpass.ac",rulePath) || ("/accounts/adduser.ac".equals(rulePath))  || ("/accounts/password.ac".equals(rulePath)) || ("/accounts/reset.ac".equals(rulePath)) || Pattern.matches("/cu/[0-9]+/secureconfirm.ac", rulePath) || "/accounts/secureconfirm.ac".equals(rulePath)) && errorCode.equals(IAMSecurityException.BROWSER_COOKIES_DISABLED))
+	    if(("/accounts/addpass.ac".equals(rulePath) || Pattern.matches("/accounts/p/[a-zA-Z0-9]+/pconfirm",rulePath) || Pattern.matches("/cu/[a-zA-Z0-9]+/addpass.ac",rulePath) || ("/accounts/adduser.ac".equals(rulePath))  || ("/accounts/password.ac".equals(rulePath)) || ("/accounts/reset.ac".equals(rulePath))  || "/accounts/secureconfirm.ac".equals(rulePath)) && errorCode.equals(IAMSecurityException.BROWSER_COOKIES_DISABLED))
 	    {
 	    	AjaxResponse ar = new AjaxResponse(AjaxResponse.Type.JSON).setResponse(response);
 	    	ar.addError(Util.getI18NMsg(request, "IAM.ERROR.COOKIE.DISABLED")).print();//No I18N
@@ -132,14 +145,22 @@ if(ex != null && ex.getErrorCode() != null) {
    	   			response.getWriter().print(jsonresp); // NO OUTPUTENCODING
    	   			return;
    			}
-   			if("/webclient/v1/account/self/user/self/allowedip".equals(rulePath)	&&	"ip_name".equals(ex.getEmbedParameterName())) 
-   			{
+   			if("/webclient/v1/account/self/user/self/allowedip".equals(rulePath) && "ip_name".equals(ex.getEmbedParameterName())) {
    				JSONObject jsonresp = new JSONObject();
    	   			jsonresp.put("response", "error"); // No I18N
    	   			jsonresp.put("message", Util.getI18NMsg(request, "IAM.ALLOWEDIP.NAME.NOTVALID")); // No I18N
 	   	   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
 	   	   		return;
    		    }
+   			if("/resetip/v1/reset/${ZID}/addIP".equals(rulePath) && "ip_name".equals(ex.getEmbedParameterName())) {
+   				JSONObject jsonresp = new JSONObject();
+	   			JSONArray errors = new JSONArray();
+   				errors.put(new JSONObject().put("field",ex.getEmbedParameterName())); //No I18N
+   	   			jsonresp.put("errors", errors); //No I18N
+				jsonresp.put("localized_message", I18NUtil.getMessage("IAM.ALLOWEDIP.NAME.NOTVALID")); // No I18N
+		   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
+	 			return;
+   			}
    			if("/password/v2/primary/${ZID}/domain/${ciphertext}".equals(rulePath)	&&	"domain".equals(ex.getEmbedParameterName())) 
    			{
    				JSONObject jsonresp = new JSONObject();
@@ -181,12 +202,15 @@ if(ex != null && ex.getErrorCode() != null) {
 	   			jsonresp.put("response", "error"); // No I18N
 	   			if("first_name".equals(ex.getEmbedParameterName())){
 	   				jsonresp.put("message",Util.getI18NMsg(request, "IAM.ERROR.FNAME.INVALID.CHARACTERS")); // No I18N
+	   				jsonresp.put("field","first_name"); // No I18N
 	   			}
 				else if("last_name".equals(ex.getEmbedParameterName())){
 					jsonresp.put("message",Util.getI18NMsg(request, "IAM.ERROR.LNAME.INVALID.CHARACTERS")); // No I18N
+					jsonresp.put("field","last_name"); // No I18N
 	   			}
 	   			else if("display_name".equals(ex.getEmbedParameterName())){
 	   				jsonresp.put("message",Util.getI18NMsg(request, "IAM.ERROR.DISPLAYNAME.INVALID.CHARACTERS")); // No I18N
+	   				jsonresp.put("field","display_name"); // No I18N
 	   			}
 	   			else{
 	   				jsonresp.put("message",Util.getI18NMsg(request, "IAM.ERROR.INVALID.INPUT")); // No I18N
@@ -218,13 +242,23 @@ if(ex != null && ex.getErrorCode() != null) {
 	   		   	return;
    			}
    		}
-   		if(IAMSecurityException.INVALID_FILE_EXTENSION.equals(errorCode) &&	"/webclient/v1/account/self/user/self/photo".equals(rulePath))
+   		if("/webclient/v1/account/self/user/self/photo".equals(rulePath))
    		{
-   			JSONObject jsonresp = new JSONObject();
-			jsonresp.put("response", "error"); // No I18N
-			jsonresp.put("message", Util.getI18NMsg(request, "IAM.UPLOAD.PHOTO.INVALID.IMAGE")); // No I18N
-	   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
- 			return;
+   			if(IAMSecurityException.INVALID_FILE_EXTENSION.equals(errorCode)){
+   	   			JSONObject jsonresp = new JSONObject();
+   				jsonresp.put("response", "error"); // No I18N
+   				jsonresp.put("message", Util.getI18NMsg(request, "IAM.UPLOAD.PHOTO.INVALID.IMAGE")); // No I18N
+   		   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
+   	 			return;
+   			}
+   			else if(IAMSecurityException.FILE_SIZE_MORE_THAN_ALLOWED_SIZE.equals(errorCode)){
+   				JSONObject jsonresp = new JSONObject();
+   				jsonresp.put("response", "error"); // No I18N
+   				jsonresp.put("message", Util.getI18NMsg(request, "IAM.UPLOAD.PHOTO.FILESIZE.CAP",10)); // No I18N
+   		   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
+   	 			return;
+   			}
+
    		}
    		
    		if(errorCode.equals(IAMSecurityException.URL_ROLLING_THROTTLES_LIMIT_EXCEEDED)) {
@@ -240,7 +274,10 @@ if(ex != null && ex.getErrorCode() != null) {
    			} else if(rulePath.startsWith("/relogin/v1")){//No I18N
    				jsonresp.put("cause", "reauth_threshold_exceeded");//No I18N
    				jsonresp.put("code", IAMErrorCode.Z225);//No I18N
-   			} else {
+   			} else if("/signin/v2/primary/${ZID}/otp/${ciphertext}".equals(rulePath)){ //No I18N
+   				jsonresp.put("resource_name", "otpauth");//No I18N
+   				urlThrottleMessage = Util.getI18NMsg(request, "IAM.NEW.URL.THOTTLE.ERROR");// No I18N
+   			}else {
    				urlThrottleMessage = Util.getI18NMsg(request, "IAM.NEW.URL.THOTTLE.ERROR");// No I18N
    			}
    			jsonresp.put("response", "error"); // No I18N
@@ -266,7 +303,7 @@ if(ex != null && ex.getErrorCode() != null) {
    		}
    		
    		if(errorCode.equals(IAMErrorCode.OA102.getErrorCode())){
-   			if(rulePath.contains("/oauth/v2/mobile/addextrascopes") || rulePath.contains("/oauth/v2/internal/token/activate") || rulePath.contains("/oauth/v2/mobile/getremotejwt")) {
+   			if(rulePath.contains("/oauth/v2/mobile/addextrascopes") || rulePath.contains("/oauth/mobileapp/verify") || rulePath.contains("/oauth/v2/mobile/getremotejwt")) {
    				JSONObject jsonresp = new JSONObject();
    				jsonresp.put("status", "failure"); // No I18N
   				jsonresp.put("error", IAMErrorCode.OA102.getDescription()); // No I18N
@@ -280,8 +317,14 @@ if(ex != null && ex.getErrorCode() != null) {
    			if(rulePath.contains("/oauth/") || rulePath.contains("/oauthapp/")){
    				if(rule.getMethod().equalsIgnoreCase("POST")) {
 	  				JSONObject jsonresp = new JSONObject();
+	  				jsonresp.put("status", "failure"); // No I18N
 	  				jsonresp.put("error", I18NUtil.getMessage("IAM.NEW.SIGNIN.RESTRICT.SIGNIN.HEADER")); // No I18N
-	  				jsonresp.put("error_description", I18NUtil.getMessage("IAM.OAUTH.ACCESS.DENIED.API.DESCRIPTION")); // No I18N
+	  				if(rulePath.contains("/introspect")) {
+	  	  				jsonresp.put("error_description", I18NUtil.getMessage("IAM.OAUTH.INTROSPECTION.ACCESS.DENIED.DESCRIPTION")); // No I18N
+	  				}
+	  				else {
+		  				jsonresp.put("error_description", I18NUtil.getMessage("IAM.OAUTH.ACCESS.DENIED.API.DESCRIPTION")); // No I18N
+	  				}
 	  				response.setContentType(ContentTypeString.JSON);
 	  		   		response.getWriter().print(jsonresp); // NO OUTPUTENCODING
 	  		   		return;
@@ -291,7 +334,7 @@ if(ex != null && ex.getErrorCode() != null) {
    			}
    		}
    		
-   		if(errorCode.equals(IAMSecurityException.IP_NOT_ALLOWED) && (rulePath.contains("/webclient/v1/account") ||  (rulePath.contains("/oauth/user/info")))){
+   		if(errorCode.equals(IAMSecurityException.IP_NOT_ALLOWED) && (rulePath.contains("/webclient/v1/account") ||  (rulePath.contains("/oauth/user/info")) || (rulePath.contains("/webclient/v1/template")))){
    			JSONObject jsonresp = new JSONObject();
    			jsonresp.put("response", "error"); // No I18N
    			jsonresp.put("code", IAMErrorCode.T102); //No I18N
@@ -307,51 +350,74 @@ if(ex != null && ex.getErrorCode() != null) {
 			errors.put(new JSONObject().put("field",ex.getEmbedParameterName())); //No I18N
    			jsonresp.put("errors", errors); //No I18N
    			if("email".equals(ex.getEmbedParameterName())){ //No I18N
-   				jsonresp.put("localized_message", I18NUtil.getMessage("IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH")); // No I18N
+   				jsonresp.put("localized_message", I18NUtil.getMessage(request, "IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH")); // No I18N
    			}else{
-   				jsonresp.put("localized_message",I18NUtil.getMessage("IAM.USER.MAX.LENGTH.EXCEEDS.ERROR")); // No I18N
+   				jsonresp.put("localized_message", I18NUtil.getMessage(request, "IAM.USER.MAX.LENGTH.EXCEEDS.ERROR")); // No I18N
    			}
    			response.getWriter().print(jsonresp); // NO OUTPUTENCODING
    			response.setStatus(200);
    			return;
    		}
+   		if(rulePath.contains("/getremotejwt")){
+   			JSONObject jsonresp = new JSONObject();
+			jsonresp.put("status", "failure"); // No I18N
+			if(errorCode.equals(IAMSecurityException.LESS_THAN_MIN_OCCURANCE) || errorCode.equals(IAMSecurityException.PATTERN_NOT_MATCHED)){
+				jsonresp.put("error", I18NUtil.getMessage("IAM.OAUTH.INVALID.CLIENT")); // No I18N
+			}
+			else{
+				jsonresp.put("error",errorCode); //No I18N
+			}
+			response.setContentType(ContentTypeString.JSON);
+  		   	response.getWriter().print(jsonresp); // NO OUTPUTENCODING
+  		   	return;
+   	   	}
+   		
    		if(errorCode.equals(IAMErrorCode.MDM001.getDescription())){
    			request.setAttribute("statuscode", StatusCode.MDM_TOKEN_BLOCKED);
    			request.setAttribute("code", IAMErrorCode.MDM001.getErrorCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.MDM002.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.MDM002.getDescription())) {
    			request.setAttribute("statuscode", StatusCode.MDM_TOKEN_BLOCKED);
    			request.setAttribute("code", IAMErrorCode.MDM002.getErrorCode());
+   			response.setStatus(IAMErrorCode.MDM002.getHttpResponseCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.MDM003.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.MDM003.getDescription())) {
    			request.setAttribute("statuscode", StatusCode.MDM_TOKEN_BLOCKED);
    			request.setAttribute("code", IAMErrorCode.MDM003.getErrorCode());
+   			response.setStatus(IAMErrorCode.MDM003.getHttpResponseCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.MDM004.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.MDM004.getDescription())) {
    			request.setAttribute("statuscode", StatusCode.MDM_TOKEN_BLOCKED);
    			request.setAttribute("code", IAMErrorCode.MDM004.getErrorCode());
+   			response.setStatus(IAMErrorCode.MDM004.getHttpResponseCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.CAP100.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.CAP100.getDescription())) {
    	   		request.setAttribute("statuscode", StatusCode.CONDITIONAL_ACCESS_BLOCK);
    	   		request.setAttribute("code", IAMErrorCode.CAP100.getErrorCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.CAP101.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.CAP101.getDescription())) {
    	   		request.setAttribute("statuscode", StatusCode.CONDITIONAL_ACCESS_BLOCK);
 	   	   	request.setAttribute("code", IAMErrorCode.CAP101.getErrorCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.CAP102.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.CAP102.getDescription())) {
    	   		request.setAttribute("statuscode", StatusCode.CONDITIONAL_ACCESS_BLOCK);
 	   	   	request.setAttribute("code", IAMErrorCode.CAP102.getErrorCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.CAP103.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.CAP103.getDescription())) {
    	   		request.setAttribute("statuscode", StatusCode.CONDITIONAL_ACCESS_BLOCK);
 	   	   	request.setAttribute("code", IAMErrorCode.CAP103.getErrorCode());
    	   	}
-   		if(errorCode.equals(IAMErrorCode.CAP104.getDescription())){
+		else if (errorCode.equals(IAMErrorCode.CAP104.getDescription())) {
    	   		request.setAttribute("statuscode", StatusCode.CONDITIONAL_ACCESS_BLOCK);
 	   	   	request.setAttribute("code", IAMErrorCode.CAP104.getErrorCode());
    	   	}
-
+		else if (errorCode.equals(IAMErrorCode.CP114.getDescription())) {
+   			request.setAttribute("statuscode", StatusCode.UNTRUSTED_DOMAIN);
+   		}
+		else if (errorCode.equals(IAMErrorCode.CP116.getDescription())) {
+			request.setAttribute("statuscode", StatusCode.UNTRUSTED_REDIRECT_DOMAIN);
+   		}
+   		
    	}else if(errorCode.equals(IAMSecurityException.URL_RULE_NOT_CONFIGURED)){
    		request.setAttribute("statuscode", StatusCode.URL_RULE_NOT_CONFIGURED);
    		//request.setAttribute("statuscode", StatusCode.USER_NOT_ALLOWED_IP);

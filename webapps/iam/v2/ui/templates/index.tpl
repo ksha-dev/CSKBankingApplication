@@ -5,12 +5,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     	
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/u2f-api.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/tippy.all.min.js")}"></script>
-		<script src="${za.wmsjsurl}"></script>
-		
+    	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		<@resource path="/v2/components/tp_pkg/u2f-api.js" />
+		<@resource path="/v2/components/tp_pkg/select2.full.min.js" />
+		<@resource path="/v2/components/tp_pkg/tippy.all.min.js" />
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous"></script>
+		<link rel="icon" href="${SCL.getStaticFilePath("/v2/components/images/accountsfav.png")}" type="image/x-icon" />
 		
 		
 		<script>
@@ -32,15 +32,17 @@
 			var accountCurrentDC = <#if ((DC_location)?has_content)>"${DC_location}"<#else>''</#if>;
 		    var reloginUrlPath = "${reloginUrlPath}";
 			
+			var LogoutURL = "${LogoutURL}";
 			var ZUID = "${zuId}";
 			var show_geofenching = Boolean("<#if show_geofencing>true</#if>");
+			var show_allowedIPPanel = Boolean("<#if Show_allowed_ips>true</#if>");
 			var euserPassMaxLen=250; //default value
     		var tfa_android_Link ='${tfa_android_Link}';
     		var tfa_ios_Link = '${tfa_ios_Link}';
 			var fta_oneauth_link ='${fta_oneauth_link}';
 			var mfa_panel_oneauth_link ='${mfa_panel_oneauth_link}';
 			var how_to_sign_in_link ='${how_to_sign_in_link}';
-			var ztopbar_product_link = '${ztopbarProductLink}';
+			var ztopbar_product_link = <#if ((ztopbarProductLink)?has_content)>'${ztopbarProductLink}'<#else>''</#if>;
 			var hide_pref_option,photoPermission;
 			//var is_reauth_required=false;
 			var mandate_reauth=true;
@@ -50,43 +52,46 @@
 			var captcha_error_img = "${SCL.getStaticFilePath("/v2/components/images/hiperror.gif")}";
 			var passkeyURL= '${passkeyURL}';
 			var passkeyHelpDoc= '${passkeyHelpDocURL}';
+			var hdslink = '${hdslink}';
 			var canShowResetIP ='${canShowResetIP}';
 			var recoveryMandatoryHelpdoc='${recoveryMandatoryHelpdoc}';
 			var otp_length = ${otp_length};
+			var totp_size = ${totp_size};
 		</script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script>  
+		<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+		<@resource path="/v2/components/js/zresource.js" />  
+    	<@resource path="/v2/components/js/uri.js" />  
 		<script>
 	    	var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
     	</script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script> 
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/common_profile.js")}" type="text/javascript"></script>  
-		<script src="${SCL.getStaticFilePath("/v2/components/js/init.js")}" type="text/javascript"></script>   
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/personal-details.js")}" type="text/javascript"></script>   
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/email.js")}" type="text/javascript"></script>	 
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/user-preference.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/user-sessions.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/groups.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/password.js")}" type="text/javascript"></script>  
+    	<@resource path="/v2/components/js/phonePatternData.js" /> 
+    	<@resource path="/v2/components/js/common_profile.js" />  
+		<@resource path="/v2/components/js/init.js" />   
+    	<@resource path="/v2/components/js/personal-details.js" />   
+    	<@resource path="/v2/components/js/email.js" />	 
+    	<@resource path="/v2/components/js/user-preference.js" />  
+    	<@resource path="/v2/components/js/user-sessions.js" />  
+    	<@resource path="/v2/components/js/groups.js" />  
+    	<@resource path="/v2/components/js/password.js" />  
 		<!-- Commmon webauthn methods moved to webauthn.js and called in mfa.js and signin.js -->
-  	    <script src="${SCL.getStaticFilePath("/v2/components/js/webauthn.js")}" type="text/javascript" defer></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/mfa.js")}" type="text/javascript"></script>  
-     	<script src="${SCL.getStaticFilePath("/v2/components/js/privacy.js")}" type="text/javascript"></script>  
-     	<script src="${SCL.getStaticFilePath("/v2/components/js/compliance.js")}" type="text/javascript"></script> 
-     	<script src="${SCL.getStaticFilePath("/v2/components/js/org.js")}" type="text/javascript"></script>  
-     	<script src="${SCL.getStaticFilePath("/v2/components/js/wmsliteimpl.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/product-icon.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/accountsstyle.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/js/close-account.js")}" type="text/javascript"></script>
+  	    <@resource path="/v2/components/js/webauthn.js" />
+    	<@resource path="/v2/components/js/mfa.js" />  
+     	<@resource path="/v2/components/js/privacy.js" />  
+     	<@resource path="/v2/components/js/compliance.js" /> 
+     	<@resource path="/v2/components/js/org.js" />  
+     	<@resource path="/v2/components/js/wmsliteimpl.js" />
+		<@resource path="/v2/components/js/splitField.js" />
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/product-icon.css" />
+		<@resource path="/v2/components/css/accountsstyle.css" />
+		<@resource path="/v2/components/js/close-account.js" />
 		<script src="${za.contextpath}/accounts-msgs?v=1&${errorMessage}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet"type="text/css">
-		
+		<@resource path="/v2/components/js/uvselect.js" />
+		<@resource path="/v2/components/css/uvselect.css" />
+		<@resource path="/v2/components/js/flagIcons.js" />
+		<@resource path="/v2/components/css/flagIcons.css" />
+		<script type="text/javascript" src="${za.contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
 		
 	<!--	<link rel="stylesheet" type="text/css" href="<%=cssURL%>/new_ui_servicelogo.css"></link> -->
 	
@@ -146,13 +151,19 @@
 						<span><@i18n key="IAM.DC.LOCATION" arg0="${DC_location}"/></span>
 					</div>
 				</#if>
-				<div class="pp_expand_signout" onclick="go_to_link('${LogoutURL}',false)"> <@i18n key="IAM.SIGN.OUT"/> </div>
+				<div class="pp_expand_signout" onclick="logoutAccountsWithCSurl()"> <@i18n key="IAM.SIGN.OUT"/> </div>
 			</div>
 			<div class="profile_option_parent hide" style="left: 30px; top: 60px;">
 				<div class="profile_pic_option">
-					<div id="upload_option" onclick="openUploadPhoto('user','0')"><@i18n key="IAM.UPLOAD.NEW"/></div>
+				   <div class="profile_pic_option-item" onclick="openUploadPhoto('user','0')">
+						<span class="icon-Upload-new"></span>
+						<div id="upload_option"><@i18n key="IAM.UPLOAD.NEW"/></div>
+					</div>
+					<div class="profile_pic_option-item" onclick="removePicture('<@i18n key="IAM.PHOTO.DELETE.POPUP.HEADER.MSG"/>','<@i18n key="IAM.PHOTO.DELETE.POPUP.DESC"/>','<@i18n key="IAM.REMOVE"/>')" style="color: #FF2626;">
+						<span class="icon-Remove"></span>
+						<div id="remove_option"><@i18n key="IAM.REMOVE"/></div>
+					</div>
 		   			<!--<div id="edit_option" onclick="editProPicture()"><@i18n key="IAM.EDIT"/></div> -->
-		   			<div id="remove_option" onclick="removePicture('Remove Picture','Are you sure you want to remove your profile picture? Your contacts may find it difficult to identify you without a picture.')" style="color:#FF5F5F"><@i18n key="IAM.REMOVE"/></div>
 				</div>
 			</div>
 		
@@ -264,7 +275,9 @@
 	<#if (show_geofencing)>
 					<span class="submenu" id="geofencing" onclick="loadPage('security','geofencing');"><@i18n key="IAM.GEOFENCING"/> </span>
 	</#if>
+	<#if (Show_allowed_ips)>
 		            <span class="submenu" id="security_ips" onclick="loadPage('security','security_ips')"><@i18n key="IAM.ALLOWED.IPADDRESS"/>  </span>
+	</#if>
 	<#if (showAppPasswords)>
 	               	<span class="submenu" id="app_password" onclick="loadPage('security','app_password')"><@i18n key="IAM.TFA.APP.PASSWORDS"/> </span>
 	</#if>
@@ -275,11 +288,18 @@
 		        
 		        
 	<#if (canShowTFAPage)>
-	            <div class="menu"  id="multiTFA" onclick="loadTab('multiTFA','modes');">
+			<#if (showPFAMode)>
+	            <div class="menu"  id="multiTFA" onclick="loadTab('multiTFA','pfamodes');">
+	        <#else>
+	        	<div class="menu"  id="multiTFA" onclick="loadTab('multiTFA','modes');">
+	        </#if>
 					<span class="menuicon icon-mmfa"></span>
 					<span class="menutext"><@i18n key="IAM.MFA"/> </span>
 				</div>
 				<div class="submenu_div hide" id="multiTFAsubmenu">
+				<#if (showPFAMode)>
+					<span class="submenu" id="pfamodes"  onclick="loadPage('multiTFA','pfamodes');" ><@i18n key="IAM.FIRST.FACTOR.MODES" /></span>
+				</#if>
 					<span class="submenu" id="modes"  onclick="loadPage('multiTFA','modes');" ><@i18n key="IAM.MFA.MODES.TITLE"/> </span>
 					<span class="submenu TFAPrefrences_menu hide" id="recovery"  onclick="loadPage('multiTFA','recovery');" ><@i18n key="IAM.MFA.RECOVERY.OPTION"/> </span>
 					<span class="submenu TFAPrefrences_menu hide" id="trusted_browser"  onclick="loadPage('multiTFA','trusted_browser');" ><@i18n key="IAM.TFA.TRUST.BROWSERS"/> </span>
@@ -308,7 +328,6 @@
 		        </div>
 		        <div class="submenu_div" id="sessionssubmenu">
 	               <span class="submenu" id="useractivesessions" onclick="loadPage('sessions','useractivesessions');"><@i18n key="IAM.ACTIVESESSIONS"/> </span>
-	               <span class="submenu" id="userauthtoken" onclick="loadPage('sessions','userauthtoken');"><@i18n key="IAM.ACTIVETOKENS"/> </span>
 	               <span class="submenu" id="useractivityhistory" onclick="loadPage('sessions','useractivityhistory')"><@i18n key="IAM.LOGINHISTORY"/>  </span>
 	               <span class="submenu" id="userconnectedapps" onclick="loadPage('sessions','userconnectedapps')"><@i18n key="IAM.CONNECTEDAPPS"/> </span>
 	               <span class="submenu" id="userapplogins" onclick="loadPage('sessions','userapplogins')"><@i18n key="IAM.APP.LOGINS"/> </span>
@@ -341,6 +360,10 @@
     			<div class="menu"  id="compliance" onclick="loadTab('compliance','certifications')">
 					<span class="menuicon icon-mcompliance"></span>
 					<span class="menutext"><@i18n key="IAM.MENU.COMPLIANCE"/> </span>
+				</div>
+				<div class="submenu_div" id="compliancesubmenu">
+					<span class="submenu" id="certifications" onclick="loadPage('compliance','certifications')"><@i18n key="IAM.PRIVACY.CERTIFICATIONS.SUBHEAD"/> </span>
+					<span class="submenu" id="hdsaddendum" onclick="loadPage('compliance','hdsaddendum')"><@i18n key="IAM.SUBMENU.HDS"/> </span>
 				</div>
     </#if>			
 	<#if (showSamlPage)>
@@ -472,7 +495,18 @@
 			document.getElementsByClassName('content')[0].style.position='static';
 			document.getElementsByClassName('content')[0].innerHTML = iebanner;
 			return false;
-		}		
+		}
+    	function logoutAccountsWithCSurl() {
+    		var surl = window.location.href;
+    		LogoutURL = decodeHTML(LogoutURL);
+    		var tempLogoutUrl = decodeURIComponent(LogoutURL);
+			var defaultSurl = tempLogoutUrl.substring(tempLogoutUrl.indexOf('serviceurl=')+11);
+			if(defaultSurl.indexOf('&')!=-1){defaultSurl = defaultSurl.substr(0, defaultSurl.indexOf('&'))}
+			var defaultSurlLength = defaultSurl.length;
+			if((tempLogoutUrl.indexOf('serviceurl=') !=-1)){
+				LogoutURL = tempLogoutUrl.slice(0, tempLogoutUrl.indexOf('serviceurl=')+11) + surl + tempLogoutUrl.slice(tempLogoutUrl.indexOf('serviceurl=')+ 11 + defaultSurlLength);
+			}go_to_link(LogoutURL,false);
+		}
     	window.onload=function() {
     		$.fn.focus=function(){ 
 				if(this.length){
@@ -481,6 +515,7 @@
 				return $(this);
 			}
 			try {
+				WmsLite.setClientSRIValues(${za.wmsSRIValues});
 				WmsLite.setNoDomainChange();
 				WmsLite.setConfig(64);//64 is value of WMSSessionConfig.CROSS_PRD
 	    		WmsLite.registerZuid('AC',"${zuId}","${userLoginName}", true);
@@ -505,8 +540,6 @@
 			loadHash();
  				setHeightForCover(); 
 			if(ztopbar_product_link != ""){
-				$(".ztopbar .zoho_logo").css("margin-left","56px");
-				$(".ztopbar .zoho_topbar_logo").css("margin-left","56px");
 				
 				corsXHR({
 			        method: 'GET',
@@ -535,25 +568,22 @@
    							 csrfName: '${csrfParam}',
 							 getCsrfValue : '${csrfValue}'
 							},
-                            top: "54px", // hamburger menu's top position, eg: "0px"
-                            arrow: isMobile && window.outerWidth<=420 ? "topRight" : "topLeft"
+                            top: "48px", // hamburger menu's top position, eg: "0px"
+                            arrow: "topRight"
 				        });
 				
 				        // 3. loading the initial javascript file
 				        var tag = document.createElement("script");
 				        tag.setAttribute("src", hamburgerMenuResponse.initialJS);
 				        tag.setAttribute("charset", "utf-8");
-				        document.body.appendChild(tag)
+				        document.body.appendChild(tag);
+				        $(".ztopbar .topbar_pp").css("margin-right","56px");
 			        }
 			    }).send();
-			    if(isMobile && window.outerWidth<=420){
-			    	$(".ztopbar .zoho_logo").css("margin-left","16px");
-			    	$(".ztopbar .zoho_topbar_logo").css("margin-left","16px");
-			    }
+			    $(".ztopbar .topbar_pp").css("margin-right","16px");
 			}
-			else{
-				$(".ztopbar .zoho_logo").css("margin-left","16px");
-				$(".ztopbar .zoho_topbar_logo").css("margin-left","16px");
+			else{				
+				$(".ztopbar .topbar_pp").css("margin-right","16px");
 			}
 			if($("#logoutid").text()){
 				var logOutIdText = $("#logoutid").text();
@@ -569,10 +599,11 @@
 */
     	    	
       	window.onresize=function() {
+			menutextResize();
     		setHeightForCover();
     	};
 
-    	window.setInterval("watchHash()", 1000);
+    	window.setInterval(watchHash, 1000);
     	
     	window.onhashchange = function(){
     		if($(".blur").css("opacity")>0){
@@ -663,12 +694,6 @@
      		$('.menu_more').toggleClass("show_after"); //No I18N
      		$(".hidden_popup").toggle();
      	}
-     	function select2_open_listener(event) {	
-     		if (event && $(event.target).closest('.select2-selection').length) {		
-     			$('.select2-dropdown').children('.select2-search').children('.select2-search__field')[0].focus();		
-     		}			    
-     	}
-     	document.addEventListener('click', select2_open_listener, true);
 	</script>
 </html>
 			

@@ -26,3 +26,12 @@ servlet-mappings :
          - servlet-path :
               path : /oauth/v2/userinfo
               is_regex : false
+   OAuthIntrospection :
+     servlet-class : com.zoho.accounts.internal.oauth2.servlet.OAuthIntrospection
+     servlet-paths :
+         - servlet-path :
+              path : /oauth/v2/introspect
+              is_regex : false
+         - servlet-path :
+              path : /oauth/v2/internal/introspect
+              is_regex : false

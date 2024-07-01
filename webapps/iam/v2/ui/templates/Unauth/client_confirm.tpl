@@ -3,12 +3,12 @@
 <html>
 	<head>
 		<title><@i18n key="IAM.ZOHO.ACCOUNTS"/></title>
-		<link  href="${SCL.getStaticFilePath("/accounts/css/common.css")}" type="text/css" rel="stylesheet" defer/>
-	    <link  href="${SCL.getStaticFilePath("/accounts/css/form.css")}" type="text/css" rel="stylesheet" defer/>
+		<@resource path="/accounts/css/common.css" attributes="defer" />
+	    <@resource path="/accounts/css/form.css" attributes="defer" />
 	    <#if (('${css_url}')?has_content)>
 			<link href="${css_url}" type="text/css" rel="stylesheet"/>
 		<#else>
-			<link href="${SCL.getStaticFilePath("/accounts/css/confirm.css")}" type="text/css" rel="stylesheet"/>
+			<@resource path="/accounts/css/confirm.css" />
 		</#if>
 		<#include "client_confirm_static.tpl">
 	</head>
@@ -41,7 +41,7 @@
 							</div>
 							<div class="label">
 		    				<div class="inlineLabel"><@i18n key="IAM.LABEL.ENTER.ZOHO.PASSWORD"/> </div>
-								<input type="password" name="password" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
+								<input type="password" name="password" autocomplete="off" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
 								<a href="${reset_password_link}" class="forgoticon"></a>
 							</div>
 							<div class="label">

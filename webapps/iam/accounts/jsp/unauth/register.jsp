@@ -1,12 +1,15 @@
 <%-- $Id: $ --%>
-<%@taglib prefix="s" uri="/struts-tags" %>
+<%
+boolean isValidInvitation = request.getAttribute("isValidInvitation") != null ? (boolean)request.getAttribute("isValidInvitation") : false;
+boolean isSigninSignup = request.getAttribute("isSigninSignup") != null ? (boolean)request.getAttribute("isSigninSignup") : false;
+%>
 (function() { <%-- No I18N --%>
 	window.zdtdomain='${zdtdomainUrl}';<%-- No I18N --%>
 	<%@include file="../../jspf/static-loader.jspf" %>
 	function onZAScriptLoad() {
-		<s:if test="isSigninSignup">
+		<%if(isSigninSignup){ %>
 			Validator.addDefaultMethods(); <%-- No I18N --%>
-		</s:if> <%-- No I18N --%>
+		<%} %>
 		Util.redirectToHTTPS(); <%-- No I18N --%>
 
 		Util.paramConfigure({ <%-- No I18N --%>
@@ -26,7 +29,7 @@
 			x_signup : ${signUpConfig} <%-- No I18N --%>
 		}); 
 		CrossServiceRequest.appURLs[zaSignUpOptions.x_signup.appName] = zaSignUpOptions.x_signup.appURL; <%-- No I18N --%>
-		<s:if test="isValidInvitation">
+		<%if(isValidInvitation){ %>
 		$.extend($.fn.zaSignUp.defaults, {url : function() { <%-- No I18N --%>
 				return ZAConstants.getAbsoluteURL(ZAConstants.contextpath+"/registerbyinvite.ac?digest=${digest}"); // No I18N
 			},
@@ -37,10 +40,9 @@
 			csrf : true, <%-- No I18N --%>
 			crossdomain : false <%-- No I18N --%>
 		});
-		</s:if> <%-- No I18N --%>
-		<s:else><%-- No I18N --%>
+		<%}else{ %>
     		$(".za-invitation-desc").hide();<%-- No I18N --%>
-		</s:else><%-- No I18N --%>
+		<%} %>
 		// Service teams must definie `onSignupReady` function to initialize SignUp form.
 		if(window.onSignupReady) {
 			window.onSignupReady(); <%-- No I18N --%>

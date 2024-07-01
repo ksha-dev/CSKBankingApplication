@@ -63,7 +63,7 @@
 							<#if acceptinvitation>
 							<dl class="za-password-container">
 								<dd style="position: relative;">
-								<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength(${userPassword.minlen});hideMsg(this)" tabindex="1">
+								<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onkeyup="checkPasswordStrength(${userPassword.minlen});hideMsg(this)" tabindex="1">
 								<div class="field-msg">
 									<div onclick="togglePasswordField(${userPassword.minlen});" id="show-password" class="show-password">
 		                                <span id="show-password-icon" class="icon-medium uncheckedpass"></span>

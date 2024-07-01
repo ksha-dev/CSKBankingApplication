@@ -4,21 +4,20 @@
 									<div class="textbox_div" id="getusername">
 									<span>
 										<#if signin.emailOnly>
-											<input id="login_id" placeholder="<@i18n key="IAM.EMAIL.ADDRESS"/>" value="${signin.loginId}" type="text" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" onkeyup ="checking()" autocapitalize="off" autocomplete="on" autocorrect="off" ${signin.readOnlyEmail} tabindex="1" />
+											<input id="login_id" placeholder="<@i18n key="IAM.EMAIL.ADDRESS"/>" value="${signin.loginId}" type="text" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" onkeyup ="checking()" autocapitalize="off" autocomplete= <#if signin.autocompleteoff> "off" <#else> "on" </#if> autocorrect="off" ${signin.readOnlyEmail} tabindex="1" />
 										<#else>
-											<label for='country_code_select' class='select_country_code'></label>
 											<select id="country_code_select" onchange="changeCountryCode();"  name="countryselect">
 			                  					<#list signin.country_code as dialingcode>
 		                          					<option data-num="${dialingcode.code}" value="${dialingcode.dialcode}" id="${dialingcode.code}" >${dialingcode.display}</option>
 		                           				</#list>
 											</select>
 											<#if signin.mobileOnly>
-												<input id="login_id" placeholder="<@i18n key="IAM.NEW.SIGNIN.MOBILE"/>" value="${signin.loginId}" type="number" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" oninput="checking();allownumonly(this)" inputmode="numeric" autocapitalize="off" autocomplete="on" autocorrect="off" ${signin.readOnlyEmail} tabindex="1" />
+												<input id="login_id" placeholder="<@i18n key="IAM.NEW.SIGNIN.MOBILE"/>" value="${signin.loginId}" type="number" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" oninput="checking();allownumonly(this)" inputmode="numeric" autocapitalize="off" autocomplete=<#if signin.autocompleteoff> "off" <#else> "on" </#if> autocorrect="off" ${signin.readOnlyEmail} tabindex="1" aria-label="<@i18n key="IAM.NEW.SIGNIN.MOBILE"/>"/>
 											<#else>
-												<input id="login_id" placeholder="<@i18n key="IAM.NEW.SIGNIN.EMAIL.ADDRESS.OR.MOBILE"/>" value="${signin.loginId}" type="text" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" oninput="checking()" autocapitalize="off" autocomplete="on" autocorrect="off" ${signin.readOnlyEmail} tabindex="1" />
+												<input id="login_id" placeholder="<@i18n key="IAM.NEW.SIGNIN.EMAIL.ADDRESS.OR.MOBILE"/>" value="${signin.loginId}" type="text" name="LOGIN_ID" class="textbox" required="" onkeydown="clearCommonError('login_id')" oninput="checking()" autocapitalize="off" autocomplete=<#if signin.autocompleteoff> "off" <#else> "on" </#if> autocorrect="off" ${signin.readOnlyEmail} tabindex="1" aria-label="<@i18n key="IAM.NEW.SIGNIN.EMAIL.ADDRESS.OR.MOBILE"/>"/>
 											</#if>
 										</#if>
-										<div class="fielderror"></div>		
+										<div class="fielderror" role="alert"></div>		
 									</span>				
 									</div>
 								</div>
@@ -30,7 +29,7 @@
 											</#if>
 										</div>
 										<div class="textbox_div">
-											<input id="password" placeholder="<@i18n key="IAM.NEW.SIGNIN.PASSWORD"/>" name="PASSWORD" type="password" class="textbox" required="" onfocus="this.value = this.value;" onkeydown="clearCommonError('password')" autocapitalize="off" autocomplete="password" autocorrect="off" maxlength="250"/> 
+											<input id="password" placeholder="<@i18n key="IAM.NEW.SIGNIN.PASSWORD"/>" name="PASSWORD" type="password" class="textbox" required="" onfocus="this.value = this.value;" onkeydown="clearCommonError('password')" autocapitalize="off" <#if (SCL.isPasswordAutoCompleteOff() == 'true')>autocomplete="off"<#else>autocomplete="current-password"</#if> autocorrect="off" maxlength="250"/> 
 											<span class="icon-hide show_hide_password" onclick="showHidePassword();"></span>
 											<div class="fielderror"></div>
 											<div class="textbox_actions" id="enableotpoption">
@@ -40,17 +39,11 @@
 													<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
 												</#if>
 											</div>
-											<div class="textbox_actions" id="enableforgot">
-												<#if !signin.ishideFp>
+											<#if !signin.ishideFp>
+												<div class="textbox_actions" id="enableforgot">
 													<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
-												</#if>
-											</div>
-											<div class="textbox_actions_saml" id="enablejwt" style="display:none;">
-												<a href="#" class="bluetext_action signinwithjwt" style="text-decoration=none;"><@i18n key="IAM.NEW.SIGNIN.USING.JWT"/></a>
-												<#if !signin.ishideFp>
-													<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
-												</#if>
-											</div>
+												</div>
+											</#if>
 										</div> 
 									</div>
 									<div id="otp_container">
@@ -61,9 +54,9 @@
 										</#if>
 									</div>
 									<div class="textbox_div" >
-										<input id="otp" placeholder="<@i18n key="IAM.VERIFY.CODE"/>" type="number" name="OTP" class="textbox" required="" onkeydown="clearCommonError('otp')" autocapitalize="off" oninput="allownumonly(this)" inputmode="numeric" autocorrect="off"/> 
+										<input id="otp" placeholder="<@i18n key="IAM.VERIFY.CODE"/>" type="number" name="OTP" class="textbox" required="" onkeydown="clearCommonError('otp')" autocapitalize="off" oninput="allownumonly(this)" inputmode="numeric" autocorrect="off" aria-label="<@i18n key="IAM.VERIFY.CODE"/>" /> 
 
-										<div class="fielderror"></div>
+										<div class="fielderror" role="alert"></div>
 										<div class="textbox_actions">
 											<span class="bluetext_action" id="signinwithpass" onclick="showPassword()"><@i18n key="IAM.NEW.SIGNIN.USING.PASSWORD"/></span>
 											<span class="bluetext_action bluetext_action_right resendotp" onclick="generateOTP(true)"><@i18n key="IAM.NEW.SIGNIN.RESEND.OTP"/></span>
@@ -102,14 +95,13 @@
 							<#if !signin.ishideFp>
 								<div class="text16 pointer" id="forgotpassword"><a class="text16" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></a></div>
 							</#if>
-							<#if signin.showfs>
 								<div class="line"></div>
 								<div class="fed_2show">
 									<div class="signin_fed_text"><@i18n key="IAM.NEW.SIGNIN.FEDERATED.LOGIN.TITLE"/></div>
 										<#if signin.showzoho>
 											<span class="fed_div zoho_fs_fed zoho_fed_box zoho_fed small_box show_fed" onclick="createandSubmitOpenIDForm('zoho');" title="<@i18n key="IAM.SIGNIN.USING.ZOHO.REAL.TEXT"/>">
-									            <div class="fed_center">
-									                <span class="fedicon-Zoho_common-2"></span>
+									            <div class="fed_center fed_center_zoho">
+									                <span class="fedicon-Zoho_common-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span></span>
 									            </div>
 									        </span>
 										</#if>
@@ -155,6 +147,6 @@
 									            </div>
 									        </span>
 										</#if>
+										<span id="fed_signin_options"></span>
 								</div>
-							</#if>
 						</form>

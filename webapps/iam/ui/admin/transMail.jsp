@@ -124,7 +124,7 @@
 			<div class="labelkey">Mail From :</div>
 			<div class="labelvalue"><input type="text" id="senderemail" name="email" class="input" value="<%=IAMEncoder.encodeHTML(dfrom)%>"/></div>
 	                <div class="labelkey">Enter Admin password :</div>
-	                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+	                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 			<div class="accbtn Hbtn">
 			    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/mailsender/add', ['mtype', 'msender', 'email', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=td');">
 				<span class="btnlt"></span>
@@ -176,7 +176,7 @@
 				<div class="labelkey">Mail From :</div>
 				<div class="labelvalue"><input type="text" name="email" id="senderemail" class="input" value="<%=IAMEncoder.encodeHTMLAttribute(mss.getMailSender())%>"/></div>
 		                <div class="labelkey">Enter Admin password :</div>
-		                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+		                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 				<div class="accbtn Hbtn">
 				    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/mailsender/update', ['mtype', 'msender', 'email', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=td');">
 					<span class="btnlt"></span>
@@ -271,7 +271,7 @@
 				</select>
 			</div>
 	                <div class="labelkey">Enter Admin password :</div>
-	                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+	                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 			<div class="accbtn Hbtn">
 			    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/maildetails/add', ['cName', 'cId', 'cKey', 'demail', 'msType', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=md');">
 				<span class="btnlt"></span>
@@ -315,7 +315,7 @@
 				</select>
 			</div>
 	                <div class="labelkey">Enter Admin password :</div>
-	                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+	                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 			<div class="accbtn Hbtn">
 			    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/maildetails/update', ['cName', 'cId', 'cKey', 'demail', 'msType', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=md');">
 				<span class="btnlt"></span>
@@ -395,7 +395,7 @@
 			<div class="labelkey">Mail Type Desc :</div>
 			<div class="labelvalue"><input type="text" name="mtdesc" class="input"/></div>
 	                <div class="labelkey">Enter Admin password :</div>
-	                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+	                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 			<div class="accbtn Hbtn">
 			    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/mailtypes/add', ['mailtype', 'mtdesc', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=mt');">
 				<span class="btnlt"></span>
@@ -428,7 +428,7 @@
 			<div class="labelkey">Mail Type Desc :</div>
 			<div class="labelvalue"><input type="text" name="mtdesc" class="input" value="<%=IAMEncoder.encodeHTML( mt.getMailTypeDescription())%>"/></div>
 	                <div class="labelkey">Enter Admin password :</div>
-	                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+	                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 			<div class="accbtn Hbtn">
 			    <div class="savebtn" onclick="postForTransMail(document.addNewTd, '/admin/transmail/mailtypes/update', ['mailtype', 'mtdesc', 'pwd'], '/ui/admin/transMail.jsp?t=view&type=mt');">
 				<span class="btnlt"></span>

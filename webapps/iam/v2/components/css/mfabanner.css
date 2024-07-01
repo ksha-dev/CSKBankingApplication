@@ -1,0 +1,211 @@
+/*$Id$*/
+@charset "UTF-8";
+.reverse-container{
+	margin-bottom: 30px;
+}
+.modes-container > div:first-child .empty-oneauth-header{
+	border-top-left-radius: 9px;
+	border-top-right-radius: 9px;
+	overflow: hidden;
+}
+.rev .one-header{
+	display: inline-flex;
+	pointer-events: none;
+	position: relative;
+	left: 0;
+	transition: all 0.2s ease-in-out, transform 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+.rev .oneauth-header{
+	padding: 0px
+}
+.rev .one-header .mode-header-texts{
+	font-weight: 600;
+	color: black;
+	transition: all 0.2s ease-in-out;
+}
+.rev .empty-oneauth-header{
+	border-radius: 0px;
+}
+.rev .empty-oneauth-header .mode-header-texts{
+	color: white;
+	font-size: 16px;
+    font-weight: 600;
+}
+.rev .empty-oneauth-header .mode-header-texts > span{
+	opacity: 1;
+}
+.rev .empty-oneauth-header .mode-icon:after{
+	background-color: transparent;
+}
+
+.empty-oneauth-header .ali-center{
+	transform: translate(-50%);
+	left: 50%;	
+}
+.splitback {
+	min-height: 100px;
+	background-image: linear-gradient(to bottom, white 35%, white 35%);
+	padding: 0px 20px 20px;
+	position: relative;
+	top: -1px;
+	transition: all 0.2s ease-in-out;
+}
+.empty-oneauth-header ~ .mode-body .splitback{
+	background-image: linear-gradient(to bottom, #172293 35%, white 35%);
+}
+.empty-oneauth-header .tag-pins, .empty-oneauth-header .tag{
+	background-color: #172293;
+	border-color: #172293;
+}
+.empty-oneauth-header .onepathlogo{
+	font-size: 28px;
+}
+.splitback .store-links{
+	margin-top: 16px;
+}
+.rev .oneauth-desc{
+	max-width: unset;
+	margin-bottom: 20px;
+	opacity: 0.9;
+	padding: 0px 8px;
+	color: white;
+	text-align: center;
+}
+.cont-step{
+	font-size: 12px;
+	font-weight: 500;
+	padding: 4px 8px;
+	display: inline-flex;
+	align-items: center;
+	float: right;
+	background-color: #f0f0f0;
+	border-radius: 4px;
+	gap: 4px;
+	cursor: pointer;
+}
+.cont-step span:first-child{
+	opacity: 0.8;
+}
+.qrhelp-wrap{
+	border: 1px solid #E0E0E0;
+	border-radius: 8px;
+}
+.msg-cont{
+	border: 1px solid #EFE1D5;
+    width: calc(100% + 0px);
+    position: relative;
+    left: -1px;
+    top: 1px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    background-color: #FFF8F2;
+    display: flex;
+}
+.msg-cont .icon-help, .msg-cont .icon-Resume{
+	padding: 12px 8px 12px 16px;
+}
+.icon-Resume{
+	color: #FD6513;
+}
+.msg-wrap{
+	display: flex;
+	flex-direction: column;
+	padding: 12px 0px;
+	gap: 4px;
+	flex-grow: 1;
+}
+.msg-cont .msg-head{
+	font-size: 12px;
+	font-weight: 500;
+}
+.msg-cont .help-desc{
+	font-size: 10px;
+	padding: 0px;
+	font-weight: 400;
+}
+.msg-cont .help-actions{
+	padding: 12px;
+}
+.msg-cont .h-btn{
+	font-size: 12px;
+	color: #0093FF;
+	padding: 0px 6px;
+}
+.msg-cont.help{
+	border: 1px solid #1393FF;
+	background-color: #F2F8FF;
+}
+.help .h-btn{
+	width: max-content;
+}
+.msg-cont .help-a{
+	display: none;
+}
+.msg-cont.help .icon-help{
+	color: #1393FF;
+}
+.msg-cont.help .msg-head{
+	display: none;
+}
+.msg-cont.help .help-desc{
+	font-size: 12px;
+	font-weight: 500;
+}
+.msg-cont.help .help-r{
+	display: none;
+}
+.msg-cont.help .help-a{
+	display: inline-block;
+}
+.splitback .general-desc, .splitback .common-btn{
+	display: none;
+}
+.icon-expand{
+	margin-right: 4px;
+}
+.active-qr{
+	cursor: pointer;
+}
+.active-qr:hover {
+	transform: scale(1.04);
+}
+.active-qr .tap-txt{
+	opacity: 1;
+	cursor: pointer;
+}
+.qr-exp, .qr-exp:hover{
+	transform: scale(1.8);
+}
+.qr-exp .tap-txt{
+	transform: scale(0.6);
+	margin-top: 8px;
+}
+.qr-cont:hover .qr-refresh.show + .exp{
+	opacity: 0;
+	z-index: -2;
+}
+@media only screen and (max-width: 435px) {
+	.qrhelp-wrap{
+		display: none;
+	}
+	.empty-oneauth-header ~ .mode-body .splitback{
+		background-image: unset;
+		padding: 0px;
+	}
+	.splitback .oneauth-desc{
+		padding: 0px 20px 16px;
+		opacity: 1;
+		background-color: #172293;
+		margin-bottom: 0px;
+	}
+	.splitback .store-links,.splitback .general-desc{
+		padding: 0px 20px;
+	}
+	.splitback .common-btn{
+		margin: 0px 20px 20px;
+	}
+	.splitback .general-desc, .splitback .common-btn{
+		text-align: center;
+		display: block;
+	}
+}

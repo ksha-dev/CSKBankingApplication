@@ -6,7 +6,6 @@ var  primary_email="";
 var  login_mobile="";
 var  preferred_mfa_num="";
 var  disable_phoneNum_type="";
-var  captcha_digest="";
 function load_emaildetails(policies,emailDetail)
 {
 	if(de("email_exception"))
@@ -460,40 +459,48 @@ function close_addemail_popup()
 
 function add_email(form,callback)
 {
+	remove_error();
+	if(!isEmailId(form.email_id.value)){
+		$('#'+form.id).find('input[name="email_id"]').focus().parents(".field").append('<div class="field_error">'+err_validemail+'</div>');
+		return;
+	}
 	if(validateForm(form))
 	{
 		disabledButton(form);
 		var new_emailid=$('#'+form.id).find('input[name="email_id"]').val().trim();
-		var parms=
-		{
-			"email_id":new_emailid//No I18N
-		};
-
-
-		var payload = Email.create(parms);
-		payload.POST("self","self").then(function(resp)	//No I18N
-		{
-			callback(resp,new_emailid);
-			removeButtonDisable(form);
-		},
-		function(resp)
-		{
-			removeButtonDisable(form);
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+		var payload;
+		encryptData.encrypt([new_emailid]).then(function(encryptedloginid) {
+			encryptedemailId = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+			var parms=
 			{
-				relogin_warning();
-				var service_url = euc(window.location.href);
-				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-			}
-			else
+				"email_id":encryptedemailId//No I18N
+			};
+			payload = Email.create(parms);
+			payload.POST("self","self").then(function(resp)	//No I18N
 			{
-				if(resp.errors && resp.errors[0].code == "EMAIL505"){
-					$("#addemailform [name='email_id']").parents('.field').append( '<div class="field_error">'+resp.localized_message+'</div>' );
-					return false;
+				callback(resp,new_emailid);
+				removeButtonDisable(form);
+			},
+			function(resp)
+			{
+				removeButtonDisable(form);
+				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+				{
+					relogin_warning();
+					var service_url = euc(window.location.href);
+					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
 				}
-				showErrorMessage(getErrorMessage(resp));
-			}
-		});	
+				else
+				{
+					if(resp.errors && resp.errors[0].code == "EMAIL505"){
+						$("#addemailform [name='email_id']").parents('.field').append( '<div class="field_error">'+resp.localized_message+'</div>' );
+						return false;
+					}
+					showErrorMessage(getErrorMessage(resp));
+				}
+			});	
+		});
+		
 	}
 	return false;
 }
@@ -704,6 +711,7 @@ function deleteEmail(title,emailid,priemail,is_linked_email)
     		$(".link_eml_del").html(linked_email_del);
     	}
 	}
+	deleteBtnTextChange();
     $("#confirm_popup button:first").focus();
 }
 
@@ -810,19 +818,16 @@ function changePrimary(form,callback)
 	
 	if(validateForm(form))
 	{
-		var parms="";
 		var emailid =$('#'+form.id).find('input[name="email_id"]').val();
 
 		var payload = makePrimary.create();
-		
 		payload.PUT("self","self",emailid).then(function(resp)	//No I18N
 		{
 			callback(resp,emailid);
 		},
 		function(resp)
 		{
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-			{
+			if(resp.cause && resp.cause.trim() === "invalid_password_token") {
 				relogin_warning();
 				var service_url = euc(window.location.href);
 				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
@@ -872,69 +877,74 @@ function resendConfirmation(emid,id_cnt)
 	}
 	clearInterval(resend_timer);
 	popupBlurHide("#send_verification_email_popup",undefined,true);	//No I18N
-	var parms=
-	{
-		"email_id":emid//No I18N
-	};
-	var payload = Email.create(parms);
-	payload.POST("self","self").then(function(resp)	//No I18N
-	{
-		if(!$("#emails_web_more").is(":visible")){			
-			add_email_callback(resp,emid,true);
-		}
-		else{
-			$("#view_all_email .web_email_specific_popup .inline_action").slideUp(300,function(){
-				$("#view_all_email .web_email_specific_popup .inline_action").html("<div id='email_otp_description' class='inline_action_discription'></div>");
-
-				$("#view_all_email .web_email_specific_popup .inline_action").append($("#add_em_form").html());
-				$("#view_all_email #otp_email_input").attr('id','viewmore_email_otp');
-				if(!$("#NEWemail_add").is(":visible"))
-				{
-					$('#view_all_email #NEWemail_add').find('input[name="email_id"]').val(emid);
-				}
-				$("#view_all_email .web_email_specific_popup .inline_action form").attr("name","viewmore_otp");
-				$("#view_all_email .web_email_specific_popup .inline_action form").attr("id","veri_otp_form");
-				var str = $("#email_otp_text").html();
-				$(".inline_action #email_otp_description").html(formatMessage(str,emid));//No I18N
-				splitField.createElement('viewmore_email_otp',{
-					"splitCount":otp_length,					// No I18N
-					"charCountPerSplit" : 1,		// No I18N
-					"isNumeric" : true,				// No I18N
-					"otpAutocomplete": true,		// No I18N
-					"customClass" : "customOtp",	// No I18N
-					"inputPlaceholder":'&#9679;'	// No I18N
-				});
-				$('#viewmore_email_otp #viewmore_email_otp_full_value').attr('data-validate','zform_field');
-				$('#viewmore_email_otp #viewmore_email_otp_full_value').attr('name','otp_code');
-				$('#viewmore_email_otp .customOtp').attr('onkeypress','remove_error()');
-				$("#view_all_email #NEWemail_add").hide();
-				$("#view_all_email #NEWemail_confirmation").show();
-				$("#view_all_email #NEWemail_confirmation #back_to_add_email").hide();
-				cryptData = resp.email.encrypted_data;
-				$("#veri_otp_form").attr("onsubmit","return confirm_add_email(this,confirm_add_email_callback)");
-				$("#view_all_email .web_email_specific_popup .inline_action").slideDown(300,function(){					
-					$("#viewmore_email_otp").click();
-					resend_countdown(".web_email_specific_popup #emailOTP_resend");//No I18N 
-				});
-			});
-		}
-	},
-	function(resp)
-	{
-		if(!$("#emails_web_more").is(":visible")){
-			popupBlurHide("#send_verification_email_popup",undefined,undefined);	//No I18N
-		}
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+	var payload ;
+	encryptData.encrypt([emid]).then(function(encryptedloginid) {
+		encryptedemailId = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var parms=
 		{
-			relogin_warning();
-			var service_url = euc(window.location.href);
-			$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-		}
-		else
+			"email_id":encryptedemailId//No I18N
+		};
+		payload = Email.create(parms);
+		payload.POST("self","self").then(function(resp)	//No I18N
 		{
-			showErrorMessage(getErrorMessage(resp));
-		}
-	});	
+			if(!$("#emails_web_more").is(":visible")){			
+				add_email_callback(resp,emid,true);
+			}
+			else{
+				$("#view_all_email .web_email_specific_popup .inline_action").slideUp(300,function(){
+					$("#view_all_email .web_email_specific_popup .inline_action").html("<div id='email_otp_description' class='inline_action_discription'></div>");
+	
+					$("#view_all_email .web_email_specific_popup .inline_action").append($("#add_em_form").html());
+					$("#view_all_email #otp_email_input").attr('id','viewmore_email_otp');
+					if(!$("#NEWemail_add").is(":visible"))
+					{
+						$('#view_all_email #NEWemail_add').find('input[name="email_id"]').val(emid);
+					}
+					$("#view_all_email .web_email_specific_popup .inline_action form").attr("name","viewmore_otp");
+					$("#view_all_email .web_email_specific_popup .inline_action form").attr("id","veri_otp_form");
+					var str = $("#email_otp_text").html();
+					$(".inline_action #email_otp_description").html(formatMessage(str,emid));//No I18N
+					splitField.createElement('viewmore_email_otp',{
+						"splitCount":otp_length,					// No I18N
+						"charCountPerSplit" : 1,		// No I18N
+						"isNumeric" : true,				// No I18N
+						"otpAutocomplete": true,		// No I18N
+						"customClass" : "customOtp",	// No I18N
+						"inputPlaceholder":'&#9679;'	// No I18N
+					});
+					$('#viewmore_email_otp #viewmore_email_otp_full_value').attr('data-validate','zform_field');
+					$('#viewmore_email_otp #viewmore_email_otp_full_value').attr('name','otp_code');
+					$('#viewmore_email_otp .customOtp').attr('onkeypress','remove_error()');
+					$("#view_all_email #NEWemail_add").hide();
+					$("#view_all_email #NEWemail_confirmation").show();
+					$("#view_all_email #NEWemail_confirmation #back_to_add_email").hide();
+					cryptData = resp.email.encrypted_data;
+					$("#veri_otp_form").attr("onsubmit","return confirm_add_email(this,confirm_add_email_callback)");
+					$("#view_all_email .web_email_specific_popup .inline_action").slideDown(300,function(){					
+						$("#viewmore_email_otp").click();
+						resend_countdown(".web_email_specific_popup #emailOTP_resend");//No I18N 
+					});
+				});
+			}
+		},
+		function(resp)
+		{
+			if(!$("#emails_web_more").is(":visible")){
+				popupBlurHide("#send_verification_email_popup",undefined,undefined);	//No I18N
+			}
+			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+			{
+				relogin_warning();
+				var service_url = euc(window.location.href);
+				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+			}
+			else
+			{
+				showErrorMessage(getErrorMessage(resp));
+			}
+		});	
+	});
+	
 }
 
 function resendConfirmationCodeForMob(c_code,mobilenum,ele_id){
@@ -942,25 +952,29 @@ function resendConfirmationCodeForMob(c_code,mobilenum,ele_id){
 	{
 		document.querySelector('#mob_icon_resend_'+ele_id)._tippy.hide(); //No I18N
 	}
-	var parms=
-	{
-		"mobile":mobilenum,//No I18N
-		"countrycode":c_code//No I18N
-	};
-
-	if($("#phonenumber_web_more").is(":visible")){
+	var payload;
+	encryptData.encrypt([mobilenum]).then(function(encryptedloginid) {
+		encryptedmobilenumber = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var parms=
+		{
+			"mobile":encryptedmobilenumber,//No I18N
+			"countrycode":c_code//No I18N
+		};
+		payload = Phone.create(parms);
+	});
+	var hasViewMore = $("#phonenumber_web_more").is(":visible");
+	if(hasViewMore){
 		disabledButton($("#phonenumber_web_more .inline_action"));
 	}
-	var payload = Phone.create(parms);
 	
-	payload.POST("self","self").then(function(resp)	//No I18N
-	{
+	function successCallback(resp){ 
 		removeButtonDisable($("#phonenumber_web_more .inline_action"))
-		if(!$("#phonenumber_web_more").is(":visible")){		
+		if(!hasViewMore){		
 			$("#addphoneonly").trigger('click');
 			$(document.addphonenum).find('input[name="mobile_no"]').val(mobilenum);
 			Otp_verify_show(resp);
 			$("#common_popup .popuphead_define").html(formatMessage(otp_description,phonePattern.setMobileNumFormat(mobilenum,c_code)));
+			$("#common_popup #add_mobile_back").attr("onclick",'showVerifyMobileNum(\''+c_code+'\',\''+mobilenum+'\',\''+ele_id+'\')');
 		}
 		else{
 			SuccessMsg(getErrorMessage(resp));		
@@ -973,6 +987,7 @@ function resendConfirmationCodeForMob(c_code,mobilenum,ele_id){
 				$("#view_all_phonenumber #phonenumber_password").hide();
 				$("#view_all_phonenumber #select_existing_phone").hide();
 				$("#view_all_phonenumber #select_phonenumber").hide();
+				$("#view_all_phonenumber #add_mobile_back").hide();
 				$("#phonenumber_popup_contents form").attr("name","mobile_otp_resend_form_popup");
 				$("#phonenumber_popup_contents form").attr("action","");
 				$("#view_all_phonenumber #otp_phonenumber").show();
@@ -998,20 +1013,46 @@ function resendConfirmationCodeForMob(c_code,mobilenum,ele_id){
 					resend_countdown("#phonenumber_web_more #emailOTP_resend");//No I18N 
 				});
 			});
+			if(resp.status_code == 201 && resp.code == 'MOB200') {
+				cryptData = resp.phone.encrypted_data;
+			}
 		}
-	},
+	}
+	payload.POST("self","self").then(successCallback, //No I18N
 	function(resp)
 	{
 		removeButtonDisable($("#phonenumber_web_more .inline_action"));
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-		{
-			relogin_warning();
-			var service_url = euc(window.location.href);
-			$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+		function errHandler(err) {
+			if(err.cause && err.cause.trim() === "invalid_password_token") {
+				relogin_warning();
+				var service_url = euc(window.location.href);
+				$("#new_notification").attr("onclick","window.open('"+contextpath + err.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+			} else {
+				showErrorMessage(getErrorMessage(err));
+			}
 		}
-		else
-		{
-			showErrorMessage(getErrorMessage(resp));
+		if (handleCaptcha().isRequired(resp)) {
+			handleCaptcha(resp, {
+				backBtn: !hasViewMore,
+				callbacks: {
+					relogin: errHandler,
+					beforeInit: function() {
+						if(!hasViewMore) {
+							$('#popup_mobile_action').remove();
+							$('#common_popup .popuphead_define').text(''); //No I18N	
+						}
+					}
+				}
+			}).init(!hasViewMore ? '#verify_mobile_captcha' : '#view_all_phonenumber .web_email_specific_popup .inline_action', payload, ["self","self"]).then(successCallback,function(e){ //No I18N
+				if(!hasViewMore) {
+					showVerifyMobileNum(c_code,mobilenum,ele_id);
+				}
+				if(e) {
+					errHandler(e)
+				}
+			});
+		} else {
+			errHandler(resp);
 		}
 	});	
 }
@@ -1127,9 +1168,7 @@ function for_mobile_specific_email(id)
 			}
 		}
 		if($("#"+id+" .action_icons_div .icon-delete").css('display') != 'none'){
-			$("#btn_to_delete").show();
-			$("#btn_to_delete").attr("onclick","show_mob_conform('email_delete','"+formatMessage(err_email_sure_delete1,email)+"')");
-			$("#btn_to_delete span:last-child").text(i18nkeys["IAM.CONFIRM.POPUP.EMAIL"]);//No I18N
+			showMobViewEmailDeleteBtn(email);
 		}
 		/*if($("#"+id+" .action_icons_div").children().hasClass("icon-delete")){
 			$("#btn_to_delete").show();
@@ -1146,11 +1185,21 @@ function for_mobile_specific_email(id)
 			$("#btn_to_resend").show();
 			$("#btn_to_resend").attr("onclick","show_mob_conform('email_resend','"+formatMessage(em_resend_conf,email)+"')");
 		}*/
-		if(hasOneEmailNoOtherRecovery() && $("#btn_to_delete").is(":visible")){
+		if(hasOneEmailNoOtherRecovery()){
 			$("#btn_to_delete").hide();
+		}
+		else{
+			showMobViewEmailDeleteBtn(email);
 		}		
 		closePopup(close_for_mobile_specific,"Email_popup_for_mobile");//No I18N
 	}
+}
+
+function showMobViewEmailDeleteBtn(email){
+	$("#btn_to_delete").show();
+	var emailDeleteMsg = profile_data.primary_email == email ? err_email_sure_delete_prim : err_email_sure_delete1;
+	$("#btn_to_delete").attr("onclick","show_mob_conform('email_delete','"+formatMessage(emailDeleteMsg,email)+"')");
+	$("#btn_to_delete span:last-child").text(i18nkeys["IAM.CONFIRM.POPUP.EMAIL"]);//No I18N
 }
 
 
@@ -1201,8 +1250,6 @@ function show_all_emails()
 			$("#view_all_email #prim_em_verify_now_0").removeAttr("onclick");
 			$("#view_all_email .verify_now_text").removeAttr("onclick");//No I18N
 			$("#view_all_email .field_email .action_icons_div span").removeAttr("onclick");
-			tooltip_Des("#emails_web_more .verify_icon");//No I18N
-			$("#emails_web_more .verify_icon").attr("title",resend_tooltip);
 			$("#view_all_email .field_email .action_icons_div span, #view_all_email #prim_em_verify_now_0, #view_all_email .verify_now_text").click(function(){
 				
 				var id=$(this).attr('id');
@@ -1342,8 +1389,9 @@ function show_all_emails()
 							$(deleteele).append("<span class='link_eml_del'></span>");
 							$(deleteele).find(".link_eml_del").html(linked_email_del);
 						}
-						$(deleteele).append('<button id="delete_specific_email" class="primary_btn_check inline_btn nobottom_margin_btn delete_btn">'+iam_continue+'</button>');
-						$("#delete_specific_email").click(function(){	
+						$(deleteele).append('<button id="delete_specific_email" class="primary_btn_check inline_btn nobottom_margin_btn delete_btn delete_btn_color">'+i18nkeys["IAM.DELETE"]+'</button>');
+						$("#delete_specific_email").unbind();
+						$("#view_all_email #emailID_num_"+id_num+" .inline_action #delete_specific_email").click(function(){	
 				        		new URI(Email,"self","self",emailid).DELETE().then(function(resp)	//No I18N
 				    					{
 				    						delete_email_callback(resp,emailid);
@@ -1398,7 +1446,6 @@ function show_all_emails()
 		}
 		tooltipSet("#emails_web_more .action_icon");//No I18N
 		tooltipSet(".field_email .action_icon");	//No I18N
-		tooltipSet("#emails_web_more .verify_icon");					//No I18N
 		$("#emails_web_more").focus();
 		adjust_email_width();
 		closePopup(closeview_all_email_view,"emails_web_more");//No I18N
@@ -1450,7 +1497,6 @@ function load_phonedetails(policies,phoneDetail)
 		      $("#phone_add_view_more").addClass("hide");
 		      $(".separate_addnew").hide();
 		      
-		      $("#addfrom_backup").hide();
 	    	  $("#add_newnobackup").show();
 		}
 		else
@@ -1468,7 +1514,6 @@ function load_phonedetails(policies,phoneDetail)
 		    	  var number= phoneDetail.tfa[tfa_num[i]];
 		    	  $('#backupnumber').append($("<option></option>").attr("value",tfa_num[i]).text(phonePattern.setMobileNumFormat(number.display_number)));
 		      }
-		      $("#addfrom_backup").hide();
 	    	  $("#add_newnobackup").show();
 	    	  if(	jQuery.isEmptyObject(phoneDetail.recovery)	&&	jQuery.isEmptyObject(phoneDetail.unverfied)	&& jQuery.isEmptyObject(phoneDetail.tfa))
 	    	  {
@@ -1486,7 +1531,6 @@ function load_phonedetails(policies,phoneDetail)
 		    }
 			else
 			{
-				  $("#addfrom_backup").hide();
 		    	  $("#add_newnobackup").show();
 			}
 			
@@ -1548,7 +1592,7 @@ function load_phonedetails(policies,phoneDetail)
 		            $("#mobile_num_0 .remove_cta").attr("onclick","unset_login_number('"+ login_mobile +"') ");
 		            $("#mobile_num_0 .action_icons_div_ph #swap_number").attr("id",'ph_icon_sawpNum_0');//No i18N
 		            
-		            if(phoneDetail.motp_allowed_by_org && phoneDetail.show_swap_option)
+		            if(phoneDetail.motp_allowed_by_org)
 	          		{
 		          		$("#mobile_num_0 .action_icons_div_ph #ph_icon_sawpNum_0").removeClass("hide");//No i18N
 		          		$("#ph_icon_sawpNum_0").attr("onclick","swap_mfa_recovery_numbers_popup(0,\'"+current_phone.display_number+"\',\'"+current_phone.created_time_elapsed+"\',\'recoveryNum\',\'phnNum_type\')");
@@ -1608,7 +1652,7 @@ function load_phonedetails(policies,phoneDetail)
 		          	var onclick;
 		          	$("#mobile_num_"+sec_count+" .action_icons_div_ph #icon-primary").attr("id",'ph_icon_MKprim_'+sec_count);//No i18N
 		          	$("#mobile_num_"+sec_count+" .action_icons_div_ph #swap_number").attr("id",'ph_icon_sawpNum_'+sec_count);//No i18N
-		          	if(phoneDetail.motp_allowed_by_org && phoneDetail.show_swap_option)
+		          	if(phoneDetail.motp_allowed_by_org)
 	          		{
 		          		$("#mobile_num_"+sec_count+" .action_icons_div_ph #ph_icon_sawpNum_"+sec_count).removeClass("hide");//No i18N
 	          		} else {
@@ -1633,7 +1677,6 @@ function load_phonedetails(policies,phoneDetail)
 		          	$("#ph_icon_sawpNum_"+sec_count).attr("onclick","swap_mfa_recovery_numbers_popup(\'"+sec_count+"\',\'"+current_phone.display_number+"\',\'"+current_phone.created_time_elapsed+"\',\'recoveryNum\',\'phnNum_type\')");
 		        }
 		    	$("#mobile_num_"+sec_count+" .mobile_dp").addClass(color_classes[gen_random_value()]);
-		    	$("#mobile_num_"+sec_count+" .action_icons_div_ph .verify_icon").remove();
 		    	$("#mobile_num_"+sec_count+" .mfa_tag").remove();
 		      }
 	    	} else {
@@ -1663,10 +1706,11 @@ function load_phonedetails(policies,phoneDetail)
 		        	
 		        	$("#mobile_num_"+sec_count).attr("onclick","for_mobile_specific('mobile_num_"+sec_count+"') "); 
 		        	
-		        	$("#mobile_num_"+sec_count+" .Mob_resend_confirmation").attr("id",'mob_icon_resend_'+sec_count);
 		            $("#mobile_num_"+sec_count+" .mobile_dp").addClass(color_classes[gen_random_value()]);
 		            $("#mobile_num_"+sec_count+" .mobile_info .emailaddress_text").html(phonePattern.setMobileNumFormat(current_phone.display_number));
-		            $("#mobile_num_"+sec_count+" .mobile_info .emailaddress_addredtime").addClass("red");
+					$("#mobile_num_"+sec_count+" .mobile_info .verify_now_text").attr("onclick",'showVerifyMobileNum(\''+current_phone.country_code+'\',\''+current_phone.mobile+'\',\''+sec_count+'\')'); //No i18N
+					$("#mobile_num_"+sec_count+" .mobile_info .verify_now_text").attr("id",'unverified_mobile_'+sec_count); //No i18N
+		            $("#mobile_num_"+sec_count+" .mobile_info .emailaddress_addredtime").addClass("red"); 
 		            $("#mobile_num_"+sec_count+" #phonenumber_infohover").attr("id",'phonenumber_info'+sec_count);
 	
 		            $("#mobile_num_"+sec_count+" .action_icons_div_ph #icon-primary").remove();
@@ -1678,24 +1722,13 @@ function load_phonedetails(policies,phoneDetail)
 		          	del_onclick = del_onclick.split(");");
 		          	del_onclick[0]+=",'"+phonePattern.setMobileNumFormat(current_phone.mobile,current_phone.country_code)+"');";
 		            $("#ph_icon_delete_"+sec_count).attr("onclick",del_onclick[0]);
-		       
-		            $("#mobile_num_"+sec_count+" .resend_options").attr("id",'resend_'+sec_count);
-			        $("#mobile_num_"+sec_count+" #resend_"+sec_count+" .resend_mob_text").html(formatMessage(mob_resend_conf, phonePattern.setMobileNumFormat(current_phone.mobile,current_phone.country_code)));
-			        $("#mobile_num_"+sec_count+" #resend_"+sec_count+" .resend_grn_btn").attr("onclick",'resendConfirmationCodeForMob(\''+current_phone.country_code+'\',\''+current_phone.mobile+'\',\''+sec_count+'\')');
-			    	
-		            tippy("#mob_icon_resend_"+sec_count, {		  //No I18N
-		            	animation: 'scale',					//No I18N
-		            	trigger: 'click mouseenter',				//No I18N
-		            	appendTo:document.querySelector('#mob_icon_resend_'+sec_count).parentNode,//No I18N
-		            	theme:'light',				//No I18N
-		            	livePlacement: false,
-		            	maxWidth: '300px',			//No I18N
-		            	arrow: true,
-		            	html: '#mobile_num_'+sec_count+' #resend_'+sec_count,		//No I18N
-		            	hideOnClick: true,
-		            	interactive: true
-		            });
 		            $("#mobile_num_"+sec_count+" .profile_tags").remove();
+		            if(isMobile){
+						$("#mobile_num_"+sec_count+" .mobile_info #unverified_tap_to_more").removeClass("hide");
+					}
+					else{
+						$("#mobile_num_"+sec_count+" .mobile_info .verify_now_text").removeClass("hide");
+					}
 		      }
 		  } else {
 	    		$(".phonenumber_unverfied").html("");
@@ -1787,7 +1820,7 @@ function load_phonedetails(policies,phoneDetail)
 		          $("#mobile_num_"+sec_count+" .action_icons_div_ph #icon-primary").attr("id",'ph_icon_MKprim_'+sec_count);//No i18N
 		          $("#ph_icon_sawpNum_"+sec_count).removeClass("hide");//No i18N
 		          $("#mobile_num_"+sec_count+" .action_icons_div_ph #swap_number").attr("id",'ph_icon_sawpNum_'+sec_count);//No i18N
-		          if(profile_data.Phone.block_add_recovery == undefined && profile_data.Phone.show_swap_option){
+		          if(phoneDetail.block_add_recovery == undefined && phoneDetail.motp_allowed_by_org){
 		        	  $("#ph_icon_sawpNum_"+sec_count).attr("onclick","swap_mfa_recovery_numbers_popup(\'"+sec_count+"\',\'"+current_phone.display_number+"\',\'"+current_phone.created_time_elapsed+"\',\'mfaNum\',\'phnNum_type\')");
 		          }else{
 		        	  $("#ph_icon_sawpNum_"+sec_count).addClass("hide");//No i18N
@@ -1818,7 +1851,6 @@ function load_phonedetails(policies,phoneDetail)
 		          $("#mobile_num_"+sec_count+" #phonenumber_infohover").attr("id",'phonenumber_info'+sec_count);
 		          $("#mobile_num_"+sec_count+" .action_icons_div_ph .icon-delete").attr("id",'ph_icon_delete_'+sec_count);//No i18N			      	
 		          $("#mobile_num_"+sec_count+" .action_icons_div_ph .icon-edit").remove();
-		          $("#mobile_num_"+sec_count+" .action_icons_div_ph .verify_icon").remove();
 		          $("#mobile_num_"+sec_count+" .recovery_tag").remove();
 			      }  
 		      }
@@ -1844,8 +1876,6 @@ function load_phonedetails(policies,phoneDetail)
 	      if((sec_count > 3 && !primary_exist)  ||  (primary_exist && sec_count > 3))
 	      {
 	    	  $("#addphoneonly").hide();
-	    	  $("#addTFAphoneonly").hide();
-	        	$("#addTFAphone").hide();
 	      }
 
 	      else
@@ -1853,7 +1883,7 @@ function load_phonedetails(policies,phoneDetail)
 	    	  $("#phone_add_view_more").hide();
 	    	if(jQuery.isEmptyObject(phoneDetail.recovery)		&&		jQuery.isEmptyObject(phoneDetail.unverfied)    &&    jQuery.isEmptyObject(phoneDetail.tfa))
 	    	{
-	    		$("#addTFAphoneonly").hide();$("#addphoneonly").hide();
+	    		$("#addphoneonly").hide();
 	    		$("#no_phnum_add_here").removeClass("hide");
 			      if(phoneDetail.block_add_recovery){
 			    	  $("#no_phnum_add_here #add_mob_number_state").hide();
@@ -1866,9 +1896,8 @@ function load_phonedetails(policies,phoneDetail)
 	    	}
 	    	else
 	    	{
-		        	$("#addTFAphoneonly").hide();
 		        	if(phoneDetail.block_add_recovery){
-		        		$("#addTFAphoneonly").hide();$("#addphoneonly").hide();
+		        		$("#addphoneonly").hide();
 		        	}
 	    	}
 
@@ -1965,6 +1994,7 @@ function deleteMobile(title,mobile)
 		    	return false;
 		    }
 		);
+	deleteBtnTextChange();
 	$("#confirm_popup button:first").focus();
 }
 
@@ -2376,16 +2406,6 @@ function changeprim_phonum_callback(phObj,phnum,number_type)
 //add Phone Number	
 function show_add_mobilescreen(heading,description,button,action)
 {
-	if(profile_data.Phone!=undefined	&&	profile_data.Phone.tfa!=undefined)
-	{
-		$("#addToRecovery").hide();
-		$("#addToRecovery").removeClass("pop_anim");		
-	}
-	else{
-		$("#addToRecovery").slideUp(300,function(){
-			$("#addToRecovery").removeClass("pop_anim");
-		});
-	}
 	$('#empty_phonenumber_input').prop("readonly", false);
 	$("#common_popup").addClass("default_popup");
 	$('#common_popup .popuphead_text').html(heading);
@@ -2437,203 +2457,66 @@ function NewPhoneNO(form,callback)
 		var NewPhone = $('#'+form.id).find('input[name="mobile_no"]').val().replace(/[+ \[\]\(\)\-\.\,]/g,'');
 		remove_error();
 		if(!validateMobile(NewPhone)){
-			$('input[name="mobile_no"]').parents('.field').append( '<div class="field_error">'+err_enter_valid_mobile+'</div>' );
+			$('input[name="mobile_no"]').focus().parents('.field').append( '<div class="field_error">'+err_enter_valid_mobile+'</div>' );
 			return false;
 		}
 		disabledButton(form);
-		removeCaptchaError();
-		var parms=
-		{
-			"mobile":NewPhone,//No I18N
-			"countrycode":$('#'+form.id).find('select[name="countrycode"]').val()//No I18N
-		};
-		var payload = Phone.create(parms);
-		payload.POST("self","self").then(function(resp)	//No I18N
-		{
-			callback(resp);
-			removeButtonDisable(form);
-		},
-		function(resp)
-		{
-			removeButtonDisable(form);
-			if('cause' in resp){ //no i18N
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") //no i18N
-				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			}
-			else if('errors' in resp) //no i18N
+		var payload
+		encryptData.encrypt([NewPhone]).then(function(encryptedloginid) {
+			encryptedmobilenumber = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+			var parms=
 			{
-				if(typeof resp.errors == 'object'){ //no i18N
-						if(resp.errors[0].code == "IN108"){ //no i18N
-							captcha_digest=resp.cdigest;
-							loadCircleAnimation(true);
-							popup_animation();
-							changeHip(resp);
-						}
-						else{
-							showErrorMessage(getErrorMessage(resp));
-						}
-					}
-					else if(typeof resp.errors == 'string'){ //no i18N
-						showErrorMessage(getErrorMessage(resp));
+				"mobile":encryptedmobilenumber,//No I18N
+				"countrycode":$('#'+form.id).find('select[name="countrycode"]').val()//No I18N
+			};
+			payload = Phone.create(parms);
+			payload.POST("self","self").then(function(resp)	//No I18N
+			{
+				callback(resp);
+				removeButtonDisable(form);
+			},
+			function(resp)
+			{
+				function errHandler(err){
+					if(err.cause && err.cause.trim() === "invalid_password_token"){ //No i18N{
+						relogin_warning();
+						var service_url = euc(window.location.href);
+						$("#new_notification").attr("onclick","window.open('"+contextpath + err.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+					}else{
+						showErrorMessage(getErrorMessage(err));
 					}
 				}
+				if (handleCaptcha().isRequired(resp)) {
+					handleCaptcha(resp, {
+						backBtn: true,
+						callbacks: {
+							relogin: errHandler,
+							beforeInit: function() {
+								$(form).hide();
+								$('#common_popup .popuphead_define').text(''); //No I18N
+							}
+						}
+					}).init('#add_mobile_captcha', payload, ["self","self"]).then(function(res) { //No I18N
+						$(form).show();
+						callback(res);
+					},function(e){
+						$(form).show();
+						$("#common_popup .popuphead_define").html(i18nMobkeys['IAM.SETUP.TFA.MOBILE.DESC']);	//No I18N
+						if(e) {
+							errHandler(e)
+						}
+					});
+				} else {
+					errHandler(resp);
+				}
+				removeButtonDisable(form);
+				
+			});
 		});
 		return;
 }
 
 var cryptData;
-
-//enter OTP to get verify the mobile number
-function showCaptchaError(message){
-	$("#captcha").addClass("errorborder");
-	$("#captcha_container .captcha_field_error").addClass("errorlabel margin_captcha_field_error").html(message).slideDown(200);
-	$("#captcha_container").attr('onkeypress','removeCaptchaError()').focus();
-}
-
-function removeCaptchaError(){
-	$("#captcha").removeClass("errorborder");
-	$("#captcha_container .captcha_field_error").removeClass("errorlabel margin_captcha_field_error").text("").slideUp(200);
-}
-
-function verifyCaptcha(form){
-	remove_error("#captcha_container");//no i18N
-	removeCaptchaError();
-	var captchavalue = $("#captcha").val();
-	if(captchavalue == null || captchavalue == "" || captchavalue == "null" || /[^a-zA-Z0-9\-\/]/.test( captchavalue ) || captchavalue.length<6) 
-	{		
-		showCaptchaError(i18nMobkeys["IAM.SIGNIN.ERROR.CAPTCHA.REQUIRED"]);
-		return false;
-	}
-	disabledButton(form);
-	var parms=
-	{
-		"mobile":$("#select_phonenumber_input").val().replace(/[+ \[\]\(\)\-\.\,]/g,''),//No I18N
-		"countrycode":$('select[name="countrycode"]').val(),//No I18N
-		"cdigest":captcha_digest,//No I18N
-		"captcha":captchavalue //no i18N
-		
-	};
-	var payload = Phone.create(parms);
-	payload.POST("self","self").then(function(resp)	//No I18N
-	{
-		popup_animation();
-		Otp_verify_show(resp);
-		removeButtonDisable(form);
-	},
-	function(resp)
-	{
-		removeButtonDisable(form);
-		if('cause' in resp){
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-			{
-				relogin_warning();
-				var service_url = euc(window.location.href);
-				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-			}
-			else{
-				showErrorMessage(getErrorMessage(resp));
-			}
-		}
-		else if('errors' in resp)
-		{
-			if(typeof resp.errors == 'object'){
-					if(resp.errors[0].code == "IN107"){//phObj.errors.code=='IN108' && phObj.resource_name=='phone'
-						captcha_digest=resp.cdigest;
-						$("#reload").addClass("load_captcha_btn");
-						showHip(resp);
-						showCaptchaError(resp.localized_message);
-						setTimeout(function(){
-							$("#reload").removeClass("load_captcha_btn");
-						},500);
-					}
-					else{
-						showErrorMessage(getErrorMessage(resp));
-					}
-				}
-				else if(typeof resp.errors == 'string'){
-					showErrorMessage(getErrorMessage(resp));
-				}
-			}
-			
-	});
-}
-
-function loadCircleAnimation(add){
-	if(add){
-		$("#captcha_container .loader").show().css("z-index",'5');
-		$("#captcha_container .box_blur").show();
-		$("#captcha_container").show();
-	}
-	else{
-		$("#captcha_container .box_blur").hide();
-		$("#captcha_container .loader").hide();
-	}
-}
-
-function popup_animation(){
-	if($("#select_phonenumber").is(':visible')){
-		$("#select_phonenumber").hide();
-	}
-	else{
-		$("#captcha_container").hide();
-		$("#add_mobile_back").show();
-		$("#otp_phonenumber").show();
-	}
-}
-
-function showHip(resp){
-	if(resp.cause==="throttles_limit_exceeded"){
-		captcha_digest="";
-		showCaptchaImg();
-	}
-	if('cdigest' in resp){
-		captcha_digest=resp.cdigest;
-	}
-	else if('digest' in resp){
-		captcha_digest=resp.digest;
-	}
-	Captcha.GET(captcha_digest).then(showCaptchaImg);
-}
-
-function reloadCaptcha(){
-	var params={"digest":captcha_digest,"usecase":"sms"};//no i18N
-	var payload = Captcha.create(params);
-	$("#reload").addClass("load_captcha_btn");
-	payload.POST().then(showHip);
-	setTimeout(function(){
-		$("#reload").removeClass("load_captcha_btn");
-	},500);
-}
-
-function changeHip(params){
-	showHip(params);
-	$(".popuphead_define").text(i18nMobkeys["IAM.PHONENUMBERS.CAPTCHA.DESC"]);//no i18N
-	$("#popup_mobile_action").text("Next"); //No I18N
-	$("#popup_mobile_action").attr("onclick","verifyCaptcha(document.addphonenum)");
-	setTimeout(function(){
-		$("#reload").removeClass("load_captcha_btn");
-	},500);
-}
-
-function showCaptchaImg(resp){
-	if(captcha_digest == '' || resp.cause == "throttles_limit_exceeded" || resp.image_bytes == '' ){
-		$("#hip")[0].src=captcha_error_img;
-		return false;
-	}
-	else if(resp.status == "success" && (resp.image_bytes!='' && resp.image_bytes != null )){
-		$("#captcha").val("");
-		$("#hip")[0].src=resp.image_bytes;
-		if(!isMobile){$("#hip").css("mix-blend-mode","multiply");}
-		$("#captcha").attr('onclick','removeCaptchaError()');
-	}
-}
 
 function Otp_verify_show(phObj)
 {	
@@ -2647,8 +2530,7 @@ function Otp_verify_show(phObj)
 			$("#select_existing_phone").hide();
 			$("#otp_phonenumber").show();
 			$("#select_phonenumber").hide();
-			
-			$('#popup_mobile_action').html(iam_verify_phone_number);
+			$('#popup_mobile_action').removeAttr("onclick").html(iam_verify_phone_number);//no i18n
 			$('#common_popup .popuphead_text').html(i18nkeys["IAM.INVITAION.VERIFY.MOBILE"]);	// No I18N
 			$("#common_popup .popuphead_define").html(formatMessage(otp_description,phonePattern.setMobileNumFormat($('#select_phonenumber').find('input[name="mobile_no"]').val(),$("#countNameAddDiv").find("option:selected").val()))); // No I18N
 			$('#common_popup #phoneNumberform').attr("onsubmit","verifyOTP(document.addphonenum,new_phonum_callback);return false;");
@@ -2671,7 +2553,6 @@ function Otp_verify_show(phObj)
 			$("#otp_phonenumber_input").click();
 			control_Enter("a"); //No I18N
 			closePopup(close_popupscreen,"common_popup",true);//No I18N
-			loadCircleAnimation(false);
 		}
 	}
 }
@@ -2681,9 +2562,7 @@ function cancelOTPVerify(){
 	$("#otp_phonenumber").hide();
 	$("#select_phonenumber").show();
 	$('#common_popup .popuphead_text').html(i18nkeys["IAM.ADD.CONTACT.MOBILE"]);	//No I18N
-	$('#popup_mobile_action').html(iam_verify_phone_number);
-	$('#popup_mobile_action').siblings("#add_mobile_back").hide();
-	$('#popup_mobile_action').html(i18nkeys["IAM.ADD"]);						//No I18N
+	$('#popup_mobile_action').html(i18nkeys["IAM.ADD"]).removeAttr("onclick").siblings("#add_mobile_back").hide();//no i18n
 	$('#common_popup #phoneNumberform').attr("onsubmit","NewPhoneNO(this,Otp_verify_show);return false;");
 	$("#common_popup .popuphead_define").html(i18nMobkeys['IAM.SETUP.TFA.MOBILE.DESC']);	//No I18N
 }
@@ -2695,31 +2574,35 @@ function PhoneOTP_resendcode()
 		var PHid=	$('#select_phonenumber').find('input[name="mobile_no"]').val();	
 		if(PHid!="")
 		{	
-			var parms=
-			{
-				"mobile":PHid,//No I18N
-				"countrycode":$('#select_phonenumber').find('select[name="countrycode"]').val()	//No I18N
-			};
-	
-			var payload = Phone.create(parms);
-			payload.POST("self","self").then(function(resp)	//No I18N
-			{
-				SuccessMsg(getErrorMessage(resp));
-				resend_countdown("#phoneNumberform #emailOTP_resend");//No I18N 
-			},
-			function(resp)
-			{
-				if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+			var payload;
+			encryptData.encrypt([PHid]).then(function(encryptedloginid) {
+				encryptedmobilenumber = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+				var parms=
 				{
-					relogin_warning();
-					var service_url = euc(window.location.href);
-					$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-				}
-				else
+					"mobile":encryptedmobilenumber,//No I18N
+					"countrycode":$('#select_phonenumber').find('select[name="countrycode"]').val()	//No I18N
+				};
+				payload = Phone.create(parms);
+				payload.POST("self","self").then(function(resp)	//No I18N
 				{
-					showErrorMessage(getErrorMessage(resp));
-				}
-			});	
+					SuccessMsg(getErrorMessage(resp));
+					resend_countdown("#phoneNumberform #emailOTP_resend");//No I18N 
+				},
+				function(resp)
+				{
+					if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+					{
+						relogin_warning();
+						var service_url = euc(window.location.href);
+						$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+					}
+					else
+					{
+						showErrorMessage(getErrorMessage(resp));
+					}
+				});	
+			});
+			
 		}
 	}
 }
@@ -2901,84 +2784,20 @@ function new_phonum_callback(phdet,newPH,old_num)
 	}
 }
 
-//change tfa backup to recovery
-function show_tfa_switch_mobilescreen()
-{
-	remove_error();
-	popup_blurHandler('6');
-	$("#addToRecovery").show(0,function(){
-		$("#addToRecovery").addClass("pop_anim");
-	});
-	$('#backup_to_recovery')[0].reset();
-	
-	if(!isMobile)
-	{
-		$("#backupnumber").select2();
-	}
-	$("#addToRecovery .select2-selection").focus();
-	closePopup(close_converttfa_popup,"addToRecovery");		//No I18N
-}
-
-function close_converttfa_popup()
-{
-	popupBlurHide("#addToRecovery"); //No I18N
-}
-
-function switchBackupNoForRecovery(f,callback)
-{
-	if(validateForm(f))
-	{	
-		var phnum=$("#backupnumber").val();
-
-
-		var payload = MakeRecoveryPhone.create();
-		payload.PUT("self","self",phnum).then(function(resp)	//No I18N
-		{
-			callback(resp,phnum);
-		},
-		function(resp)
-		{
-			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-			{
-				relogin_warning();
-				var service_url = euc(window.location.href);
-				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-			}
-			else
-			{
-				showErrorMessage(getErrorMessage(resp));
-			}
-		});
-		
-	}
-	return;
-}
-
-function newRecovery(phdet,phnum)
-{
-	SuccessMsg(getErrorMessage(phdet));
-	
-	profile_data.Phone.recovery[phnum]=phdet.makerecovery;
-	delete profile_data.Phone.tfa[phnum];
-	close_converttfa_popup();
-	
-	load_phonedetails(profile_data.Policies,profile_data.Phone);
-	if($("#view_all_phonenumber").is(":visible")){
-		closeview_all_phonenumber_view();
-	}
-}
-
 
 function resendConfirmationCodeForPhone_mob(c_code,mobilenum) {
-	var parms=
-	{
-		"mobile":mobilenum,//No I18N
-		"countrycode":c_code//No I18N
-	};
+	var payload;
+	encryptData.encrypt([mobilenum]).then(function(encryptedloginid) {
+		encryptedmobilenumber = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var parms=
+		{
+			"mobile":encryptedmobilenumber,//No I18N
+			"countrycode":c_code//No I18N
+		};
+		payload = Phone.create(parms);
+	});
 	disabledButton($("#Email_popup_for_mobile .option_button"));
-	var payload = Phone.create(parms);
-	payload.POST("self","self").then(function(resp)	//No I18N
-	{
+	function successCallback(resp){
 		removeButtonDisable($("#Email_popup_for_mobile .option_button"));
 		SuccessMsg(getErrorMessage(resp));
 		cryptData = resp.phone.encrypted_data;
@@ -3013,81 +2832,100 @@ function resendConfirmationCodeForPhone_mob(c_code,mobilenum) {
 			
 			$("#Email_popup_for_mobile #action_otp_conform").attr('onclick','return verifyOTP(document.resend_otp_ver_form_mb,new_phonum_callback)');
 		})
-	},
-	function(resp)
-	{
+	}
+	payload.POST("self","self").then(successCallback, function(resp){ //No I18N
 		removeButtonDisable($("#Email_popup_for_mobile .option_button"));
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-		{
-			relogin_warning();
-			var service_url = euc(window.location.href);
-			$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+		function errHandler(err) {
+			if(err.cause && err.cause.trim() === "invalid_password_token") { //No I18N
+				relogin_warning();
+				var service_url = euc(window.location.href);
+				$("#new_notification").attr("onclick","window.open('"+contextpath + err.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+			} else {
+				showErrorMessage(getErrorMessage(err));
+			}
 		}
-		else
-		{
-			showErrorMessage(getErrorMessage(resp));
+		if (handleCaptcha().isRequired(resp)) {
+			handleCaptcha(resp, {
+				callbacks: {
+					relogin: errHandler,
+					beforeInit: function() {
+						$('#Email_popup_for_mobile .option_button').hide(); //No I18N	
+					}
+				}
+			}).init('#Email_popup_for_mobile .mob_popuphead_define', payload, ["self","self"]).then(successCallback,function(e){ //No I18N
+				show_mob_conform('pho_resend', formatMessage(mob_resend_conf,mobilenum)); //No I18N
+				$('#Email_popup_for_mobile .option_button').show();  //No I18N
+				errHandler(e);
+			});
+		} else {
+			errHandler(resp);
 		}
 	});	
 }
 
 //for viewmorw phonenumbers.jsp
 function resendEmailConfirmLink_mobile(emailid){
-	var parms=
-	{
-		"email_id":emailid//No I18N
-	};
-	disabledButton($("#Email_popup_for_mobile .option_button"));
-	var payload = Email.create(parms);
-	payload.POST("self","self").then(function(resp)	//No I18N
-	{	
-		removeButtonDisable($("#Email_popup_for_mobile .option_button"));
-		SuccessMsg(getErrorMessage(resp));
-		cryptData = resp.email.encrypted_data;
-		var str = $("#email_otp_text").html();
-		$("#Email_popup_for_mobile .option_container").slideUp(300,function(){
-			$("#Email_popup_for_mobile .option_button").hide();
-			$("#Email_popup_for_mobile .popuphead_details").html('<span class="popuphead_text">'+i18nkeys["IAM.PROFILE.EMAIL.VERIFY.HEADING"]+'</span>');
-			$("#Email_popup_for_mobile .mob_popuphead_define").html(formatMessage(str,emailid));
-			$("#Email_popup_for_mobile .otp_mobile_form").show();
-			$("#Email_popup_for_mobile .otp_field").attr("id","otp_emailaddress");
-			$("#Email_popup_for_mobile #mob_otp_email_input").val("");
-			splitField.createElement('mob_otp_email_input',{
-				"splitCount":otp_length,					// No I18N
-				"charCountPerSplit" : 1,		// No I18N
-				"isNumeric" : true,				// No I18N
-				"otpAutocomplete": true,		// No I18N
-				"customClass" : "customOtp",	// No I18N
-				"inputPlaceholder":'&#9679;'	// No I18N
+	var payload;
+	encryptData.encrypt([emailid]).then(function(encryptedloginid) {
+		encryptedemailId = typeof encryptedloginid[0] == 'string' ? encryptedloginid[0] : encryptedloginid[0].value;
+		var parms=
+		{
+			"email_id":encryptedemailId//No I18N
+		};
+		payload = Email.create(parms);
+		disabledButton($("#Email_popup_for_mobile .option_button"));
+		payload.POST("self","self").then(function(resp)	//No I18N
+		{	
+			removeButtonDisable($("#Email_popup_for_mobile .option_button"));
+			SuccessMsg(getErrorMessage(resp));
+			cryptData = resp.email.encrypted_data;
+			var str = $("#email_otp_text").html();
+			$("#Email_popup_for_mobile .option_container").slideUp(300,function(){
+				$("#Email_popup_for_mobile .option_button").hide();
+				$("#Email_popup_for_mobile .popuphead_details").html('<span class="popuphead_text">'+i18nkeys["IAM.PROFILE.EMAIL.VERIFY.HEADING"]+'</span>');
+				$("#Email_popup_for_mobile .mob_popuphead_define").html(formatMessage(str,emailid));
+				$("#Email_popup_for_mobile .otp_mobile_form").show();
+				$("#Email_popup_for_mobile .otp_field").attr("id","otp_emailaddress");
+				$("#Email_popup_for_mobile #mob_otp_email_input").val("");
+				splitField.createElement('mob_otp_email_input',{
+					"splitCount":otp_length,					// No I18N
+					"charCountPerSplit" : 1,		// No I18N
+					"isNumeric" : true,				// No I18N
+					"otpAutocomplete": true,		// No I18N
+					"customClass" : "customOtp",	// No I18N
+					"inputPlaceholder":'&#9679;'	// No I18N
+				});
+				$('#mob_otp_email_input #mob_otp_email_input_full_value').attr('data-validate','zform_field');
+				$('#mob_otp_email_input #mob_otp_email_input_full_value').attr('name','otp_code');
+				$('#mob_otp_email_input .customOtp').attr('onkeypress','remove_error()');
+				$("#Email_popup_for_mobile .otp_mobile_form form").attr('name','resend_otp_ver_form');
+				$("#Email_popup_for_mobile .otp_mobile_form form").attr('id','resend_otp_ver_form');
+				$("#Email_popup_for_mobile  #email_conf_input").val(emailid);
+				$("#Email_popup_for_mobile .option_container").slideDown(300,function(){	
+					resend_countdown("#Email_popup_for_mobile #emailOTP_resend");//No I18N
+					$("#Email_popup_for_mobile #emailOTP_resend").show();
+					$("#mob_otp_email_input").click();
+				});
+				
+				$("#Email_popup_for_mobile #action_otp_conform").attr('onclick','return confirm_add_email(document.resend_otp_ver_form,resendEmailConfirmLink_mobile_callback)');
 			});
-			$('#mob_otp_email_input #mob_otp_email_input_full_value').attr('data-validate','zform_field');
-			$('#mob_otp_email_input #mob_otp_email_input_full_value').attr('name','otp_code');
-			$('#mob_otp_email_input .customOtp').attr('onkeypress','remove_error()');
-			$("#Email_popup_for_mobile .otp_mobile_form form").attr('name','resend_otp_ver_form');
-			$("#Email_popup_for_mobile .otp_mobile_form form").attr('id','resend_otp_ver_form');
-			$("#Email_popup_for_mobile  #email_conf_input").val(emailid);
-			$("#Email_popup_for_mobile .option_container").slideDown(300,function(){	
-				resend_countdown("#Email_popup_for_mobile #emailOTP_resend");//No I18N
-				$("#Email_popup_for_mobile #emailOTP_resend").show();
-				$("#mob_otp_email_input").click();
-			});
-			
-			$("#Email_popup_for_mobile #action_otp_conform").attr('onclick','return confirm_add_email(document.resend_otp_ver_form,resendEmailConfirmLink_mobile_callback)');
+		},
+		function(resp)
+		{
+			removeButtonDisable($("#Email_popup_for_mobile .option_button"));
+			if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+			{
+				relogin_warning();
+				var service_url = euc(window.location.href);
+				$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+			}
+			else
+			{
+				showErrorMessage(getErrorMessage(resp));
+			}
 		});
-	},
-	function(resp)
-	{
-		removeButtonDisable($("#Email_popup_for_mobile .option_button"));
-		if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-		{
-			relogin_warning();
-			var service_url = euc(window.location.href);
-			$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-		}
-		else
-		{
-			showErrorMessage(getErrorMessage(resp));
-		}
 	});
+	
 }
 
 function resendEmailConfirmLink_mobile_callback(emailObj){
@@ -3216,6 +3054,7 @@ function close_for_mobile_specific(callback){
 		$(".option_button").show();
 		$(".otp_mobile_form").hide();
 		$("#btn_to_delete span:last-child").text(i18nkeys["IAM.REMOVE"]);//No I18N
+		$("#Email_popup_for_mobile .option_button #action_granted").html(i18nkeys["IAM.CONTINUE"]).removeClass("delete_btn_color");//No I18N
 		if($("#phonenumber_web_more").is(":visible")||$("#emails_web_more").is(":visible")){
 			popup_blurHandler("6");
 		} 
@@ -3236,10 +3075,20 @@ function show_mob_conform(action_type,def, animation){
 		$(".mob_popu_btn_container").css("all","unset"); //No I18n
 		$(".option_container").css("display","block");
 	}
+	
+	if(action_type == "mfa_pho_delete"){
+		$(".option_container .mob_popuphead_define").html(getMfaDeleteContent());
+		$(".option_container .option_button").hide();
+		return;
+	}
+	if(action_type.toLowerCase().indexOf("delete")!= -1){
+		$(".option_container #action_granted").html(i18nkeys["IAM.DELETE"]); //No I18N
+		$("#Email_popup_for_mobile .option_button #action_granted").addClass("delete_btn_color");
+	}
 	$(".option_container .mob_popuphead_define").html(def);
 	
 	if(action_type == "email_resend" ){				
-			$("#Email_popup_for_mobile .option_button #action_granted").html(i18nkeys["IAM.EMAIL.CONFIRMATION.SEND.EMAIL"]); //No I18N	
+		$("#Email_popup_for_mobile .option_button #action_granted").html(i18nkeys["IAM.EMAIL.CONFIRMATION.SEND.EMAIL"]); //No I18N	
 	}
 	
 	$("#Email_popup_for_mobile .option_button #action_granted").click(function(){	
@@ -3326,14 +3175,19 @@ function for_mobile_specific(id)
 		}
 		if($("#"+id+" .action_icons_div_ph").children().hasClass("icon-delete")){
 			$("#btn_to_delete").show();
-			$("#btn_to_delete").attr("onclick","show_mob_conform('pho_delete','"+formatMessage(err_mobile_sure_delete1,displayNum)+"')");
+			if(profile_data.Phone.tfa && profile_data.Phone.tfa[mobile_num]){
+				$("#btn_to_delete").attr("onclick","show_mob_conform('mfa_pho_delete','"+formatMessage(err_mobile_sure_delete1,displayNum)+"')");
+			}
+			else {
+				$("#btn_to_delete").attr("onclick","show_mob_conform('pho_delete','"+formatMessage(err_mobile_sure_delete1,displayNum)+"')");
+			}
 			$("#btn_to_delete span:last-child").text(i18nkeys["IAM.CONFIRM.POPUP.PHONENUMBER"]);//No I18N
 		}
 		if($("#"+id+" .tooltip_cta_text").hasClass('remove_cta')) {
 			$("#btn_to_remove_as_primary").attr("onclick", $("#"+id+" .tooltip_cta_text.remove_cta").first().attr('onclick'));//No I18N
 			$("#btn_to_remove_as_primary").show();
 		}
-		if($("#"+id+" .action_icons_div_ph").children().hasClass("verify_icon")){
+		if($("#"+id+" .mobile_info #unverified_tap_to_more").is(":visible")){
 			$('.profile_tags_wrapper .profile_info_tags').addClass('hide');
 			$("#btn_to_resend_mb").show();
 			$("#btn_to_resend_mb").attr("onclick","show_mob_conform('pho_resend','"+formatMessage(mob_resend_conf,displayNum)+"')");
@@ -3343,6 +3197,9 @@ function for_mobile_specific(id)
 		}
 		$("#Email_popup_for_mobile .popuphead_details").html($("#"+id).html()); 
 		$("#Email_popup_for_mobile").focus();
+		if($("#Email_popup_for_mobile #unverified_tap_to_more").is(":visible")){
+			$("#Email_popup_for_mobile #unverified_tap_to_more").addClass("hide");
+		}
 		closePopup(close_for_mobile_specific,"Email_popup_for_mobile");//No I18N
 	}
 }
@@ -3397,16 +3254,14 @@ function show_all_phonenumbers()
 			$("#view_all_phonenumber .primary").removeAttr("onclick");
 			$("#view_all_phonenumber .secondary").removeAttr("onclick");
 			$("#view_all_phonenumber .field_mobile .action_icons_div_ph span").removeAttr("onclick");
-			tooltip_Des("#view_all_phonenumber .verify_icon");//No I18N
-			$("#view_all_phonenumber .verify_icon").attr("title",resend_otp_title);
-			$("#view_all_phonenumber .field_mobile .action_icons_div_ph span").click(function(){
+			$("#view_all_phonenumber .verify_now_text").removeAttr("onclick");//No I18N
+			$("#view_all_phonenumber .field_mobile .action_icons_div_ph span,#view_all_phonenumber .field_mobile .verify_now_text").click(function(){
 				var id=$(this).attr('id');
 				var id_num=parseInt(id.match(/\d+$/)[0], 10);
 				if($("#view_all_phonenumber #"+id).hasClass("selected_icons"))
 				{
 					return;
 				}
-				if(id!="mob_icon_resend_"+id_num){
 					if($("#"+id).attr("onclick"))
 					{
 						var args=$("#"+id).attr("onclick").split(",");
@@ -3415,17 +3270,6 @@ function show_all_phonenumbers()
 					{
 						var args=$("#"+id).attr("onmouseover").split(",");
 					}
-				}
-				else{
-					if($("#"+id).find(".resend_grn_btn").attr("onclick"))
-					{
-						var args=$("#"+id).find(".resend_grn_btn").attr("onclick").split(",");
-					}
-					else
-					{
-						var args=$("#"+id).find(".resend_grn_btn").attr("onmouseover").split(",");
-					}
-				}
 				var len=args.length;
 				var prev_num;
 				if($("#view_all_phonenumber .inline_action").length)
@@ -3440,9 +3284,9 @@ function show_all_phonenumbers()
 				}
 				$("#view_all_phonenumber .field_mobile").removeClass("web_email_specific_popup");//No I18N
 				$("#view_all_phonenumber .action_icons_div_ph").removeClass("show_icons");
-				$("#view_all_phonenumber .field_mobile .action_icons_div_ph span").removeClass("selected_icons");
+				$("#view_all_phonenumber .field_mobile .action_icons_div_ph span,#view_all_phonenumber .field_mobile .verify_now_text").removeClass("selected_icons");
 				
-				if(id=="mob_icon_resend_"+id_num)
+				if(id=="mob_icon_resend_"+id_num || id=="unverified_mobile_"+id_num)
 				{
 					var Ccode=args[0].split("(")[1].replace(/'/g,'');
 					var phoneNumber=args[1].split(")")[0].replace(/'/g,'');
@@ -3457,46 +3301,64 @@ function show_all_phonenumbers()
 					{
 						var conf_ele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" );
 					}
-					$(conf_ele).html('<div class="inline_action_discription">'+formatMessage(em_resend_conf, phoneNumber)+'</div>');
-					
+					$(conf_ele).html('<div class="inline_action_discription">'+formatMessage(em_resend_conf, phonePattern.setMobileNumFormat(phoneNumber,Ccode))+'</div>');
+					$(conf_ele).append('<button id="resend_specific_mob" class="primary_btn_check inline_btn nobottom_margin_btn delete_btn">'+i18nMobkeys["IAM.SEND.OTP"]+'</button>');
+					$("#view_all_phonenumber #resend_specific_mob").attr("onclick",'resendConfirmationCodeForMob(\''+Ccode+'\',\''+phoneNumber+'\',\''+id_num+'\')');
 				}
 				else if(id=="ph_icon_delete_"+id_num)
 				{
-					mobile=args[1].split(")")[0].replace(/'/g,'');
-					$("#view_all_phonenumber #mobile_num_"+id_num+" .action_icons_div_ph").addClass("show_icons");
-					
-					$("#view_all_phonenumber #mobile_num_"+id_num).append('<div class="inline_action"></div>');
-					if($("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action").length==2)
-					{
-						var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" )[1];
+					if(args[0]=="deleteTFAMobile()"){
+						$("#view_all_phonenumber #mobile_num_"+id_num+" .action_icons_div_ph").addClass("show_icons");
+						
+						$("#view_all_phonenumber #mobile_num_"+id_num).append('<div class="inline_action"></div>');
+						if($("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action").length==2)
+						{
+							var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" )[1];
+						}
+						else
+						{
+							var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" );
+						}
+						deleteele.append(getMfaDeleteContent());
 					}
-					else
-					{
-						var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" );
+					else{
+						mobile=args[1].split(")")[0].replace(/'/g,'');
+						$("#view_all_phonenumber #mobile_num_"+id_num+" .action_icons_div_ph").addClass("show_icons");
+						
+						$("#view_all_phonenumber #mobile_num_"+id_num).append('<div class="inline_action"></div>');
+						if($("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action").length==2)
+						{
+							var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" )[1];
+						}
+						else
+						{
+							var deleteele=$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action" );
+						}
+						$(deleteele).html('<div class="inline_action_discription">'+formatMessage(err_mobile_sure_delete1, mobile)+'</div>');
+						$(deleteele).append('<button id="delete_specific_mob" class="primary_btn_check inline_btn nobottom_margin_btn delete_btn delete_btn_color">'+i18nkeys["IAM.DELETE"]+'</button>');
+						$("#delete_specific_mob").unbind();
+						$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #delete_specific_mob").click(function()
+						{
+							mobile = mobile.replace(mobile.split(" ")[0],"").replace(/[ \-\.]/g,'')
+							new URI(Phone,"self","self",mobile).DELETE().then(function(resp)	//No I18N
+									{
+				    					delete_phonum_callback(resp,mobile);
+									},
+									function(resp)
+									{
+										if(resp.cause && resp.cause.trim() === "invalid_password_token") 
+										{
+											relogin_warning();
+											var service_url = euc(window.location.href);
+											$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
+										}
+										else
+										{
+											showErrorMessage(getErrorMessage(resp));
+										}
+									});
+						});
 					}
-					$(deleteele).html('<div class="inline_action_discription">'+formatMessage(err_mobile_sure_delete1, mobile)+'</div>');
-					$(deleteele).append('<button id="delete_specific_mob" class="primary_btn_check inline_btn nobottom_margin_btn delete_btn">'+iam_continue+'</button>');
-					$("#delete_specific_mob").click(function()
-					{
-						mobile = mobile.replace(mobile.split(" ")[0],"").replace(/[ \-\.]/g,'')
-						new URI(Phone,"self","self",mobile).DELETE().then(function(resp)	//No I18N
-								{
-			    					delete_phonum_callback(resp,mobile);
-								},
-								function(resp)
-								{
-									if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-									{
-										relogin_warning();
-										var service_url = euc(window.location.href);
-										$("#new_notification").attr("onclick","window.open('"+contextpath + resp.redirect_url +"?serviceurl="+service_url+"&post="+true+"', '_blank');");//No I18N 
-									}
-									else
-									{
-										showErrorMessage(getErrorMessage(resp));
-									}
-								});
-					});
 				}
 				else if(id=="ph_icon_MKprim_"+id_num)
 				{
@@ -3531,6 +3393,7 @@ function show_all_phonenumbers()
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action .popup_header" ).remove();
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #popup_mobile_action" ).remove();
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #close_popup_mobile" ).remove();
+					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #add_mobile_back" ).remove();
 					$(prim_ele).children("form").append('<button class="primary_btn_check inline_btn nobottom_margin_btn delete_btn" onclick="changePrimaryPhonenum(document.Viewmore'+action+',changeprim_phonum_callback,\''+num_type+'\');">'+button+'</button>');
 					$("#view_all_phonenumber #empty_phonenumber_input_code").val(number);
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action form").attr("id","phoneNumberform_specific");
@@ -3572,6 +3435,7 @@ function show_all_phonenumbers()
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action .close_btn" ).remove();
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #swap_mobile_action" ).remove();
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #swap_popup_close" ).remove();
+					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action .phnNum_popup_btns" ).remove();
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #recovery_div input").attr("id", "recoveryNum_specific");
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #recovery_div label").attr("for", "recoveryNum_specific");
 					$("#view_all_phonenumber #mobile_num_"+id_num+" .inline_action #mfa_div input").attr("id", "mfaNum_specific");
@@ -3634,7 +3498,6 @@ function show_all_phonenumbers()
 		}
 		tooltipSet("#phonenumber_web_more .action_icon"); //No I18N
 		tooltipSet(".field_mobile .action_icon");//No I18N
-		tooltipSet("#phonenumber_web_more .verify_icon");//No I18N
 		$("#phonenumber_web_more").focus();
 		closePopup(closeview_all_phonenumber_view,"phonenumber_web_more");//No I18N
 }
@@ -3750,16 +3613,6 @@ function specific_show_editMobile(heading,description,button,number,action)
 	$("#show_specific_ph_info #old_mob").val(number.split(') ')[1]);
 	$("#phonenumber_popup_contents form").attr("name","");
 	$("#phonenumber_popup_contents form").attr("action","");
-	if(!isMobile)
-	{
-		$(document.addemailid.countrycode).select2({ width: '67px'}).on("select2:open", function() {
-		       $(".select2-search__field").attr("placeholder", iam_search_text);//No I18N
-		       $("#select_phonenumber_input").addClass("textindent78");
-		  });
-		$('#select2-countNameAddDiv-container').text($( "#countNameAddDiv option:selected" ).text().split('(')[1].split(')')[0]);
-		codelengthChecking("countNameAddDiv","select_phonenumber_input");//No I18N
-		$(".select2-selection__rendered").attr("title", "");
-	}
 }
 
 function specific_deleteMobile(mobile) 
@@ -3798,4 +3651,33 @@ function hasOneEmailNoOtherRecovery() {
 		return true;
 	}
 	return false;
+}
+
+function showVerifyMobileNum(countryCode,mobileNum,sec_count){
+	set_popupinfo(i18nkeys["IAM.INVITAION.VERIFY.MOBILE"],formatMessage(mob_resend_conf, phonePattern.setMobileNumFormat(mobileNum,countryCode)),true);
+	$("#pop_action").html(`<div id="verify_mobile_captcha"></div><button tabindex="0" class="primary_btn_check" id="popup_mobile_action" onclick='resendConfirmationCodeForMob("${countryCode}","${mobileNum}","${sec_count}")'><span>${i18nMobkeys["IAM.SEND.OTP"]}</span></button>`);
+	closePopup(close_popupscreen,"common_popup");//No I18N
+}
+
+function getMfaDeleteContent(){
+	var tempdiv = document.createElement("div");
+    tempdiv.textContent = decodeHTML(i18nMobkeys["IAM.MFA.MOBILE.CANT.DELETE.DESC"]);
+    var templink = document.createElement("div");
+    templink.setAttribute("onclick", "loadTab('multiTFA','modes');"); //No i18N
+    templink.classList.add("loadlink"); //No i18N
+    templink.textContent = i18nMobkeys["IAM.MFA.GO.TO.MFA.SETTINGS"];
+    tempdiv.append(templink);
+    return tempdiv;
+}
+
+function deleteBtnTextChange(){
+	var oldTrueBtnText = $("#return_true").text();
+	$("#return_true").text(i18nkeys["IAM.DELETE"]); //No I18N
+	$('#return_false').click(function() {
+		popupBlurHide("#confirm_popup"); //No I18N
+		setTimeout(function(){
+			$('#return_true').text(oldTrueBtnText);
+		},200);
+		$('#return_false').unbind();
+	});
 }

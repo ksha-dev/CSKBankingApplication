@@ -189,7 +189,7 @@
 						</tr>
 						<tr>
 							<td align="right">Admin Password :</td><%--No I18N--%>
-							<td><input type="password" class="input" name="pwd" /></td>
+							<td><input type="password" autocomplete="off" class="input" name="pwd" /></td>
 						</tr>
 						<%
 							} else if (request.isUserInRole("IAMOperator")) {

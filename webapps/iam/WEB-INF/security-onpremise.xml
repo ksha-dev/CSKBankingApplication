@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id$ -->
+<security xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="security-accounts.xsd">
+	<urls>
+		<url path="/onpremise/signin/v2/primary/${ZID}/ldappasswordauth" method="post" csrf="true">
+    		<throttles key="url.path+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="signin_z_digest">
+				<throttle duration="5m" threshold="10" lock-period="15m" watch-time="1H" violation-limit="2" lock-factor="2"/>
+			</throttles>
+			<param-group name="newloginparams"/>
+    	    <inputstream type="JSONObject" template="ldap_pwd_data" max-len="-1" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/OnpremiseAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	</urls>
+	
+	<jsontemplates>
+	    <jsontemplate name="ldap_pwd_data">
+	   		<key name="ldappasswordauth" type="JSONObject" template="pwd_keys" max-len="-1"/>
+	   	</jsontemplate>
+	</jsontemplates>
+</security>

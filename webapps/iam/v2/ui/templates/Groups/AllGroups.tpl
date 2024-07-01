@@ -4,7 +4,13 @@
 
 		<div class="popup" tabindex="1" id="grp_popup">
 		</div>
-		
+		<div class="group-back-drop"></div>
+		<div id="photo_container" class="photo_container" tabindex="1">
+	    	<div class="photo_loader"></div>
+	    	<div class="photo_blur_dp1"></div>
+	    	<img id="photo_blur_dp2" class="photo_blur_dp2 profile_picture">
+	    	<img id="photo_original_dp" class="photo_original_dp profile_picture" onload="showGroupImage(this)">
+	    </div>
 		<div class="hide" id="groupexist">
 		
 			<div class="menu_desc">
@@ -82,13 +88,11 @@
 				
 				<div class="group_dp">
 					<div class="bg_blur_grp" ></div>
-					<img onerror="setDefault_dp(this)" class="profile_picture" src="">
+					<img onerror="setDefault_dp(this)" onload="fitPicture(this)" class="profile_picture" src="">
 				</div>
 				<div class="group_details">
 					<div class="group_name"></div>
 					<div class="group_members">
-						<span></span>
-						<@i18n key="IAM.GROUP.MEMBERS" />
 					</div>
 				</div>
 				<div class="group_actions">

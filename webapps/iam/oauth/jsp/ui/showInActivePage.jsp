@@ -2,6 +2,7 @@
 <!DOCTYPE html> <%-- No I18N --%>
 <%@page import="com.zoho.accounts.AccountsConfiguration"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
 <%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
@@ -21,7 +22,10 @@ String mdmToken = request.getParameter("token");
 %>
 <script src="<%=IAMEncoder.encodeHTMLAttribute(jsurl)%>/jquery-3.6.0.min.js" type="text/javascript"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" type="text/css" rel="stylesheet" /><%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %><%-- NO OUTPUTENCODING --%>
+<script type="text/javascript" src="<%=imgurl%>/encryption/script"></script>
+ <script type="text/javascript" src="<%=imgurl%>/v2/components/js/security.js"></script>
+ <%-- <script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/security.js")%>"></script> --%>
 <style>
 	body 
 	{
@@ -128,6 +132,9 @@ String mdmToken = request.getParameter("token");
 		padding-right: 12px;
 		transition: all .2s ease-in-out;
 	}
+	#password{
+		padding-right: 50px;
+	}
 	.show_hide_password {
 		height: 11px;
 		width: 16px;
@@ -201,7 +208,7 @@ String mdmToken = request.getParameter("token");
 					<div class="userName"><%=IAMEncoder.encodeHTML(String.valueOf(request.getAttribute("EMAIL")))%></div>
 				</div>
 				<div class="textbox_div">
-					<input id="password" placeholder="Password" type="password" class="textbox" required="" autofocus>
+					<input id="password" placeholder="Password" type="password" class="textbox" autocomplete="off" required="" autofocus>
 					<span class="show_hide_password">
 						<span class="showIcon"><svg style="fill: #7f7f7f" width="16" height="10.484" viewBox="0 0 16 10.484"><path id="Show" d="M51.173,80c2.573,0,5.091,1.411,7.553,4.17h0l.072.081a1.5,1.5,0,0,1,0,1.983c-2.484,2.812-5.026,4.25-7.625,4.25-2.573,0-5.091-1.411-7.553-4.17h0l-.072-.081a1.5,1.5,0,0,1,0-1.983C46.033,81.439,48.574,80,51.173,80Zm0,1.5c-2.111,0-4.278,1.226-6.5,3.744h0l.068.077c2.179,2.442,4.3,3.643,6.371,3.667h.063c2.111,0,4.278-1.226,6.5-3.744h0l-.068-.077c-2.179-2.442-4.3-3.643-6.371-3.667h-.063Zm0,.749a3,3,0,1,1-3,3A3,3,0,0,1,51.173,82.247Zm0,1.5a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,51.173,83.744Z" transform="translate(-43.173 -80)"/></svg></span><%-- No i18N --%>
 						<span class="hideIcon"><svg style="fill: #7f7f7f" width="16" height="12.14" viewBox="0 0 726.379 550.986"><path id="Hide" d="M295.8,245.839l.685.666,63.189,63.184a388.581,388.581,0,0,1,54.081-21.436A330.5,330.5,0,0,1,512,273.067c116.69,0,230.9,63.664,342.585,188.178h0l3.26,3.653a68.267,68.267,0,0,1-2.879,93.706c-47.489,47.282-78.959,77.725-95.123,91.96h0l-3.795,3.3q-15.929,13.707-28.908,23.3L779.2,729.224a34.133,34.133,0,0,1-47.587,48.938l-.685-.666-64.309-64.3Q590.019,750.785,512,750.934c-116.783,0-231.081-63.765-342.85-188.475h0l-3.262-3.659a68.267,68.267,0,0,1,2.472-93.257c56.022-56.772,99.231-96.538,130.7-119.918l-50.847-50.848A34.133,34.133,0,0,1,295.8,245.839ZM347.985,394.55c-25.979,17.627-68.093,55.493-124.943,112.787h0l-6.091,6.156,3.092,3.468c98.872,110.318,195.21,164.616,289.112,165.691h0l2.845.016q51.114,0,103.011-21.083l-32.585-32.592A136.565,136.565,0,0,1,395.008,441.575ZM512,341.333a262.3,262.3,0,0,0-78.04,12.127q-11.241,3.483-22.536,7.977l32.3,32.3A136.569,136.569,0,0,1,630.26,580.278l47.889,47.9c8.375-5.53,19.109-13.853,32-24.885h0l3.693-3.185c11.866-10.345,35.708-33.2,71.074-68.163h0L806.8,510.224l-3.09-3.462C703.924,395.515,606.722,341.331,512,341.331Zm-65.583,151.65a68.322,68.322,0,0,0,84.6,84.6ZM512,443.733a68.379,68.379,0,0,0-16.322,1.964L578.3,528.323a68.326,68.326,0,0,0-66.3-84.59Z" transform="translate(-148.688 -236.508)"/></svg></span><%-- No i18N --%>
@@ -240,32 +247,36 @@ String mdmToken = request.getParameter("token");
 	    	return;
 	    }
         $("#nextbtn").prop("disabled", true); <%-- No I18N --%>
-		var xhttp = new XMLHttpRequest();
-	   	var params = "pass="+encodeURIComponent(password) + "&" + getcsrfParams(); <%-- No I18N --%>
-	   	<% if (Util.isValid(mdmToken)) {%>
-	   		params = params + "&token=" + "<%= mdmToken %>"; // NO OUTPUTENCODING <%-- No I18N --%>
-	   	<%} %>
-	    xhttp.open("POST", "/oauth/v2/mobile/inactive/token/activate", true);
-	    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	    xhttp.send(params);
-	    xhttp.onreadystatechange = function () {
-	    	if(this.readyState == 4 && this.status == 200) {
-	    		var response = this.responseText;
-	    		response = JSON.parse(response);
-	    		if(response.status == "success") {
-	    			window.location=response.url;
-	    			return;
-	    		} else {
-	    			$("#nextbtn").prop("disabled", false); <%-- No I18N --%>
-	    			$(".fielderror").text(response.message);
-	    			$(".fielderror").slideDown(200);
-	    		}
-	    	} else if(this.status != 200){
-	    		$("#nextbtn").prop("disabled", false); <%-- No I18N --%>
-	    		$(".fielderror").text("<%= com.adventnet.iam.internal.Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>");
-	    		$(".fielderror").slideDown(200);
-	    	}
-	    }
+        encryptData.encrypt([password]).then(function(encryptedpassword) {
+        	encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+        	var xhttp = new XMLHttpRequest();
+    	   	var params = "pass="+encodeURIComponent(encryptedpassword) + "&" + getcsrfParams(); <%-- No I18N --%>
+    	   	<% if (Util.isValid(mdmToken)) {%>
+    	   		params = params + "&token=" + "<%= mdmToken %>"; // NO OUTPUTENCODING <%-- No I18N --%>
+    	   	<%} %>
+    	    xhttp.open("POST", "/oauth/v2/mobile/inactive/token/activate", true);
+    	    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    	    xhttp.send(params);
+    	    xhttp.onreadystatechange = function () {
+    	    	if(this.readyState == 4 && this.status == 200) {
+    	    		var response = this.responseText;
+    	    		response = JSON.parse(response);
+    	    		if(response.status == "success") {
+    	    			window.location=response.url;
+    	    			return;
+    	    		} else {
+    	    			$("#nextbtn").prop("disabled", false); <%-- No I18N --%>
+    	    			$(".fielderror").text(response.message);
+    	    			$(".fielderror").slideDown(200);
+    	    		}
+    	    	} else if(this.status != 200){
+    	    		$("#nextbtn").prop("disabled", false); <%-- No I18N --%>
+    	    		$(".fielderror").text("<%= com.adventnet.iam.internal.Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>");
+    	    		$(".fielderror").slideDown(200);
+    	    	}
+    	    }
+		});
+		
 	});
 
 	function isEmpty(str) {

@@ -7,6 +7,20 @@
 
 
 	<package name="pauth" namespace="/" extends="struts-default">
+		<!-- defaultStack interceptor is the default interceptor which is extended from struts-default.
+		Disabled - CoopInterceptor, CoepInterceptor, FetchMetadataInterceptor, CspInterceptor.
+		 -->
+		<interceptors>
+			<interceptor-stack name="appDefault">
+				<interceptor-ref name="defaultStack">
+					<param name="coop.disabled">true</param>
+					<param name="coep.disabled">true</param>
+					<param name="fetchMetadata.disabled">true</param>
+					<param name="csp.disabled">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="appDefault" />
 		<action name="una/unconfirmed" class="com.zoho.accounts.actions.pauth.UnConfirmed" method="showUnConfirmed">
 			<result name="success">/jsp/pauth/unconfirmed.jsp</result>
 		</action>

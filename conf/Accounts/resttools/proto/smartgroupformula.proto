@@ -1,0 +1,74 @@
+syntax = "proto2";
+package resource;
+
+option java_package = "com.zoho.accounts";
+option java_outer_classname = "SmartGroupFormulaProto";
+
+message SmartGroupFormulaComponent {
+
+	enum PBSmartGroupFormulaComparators {
+		EQUALS = 0;
+		NOT_EQUALS = 1;
+		STARTS_WITH = 2;
+		ENDS_WITH = 3;
+		CONTAINS = 4;
+		NOT_CONTAINS = 5;
+		GREATER_THAN = 6;
+		LESS_THAN = 7;
+		GREATER_EQUALS = 8;
+		LESS_EQUALS = 9;
+		NOT_IN = 10;
+		IN = 11;
+		LIKE = 12;
+		NOT_LIKE = 13;
+		BETWEEN = 14;
+		NOT_BETWEEN = 15;
+	}
+
+	enum PBSmartGroupFormulaIAMFields {
+		COUNTRY_CODE = 0;
+		LANGUAGE_CODE = 1;
+		TIMEZONE = 2;
+		CREATED_TIME = 3;
+	}
+
+	required PBSmartGroupFormulaIAMFields smartField = 1;
+	repeated string smartFieldValue = 2;
+	required PBSmartGroupFormulaComparators formulaComparator = 3;
+}
+
+message SmartGroupFormula {
+
+	enum PBSmartGroupFormulaOperations {
+		IAM_VALIDATION_OPERATOR = 0;
+		AND = 1;
+		OR = 2;
+	}
+
+	repeated SmartGroupFormulaComponent smartFormulaComponent = 1;
+	repeated SmartGroupFormula subSmartFormula = 2;
+	optional PBSmartGroupFormulaOperations smartFormulaOperator = 3;
+}
+
+message SmartGroupFormulaRoleMapper {
+
+	enum PBUnifiedGroupMemberRoles {
+		VIEWER = 0;
+		MEMBER = 1;
+		MODERATOR = 2;
+		ADMIN = 3;
+	}
+
+	enum PBSmartGroupFormulaChangeType {
+		POST = 1;
+		PUT = 2;
+		DELETE = 3;
+		NOCHANGE = 4;
+	}
+
+	optional SmartGroupFormula smartFormula = 1;
+	optional PBUnifiedGroupMemberRoles memberRole = 2;
+	optional string smartFormulaName = 3;
+	required PBSmartGroupFormulaChangeType smartFormulaChangeType = 4;
+	optional string smartFormulaId = 5;
+}

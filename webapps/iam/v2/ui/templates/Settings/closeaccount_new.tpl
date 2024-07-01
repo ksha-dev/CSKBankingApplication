@@ -15,15 +15,15 @@
 			
 	</script>
 	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-	<link href="${SCL.getStaticFilePath("/v2/components/css/product-icon.css")}" rel="stylesheet"type="text/css">
-	<link href="${SCL.getStaticFilePath("/v2/components/css/closeaccount.css")}" rel="stylesheet"type="text/css">
-	<script src="${SCL.getStaticFilePath("/v2/components/js/close-account.js")}" type="text/javascript"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}"></script>
-	<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">
-	<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script>  
-	<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script>
+	<@resource path="/v2/components/css/${customized_lang_font}" />
+	<@resource path="/v2/components/css/product-icon.css" />
+	<@resource path="/v2/components/css/closeaccount.css" />
+	<@resource path="/v2/components/js/close-account.js" />
+	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+	<@resource path="/v2/components/js/uvselect.js" />
+	<@resource path="/v2/components/css/uvselect.css" />
+	<@resource path="/v2/components/js/zresource.js" />  
+	<@resource path="/v2/components/js/uri.js" />
 	<script>
 		var isPersonalUser = Boolean("<#if isPersonalUser>true</#if>");
 		var Account = ZResource.extendClass({
@@ -179,6 +179,7 @@
 	 var isPersonalUser = Boolean("<#if isPersonalUser>true</#if>");
 	 var i18nkeys = {
 	 			"IAM.APPID" : '<@i18n key="IAM.APPID" />',
+	 			"IAM.TFA.LEARN.MORE" : '<@i18n key="IAM.TFA.LEARN.MORE" />',
 	 			"IAM.CLOSE.ACCOUNT.CANCEL.FLOW.TITLE" : '<@i18n key="IAM.CLOSE.ACCOUNT.CANCEL.FLOW.TITLE" />',
 	 			"IAM.ERROR.GENERAL": '<@i18n key="IAM.ERROR.GENERAL" />',
 	    		"IAM.DOMAIN.VERIFIED" : '<@i18n key="IAM.DOMAIN.VERIFIED" />',
@@ -511,7 +512,10 @@
 								
 								<div class="textbox_div " >
 			                  		<label class="textbox_label"><@i18n key="IAM.CLOSE.ACCOUNT.FEEDBACK" /></label>
-									<textarea class="deleteacc_cmnd" onkeypress="remove_error(this)" tabindex="0" data-limit="250" data-validate="zform_field" name="comments" placeholder="<@i18n key="IAM.CLOSE.ACCOUNT.FORM.ENTER.FEEDBACK" />"></textarea>
+			                  		<span class="deleteacc_cmnd_parent">
+										<textarea id="deleteacc_command" class="deleteacc_cmnd" oninput='showLength(this)' onkeypress="remove_error()" tabindex="0" maxlength="1000" data-validate="zform_field" name="comments" placeholder="<@i18n key="IAM.CLOSE.ACCOUNT.FORM.ENTER.FEEDBACK" />"></textarea>
+										<label for="deleteacc_command" id="feedback_length" class="feedback_length"></label>
+									</span>
 								</div>
 								<#if isPersonalUser>
 								<div class="red_text desc_for_close_acc" style="font-size:14px;max-width:610px">

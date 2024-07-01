@@ -56,6 +56,7 @@ function handleRelogin(json, method) {
 function addDeviceIcon(device_info){
 	var img = device_info.device_img;
 	var os = device_info.os_img;
+	var deviceType = device_info.device_type ? device_info.device_type.toLowerCase() : "";
 	const paths = new Map([
 		  ["windows", 5],
 		  ["linux", 5],
@@ -65,14 +66,18 @@ function addDeviceIcon(device_info){
 		  ["ipad", 7],
 		  ["windowsphone", 8],
 		  ["samsungtab", 6],
-		  ["samsung", 5],
+		  ["samsung", 8],
 		  ["android", 8],
-		  ["pixel", 6],
+		  ["pixel", 8],
 		  ["oppo", 8],
 		  ["vivo", 6],
 		  ["androidtablet",6],
-		  ["oneplus", 7],
-		  ["mobile", 7]
+		  ["oneplus", 9],
+		  ["mobile", 7],
+		  ["iphone13", 4],
+		  ["iphone14", 8],
+		  ["s23ultra", 8],
+		  ["s20fe5g", 9]
 		]);
 	
 	var no_of_paths;
@@ -88,7 +93,7 @@ function addDeviceIcon(device_info){
 	} else if (img == "vivo" || img == "ipad" || img == "samsungtab" || img == "samsung" || img == "pixel" || img == "oppo" || img == "oneplus") { //No I18N
 		no_of_paths = paths.get(img);
 		icon_class = img;
-	}else if (img == "googlenexus" || (img == "mobiledevice" && os == "android")) { //No I18N
+	}else if (img == "googlenexus" || (img == "mobiledevice" && (os == "android" || deviceType == "android"))) { //No I18N
 		no_of_paths = paths.get("android");
 		icon_class = "android_uk"; //No I18N
 	} 
@@ -96,6 +101,33 @@ function addDeviceIcon(device_info){
 		no_of_paths = paths.get("mobile");
 		icon_class = "mobile_uk"; //No I18N
 	} 
+	
+	if(device_info.device_model){ //only for applogins the device_info which as device_model value
+		var deviceModel = device_info.device_model.toLowerCase();
+		deviceModel = deviceModel.replace(/\s+/g, '');
+		if((/iphone13|iphone13pro|iphone13promax|iphone13mini|iphone14|iphone14plus/).test(deviceModel)){
+			icon_class = "iphone_13"; //No I18N
+			no_of_paths = paths.get("iphone13");
+		} else if((/iphone14pro|iphone14promax|iphone15|iphone15plus|iphone15pro|iphone15promax|iphone15,4|iphone15,5|iphone16,1|iphone16,2/).test(deviceModel)){
+			icon_class = "iphone_14"; //No I18N
+			no_of_paths = paths.get("iphone14");
+		} else if((/sm-s918b/).test(deviceModel)){
+			icon_class = "samsung_s23_ultra"; //No I18N
+			no_of_paths = paths.get("s23ultra");
+		} else if((/sm-s908e/).test(deviceModel)){
+			icon_class = "samsung_s22_ultra"; //No I18N
+			no_of_paths = paths.get("s23ultra");
+		} else if((/sm-g781b/).test(deviceModel)){
+			icon_class = "samsung_s20"; //No I18N
+			no_of_paths = paths.get("s20fe5g");
+		} else if((/pixel7pro|gp4bc|ge2ae/).test(deviceModel)){
+			icon_class = "pixelpro"; //No I18N
+			no_of_paths = paths.get("pixel");
+		} else if((/pixel7|gvu6c|gqml3/).test(deviceModel)){
+			icon_class = "pixel"; //No I18N
+			no_of_paths = paths.get("pixel");
+		}
+	}
 	
 	return "deviceicon-"+ icon_class;//No I18N
 }

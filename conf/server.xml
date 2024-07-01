@@ -47,13 +47,15 @@
     -->
 
     <!-- Define a non-SSL Coyote HTTP/1.1 Connector on port 8080 -->
-<!--     <Connector port="8080"
+    <!-- <Connector port="8080"
                maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
                enableLookups="false" redirectPort="8443" acceptCount="100"
                debug="3" connectionTimeout="20000" 
                disableUploadTimeout="true" />  -->
 
-    <Connector port="8443"
+    <Connector port="8443" maxThreads="200" scheme="https" secure="true" SSLEnabled="true" keystoreFile="conf/keystore.jks" keystorePass="password" clientAuth="false" sslProtocol="TLS" ciphers="TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA256, TLS_DHE_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384" useServerCipherSuitesOrder="true" truststoreType="JKS" />
+
+<!-- <Connector port="8443"
            maxThreads="150"
            minSpareThreads="25"
            maxSpareThreads="75"
@@ -71,7 +73,8 @@
            keystoreFile="conf/sas.keystore"
            keystoreType="JKS"
            keystorePass="Nkpml@#$234"
-    />
+           truststoreType="JKS"
+ /> -->
 
     <!-- Note : To disable connection timeouts, set connectionTimeout value
      to -1 -->
@@ -198,9 +201,9 @@
              directory.  -->
 
         <!-- Tomcat Root Context -->
-        <!--
-          <Context path="" docBase="ROOT" debug="0">
-        -->
+        
+          <Context path="" docBase="ROOT" debug="0" />
+        
 
       </Host>
 

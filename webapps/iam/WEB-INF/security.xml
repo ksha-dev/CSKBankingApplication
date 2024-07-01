@@ -117,18 +117,7 @@
 	    	<param name="otp" regex="code"/>
 	    </url>
     <url path="/ui/settings/configureMobile.jsp" authentication="required" method="get"/>
-
-    <url path="/account/relogin" authentication="optional" sl_auth="customauth_optional" user-needed="true" csrf="false" method="get">
-    	<param name="callback" max-len="100" type="String"/>
-    	<param name="arguments" max-len="100" type="String"/>
-		<param name="post" type="boolean" />
-		<param name="ismobile" type="boolean" />
-		<param name="hide_fp" type="boolean" />
-		<extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
-    </url>
- 
-    <url path="/signin/v1/relogin" authentication="optional" sl_auth="customauth_optional" user-needed="true" csrf="false" method="get">
-    </url> 
+    	
     <url path="/u/ph/d" method="post" authentication="required" csrf="true" description="Delete user uploaded photo" />
     <url path="/u/h" authentication="required" csrf="true" method="post" redirect="/home">
       <param name="hideheader" type="boolean" description="show/hide header and footer in home page" />
@@ -226,35 +215,7 @@
       <param name="hs" regex="cleartextpattern" max-len="1000" />
     </url>
     
-   
-    <url path="/tfapref/savetext" authentication="required" method="post" https="true" csrf="true" duration="5" threshold="10" lock-period="15" user="true" description="save recovery codes to text file">
-      <param name="savepref" type="int" />
-      <param name="email" regex="email" />
-      <param name="pass" regex="oldpassword" max-len="250" secret="true" />
-    </url>
     <!--settings related url configurationd-->
-
-    <url path="/p/update" authentication="required" method="post" csrf="true" duration="20" lock-period="1440" threshold="5" user="true" description="Updating mobile number">
-      <param name="mobile" regex="phone" />
-      <param name="countrycode" regex="countrycode" />
-      <param name="verifytype" type="int" />
-      <param name="is_ph_pg" type="boolean" />
-    </url>
-    
-    <url path="/p/primary" https="true" method="post" authentication="required" csrf="true" duration="5" threshold="10" lock-period="15" user="true" description="Change Primary mobile number">
-      <param name="password" regex="oldpassword" max-len="250" secret="true" />
-      <param name="mobile" regex="phone" />
-    </url>
-    <url path="/p/verify" authentication="required" method="post" https="true" csrf="true" duration="5" lock-period="15" threshold="10" user="true" description="Verify unconfirmed mobile number">
-      <param name="code" regex="code" />
-      <param name="mobile" regex="phone" />
-      <param name="password" regex="oldpassword" max-len="250" secret="true" />
-    </url> 
-    
-    <url path="/p/genbackup" method="post" authentication="required" csrf="true" duration="1" lock-period="5" threshold="10" user="true" description="generate Backup Code for recovery" />
-    <url path="/p/resend" sl_auth="tfatemp_optional" authentication="optional" user-needed="true"  method="post" csrf="true" duration="20" threshold="5" lock-period="1440" user="true" description="Resend verificaton code.">
-      <param name="mobile" regex="phone" />
-    </url>
 
     <!--other url configurationd-->
     <url path="/u/rpw" method="post" operation-param="a" operation-value="b" authentication="required" csrf="true" duration="1" threshold="10" lock-period="10" user="true" description="Send mail for resetting user password" />
@@ -304,7 +265,10 @@
     <url path="/v2/components/images/phone_image.svg"/>
     <url path="/v2/components/images/emailverify.svg"/>
     <url path="/v2/components/images/mobilenumberverify.svg"/> 
-    
+    <url path="/v2/components/images/oa_banner_update_illus.svg"/>
+    <url path="/v2/components/images/linked_acc_success_icon.svg"/> 
+    <url path="/v2/components/images/linked_acc_failed_icon.svg"/>
+    <url path="/v2/components/images/creator.svg"/>
     <url path="/images/opensans/font.woff" />
     <url path="/images/font.woff" />
     <url path="/images/opensans/font.eot" />
@@ -321,9 +285,14 @@
     <url path="/images/opensanssemibold/font.svg" />
     <url path="/images/opensanssemibold/font.woff2" />
     <url path="/images/fonticon/AnnouncementIcons.ttf"></url>
+    <url path="/images/fonticon/AnnouncementIcons.woff2"></url>
     <url path="/images/fonticon/AnnouncementIcons.woff"></url>
     <url path="/images/fonticon/AnnouncementIcons.eot"></url>
     <url path="/images/fonticon/AnnouncementIcons.svg"></url>
+    <url path="/images/fonticon/AccountsUI.ttf"></url>
+    <url path="/images/fonticon/AccountsUI.woff"></url>
+    <url path="/images/fonticon/AccountsUI.eot"></url>
+    <url path="/images/fonticon/AccountsUI.svg"></url>
     <url path="/images/opensanslight/font.woff" />
     <url path="/images/opensanslight/font.eot" />
     <url path="/images/opensanslight/font.ttf" />
@@ -440,20 +409,7 @@
     </url>
   	
     <url path="/i/[0-9a-zA-z]*{8}" https="true" duration="10" threshold="100" lock-period="30" url-type="dynamic" description="shortened invitation url to the actual url"/>
-    <!-- MFA -->
-    <url path="/tfapref/mfa/setup" method="post" csrf="false" authentication="required" oauthscope="mfaSetup" operation-type="CREATE" description="set the initial device details of user">
-         	<param name="devicetype" max-len="1" min-occurrences="1" type="int" />
-         	<param name="appid" max-len="50" min-occurrences="1" regex="app_id"/>
-         	<param name="apnsmode" max-len="20" min-occurrences="1" regex="apns_mode"/>
-        	<param name="devicetoken" max-len="250" min-occurrences="1" regex="device_token"/>
-        	<param name="olddevicetoken" max-len="250" regex="device_token"/>
-        	<param name="osversion"  max-len="10" min-occurrences="1" regex="os_version"/>
-        	<param name="deviceinfo" max-len="250" regex="((?![0-9a-zA-Z+\,\(\)\[\]\s\P{InBasicLatin}]).)+" filter-matched-content="true" replacement-string=" "/>
-        	<param name="devicename" max-len="500" regex="iambase64"/>
-        	<param name="publickey" max-len="500" min-occurrences="1" regex="iambase64"/>
-			<param name="ZUID" type="long"/>
-			<param name="location" regex="iamcleartextpattern" />
-    </url>
+
     <url path="/device/update" method="post" csrf="false" authentication="required" oauthscope="mfaSetup" operation-type="UPDATE" description="Update DeviceToken when restored from backup, Update OS Version, Update Device Info">
         	<param name="devicetoken" max-len="250" min-occurrences="1" regex="device_token"/>
         	<param name="newdevicetoken" max-len="250" regex="device_token"/>
@@ -466,17 +422,6 @@
          	<param name="devicetoken" max-len="250" min-occurrences="1" regex="device_token"/>
         	<param name="ZUID" type="long" min-occurrences="1"/>
         	<param name="makeprimary" type="boolean"/>
-    </url>
-    <url path="/tfapref/mfa/activate" method="post" csrf="false" https="true" duration="5" threshold="10" lock-period="15"  description="activate mfa for user">
-        	<param name="mode" regex="[2|3|4|5]"/>
-        	<param name="password" regex="oldpassword" max-len="250" secret="true"/>
-        	<param name="devicetoken" max-len="250" min-occurrences="1" regex="device_token"/>
-        	<param name="olddevicetoken" max-len="250" regex="device_token"/>
-        	<param name="ZUID" type="long" min-occurrences="1"/>
-    </url>
-    <url path="/tfapref/mfa/deactivate" https="true" method="post" authentication="required" csrf="true" duration="5" threshold="10" lock-period="15" description="deactivate mfa">
-        	 <param name="password" regex="oldpassword" max-len="250" secret="true" />
-        	 <param name="code" regex="code" />
     </url>
         
     <url path="/device/mfa/verify"  method="post" csrf="false" description="Approval for a SignIn Request from Device">
@@ -641,12 +586,18 @@
 		</throttles>
 		<param name="provider" regex="idpProviders"/>
 	</url>
-	<url path="/privacy/certificate/[0-9]" authentication="required" method="get" threshold="15" duration="5" lock-period="15" description="View different privacy certificates">
+
+	<url path="/preannouncement/pfa/linkaccount/add" sl_auth="pa_required" method="post" csrf="true" description="Add linked account">
+		<throttles key="url.path+user.zuid+url.dynamic_key" window="ROLLING" scope="APPSERVER" name="linkaccount">
+			<throttle duration="5" threshold="7" lock-period="15" />
+		</throttles>
+		<param name="provider" regex="idpProviders" />
+	</url>
+	
+	<url path="/privacy/certificate/(0|[1-9][0-9]?)" authentication="required" method="get" threshold="15" duration="5" lock-period="15" description="View different privacy certificates">
 		<param name="services" regex="([a-zA-Z\,]+[a-zA-Z])"/>
         <param name="download" type="boolean"/>
 	</url>
-	
-	
   </urls>
   
   <jsontemplates>
@@ -657,18 +608,18 @@
   
   <!-- <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allowe extra parameters and values"/> -->
   <regexes>
-  	<regex name="idpProviders" value="(?i)YAHOO|TWITTER|LINKEDIN|FACEBOOK|GOOGLE|GAPPS|WEIBO|BAIDU|QQ|DOUBAN|AZURE|ICLOUD|INTUIT|WECHAT|SLACK|APPLE|ADP|FEISHU|ZOHO|GITHUB"/>
+  	<regex name="idpProviders" value="(?i)YAHOO|TWITTER|LINKEDIN|FACEBOOK|GOOGLE|GAPPS|WEIBO|BAIDU|QQ|DOUBAN|AZURE|ICLOUD|INTUIT|WECHAT|SLACK|APPLE|ADP|FEISHU|ZOHO|GITHUB|OIDC"/>
     <regex name="oldpassword" value=".{1,500}" />
     <regex name="password" value="^.{3,500}$" />
     <regex name="serviceurl" value="^(http(s?)\:\/\/[-.\p{L}\p{M}\p{N}_]*)?(\/?)([\p{L}\p{M}\p{N}\!\-\.\?\,\:\'\/\\\+\*=&amp;%\$;#_@\(\)]*)?$" />
     <regex name="extended_boolean" value="true|false|on|off" />
     <regex name="skypename" value="^[A-Za-z0-9_\.\-,:]+$" />
     <regex name="timezone" value="^[A-Za-z0-9_/+\-]+$" />
-    <regex name="date_format" value="^[A-Za-z\-\.\/:;,&quot;'\s\P{InBasicLatin}]+$" />
+    <regex name="date_format" value="^[A-Za-z\-\.\/:;,&quot;'\s\P{InBasicLatin}\(\)]+$" />
     <regex name="phone_numbers" value="^[\(\)\+\-0-9\.\/\s]{1,30}$" />
     <regex name="colorcode" value="^(([#]?[A-Fa-f0-9\-]+)|([a-zA-Z]+))$" />
     <regex name="scope_with_servicename" value="^[a-zA-Z0-9\/\.,_]+$" />
-    <regex name="iamcleartextpattern" value="[0-9a-zA-Z_\-\+\.\$@\?\,\:\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" />
+    <regex name="iamcleartextpattern" value="[0-9a-zA-Z_\-\+\.\$@~\?\,\:\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" />
     <regex name="newcleartextpattern" value="[0-9a-zA-Z_\-\+\.\$@\,\:\'\!\[\]\|&amp;\P{InBasicLatin}\s]+" /><!-- This pattern wont allow ? / characters -->
     <regex name="offline_token" value="[0-9a-zA-Z_\-\+\.\$@\?\,#^%~`\*\:\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" />
     <regex name="iambase64" value="[0-9a-zA-Z&quot;\{\}_\-\+\.\$@\?\,\:=\'\/\!\[\]\|&amp;\P{InBasicLatin}\s]+" />
@@ -686,7 +637,7 @@
  	<regex name="email_or_mobile" value="(([\p{L}\p{M}\p{N}_]([\p{L}\p{M}\p{N}_\-\.\+\'\*&amp;!]*)@(?=.{4,256})(([\p{L}\p{M}\p{N}]+)(([\-\_]*[\p{L}\p{M}\p{N}])*)[\.])+[\p{L}\p{M}]{2,22})|([0-9]{5,14}))" />
  	<regex name="id" value="[0-9a-zA-Z\+\-\'\!\*\.@\_%]+" />
  	<regex name="uap_type" value="^(PasswordVerify|OAuthApi)$"/>
- 	<regex name="oauth_type" value="^(ClientZid|RefreshTokenAID)$"/>
+ 	<regex name="oauth_type" value="^(ClientZid|RefreshTokenAID|MobileLastAccessTime)$"/>
  	<regex name="timestamp" value="[0-9]+"></regex>
  	<regex name="address" value="[0-9a-zA-Z_%\~\\\{\}\|\&quot;\*\^\#\-\=\;\.\$@\?\,\&amp;\+\(\)\[\]\:\'\/\!\P{InBasicLatin}\s]+" />
 	<regex name="restapi_uri_pattern" value="[0-9a-zA-Z\*\-\+\.\$#^%~`=_@\\\,\:\;\'\/\!\[\]\|\{\}\(\)&quot;&amp;\P{InBasicLatin}\s]+" />
@@ -706,8 +657,18 @@
     <param name="newmobilepage" type="boolean" description="To display new mobile optimized page" />
     <param name="_sh" type="boolean" description="Option to hide/show Header and Footer in the accounts context pages" />
     <param name="_embed" type="boolean" />
-    <param name="scope" regex="^[\w\/,\.*]+$|^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&amp;%\$#_@]*)?$" split=",| " max-occurrences="1000"/>
+    <param name="scope" regex="^[\w\/,:\.*]+$|^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&amp;%\$#_@]*)?$" split=",| " max-occurrences="1000"/>
     <param name="zaid" regex="zid" max-len="100" />
     <param name="orgtype" regex="numbers"/>
+    <param name="portal" regex="iamcleartextpattern" max-len="100"/>
   </defaultparams>
+  
+  <!-- start enable csp header
+  <default-response-headers>
+                <header name="Content-Security-Policy-Report-Only" value="default-src 'self' 'unsafe-inline' https://mail.localzoho.com https://js.localzohocdn.com https://wms.localzoho.com https://static.localzohocdn.com https://contacts.localzoho.com https://downloads.localzohocdn.com https://www.zohowebstatic.com; report-uri ${report_uri}?service=accounts;"></header>
+  </default-response-headers>
+  end enable csp header -->
+	<xsspatterns>
+         <xsspattern name="anitsamy_without_url_validation" xss-filter-type="ANTISAMY" whitelist-policy="antisamy-template-filter.xml" enable-canonicalization="false" />
+	</xsspatterns>
 </security>

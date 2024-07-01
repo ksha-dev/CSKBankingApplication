@@ -31,21 +31,24 @@ window.onload = function(){
 		<title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-    	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-    	<link href="${SCL.getStaticFilePath("/v2/components/css/relogin.css")}" rel="stylesheet"type="text/css">
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
+    	<@resource path="/v2/components/css/${customized_lang_font}"/>
+    	<@resource path="/v2/components/css/relogin.css" />
+    	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+    	<@resource path="/v2/components/js/uvselect.js" />
+    	<@resource path="/v2/components/css/uvselect.css" />
     	<#if (isAuth)>
-    	<script src="${wmsjsurl}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/wmsliteimpl.js")}" type="text/javascript"></script>
+		<script src="${wmsjsurl}" integrity="${wmsjsintegrity}" type="text/javascript" crossorigin="anonymous"></script>
+    	<@resource path="/v2/components/js/wmsliteimpl.js" />
     	</#if>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/webauthn.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/relogin.js")}" type="text/javascript"></script>
-    	<script>var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;</script/>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
+    	<@resource path="/v2/components/js/splitField.js" />
+    	<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+    	<@resource path="/v2/components/js/webauthn.js" />
+    	<@resource path="/v2/components/js/common_unauth.js" />
+    	<@resource path="/v2/components/js/relogin.js" />
+    	<script>var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;</script>
+    	<@resource path="/v2/components/js/phonePatternData.js" />
+		<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
     	<script>
     		var csrfParam = "${csrfParam}";  
 			var csrfCookieName= "${csrfCookieName}";
@@ -66,6 +69,8 @@ window.onload = function(){
     		var support_email = <#if ((supportEmailID)?has_content)>"${supportEmailID}"<#else>''</#if>;
     		var passkeyHelpDoc = '${passKeyHelpDoc}';
     		var otp_length = ${otp_length};
+    		var totp_size = ${totp_size};
+			var wmsSRIValues = ${wmsSRIValues};
     		<#if (post_action) >
     			post_action = true;
     		</#if>
@@ -77,10 +82,12 @@ window.onload = function(){
     			"IAM.PLEASE.CONNECT.INTERNET" : '<@i18n key='IAM.PLEASE.CONNECT.INTERNET'/>',
     			"IAM.ERROR.ENTER.LOGINPASS" : '<@i18n key="IAM.ERROR.ENTER.LOGINPASS" />',
     			"IAM.VERIFY.CODE" : '<@i18n key='IAM.VERIFY.CODE' />',
+    			"IAM.SEND.OTP" : '<@i18n key='IAM.SEND.OTP'/>',
     			"IAM.TFA.RESEND.OTP.COUNTDOWN" : '<@i18n key='IAM.TFA.RESEND.OTP.COUNTDOWN'/>',
     			"IAM.NEW.SIGNIN.RESEND.OTP" : '<@i18n key='IAM.NEW.SIGNIN.RESEND.OTP'/>',
     			"IAM.ERROR.GENERAL" : '<@i18n key='IAM.ERROR.GENERAL'/>',
     			"IAM.NEW.SIGNIN.OTP.SENT" : '<@i18n key='IAM.NEW.SIGNIN.OTP.SENT'/>',
+    			"IAM.NEW.SIGNIN.OTP" : '<@i18n key='IAM.NEW.SIGNIN.OTP'/>',
     			"IAM.CONFIRM.PASS" : '<@i18n key='IAM.CONFIRM.PASS'/>',
     			"IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY" : '<@i18n key='IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY' />',
     			"IAM.AC.CHOOSE.OTHER_MODES.MOBILE.HEADING" : '<@i18n key='IAM.AC.CHOOSE.OTHER_MODES.MOBILE.HEADING' />',
@@ -116,12 +123,34 @@ window.onload = function(){
     			"IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidResponse" : '<@i18n key='IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidResponse'/>',
     			"IAM.WEBAUTHN.ERROR.NotAllowedError" : '<@i18n key='IAM.WEBAUTHN.ERROR.NotAllowedError'/>',
     			"IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidStateError" : '<@i18n key='IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidStateError'/>',
+    			"IAM.WEBAUTHN.ERROR.AUTHENTICATION.InvalidStateError" : '<@i18n key='IAM.WEBAUTHN.ERROR.AUTHENTICATION.InvalidStateError'/>',
+    			"IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.ErrorOccurred" : '<@i18n key='IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.ErrorOccurred'/>',
+    			"IAM.WEBAUTHN.ERROR.AUTHENTICATION.ErrorOccurred" : '<@i18n key='IAM.WEBAUTHN.ERROR.AUTHENTICATION.ErrorOccurred'/>',
+    			"IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY.DESC" : '<@i18n key='IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY.DESC'/>',
+    			"IAM.NEW.SIGNIN.YUBIKEY.HEADER.NEW" : '<@i18n key='IAM.NEW.SIGNIN.YUBIKEY.HEADER.NEW'/>',
     			"IAM.RELOGIN.VERIFY.VIA.PASSKEY" : '<@i18n key='IAM.RELOGIN.VERIFY.VIA.PASSKEY'/>',
     			"IAM.RELOGIN.VERIFY.VIA.PASSKEY.DESC" : '<@i18n key='IAM.RELOGIN.VERIFY.VIA.PASSKEY.DESC'/>',
     			"IAM.WEBAUTHN.ERROR.TYPE.ERROR" : '<@i18n key='IAM.WEBAUTHN.ERROR.TYPE.ERROR'/>',
     			"IAM.WEBAUTHN.ERROR.HELP.HOWTO" : '<@i18n key='IAM.WEBAUTHN.ERROR.HELP.HOWTO'/>',
     			"IAM.RESEND.PUSH.MSG" : '<@i18n key='IAM.RESEND.PUSH.MSG'/>',
-    			"IAM.ERROR.VALID.OTP" : '<@i18n key='IAM.ERROR.VALID.OTP'/>'
+    			"IAM.RELOGIN.MORE.FEDRATED.ACCOUNTS.TITLE" : '<@i18n key='IAM.RELOGIN.MORE.FEDRATED.ACCOUNTS.TITLE'/>',
+    			"IAM.RELOGIN.MORE.OPENID.ACCOUNTS.TITLE" : '<@i18n key='IAM.RELOGIN.MORE.OPENID.ACCOUNTS.TITLE'/>',
+    			"IAM.ERROR.VALID.OTP" : '<@i18n key='IAM.ERROR.VALID.OTP'/>',
+    			"IAM.NEW.SIGNIN.MFA.TOTP.HEADER" : '<@i18n key='IAM.NEW.SIGNIN.MFA.TOTP.HEADER'/>',
+    			"IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY" : '<@i18n key='IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY'/>',
+    			"IAM.AC.RECOVER.EMAIL_ID.DESCRIPTION" : '<@i18n key='IAM.AC.RECOVER.EMAIL_ID.DESCRIPTION'/>',
+    			"IAM.AC.RECOVER.EMAIL_ID.DESCRIPTION.MULTI" : '<@i18n key='IAM.AC.RECOVER.EMAIL_ID.DESCRIPTION.MULTI'/>',
+    			"IAM.AC.CONFIRM.EMAIL.VALID" : '<@i18n key='IAM.AC.CONFIRM.EMAIL.VALID'/>',
+    			"IAM.REAUTH.SELECT.ONE.EMAIL.ADDRESS" : '<@i18n key='IAM.REAUTH.SELECT.ONE.EMAIL.ADDRESS'/>',
+    			"IAM.REAUTH.VERIFY.TO.ENTER.FULL.MAIL" : '<@i18n key='IAM.REAUTH.VERIFY.TO.ENTER.FULL.MAIL'/>',
+    			"IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION" : '<@i18n key='IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION'/>',
+    			"IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION.WITH.MAIL" : '<@i18n key='IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION.WITH.MAIL'/>',
+    			"IAM.ENTER.PHONE.NUMBER" : '<@i18n key='IAM.ENTER.PHONE.NUMBER'/>',
+    			"IAM.ENTER.EMAIL" : '<@i18n key='IAM.ENTER.EMAIL'/>',
+    			"IAM.PHONE.ENTER.VALID.MOBILE_NUMBER" : '<@i18n key='IAM.PHONE.ENTER.VALID.MOBILE_NUMBER'/>',
+    			"IAM.REAUTH.SELECT.ONE.MOBILE.NUMBER" : '<@i18n key='IAM.REAUTH.SELECT.ONE.MOBILE.NUMBER'/>',
+    			"IAM.REAUTH.VERIFY.TO.ENTER.FULL.MOBILE.NUMBER" : '<@i18n key='IAM.REAUTH.VERIFY.TO.ENTER.FULL.MOBILE.NUMBER'/>',
+    			"IAM.REAUTH.SEND.OTP.TO.NUMBER" : '<@i18n key='IAM.REAUTH.SEND.OTP.TO.NUMBER'/>'
     		});
     		
     		
@@ -137,13 +166,14 @@ window.onload = function(){
 					}
 				}
 				$("#relogin_password_input").focus();
-				setReloginForm(false);
+				setReloginForm();
 				setFooterPosition();
 				<#if (isAuth)>
 				if(!$('.fed_div').is(":visible") && $('.fed_div').length === 1){
 					$('.fed_2show,.line').hide();
 				}
 				try {
+					WmsLite.setClientSRIValues(wmsSRIValues);
 					WmsLite.setNoDomainChange();
 					WmsLite.setConfig(64);//64 is value of WMSSessionConfig.CROSS_PRD
 					WmsLite.registerZuid('AC',"${zuid}","${Encoder.encodeJavaScript(userLoginName)}", true);
@@ -166,15 +196,15 @@ window.onload = function(){
   			<div class='blur_elem blur'></div>
 			<form class="zform"  name="pcform" id="relogin" onsubmit="javascript:return verifyUserAuthFactor(this)" novalidate="novalidate"  autocomplete="off">  
        
-      			<div class="zoho_logo" onclick="location.reload()"></div>
+      			<div class="zoho_logo"></div>
       			<div class="header_content">
-		        	<span class="head_text"><@i18n key="IAM.VERIFY.IDENTITY"/></span>
 			        <div class="mail_id">
 			        	<span class="name" id="login_id">${userEmail}</span>
 			        	<#if !hideUserChange>
 			        	<span class="notyoulink"  onclick="return logoutFuntion();"><@i18n key="IAM.NOT.YOU"/></span> 
 			        	</#if>
 			        </div>
+			        <span class="head_text"><@i18n key="IAM.VERIFY.IDENTITY"/></span>
 			        <div class="reauth_desc"><@i18n key="IAM.RELOGIN.VERIFY.REASON.DESC"/></div>
 		        </div>
 		        
@@ -184,8 +214,8 @@ window.onload = function(){
 			        	<#if !hideUserChange>
 			        	<span class="notyoulink"  onclick="return logoutFuntion();"><@i18n key="IAM.NOT.YOU"/></span> 
 			        	</#if>
-			        </div>
-		        	<span class="head_text"></span>
+			        </div>	
+			        <span class="head_text"></span>
 					<div class="reauth_desc"><@i18n key="IAM.RELOGIN.VERIFY.REASON.DESC"/></div>
 					<span class="header_desc"></span>
 		        </div>
@@ -194,7 +224,7 @@ window.onload = function(){
 					<div class="relogin_primary_container" id="relogin_primary_container">
 					<div class="password_field" id="password_container">
 						<div class="textbox_div forms" id="forms_error" >
-							<input class="text_box" type="text" autocomplete="off" name="current" onkeydown="remove_err();" placeholder="<@i18n key="IAM.ENTER.PASS"/>" id ="relogin_password_input" required="">
+							<input class="text_box" type="text" autocomplete="off" name="current" onkeydown="remove_err();" placeholder="<@i18n key="IAM.ENTER.PASS"/>" id ="relogin_password_input" maxlength="250" required="">
 							<span class="pass_icon icon-hide" onclick="pass_show_hide()"></span>
 						</div>
 						<div class="error_msg fielderror"></div>
@@ -209,20 +239,6 @@ window.onload = function(){
 								<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
 							</#if>
 						</div>
-						<div class="textbox_actions textbox_actions_saml" id="enablesaml">
-							<span class="bluetext_action reloginwithsaml" onclick="enableSamlAuth();"><@i18n key="IAM.RELOGIN.VERIFY.USING.SAML"/></span>
-							<#if (showForgotPwdLink)>
-								<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
-							</#if>
-						</div>
-						<div class="textbox_actions textbox_actions_saml" id="enablejwt">
-							<a href="" class="bluetext_action reloginwithjwt"><@i18n key="IAM.RELOGIN.VERIFY.USING.JWT"/></a>
-							<#if (showForgotPwdLink)>
-								<span class="bluetext_action bluetext_action_right" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
-							</#if>
-						</div>
-										
-						
 
 					</div>
 					
@@ -239,7 +255,14 @@ window.onload = function(){
 							<div class="bluetext_action rnd_resend resendotp" onclick="javascript:return enableMyZohoDevice();"><@i18n key="IAM.NEW.SIGNIN.RESEND.PUSH"/></div>
 						</div>
 					</div>
-					
+					<div class="sendotp_to_email hide"><div class="email_desc"></div><button type="button" class="btn sendotp_to_email_btn"><span><@i18n key="IAM.SEND.OTP"/></span></button></div>
+					<div class="sendotp_to_mobile hide"><div class="mobile_desc"></div><button type="button" class="btn sendotp_to_mobile_btn"><span><@i18n key="IAM.SEND.OTP"/></span></button></div>
+					<div class="textbox_div" id="secondary_email_container" style="margin-top:20px">
+						<div class="secondary_verify_desc hide"><span class="backoption icon-backarrow" onclick="showViaSecondaryMail()"></span><@i18n key="IAM.AC.CHOOSE.OTHER_MODES.EMAIL.HEADING"/></div>
+						<div class="secondary_email_desc"></div>
+						<div class="email hide" id="secondary_mail"><span class="icon icon-email"></span><span class="masked_email_id"></span> </div>
+						<span class="bluetext_action verifyUsingOtp hide" onclick="showOtp()"><@i18n key="IAM.RELOGIN.VERIFY.USING.OTP"/></span>
+					</div>
 					<div id="otp_container">
 						<div class="textbox_div" >
 							<div class="header_desc email_otp_description"><@i18n key="IAM.RELOGIN.VERIFY.VIA.EMAIL.DESC"/></div>
@@ -247,10 +270,8 @@ window.onload = function(){
 							<div class="otp_input" id="otp_input_box" ></div>
 							<div class="error_msg fielderror"></div>
 							<div class="textbox_actions otp_actions">
-								<span class="bluetext_action" id="verifywithpass" onclick="showPassword()"><@i18n key="IAM.NEW.SIGNIN.USING.PASSWORD"/></span>
-								<span class="bluetext_action reloginwithsaml" onclick="enableSamlAuth();"><@i18n key="IAM.RELOGIN.VERIFY.USING.SAML"/></span>
-								<a href="" class="bluetext_action reloginwithjwt" ><@i18n key="IAM.RELOGIN.VERIFY.USING.JWT"/></a>
-								<span class="bluetext_action showmorereloginoption" onclick="showMoreReloginOption()"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></span>
+								<span class="bluetext_action hide" id="verifywithpass" onclick="showPassword()"><@i18n key="IAM.NEW.SIGNIN.USING.PASSWORD"/></span>
+								<span class="bluetext_action showmorereloginoption" onclick="showproblemrelogin(this)"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></span>
 								<span class="bluetext_action bluetext_action_right resendotp" onclick="generateOTP(true)"><@i18n key="IAM.NEW.SIGNIN.RESEND.OTP"/></span>
 							</div>
 						</div>
@@ -279,7 +300,7 @@ window.onload = function(){
 					</button>
 					</div>
 					<div class="textbox_actions_more" id="enablemore">
-						<span class="bluetext_action showmorereloginoption" onclick="showMoreReloginOption()"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></span>
+						<span class="bluetext_action showmorereloginoption" onclick="showproblemrelogin(this)"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></span>
 						<#if (showForgotPwdLink)>
 						<span class="bluetext_action bluetext_action_right blueforgotpassword" id="blueforgotpassword" onclick="goToForgotPassword();"><@i18n key="IAM.FORGOT.PASSWORD"/></span>
 						</#if>
@@ -336,16 +357,14 @@ window.onload = function(){
 					<div id="problemreloginui"></div>
 							
 					<button class="btn" id="reauth_button"><span><@i18n key="IAM.CONFIRM.PASS"/></span></button>
-					<div class="tryAnotherBlueText" id="tryAnotherSAMLBlueText" onclick ="showMoreReloginOption()"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></div>
+					<div class="tryAnotherBlueText" id="tryAnotherSAMLBlueText" onclick ="showproblemrelogin(this)"><@i18n key="IAM.RELOGIN.TRY.ANOTHER.WAY"/></div>
 					<div class="tryanother text16" onclick ="showTryanotherWay()"><@i18n key="IAM.RELOGIN.VERIFY.ANOTHER.WAY"/></div>	
 					<div class="text16 pointer nomargin" id="problemrelogin" onclick="showproblemrelogin(this)"><@i18n key="IAM.RELOGIN.TROUBLE.IN.ONEAUTH"/></div>
 					<div class="text16 pointer nomargin" id="try_other_options" onclick="showproblemrelogin(this)"><@i18n key="IAM.RELOGIN.TRY.OTHER.OPTIONS"/></div>
 	 			</div>	
-	 	<#if (IDP_Count?has_content)>
-	 			<#if (!isPasswordExists && !isZohoAccount)>
+	 			<#if (!isZohoAccount)>
 	 			<div class="fed_2show" style="margin-top:30px">
 	 			<#else>
-	 			<div class="line" id="lineseparator"></div>
 	 			<div class="fed_2show">
 	 			</#if>
 					<span class="relogin_fed_text"><@i18n key="IAM.NEW.SIGNIN.FEDERATED.VERIFY.TITLE"/></span>
@@ -359,7 +378,6 @@ window.onload = function(){
 				                	<span class="path3"></span>
 				                	<span class="path4"></span>
 								</span>
-								<span class="fed_text_avoid"><@i18n key="IAM.GOOGLE" /></span>
 							</div>
 						</span>
 					</#if>
@@ -499,10 +517,38 @@ window.onload = function(){
 					</#if>
 					</div>	
 				</div>	
-		</#if>
-	  			<div class="nopassword_container">
-					<div class="nopassword_icon icon-hint"></div>
-					<div class="nopassword_message"><@i18n key="IAM.NEW.SIGNIN.NO.PASSWORD.MESSAGE" arg0="goToForgotPassword();"/></div>
+				<div class="openIDP_template hide">
+					<span class="fed_div box_with_text open_id_temp" id=""> 
+						<span class="fed_icon icon-openid">
+							<span class="path1"></span>
+		                	<span class="path2"></span>
+		                	<span class="path3"></span>
+						</span>
+						<span class="fed_text_avoid"><@i18n key="IAM.RELOGIN.OIDC.WITH.ID"/></span>
+					</span>
+					<span class="fed_div box_with_text saml_temp" id=""> 
+						<span class="fed_icon icon-fsaml">
+							<span class="path1"></span>
+		                	<span class="path2"></span>
+		                	<span class="path3"></span>
+						</span>
+						<span class="fed_text_avoid"><@i18n key="IAM.RELOGIN.SAML.WITH.ID"/></span>
+					</span>
+					<span class="fed_div box_with_text black_bg jwt_temp" id=""> 
+						<span class="fed_icon icon-fjwf">
+							<span class="path1"></span>
+		                	<span class="path2"></span>
+		                	<span class="path3"></span>
+		                	<span class="path4"></span>
+		                	<span class="path5"></span>
+		                	<span class="path6"></span>
+		                	<span class="path7"></span>
+		                	<span class="path8"></span>
+		                	<span class="path9"></span>
+		                	<span class="path10"></span>
+						</span>
+						<span class="fed_text_avoid"><@i18n key="IAM.RELOGIN.JWT.WITH.ID"/></span>
+					</span>
 				</div>
 			</form>
 		</div> 

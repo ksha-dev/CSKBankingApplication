@@ -44,7 +44,7 @@
 							<div name="error" id="error"></div>
 							<dl class="za-password-container">
 								<dd>
-								<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" autofocus tabindex="1" maxlength="250" onkeypress="hideMsg(this);" />
+								<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" autofocus tabindex="1" maxlength="250" onkeypress="hideMsg(this);" />
 								<div>
 									<p class="tos"><a href="/password" class="forpassword" tabindex="-10"><@i18n key="IAM.FORGOT.PASSWORD" /></a></p>
 								</div>

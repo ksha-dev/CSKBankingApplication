@@ -56,7 +56,7 @@ body
 {
 	margin: 0px;
 }
-
+input, textarea, button {font-family: inherit}
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
 	color:#0003;
 }
@@ -1820,13 +1820,13 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     width: 0;
     height: 0;
     margin-left: -8px;
-    top: 25px;
-    left: 0;
+    top: -8px;
+    left: 30px;
     box-sizing: border-box;
     border: 6px solid black;
     border-color: #ffffff transparent transparent #ffffff;
     transform-origin: 0 0;
-    transform: rotate(-45deg);
+    transform: rotate(45deg);
     box-shadow: -6px -6px 10px 0 #0000001a;
 }
 .hover-tool-tip.no-arrow::after {

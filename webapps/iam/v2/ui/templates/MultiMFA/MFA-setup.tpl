@@ -87,6 +87,7 @@
 					</form>
 					
 					
+					<div id="add-mobile-captcha"></div>
 					<form id="set_verified_num" onsubmit="return false;" class="hide">
 						<div class="field full noindent" id="set_select_verified_number">
 	                  		<label class="textbox_label"><@i18n key="IAM.VERIFIED.MOBILE.NUMBER" />  </label>
@@ -109,7 +110,7 @@
 
 
 <!--	#Authenticator APP		-->
-
+				<#if canSetup_mfa_device?has_content>
 				<div class="box_info hide" id="authenticator_oneauth">
 					<div class="box_head"><@i18n key="IAM.USE.ONEAUTH.DOWNLOAD.HEADING" /></div>
 					<div class="box_discrption mob_hide">
@@ -152,15 +153,17 @@
 								</div>
 							</div>
 						<div class="authenticator-oneauth-notes"><@i18n key="IAM.USE.ONEAUTH.DOWNLOAD.DESCRIPTION" /></div>
-		  	  				<a class="primary_btn_check " onclick="inititate_auth_setup(true)" ><span><@i18n key="IAM.NEXT" /> </span></a>
+		  	  				<a class="primary_btn_check oneauth_totp_set" onclick="inititate_auth_setup(true)" ><span><@i18n key="IAM.NEXT" /> </span></a>
 							<a tabindex="0" class="primary_btn_check high_cancel" onclick="inititate_auth_setup();"><span><@i18n key="IAM.BACK" /></span></a>
 						</div>
 					</div>
 				</div>
-
+				</#if>
+				
 				<div class="box_info hide" id="auth_mode_head">
 					<div class="box_head"><@i18n key="IAM.USE.AUTH.APP" /> </div>
 					<div class="box_discrption mob_hide">
+					<#if canSetup_mfa_device?has_content>
 						<div class="authenticator-oneauth with-bg"   onclick="storeRedirect('<@i18n key="IAM.ONEAUTH.WEBSITE.LINK" />')">
 							<div class="product-icon-oneauth3 one_auth_icon">
 								<span class="path1"></span>
@@ -175,9 +178,9 @@
 								<h4><@i18n key="IAM.USE.AUTH.APP.SETUP.HEADING" /></h4>
 								<p><@i18n key="IAM.USE.AUTH.APP.SETUP.DESCRIPTION" /></p>
 							</div>
-							<div class="setup_now"><span onclick="showNextStep(event)"><@i18n key="IAM.BTNMSG.SETUP.NOW"/></span></div>
+							<div class="setup_now"><span id="oa_setup_now" onclick="showNextStep(event)"><@i18n key="IAM.BTNMSG.SETUP.NOW"/></span></div>
 						</div>
-					<!-- <@i18n key="IAM.USE.AUTH.APP.SETUP.DESC" />  -->
+					</#if>
 					</div>
 					<div class="authen-oneauth-step">
 						<div id="authen-oneauth-step">
@@ -190,6 +193,7 @@
 							</ol>
 						</div>
 					</div>
+					
 				</div>
 				
 				<div class="box_info hide" id="auth_mode_downloads">
@@ -199,7 +203,7 @@
 				
 				<div class="hide" id="mfa_auth_mode_popups">
 				
-					<div class="tfa_setup_work_space">
+					<div class="tfa_setup_work_space <#if !(canSetup_mfa_device?has_content)>mtop_auth_pop</#if>">
 							
 						<div class="key_qr_space">
 							<div id="tfa_qr_space" class="tfa_qr_space">
@@ -236,7 +240,7 @@
 					
 						<div class="tfa_authapp_list">
 						
-						<#if canSetup_mfa_device>
+						<#if ((canSetup_mfa_device)?has_content)>
 							<div class="tfa_authapp">
 								<span class="tfa_auth_logo one_auth"></span>
 								<span class="app_text" onclick='window.open(fta_oneauth_link)' ><@i18n key="IAM.ZONE.ONEAUTH" /> (<@i18n key="IAM.RECOMMENDED" />)</span>
@@ -444,3 +448,4 @@
 				};
 			</script>
 
+<#include "${location}/utils/captcha-handler.tpl">

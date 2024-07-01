@@ -1,0 +1,618 @@
+/*$Id$*/
+/*========================================== Right to left support styling ========================================*/
+[dir=rtl]{
+	.bg_one {
+		right: 0px;
+		left:auto;
+	}
+	.hidePlaceHolder{
+		direction:ltr;
+		text-align:right;
+	}
+	.textbox{
+		text-align:right;
+	}
+	.username{
+		direction:ltr;
+	}
+	.arrow_position{
+		right:75px;
+	}
+	.zoho_logo{
+		background-position:right;
+	}
+	.smartsigninbutton{
+		float: left;
+	}
+	.MobflagContainer label{
+		margin-right:25px;
+		margin-left:auto;
+	}
+	.MobflagContainer span{
+		right:75px;
+		left:auto;
+	}
+	.ssibuttonshineicon{
+		left: 11px;
+		right:auto;
+	}
+	.signin_box{
+		float: right;
+		border-left: 2px solid #f1f1f1;
+		border-right: none;
+	}
+	.textbox, #mfa_otp, #emailverify, #mfa_totp, #otp{
+		padding-left: 12px;
+	}
+	.customOtp{
+		text-align: right;
+	}
+	#mfa_otp::after, #emailverify::after, #mfa_totp::after, #otp::after, #verify_totp::after, #mfa_email::after {
+		right: 0px;
+		left:0px;
+	}
+	::-webkit-credentials-auto-fill-button { 
+		left: 0px;
+		right:auto;
+	}
+	.signupbtn{
+		margin-right: 0px;
+		margin-left: auto;
+	}
+	#showIDPs{
+		margin-left: 0px;
+		margin-right:auto;
+	}
+	.leftalign {
+		text-align: right;
+	}
+	.Notyou {
+		float: left;
+		padding-top: 0px; padding-left: 14px; padding-bottom: 0px; padding-right: 0px;
+	}
+	.backbtn{
+		float: right;
+	}
+	.idp_font_center{
+		margin-right: 10px;
+		margin-left: auto;
+	}
+	.zohosignin .fedarrow{
+		margin-right: 7px;
+		margin-left: auto;
+	 }
+	.weibo_font{
+		margin-right: 25px;
+		margin-left:auto;
+	}
+	.fedarrow{
+		border-left: 2px solid #a2a2a2;
+		border-right: none;
+		 margin-right: 18px;
+		margin-left: auto;
+	}
+	.showallfed {
+		margin-left: 20px;
+		margin-right: auto;
+	}
+	.searchlbl {
+		margin-right: 10px;
+		margin-left:auto;
+	}
+	.select_country_code{
+	    float: right;
+	}
+	.pic {
+		float: right;
+	}
+	.cn {
+		margin-right: 10px;
+		margin-left:auto;
+	}
+	.btntotick:before {
+		border-left: none;
+	}
+	.realradiobtn, .realcheckbox {
+		float: right;
+	}
+	.radiobtn_style {
+		float: right;
+		margin-left: 5px;
+		margin-right: -14px;
+	}
+	.checkbox_style {
+		float: right;
+		margin-left: 5px;
+		margin-right: -14px;
+	}
+	.check_on:before {
+		border-left: 1.5px solid #fff;
+		border-right: none;
+	}
+	.resendcode {
+		float: left;
+	}
+	#keepmesignindiv {
+		float: right;
+	}
+	.recovery_option {
+		right: -50px;
+		left: auto;
+	}
+	.recovery_icon {
+		margin-left: 15px;
+		margin-right:auto;
+		float: right;
+	}
+	.closebtn {
+	  margin-right: 15px;
+	  margin-left: auto;
+	  float: left;
+	}
+	.deviceinfo,.deviceicon {
+		 float: right;
+	}
+	.arrowright {
+		border-left: 2px solid #159AFF;
+		border-right: none;
+	}
+	.recovery_option:hover  .arrowright {
+		margin-right: 50px;
+		margin-left: auto;
+	}
+	.bluetext_action {
+	   	 float: right;
+	}
+	.bluetext_action_right {
+	        float: left;
+	}
+	.rightside_box {
+		float: left;
+	}
+	.pwless_img {
+		margin-top: 0px; margin-left: 30px; margin-bottom: 20px; margin-right: 30px;
+	}
+	.MAppIcon{
+		margin-top: 20px; margin-left: 50px; margin-bottom: 2px; margin-right: 50px;
+	}
+	.AStoreIcon{
+		margin-right: 10px;
+		margin-left: auto;
+	}
+	.qr_after {
+		margin-right: -3px;
+		margin-left: auto;
+	}
+	.qr_before {
+		margin-right: 15px;
+		margin-left: auto;
+	}
+	.verify_qr .loader{
+		right: 35%;
+		right: auto;
+	}
+	.select_icon{
+		float:right;
+	}
+	.select_con{
+		float:right;
+		margin-right: 4px;
+		margin-left: auto;
+	}
+	.downarrow{
+	         margin-top: 4px; margin-left: 0px; margin-bottom: 2px; margin-right: 10px;
+	}
+	#captcha_img,#bcaptcha_img{
+		float: left;
+		border-right: none;
+	}
+	.reloadcaptcha{
+		float: left;
+	}
+	.option_details
+	{
+		margin-right: 15px;
+		margin-left: auto;
+	}
+	.tick_icon,.error_icon
+	{
+		float: right;
+	}
+	.alert_message,.error_message,.error_help{
+		margin-left: 20px;
+		margin-right: auto;
+	}
+	.topErrClose {
+		left: -12px;
+		right: auto;
+	}
+	.topErrClose:before, .topErrClose:after {
+		right: 4px;
+		left: auto;
+	}
+	.notnowbtn .loadwithbtn{
+		border-right: 3px solid transparent;
+		border-left: none;
+	}
+	.banner_newtoold {
+		left: 30px;
+		right: auto;
+	}
+	#recoverybtn, #problemsignin,.tryanother{
+		left:390px;
+		right:0px;
+	}
+	.backicon:before {
+		margin-right: -1px;
+		margin-left: auto;
+	}
+	.backicon:after {
+		margin-right: -1px;
+		margin-left: auto;
+	}
+	.real_checkbox {
+		float: right;
+	}
+	.style_checkbox {
+		margin-left: 6px;
+		margin-right:auto;
+		float: right;
+	}
+	.style_checkbox:before {
+		margin-right: 2px;
+		margin-left: auto;
+	}
+	.style_checkbox:after {
+		margin-right: 2px;
+		margin-left: auto;
+	}
+	.checkbox_name {
+		float: right;
+	}
+	.problemsignincontainer{
+	   	margin-right: -50px;
+		margin-left: auto;
+	}
+	.optionmod{
+		margin-right: 0px;
+		margin-left: auto;
+	}
+	.nopassword_message,.backup_info_tab {
+	  	 margin-right: 10px;
+		 margin-left: auto;
+	  	 padding-right: 10px;
+		padding-left: none;
+	}
+	.option_details,.option_details_try{
+		padding-right: 10px;
+		padding-left: none;
+	}
+	.backup_info_tab{
+		 padding-top: 0px; padding-left: 10px; padding-bottom: 0px; padding-right: 5px;
+	}
+	.close_btn{
+		 left: 10px;
+		right : auto;
+	}
+	#terminate_session_form .checkbox_div{
+		order-top-right-radius: 10px; border-top-left-radius: 10px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;
+	}
+	#terminate_session_form .checkbox_check
+	{
+		right: 10px;
+		left: auto;
+	}
+	.oneAuthLable
+	{
+	    border-top-right-radius: 0px; border-top-left-radius: 0px; border-bottom-left-radius: 15px; border-bottom-		right-radius: 15px;
+	}
+	.real_togglebtn:checked ~ .togglebase .toggle_circle 
+	{
+	    right: 16px;
+	    left:auto;
+	}
+	.oneAuthLable .toggle_circle 
+	{
+	    right: 2px;
+	     left:auto;
+	}
+	@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	    	.Alert,.Errormsg{
+			right:35%;
+			left: auto;
+		}
+	}
+	
+	
+	@media (min-width: 600px) and (max-width: 1024px) {
+		.signin_box {   
+			width: 100%;
+			border-left: none;
+	 	   }
+		#recoverybtn,#problemsignin,.tryanother, #goto_resetIP{
+			left: 0px;
+			right: auto;
+		}
+		.sendingotp::after{
+			right: -15px;
+			left: auto;
+			border-left: 2px solid transparent;
+			border-right: none;
+		}
+		.topErrClose{left: 8px; right:auto;}
+		.signin_box {   
+		   	border-left: none;
+	  	  }
+		.options{
+		    margin-right: 0px;
+		 }
+		.img_option{    margin-top: 0px !important; margin-left: 10px !important; margin-bottom: 0px !important; 		margin-right: 0px !important;}
+		.more{margin-left: 0px !important; margin-left:auto !important;}
+		.problemsignincontainer{
+			 margin-right: 0px;
+			margin-left: auto;
+		}
+		.optionmod{
+			margin-right: 0px;
+			margin-left: auto;
+		}
+		.problemsignincon,.recoverymodes,#recoverymodeContainer{
+			margin-right: 0px;
+			margin-left:auto;
+		}
+		#problemsignin_mob,#recoverybtn_mob{
+			text-align: right;
+		}
+		.select_con {margin-right: 0px;margin-left:auto;}
+	}
+	.blur{
+		right:0px;
+		left:auto;
+	}
+	.loader{
+		right: 50%;
+		left: auto;
+	}
+	.verify_qr .blur{
+		right: -3px;
+		left: auto;
+	}
+	.notaccess{
+		margin-top: 25px; margin-left: 0px; margin-bottom: 30px; margin-right: 0px;
+	}
+	.show_hide_password{
+	    left: 13px;
+	    right: auto;
+	    float: left;
+	}
+	.trustdevice {
+	    float: right;
+	    margin-left: 18px;
+	    margin-right:auto;
+	}
+	.backoption{
+	    float: right;
+	    margin-left: 5px;
+	    margin-right: auto;
+	}
+	.trybtn{
+		padding-right: 24px;
+		padding-left:24px;
+	}
+	.error_icon:before, .error_icon:after {
+	    right: 9px;
+	}
+	.checkbox {
+		float: right;
+	}
+	.checkbox_tick {
+		border-right: 2px solid #fff;
+		border-left: none;
+	}
+	.checkbox_label {
+		float: right;
+	}
+	#terminate_session_form .checkbox_tick{
+	    border-right: 2px solid #fff;
+	     border-left: none;
+	}
+	.checkbox_check {
+		right: 50px;
+	}
+	#totpverifybtn{
+		margin-right:3%;
+		margin-left:auto;
+		float:left;
+	}
+	.dot{
+		margin-right: 5px;
+		margin-left: auto;
+	}
+	#dot_0{
+		margin-right: 3px;
+		margin-left: auto;
+	}
+	.rightbanner{
+		float: right;
+	}
+	.dot div{
+		 transform-origin: right;
+	}
+	.externaluser_container{
+		    border-right: 4px solid #fac677;
+		    border-left: none;
+	}
+	.darkmode .signin_box{
+		border-left: 2px solid #3E3F49;
+		border-right: none;
+	}
+	@media only screen and (max-width: 600px) {
+		.douban_fed .fed_text{
+			margin-right: 0px; 
+			margin-left: auto; 
+		}
+		.error_icon:before, .error_icon:after{
+			right: 9px;
+			left: auto;
+		}
+		.close_icon:before, .close_icon:after{
+			right: 14px;
+			left: auto;
+		}
+		.checkbox_check{
+			right: 30px;
+			left: auto;
+		}
+		.textindent62{
+			padding-right:85px;
+			text-indent:0px;
+		}
+		.problemsignincon,.recoverymodes,.addaptivetfalist,#recoverymodeContainer{
+			margin:0px 0px;
+		}
+	}
+	.fedicon{
+		float: right;
+	}
+	.fed_div
+	{
+	    float: right;
+	}
+	.large_box{
+		margin-right:10px;
+		margin-left:auto;
+	}
+	.small_box
+	{
+	      margin-left: 10px;
+	      margin-right:auto;
+	}
+	.apple_normal_icon .fed_text, .slackicon .fed_text{
+		margin-right: 6px;
+		margin-left: auto;
+	}
+	.large_box
+	{
+	    margin-right: 10px;
+		margin-left: auto;
+	}
+	.large_box .fed_icon
+	{
+		float: right;
+	}
+	.fed_text, .fed_text_avoid
+	{
+	     float: right;
+	}
+	.fed_center_google .fed_icon{
+		 float: right;
+	}
+	.small_box .fed_text_avoid
+	{
+	      	margin-right: 5px;
+	       margin-left: 15px;
+	}
+	.large_box.google_icon{
+		padding-right: 20px;
+		padding-left:none;
+	}
+	.large_box .fed_google_large{
+		right: 2px;
+		left: auto;
+	}
+	@media only screen and (min-width: 601px) {
+		.darkmode .signin_box{
+			border-left: 2px solid #3E3F49;
+			border-right: none;
+		}
+	}
+	#portaldomain{
+		float:left;
+		border-right: 0px;
+		left: 0px;
+	}
+	.domainselect{
+	    	text-align: right;
+	}
+	.doaminat{
+		margin-right: -32px;
+		margin-left: auto;
+	}
+	.hidearrow{
+		padding-right: 12px;
+	    padding-left: 20px;
+	}
+	.close {
+	    left: 10px;
+	   right: auto;
+	}
+	.close:before, .close:after {
+	  right: 7px;
+	 left: auto;
+	}
+	.hover-tool-tip {
+	    right: 335px;
+	   left:auto;
+	}
+	.hover-tool-tip::after {
+	   margin-right: -8px;
+	   margin-left: auto;
+	    right: 0;
+	}
+	.hover-tool-tip ul {
+	    margin-top: 0px; margin-left: 0px; margin-bottom: 0px; margin-right: 15px;
+	}
+	.hover-tool-tip p {
+	    margin-top: 0px; margin-left: 0px; margin-bottom: 10px; margin-right: 0px;
+	}
+	.hover-tool-tip ul li::before {
+	      margin-left: 10px;
+	      margin-right: auto;
+	}
+	@media screen and (max-width:425px){
+		.large_box{
+			margin-right: 5%;
+			margin-left: auto;
+		}
+	}
+	.profile_dp {
+	       float: right;
+	}
+	.profile_info {
+	    margin-right: 10px;
+	    margin-left: auto;
+	}
+	.icon-datacenter{
+		padding-left: 4px;
+		padding-right: none;
+	}
+	.up-arrow {
+	    margin-right: -22px;
+	    margin-left: auto;
+	}
+	.up-arrow:before {
+	     right: 17px;
+	     left:auto;
+	}
+	.up-arrow:after {
+	      right: 18px;
+	     left: auto;
+	}
+	.tooltip_more{
+		float: left;
+	}
+	.DC_name-details{
+		margin-right: 8px;
+		margin-left: auto;
+	}
+	.fedarrow{
+		transform: rotate(45deg);
+	}
+	select{
+		direction:ltr;
+	}
+	.fed_text{
+		margin-right:8px;
+		margin-left:0px;
+	}
+}

@@ -267,7 +267,7 @@
                 <tr>
                     <td class="addEDtbltd">Enter Admin password :</td>
                     <td>
-                        <input type="password" name="pwd" class="input"/>
+                        <input type="password" autocomplete="off" name="pwd" class="input"/>
                     </td>
                 </tr>
                 <tr>

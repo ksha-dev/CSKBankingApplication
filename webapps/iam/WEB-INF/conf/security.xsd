@@ -62,7 +62,6 @@
       <xs:attribute name="throwallerrors" type="xs:boolean"/>
       <xs:attribute name="dos-cookie" type="xs:boolean"/>
       <xs:attribute name="response-json-impurity"/>
-      <xs:attribute name="action-forward"/>
       <xs:attribute name="internalortrusted" type="xs:boolean"/>
       <xs:attribute name="disable-extraparam" type="xs:boolean"/>
       <xs:attribute name="app-account-member-roles" type="xs:string"/>
@@ -103,6 +102,23 @@
       </xs:attribute>
       <xs:attribute name="disable-dos-control" type="xs:boolean"/>
       <xs:attribute name="fileupload-after-authentication" type="xs:boolean"/>
+      <xs:attribute name="request-partial-payload-encryption" type="xs:boolean"/>
+      <xs:attribute name="response-payload-encryption" type="xs:boolean"/>
+      <xs:attribute name="impact-type">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="static|dynamic"/>
+          </xs:restriction>
+        </xs:simpleType>
+     </xs:attribute>
+     <xs:attribute name="impact-level" type="xs:integer"/>
+     <xs:attribute name="impact-scope">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="User|Self|Org|App|Platform|Infrastructure"/>
+          </xs:restriction>
+        </xs:simpleType>
+     </xs:attribute>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="urlGroup">
@@ -144,6 +160,10 @@
       <xs:attribute name="max-import-file-size" type="xs:integer"/>
       <xs:attributeGroup ref="commonParamGroup"/>
       <xs:attributeGroup ref="commonFileGroup"/>
+	  <xs:attributeGroup ref="maskGroup"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="maskGroup">
       <xs:attribute name="mask">
       	 <xs:simpleType>
           <xs:restriction base="xs:string">
@@ -207,6 +227,7 @@
       <xs:attribute name="dynamic-template-key-regex" type="xs:string"/>
       <xs:attribute name="throw-all-json-error" type="xs:boolean"/>
       <xs:attribute name="dynamic-json-template" type="xs:boolean"/>
+      <xs:attribute name="normalize" type="xs:boolean"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="inputstreamGroup">
@@ -267,11 +288,12 @@
       <xs:attribute name="limit"  type="xs:string"/>
       <xs:attribute name="mandatory"  type="xs:boolean"/>
       <xs:attribute name="continue-onerror" type="xs:boolean"/>
-      <xs:attribute name="zip-sanitizer-name" type="xs:string"/>
+     <xs:attribute name="zip-sanitizer-name" type="xs:string"/>
       <xs:attribute name="type">
       	<xs:simpleType>
       		<xs:restriction base="xs:string">
       			<xs:enumeration value="csv"/>
+      			<xs:enumeration value="image"/>
       		</xs:restriction>
       	</xs:simpleType>
       </xs:attribute>
@@ -290,6 +312,7 @@
         </xs:simpleType>
       </xs:attribute>
       <xs:attributeGroup ref="commonFileGroup"/>
+      <xs:attribute name="decrypt" type="xs:boolean"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="commonFileGroup">
@@ -300,8 +323,15 @@
       <xs:attribute name="allowed-extensions"/>
       <xs:attribute name="disallowed-extensions" type="xs:string"/>
       <xs:attribute name="antivirus" type="xs:boolean"/>
-      <xs:attribute name="remove-exif" type="xs:boolean"/>
       <xs:attribute name="av-threshold"  type="xs:integer"/>
+      <xs:attributeGroup ref="commonImageFileGroup"/>
+  </xs:attributeGroup>
+
+   <xs:attributeGroup name="commonImageFileGroup">
+      <xs:attribute name="remove-exif" type="xs:boolean"/>
+      <xs:attribute name="image-dimensions-check"  type="xs:boolean"/>
+      <xs:attribute name="max-image-area-in-pixels" type="xs:long"/>  
+      <xs:attribute name="max-sub-images" type="xs:integer"/>  
   </xs:attributeGroup>
   
   <xs:group name="securitychoice">
@@ -500,7 +530,7 @@
     <xs:attribute name="name" use="required">
       <xs:simpleType>
        <xs:restriction base="xs:string">
-	       <xs:pattern value="disable.path.parameter.uri.decoding.check|allow.invalid.value|json.invalid.list|enable.x.http.method.override.option|enable.file.rule.override.option|allowed.http.override.methods|csrf.cookie.name|csrf.param.name|captcha.url|com.adventnet.iam.secretkey|com.adventnet.iam.cryptolendelim|use.iam|xss.enable.timeoutmatcher|timeoutmatcher.maxthreads|timeoutmatcher.timeoutinmillis|trusted.ip.pattern|antivirus.host|antivirus.port|antivirus.numberof.persistant.connections|antivirus.readtimeout|allow.empty.value|request.encoding|response.encoding|ignore.trailing.slash|enable.xssfilter.log|xssfilter.log.maxsize|xss.detect.pattern|xss.detect.pattern.ext|xss.encodecheck.pattern|xss.trimctrlchars.pattern|proxy.host|proxy.port|proxy.username|proxy.password|set.csrf.cookie|ticket.cache.validity|com.adventnet.iam.internal.server|com.adventnet.iam.apikey|com.adventnet.iam.handler|service.name|login.page|logout.page|is.zuid|disable.ie.cache|disable.ie.nocache|com.adventnet.iam.security.provider|is.nonpersistentscan|internal.mailwatch.server.url|upload.filerule.connectiontimeout|upload.filerule.readtimeout|enable.xsspattern.detect|readonly.mode|enable.currentuser.cache|com.adventnet.iam.authentication.provider|internalrequest.privatekey|com.zoho.cs.handler|com.zoho.cs.internal.server|com.zoho.client.handler|isc.signature.expiry.time|disable.authcsrf|csrf.migration|soid.migration.mode|disable.iam.soid|enable.request.options|disable.xssfilter.patterndetect|enable.response.send.error|mask.secret.param.logging|iscticket.cache.validity|com.zoho.zohoone.handler|disable.get.api.csrf.check|content.type.detect.option|enable.clamav.instrumentation|uri.ignore.prefix|error.label|log.response|use.iam.login|enable.app.firewall|enable.app.firewall.file|request.header.validation.mode|enable.patch.method.min.occurrence.check|custom.request.methods|disable.put.minoccur.check|enable.appsense|zohosecurity.plugin|allow.import.url.redirect|ignore.extra.param|ignore.extra.key|captcha.image.dimensions|set.api.rate.limit.response.header|disable.service.url.throttles|convert.service.url.rolling.throttles.into.appserver|enable.secret.param.logging.mask|url.static.version|enable.hsts|hsts.allowed.domains|allow.proxy.url.redirect|url.redirect.maxlimit|enable.post.method.redirect|log.push.security.exception|dos.accessinfo.expiry.schedule.timeinterval|secret.request.param.names|secret.request.header.names|secret.response.header.names|hsts.forceful.redirection|log.inputstream|dynamic.params.max.occurrence.limit|handle.errorpage.hip|handle.errorpage.json.response|disable.param.input.validation.for.testing.output.encoding|pattern.matcher.timeoutinmillis|pattern.matcher.max.iterationcount|mask.all.paramvalues.on.error|enable.pii.detector|inputstream.validation.mode|enable.individual.occurrence.check.for.dynamic.params|enable.min.occurrence.check.for.empty.jsonobject|disable.redis.instrumentation|enable.tika.file.content.and.name.based.detection|pattern.matcher.mode|error.page.validation.mode|enable.trim|multi.av.config.provider|icap.av.config|restapi.av.config|csrf.cookie.samesite.mode|enable.csrf.samesite.strict.tmpcookie|start.live.window.cleaner.scheduler|block.request.on.dos.cache.exception|allowed.user.agents|proxy.connection.timeout|proxy.read.timeout|com.zoho.ediscovery.handler|xml.schema.version|enable.xsd11.cta.full.xpath.checking|request.dispatcher.validation.mode|add.urlparam.frameorigin.to.redirecturl|follow.servlet.std.for.urlpath|temp.fileupload.dir.monitoring.threshold.size|temp.fileupload.dir.monitoring.schedule.time|temp.fileupload.dir.monitoring.enable|com.zoho.oauth.handler|allow.csrf.param.in.querystring|enable.host.override|forwarded.host.header.name|forwarded.host.allowed.domains|allow.dot.dot.slash.in.request.uri|enable.request.uri.normalization|enable.clientuser.authcsrf|waf.attackdiscovery.provider|waf.attackdiscovery.logstats|disable.old.throttle.config|mask.extra.param|mask.ignore.extra.param|ignore.empty.file|convert.service.scope.throttles.into.appserver.scope|json.api.validation.template.config.files|desk.domain|com.zoho.rarn.handler|disable.cors.check.for.browser.extension.request|enable.dos.lockinfo.cache|dos.lockinfocache.expiry.schedule.timeinterval|dos.scalefactor.lockinfo.cacheaccess.block|block.request.on.querystring.decoding.fail|enable.fileupload.after.authentication|waf.server.host|max.len.for.paramvalue.in.application.log|set.global.documentbuilderfactory.to.xerces|requestinfo.filehash.algorithm|signature.verification.algorithm|dos.rediscache.update.timefactor|dos.rediscache.update.countfactor|dos.rediscache.update.timeinterval|dos.rediscache.update.countlimit|dos.cache.update.initial.threshold.percent|dos.cache.update.secondary.threshold.percent"/>
+	       <xs:pattern value="disable.path.parameter.uri.decoding.check|allow.invalid.value|json.invalid.list|enable.x.http.method.override.option|enable.file.rule.override.option|allowed.http.override.methods|csrf.cookie.name|csrf.param.name|captcha.url|com.adventnet.iam.secretkey|com.adventnet.iam.cryptolendelim|use.iam|xss.enable.timeoutmatcher|timeoutmatcher.maxthreads|timeoutmatcher.timeoutinmillis|trusted.ip.pattern|antivirus.host|antivirus.port|antivirus.numberof.persistant.connections|antivirus.readtimeout|allow.empty.value|request.encoding|response.encoding|ignore.trailing.slash|enable.xssfilter.log|xssfilter.log.maxsize|xss.detect.pattern|xss.detect.pattern.ext|xss.encodecheck.pattern|xss.trimctrlchars.pattern|proxy.host|proxy.port|proxy.username|proxy.password|set.csrf.cookie|ticket.cache.validity|com.adventnet.iam.internal.server|com.adventnet.iam.apikey|com.adventnet.iam.handler|service.name|login.page|logout.page|is.zuid|disable.ie.cache|disable.ie.nocache|com.adventnet.iam.security.provider|is.nonpersistentscan|internal.mailwatch.server.url|upload.filerule.connectiontimeout|upload.filerule.readtimeout|enable.xsspattern.detect|readonly.mode|enable.currentuser.cache|com.adventnet.iam.authentication.provider|internalrequest.privatekey|com.zoho.cs.handler|com.zoho.cs.internal.server|com.zoho.client.handler|isc.signature.expiry.time|disable.authcsrf|csrf.migration|soid.migration.mode|disable.iam.soid|enable.request.options|disable.xssfilter.patterndetect|enable.response.send.error|mask.secret.param.logging|iscticket.cache.validity|com.zoho.zohoone.handler|disable.get.api.csrf.check|content.type.detect.option|enable.clamav.instrumentation|uri.ignore.prefix|error.label|log.response|use.iam.login|request.header.validation.mode|enable.patch.method.min.occurrence.check|custom.request.methods|disable.put.minoccur.check|enable.appsense|zohosecurity.plugin|allow.import.url.redirect|ignore.extra.param|ignore.extra.key|captcha.image.dimensions|set.api.rate.limit.response.header|disable.service.url.throttles|convert.service.url.rolling.throttles.into.appserver|enable.secret.param.logging.mask|url.static.version|enable.hsts|hsts.allowed.domains|allow.proxy.url.redirect|url.redirect.maxlimit|enable.post.method.redirect|log.push.security.exception|dos.accessinfo.expiry.schedule.timeinterval|secret.request.param.names|secret.request.header.names|secret.response.header.names|hsts.forceful.redirection|log.inputstream|dynamic.params.max.occurrence.limit|handle.errorpage.hip|handle.errorpage.json.response|pattern.matcher.timeoutinmillis|pattern.matcher.max.iterationcount|mask.all.paramvalues.on.error|enable.pii.detector|inputstream.validation.mode|enable.individual.occurrence.check.for.dynamic.params|enable.min.occurrence.check.for.empty.jsonobject|disable.redis.instrumentation|enable.tika.file.content.and.name.based.detection|pattern.matcher.mode|error.page.validation.mode|enable.trim|multi.av.config.provider|icap.av.config|restapi.av.config|csrf.cookie.samesite.mode|enable.csrf.samesite.strict.tmpcookie|start.live.window.cleaner.scheduler|block.request.on.dos.cache.exception|allowed.user.agents|proxy.connection.timeout|proxy.read.timeout|com.zoho.ediscovery.handler|xml.schema.version|enable.xsd11.cta.full.xpath.checking|request.dispatcher.validation.mode|normalization.form|add.urlparam.frameorigin.to.redirecturl|follow.servlet.std.for.urlpath|temp.fileupload.dir.monitoring.threshold.size|temp.fileupload.dir.monitoring.schedule.time|temp.fileupload.dir.monitoring.enable|com.zoho.oauth.handler|allow.csrf.param.in.querystring|enable.host.override|forwarded.host.header.name|forwarded.host.allowed.domains|allow.dot.dot.slash.in.request.uri|enable.request.uri.normalization|enable.clientuser.authcsrf|disable.old.throttle.config|mask.extra.param|mask.ignore.extra.param|ignore.empty.file|convert.service.scope.throttles.into.appserver.scope|json.api.validation.template.config.files|desk.domain|com.zoho.rarn.handler|disable.cors.check.for.browser.extension.request|enable.dos.lockinfo.cache|dos.lockinfocache.expiry.schedule.timeinterval|dos.scalefactor.lockinfo.cacheaccess.block|block.request.on.querystring.decoding.fail|enable.fileupload.after.authentication|waf.server.host|max.len.for.paramvalue.in.application.log|set.global.documentbuilderfactory.to.xerces|enable.new.throttle|enable.requestinfo.filehash|requestinfo.filehash.algorithm|signature.verification.algorithm|dos.rediscache.update.timefactor|dos.rediscache.update.countfactor|dos.rediscache.update.timeinterval|dos.rediscache.update.countlimit|dos.cache.update.initial.threshold.percent|dos.cache.update.secondary.threshold.percent|api.impact.provider|signup.page|enable.full.payload.encryption|enable.request.payload.encryption|enable.response.payload.encryption|enable.payload.encryption.key.timeout|payload.encryption.key.timeoutinmillis|payload.encryption.key.manager|set.csrf.cookie.httponly|enable.uri.ignore.prefix.for.waf.url"/>
      </xs:restriction>
       </xs:simpleType>
      </xs:attribute>
@@ -651,9 +681,14 @@
             </xs:attribute>
             <xs:attribute name="cluster-ip" type="xs:string"/>             
             <xs:attribute name="cluster-port" type="xs:unsignedInt"/>
+            <xs:attribute name="app-team-cluster" type="xs:boolean"/>
+            <xs:attribute name="sas-dependant" type="xs:boolean"/>
             <xs:attribute name="sentinels" type="xs:string"/> 
-            <xs:attribute name="master-name" type="xs:string"/>                         
+            <xs:attribute name="master-name" type="xs:string"/>
+            <xs:attribute name="category" type="xs:string"/>
+            <xs:attribute name="shard" type="xs:unsignedInt"/>                         
             <xs:attribute name="db" type="xs:unsignedInt"/>
+            <xs:attribute name="shard-type" type="xs:string"/>
             <xs:attribute name="ranges" type="xs:string"/>      
             <xs:attribute name="max-total" type="xs:unsignedInt"/>
             <xs:attribute name="min-idle" type="xs:unsignedInt"/> 
@@ -706,6 +741,7 @@
         <xs:attribute name="rediscache-update-countfactor" type="xs:decimal"/>
         <xs:attribute name="rediscache-update-timeinterval" type="xs:integer"/>
         <xs:attribute name="rediscache-update-countlimit" type="xs:integer"/>
+        <xs:attribute name="shard-type" type="xs:string"/>
       </xs:complexType>
     </xs:element>
 
@@ -828,6 +864,7 @@
 		<xs:complexType>
 			<xs:attribute name='index' type='xs:string' />
 			<xs:attributeGroup ref="commonParamGroup" />
+			<xs:attributeGroup ref="maskGroup" />
 		</xs:complexType>
 	</xs:element>
   <xs:element name="extrakey" type="extraparam"/>
@@ -1002,7 +1039,7 @@
    <xs:attribute name="disable-safe-headers">
            <xs:simpleType>
             <xs:restriction base="xs:string">
-            <xs:pattern value="(X-XSS-Protection|X-Frame-Options|X-Content-Type-Options|X-Download-Options|Content-Disposition|all)(,X-XSS-Protection|,X-Frame-Options|,X-Content-Type-Options|,X-Download-Options|,Content-Disposition){0,4}"/>
+            <xs:pattern value="(X-Frame-Options|X-Content-Type-Options|X-Download-Options|Content-Disposition|all)(,X-Frame-Options|,X-Content-Type-Options|,X-Download-Options|,Content-Disposition){0,3}"/>
            </xs:restriction>
           </xs:simpleType>
          </xs:attribute>
@@ -1093,6 +1130,7 @@
           </xs:restriction>
          </xs:simpleType>
        </xs:attribute>
+       <xs:attribute name="skip-invalid-entries" type="xs:boolean"/>
       <xs:attribute name="max-extraction-size" type="xs:long"/>  
       <xs:attribute name="max-files-count" type="xs:integer"/>
       <xs:attribute name="max-level" type="xs:integer"/>
@@ -1268,6 +1306,6 @@
 		<xs:attribute name='name' type='xs:string' />
 		<xs:attribute name='index' type='xs:string' />
 		<xs:attributeGroup ref="commonParamGroup" />
+		<xs:attributeGroup ref="maskGroup" />
 	</xs:attributeGroup>
-
 </xs:schema>

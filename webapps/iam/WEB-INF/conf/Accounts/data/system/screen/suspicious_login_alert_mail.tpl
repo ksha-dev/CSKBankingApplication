@@ -59,9 +59,16 @@
                         </td>
                     </tr>
                     </#if>
+                    <#if ztpl.RESET_PWD_URL?has_content>
 					<tr>
 					<td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
 						<@i18n key="IAM.NEW.ALERT.SUSPICIOUS.CHECK.ACTIVITY" args0="${ztpl.RESET_PWD_URL}"/>
+					</td>
+					</tr>
+					</#if>
+					<tr>
+					<td style="padding:20px 0 0px 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
+						<@i18n key="IAM.MAIL.SINGIN.FAILURE.DESC2" arg0="${ztpl.ACTIVE_SESSIONS_PAGE}"/>
 					</td>
 					</tr>
 					<tr>

@@ -1,4 +1,5 @@
 <%--$Id$--%>
+<%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
 <%@page import="com.zoho.accounts.actions.unauth.JCaptcha"%>
 <%@ include file="../../static/includes.jspf" %>
 <%
@@ -342,7 +343,12 @@
         else if(res  == "invalid_hip") {
             showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.INVALID_IMAGE_TEXT")%>');
             f.captcha.focus();
-        } else {
+        }
+        else if( res == "username_taken") {
+			showmsg('<%=I18NUtil.getMessage("IAM.ERROR.CODE.U105")%>');
+			f.zohoemail.focus();
+        }
+        else {
             showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.CODE.Z101")%>');
             f.zohoemail.focus(); //No I18N
         }

@@ -1,0 +1,14 @@
+#VirtualOffice:
+  #service.configurations:
+    #service.name: VirtualOffice
+    #service.displayname: VirtualOffice vTitan
+    #service.description: VirtualOffice Desc
+    #service.url: https://localhost:8443/
+    #service.homepage.url: https://localhost:8443/
+    #servicetype: 1
+    #rourl: https://localhost:8443/
+    #orgmodel: 1
+    #orgtype: 1
+    #serviceorgtype: 1005
+    #appcode: virtualoffice
+    #servicevalue: 0

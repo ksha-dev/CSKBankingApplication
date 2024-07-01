@@ -18,7 +18,7 @@ var EnforcedMfaTOTP = ZResource.extendClass({
 });
 var EnforcedMfaMobile = ZResource.extendClass({ 
 	  resourceName: "EnforcedMfaMobile", //No I18N
-	  attrs : ["mobile","countrycode","code","primary"], // No i18N
+	  attrs : ["mobile","countrycode","code","primary", "cdigest", "captcha"], // No i18N
 	  path : 'mobile', //No I18N
 	  identifier: "encryptedMobile", //No I18N
 	  parent : MFA
@@ -59,11 +59,6 @@ var EnforcedMfa = ZResource.extendClass({
 	  path : 'mfa', //No I18N
 	  parent : Announcement
 });
-
-function isValidSecurityKeyName(val){
-	var pattern = /^[0-9a-zA-Z_\-\+\.\$@\,\:\'\!\[\]\|\u0080-\uFFFF\s]+$/;
-	return pattern.test(val.trim());
-}
 
 function isOTPValid(code , istotp){
 	if(code.length != 0){
@@ -211,11 +206,11 @@ function submitForm(event){
 var prevSelect;
 function selectandslide(e) {
 	//temporary handling for one-header click
-	if(e.target.classList.contains("one-header") && e.target.parentNode.classList.contains("empty-oneauth-header")){ //No I18N
-		window.open("https://zurl.to/mfa_enforce_oaweb", "_blank"); //No I18N
+	if(e.target.classList.contains("oneauth-head-text") && e.target.closest(".empty-oneauth-header") != null){ //No I18N
+		window.open("https://zurl.to/mfa_banner_oaweb", "_blank"); //No I18N
 		return;
 	}
-	if(e.target.classList.contains("add-oneauth") || e.target.classList.contains("download") || e.target.classList.contains("common-btn")){ //No I18N
+	if(e.target.classList.contains("add-oneauth") || e.target.classList.contains("down-badges") || e.target.classList.contains("download") || e.target.classList.contains("common-btn")){ //No I18N
 		return;
 	}
 
@@ -281,13 +276,7 @@ function phoneSelectformat(option) {
     var ob ='<div class="pic flag_' + string_code +'" ></div><span class="cn">' + spltext[0] + "</span><span class='cc'>" + num_code + "</span>";
     return ob;
 }
-function selectFlag(e) {
-	var flagpos = "flag_" + $(e).val().toUpperCase(); //No I18N
-	$(".select2-selection__rendered").attr("title", "");
-	e.parent().siblings(".select2").find("#selectFlag").attr("class", ""); //No I18N
-	e.parent().siblings(".select2").find("#selectFlag").addClass("selectFlag");
-	e.parent().siblings(".select2").find("#selectFlag").addClass(flagpos);
-}
+
 function codelengthChecking(length_id, changeid) {
 	var code_len = $(length_id).attr("data-num").length;
 	var length_ele = $(length_id).parent().siblings("#" + changeid);
@@ -303,36 +292,22 @@ function codelengthChecking(length_id, changeid) {
 	}
 	length_ele.focus();
 }
-
 var isMobileSelectInit = false;
 function mobileSelectInit() {
-	$(document.confirm_form.countrycode)
-          .select2({
-            width: "82px", //No I18N
-            templateResult: phoneSelectformat,
-            templateSelection: function (option) {
-              selectFlag($(option.element));
-              codelengthChecking(option.element, "mobile_input"); //No I18N
-              return $(option.element).attr("data-num");
-            },
-            language: {
-              noResults: function () {
-                return I18N.get("IAM.NO.RESULT.FOUND");
-              }
-            },
-            escapeMarkup: function (m) {
-              return m;
-            }
-          })
-          .on("select2:open", function () {
-            $(".select2-search__field").attr("placeholder", I18N.get("IAM.SEARCHING"));
+	if(!isMobile){
+		$(document.confirm_form.countrycode).uvselect({
+			"width": '80px', //No i18N
+			"searchable" : true, //No i18N
+			"dropdown-width": "300px", //No i18N
+			"dropdown-align": "left", //No i18N
+			"embed-icon-class": "flagIcons", //No i18N
+			"country-flag" : true, //No i18N
+			"country-code" : true  //No i18N
 		});
-    $("#select_phonenumber .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-    selectFlag($(document.confirm_form.countrycode).find("option:selected"));
-	$(".select2-selection__rendered").attr("title", "");
-	$(document.confirm_form.countrycode).on("select2:close", function (e) {
-		$(e.target).siblings("input").focus();
-    });
+		$(".phone_code_label").css("visibility" ,"hidden")
+	}else{
+		phonecodeChangeForMobile(document.confirm_form.countrycode);
+	}
     phonePattern.intialize(document.confirm_form.countrycode);
     if(!showMobileNoPlaceholder){
 		$("#mobile_input").on("input", function(event){
@@ -349,6 +324,14 @@ function mobileSelectInit() {
         placeholder: I18N.get("IAM.ENTER.CODE")
 	});
 	$("#otp_split_input .splitedText").attr("onkeydown", "clearError('#otp_split_input', event)");
+}
+
+function phonecodeChangeForMobile(ele){
+	$(ele).css({'opacity':'0','width':'60px','height':'42px'});
+	$(ele).siblings(".phone_code_label").html($(ele).children("option:selected").attr("data-num")); //No I18N
+	$(ele).change(function(){
+		$(ele).siblings(".phone_code_label").html($(ele).children("option:selected").attr("data-num")); //No I18N
+    })
 }
 
 var recMobiles =[];
@@ -386,11 +369,10 @@ function addNewNumber(e) {
 		$(".show-all-modes-but").slideDown(200);
 	}
 	if (!isMobileSelectInit) {
-		mobileSelectInit();
 		if(!IPcountry == ""){
-			$(document.confirm_form.countrycode).val(IPcountry);
-			$(document.confirm_form.countrycode).trigger('change');
+			$("#countNameAddDiv option[value=" + IPcountry.toUpperCase() + "]").prop('selected', true);
 		}
+		mobileSelectInit();
 		if(mfaData.otp && mfaData.otp.recovery_count){
 			$(".already-added-but").show();
           	recMobiles =  mfaData.otp.recovery_mobile.map(function(arrEle){
@@ -586,10 +568,18 @@ function configureYubikey(e)
 		show_error_msg("#yubikey_input", I18N.get("IAM.MFA.YUBIKEY.INVALID.YUBIKEY_NAME.ERROR"));//No I18N
 		return false;
 	}else{
+		yname  = name.toUpperCase();
 		if(mfaData.yubikey && mfaData.yubikey.yubikey){
-			yname  = name.toUpperCase();
 			for(y=0;y<mfaData.yubikey.count;y++){
-				if(mfaData.yubikey.yubikey[y].key_name && mfaData.yubikey.yubikey[y].key_name.toUpperCase() == yname){
+				if(mfaData.yubikey.yubikey[y].key_name && decodeHTML(mfaData.yubikey.yubikey[y].key_name.toUpperCase()) == yname){
+					show_error_msg("#yubikey_input", I18N.get("IAM.WEBAUTHN.ERROR.DUPLICATE.PASSKEY"));//No I18N
+					return false;
+				}
+			}
+		}
+		if(mfaData.passkey && mfaData.passkey.passkey){
+			for(y=0;y<mfaData.passkey.count;y++){
+				if(mfaData.passkey.passkey[y].key_name && decodeHTML(mfaData.passkey.passkey[y].key_name.toUpperCase()) === yname) {
 					show_error_msg("#yubikey_input", I18N.get("IAM.WEBAUTHN.ERROR.DUPLICATE.PASSKEY"));//No I18N
 					return false;
 				}
@@ -686,7 +676,7 @@ function sendSms(e){
 		otpform.querySelector(".valuemobile").textContent = dialingCode+" "+mobile; //No I18N
 		document.querySelectorAll(".otp_split_input_otp").forEach(function(eachEle){ eachEle.value =""; }); //No i18n
 		clearError("#otp_split_input") //No i18n
-		payload.POST("pre","self").then(function(resp){ //No I18N
+		function successCallback(resp) {
 			$(document.confirm_form).slideUp(200, function(){
 				e.target.removeAttribute("disabled");
 				e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
@@ -701,11 +691,32 @@ function sendSms(e){
 				resendOtpChecking();
 				}, 1000);
 				}, 800);
-		},
+		}
+		payload.POST("pre","self").then(successCallback, //No I18N
 		function(resp){
-			e.target.removeAttribute("disabled");
-			e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
-			classifyError(resp, "#mobile_input"); //No I18n
+			function errCallback(resp) {
+				e.target.removeAttribute("disabled");
+				e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
+				classifyError(resp, "#mobile_input"); //No I18n
+			}
+			if (handleCaptcha().isRequired(resp)) {
+				handleCaptcha(resp, {
+					callbacks: {
+						beforeInit: function() {
+							$(document.confirm_form).slideUp(200, function(){
+								e.target.removeAttribute("disabled"); //No I18N
+								e.target.querySelector("span").classList.remove("loader","miniloader","leftMargin"); //No i18N
+							});
+						}
+					}
+				}).init('#mfa-mob-captcha', payload, ["pre","self"]).then(successCallback, function(err) { //No I18N
+					$(document.confirm_form).slideDown(300, function() {
+						errCallback(err);
+					});
+				});
+			} else {
+				errCallback(resp);
+			}
 		});
 		}
 	}
@@ -1265,7 +1276,9 @@ function showTotpOtp(){
 		$(".show-all-modes-but").slideDown(200);
 	}
 	$(".new-totp-codes").slideUp(200);
-	$(document.verify_totp_form).slideDown(200);
+	$(document.verify_totp_form).slideDown(200, function(){
+		$(".new-totp .totp_split_input_otp")[0].focus();
+	});
 }
 function verifyTotpCode(e){
 	e.preventDefault();
@@ -1762,13 +1775,15 @@ function updateBackupStatus(mode){
 	payload.PUT("pre","self").then(function(resp){ //No I18N
 	});
 }
-var pmail, userName;
+var pmail, userName, recHelp, newCodesHelp;
 function show_backup(resp){
 	var codes = resp.recovery_code;
 	var recoverycodes = codes.split(":");
 	var createdtime = resp.created_date;
 	pmail = resp.primary_email;
 	userName = resp.user;
+	recHelp = "https://zurl.to/mfa_enfor_bvc_rec" //No I18N
+	newCodesHelp = "https://zurl.to/mfa_enfor_bvc_gen" //No I18N
 	var res ="<ol class='bkcodes'>"; //No I18N
 	var recCodesForPrint = "";
 	for(idx in recoverycodes){
@@ -1795,31 +1810,42 @@ function show_backup(resp){
 }
 var recTxt;
 function formatRecoveryCodes(createdtime, recoverycodes){
-	recTxt  = I18N.get('IAM.TFA.BACKUP.ACCESS.CODES')+"\n"+pmail+"\n\n"; //No I18n
+	recTxt = I18N.get("IAM.MFA.BACKUPCODE.FILE.TEXT")+"\n\n\n"; //No I18N
+	recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES") + "\n"; //No I18N
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES").split("").forEach(function(){recTxt=recTxt+"-"}); //No I18N
+	recTxt = recTxt + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT1") + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT3") + "\n# " //No I18N
+					+ I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES3") + "\n# " + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES4") + "\n\n\n"; //No I18N
+	recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE") + "\n";		//No I18n
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+	recTxt = recTxt + "\n" + I18N.get("IAM.GENERAL.USERNAME") + ": " + pmail + "\n"; //No I18N
+	
+	recTxt = recTxt + I18N.get("IAM.GENERATE.ON") + ": " + createdtime + "\n\n"; //No I18N
 	recoverycodes = recoverycodes.split(",");
 	for(var idx=0; idx < recoverycodes.length; idx++){
 		var recCode = recoverycodes[idx];
 		if(recCode != ""){
-			recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18n
+			recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18N
 		}
 	}
-	recTxt += "\n\n"+ I18N.get('IAM.GENERATEDTIME') +" : " +createdtime; //No I18n
+	recTxt = recTxt + "\n\n\n" + I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK") + "\n"; //No I18N
+	I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+	recTxt = recTxt + "\n\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK"), recHelp) + "\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK"),newCodesHelp);	//No I18n
 }
 function copy_code_to_clipboard (createdtime, recoverycodes) {
 	if(recTxt == undefined){
 		formatRecoveryCodes(createdtime, recoverycodes);
 	}
-  	var elem = document.createElement('textarea');
-   	elem.value = recTxt;
-   	document.body.appendChild(elem);
-   	elem.select();
-   	document.execCommand('copy'); //No I18n
-   	document.body.removeChild(elem);
-   	$(".copy_to_clpbrd").hide();
-   	$(".code_copied").show();
-   	$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
-	$(".down_copy_proceed").hide();
-	$(".cont-signin").show();
+	navigator.clipboard.writeText(recTxt).then(function () {
+		$(".copy_to_clpbrd").hide();
+		$(".code_copied").show();
+		$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
+		$(".down_copy_proceed").hide();
+		$(".cont-signin").show();
+    }).catch(function(){
+		//error occured while copying
+		showErrMsg(I18N.get("IAM.ERROR.GENERAL"))
+	});
+
 }
 function remove_copy_tooltip() {
 	$(".copy_to_clpbrd").show();

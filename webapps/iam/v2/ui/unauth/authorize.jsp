@@ -5,18 +5,19 @@
 <%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="com.adventnet.iam.IAMStatusCode.StatusCode"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@page import="java.net.IDN"%>
 <%@ include file="../static/includes.jspf"%>
 <html>
 <head>
 <title><%=Util.getI18NMsg(request,"IAM.ZOHO.ACCOUNTS")%></title>
 
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")%>"></script>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/common_unauth.js")%>"></script>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/zresource.js")%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/uri.js")%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/init.js")%>" type="text/javascript"></script>  <%-- NO OUTPUTENCODING --%>
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/accountUnauthStyle.css")%>" rel="stylesheet" type="text/css">
+<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/jquery-3.6.0.min.js") %>
+<%= HtmlResourceIncluder.addResource("/v2/components/js/common_unauth.js") %>
+<%= HtmlResourceIncluder.addResource("/v2/components/js/zresource.js") %> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/js/uri.js") %> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/js/init.js") %>  <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/accountUnauthStyle.css") %>
 
 
 <meta name="viewport"

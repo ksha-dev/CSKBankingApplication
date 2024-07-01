@@ -106,7 +106,7 @@ List<ISDCode> countryList = SMSUtil.getAllowedISDCodes();
     </div>
         
     <div class="form_field" id="get_ver_code">
-        <input class="text_box"  id="verify_code" type="password" required="">
+        <input class="text_box"  id="verify_code" type="password" autocomplete="off" required="">
         <span class="bar"></span>
         <label><%=Util.getI18NMsg(request,"IAM.TFA.ENTER.VERIFICATION.CODE")%></label>
     </div>    

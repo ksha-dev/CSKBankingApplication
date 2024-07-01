@@ -3,11 +3,115 @@
     <head>
     	<script>
 			var states_details =${States};
+			var i18KeysPersonalDetails = {
+					"IAM.ZOHO.REBRAND" : '<@i18n key="IAM.ZOHO.REBRAND" />'
+			};
 		</script>
     </head>
 
     <body>
-
+	    <div id="photo_container" class="photo_container" tabindex="1">
+	    	<div class="photo_loader"></div>
+	    	<div class="photo_blur_dp1"></div>
+	    	<img id="photo_blur_dp2" class="photo_blur_dp2">
+	    	<img id="photo_original_dp" class="photo_original_dp" onload="showImage(this)">
+	    </div>
+    	<div id="profile_pic_visibility_popup" tabindex="1" class="hide popup pop_anim">
+    		<div class="visibility_main_wrapper">
+    		<div class="popup_header">
+    			<div class="popuphead_details">
+    				<span class="popuphead_text"><@i18n key="IAM.PROFILE.PICTURE.VISIBILITY"/></span>
+    			</div>
+    			<div class="close_btn" onclick="closePhotoVisiabilityPopup()"></div>
+    		</div>
+    		<div class="visibility_popup_padding">
+    		<div class="popup_padding">
+    			<div class="popuphead_details">
+    				<span class="visibility_select_text"><@i18n key="IAM.SETTINGS.PHOTOVIEW.DESCRIPTION"/></span>
+    			</div>
+    			<div class="visibility_option_boxes">
+	    			<label class="zohousers-class" for="zohousers">
+	    				<div class="visibility_option_box">
+	    					<div class="option_icon">
+		    					<span class="path1"></span>
+		    					<span class="path2"></span>
+		    					<span class="path3"></span>
+		    					<span class="path4"></span>
+		    					<span class="path5"></span>
+		    					<span class="rebrand-text"></span>
+	    					</div>
+	    					<div class="option_text">
+	    						<div class="option_text_heading"><@i18n key="IAM.PHOTO.PARTNER.USERS"/></div>
+	    						<div class="option_text_description"><@i18n key="IAM.PHOTO.PARTNER.USERS.DESC"/></div>
+	    					</div>
+	    					<input class="real_radiobtn" type="radio" name="visibility_radiobtn" id="zohousers" value="3">
+	    					<div class="outer_circle">
+	    						<div class="inner_circle"></div>
+							</div>
+	    				</div>
+	    			</label>
+	    			<label for="zohocontacts">
+	    				<div class="visibility_option_box">
+	    					<div class="option_icon icon-mprofile"></div>
+	    					<div class="option_text">
+	    						<div class="option_text_heading"><@i18n key="IAM.PHOTO.MY.CONTACTS"/></div>
+	    						<div class="option_text_description"><@i18n key="IAM.PHOTO.MY.CONTACTS.DESC"/></div>
+	    					</div>
+	    					<input class="real_radiobtn" type="radio" name="visibility_radiobtn" id="zohocontacts" value="2">
+	    					<div class="outer_circle">
+	    						<div class="inner_circle"></div>
+							</div>
+	    				</div>
+	    			</label>
+	    			<#if (is_org_user)>
+		    			<label for="zohomorg">
+		    				<div class="visibility_option_box">
+		    					<div class="option_icon icon-morg"></div>
+		    					<div class="option_text">
+		    						<div class="option_text_heading"><@i18n key="IAM.PHOTO.MY.ORGANIZATION"/></div>
+		    						<div class="option_text_description"><@i18n key="IAM.PHOTO.MY.ORGANIZATION.DESC"/></div>
+		    					</div>
+		    					<input class="real_radiobtn" type="radio" name="visibility_radiobtn" id="zohomorg" value="1">
+		    					<div class="outer_circle">
+		    						<div class="inner_circle"></div>
+								</div>
+		    				</div>
+		    			</label>
+	    			</#if>
+	    			<label for="zohoeveryone">
+	    				<div class="visibility_option_box">
+	    					<div class="option_icon icon-domain"></div>
+	    					<div class="option_text">
+	    						<div class="option_text_heading"><@i18n key="IAM.PHOTO.ANYONE"/></div>
+	    						<div class="option_text_description"><@i18n key="IAM.PHOTO.ANYONE.DESC"/></div>
+	    					</div>
+	    					<input class="real_radiobtn" type="radio" name="visibility_radiobtn" id="zohoeveryone" value="4">
+	    					<div class="outer_circle">
+	    						<div class="inner_circle"></div>
+							</div>
+	    				</div>
+	    			</label>
+	    			<label for="zohomyself">
+	    				<div class="visibility_option_box">
+	    					<div class="option_icon icon-mprivacy"></div>
+	    					<div class="option_text">
+	    						<div class="option_text_heading"><@i18n key="IAM.PHOTO.PERMISSION.ONLY_MYSELF"/></div>
+	    						<div class="option_text_description"><@i18n key="IAM.PHOTO.MYSELF.DESC"/></div>
+	    					</div>
+	    					<input class="real_radiobtn" type="radio" name="visibility_radiobtn" id="zohomyself" value="0">
+	    					<div class="outer_circle">
+	    						<div class="inner_circle"></div>
+							</div>
+	    				</div>
+	    			</label>
+    			</div>
+    		</div>
+    		</div>
+    		<div class="visibility_popup_footer">
+    			<button id="visibility_change_apply" class="primary_btn_check pref_disable_btn" onclick="applyVisibilityChange()"><span><@i18n key="IAM.PHOTO.APPLY" /></span></button>
+    		</div>
+    		</div>
+    	</div>
 
 			<div class="box profile_box">
                 <button class="primary_btn_check right_btn circlebtn_mobile_edit onlyweb " id="editprofile" onclick="return editProfile();" ><span><@i18n key="IAM.EDIT" /></span></button>
@@ -20,21 +124,27 @@
 								<img onload="setPhotoSize(this)" id="dp_pic" draggable=false>
 							</label>
 						</div>
-						<select name="photo_permission" id="profile_photoview_permi" class="visibleMobilesSelect customised_select" onchange=new_save_photoview_permi(this.value) size="medium"> 
-							<option value="3" id="Zohousers"><@i18n key="IAM.PHOTO.PERMISSION.ZOHO_USERS" /></option>
-							<option value="2" id="mprofile"><@i18n key="IAM.PHOTO.PERMISSION.CHAT_CONTACTS" /></option>
-							<#if (is_org_user)>
-								<option value="1" id="morg"><@i18n key="IAM.PHOTO.PERMISSION.ORG_USERS" /></option>
-							</#if>
-							<option value="4" id="domain"><@i18n key="IAM.PHOTO.PERMISSION.EVERYONE" /></option>
-							<option value="0" id="mprivacy"><@i18n key="IAM.PHOTO.PERMISSION.ONLY_MYSELF" /></option>
-	                	</select>
+	                	<span class="drp-down-arrow" style="display: none;"></span>
 					</div>
 					<div class="profile_option_parent hide">
 						<div class="profile_pic_option">
-							<div id="upload_option" onclick="openUploadPhoto('user','0')"><@i18n key="IAM.UPLOAD.NEW"/></div>
+							<div class="profile_pic_option-item" onclick="openUploadPhoto('user','0')">
+								<span class="icon-Upload-new"></span>
+								<div id="upload_option" ><@i18n key="IAM.UPLOAD.NEW"/></div>
+							</div>
+							<div class="profile_pic_option-item" onclick="handleViewProfilePicture()">
+								<span class="icon-expand_picture"></span>
+								<div id="profile_photo_visibility" ><@i18n key="IAM.PHOTO.EXPAND.PICTURE"/></div>
+							</div>
+							<div class="profile_pic_option-item" onclick="handleProfilePhotoVisibility()">
+								<span class="icon-Profilepicturevisibility"></span>
+								<div id="profile_photo_visibility" ><@i18n key="IAM.PROFILE.PICTURE.VISIBILITY"/></div>
+							</div>
+							<div class="profile_pic_option-item" onclick="removePicture('<@i18n key="IAM.PHOTO.DELETE.POPUP.HEADER.MSG"/>','<@i18n key="IAM.PHOTO.DELETE.POPUP.DESC"/>','<@i18n key="IAM.REMOVE"/>')" style="color: #FF2626;">
+								<span class="icon-Remove"></span>
+								<div id="remove_option"><@i18n key="IAM.REMOVE"/></div>
+							</div>
 				   			<!--<div id="edit_option" onclick="editProPicture()"><@i18n key="IAM.EDIT"/></div> -->
-				   			<div id="remove_option" onclick="removePicture('<@i18n key="IAM.PHOTO.DELETE.POPUP.HEADER"/>','<@i18n key="IAM.PHOTO.DELETE.POPUP.DESCRIPTION"/>')" style="color:#FF5F5F"><@i18n key="IAM.REMOVE"/></div>
 						</div>
 					</div>
 					<div class="profile_info">
@@ -68,10 +178,13 @@
 						
 						<div class="field textbox_div textbox_inline editmode">					
 							<select class="profile_mode" id="gender_select" label="<@i18n key="IAM.GENDER" />" data-validate="zform_field" name="gender" width="320px" disabled> 
+								<option value="" id="default_gender" disabled="" selected=""><@i18n key="IAM.GENDER.DEFAULT" /></option>
 								<option value="1" id="male_gender"><@i18n key="IAM.GENDER.MALE" /></option>
 								<option value="0" id="female_gender"><@i18n key="IAM.GENDER.FEMALE" /></option>
+								<#if (!enableArabCountriesGenderValues)>
 								<option value="2" id="other_gender"><@i18n key="IAM.GENDER.OTHER" /></option>
 								<option value="3" id="non_binary_gender"><@i18n key="IAM.GENDER.NON_BINARY" /></option>
+								</#if>
 	                        </select>
 						</div>
 						

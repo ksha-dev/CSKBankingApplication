@@ -120,7 +120,9 @@ var splitField = {
 						if(ele.target.parentNode.querySelector("input").value.length==0){
 							ele.target.parentNode.classList.remove("hidePlaceHolder");	// No I18N
 							for (var i = 0; i < ele.target.parentNode.childNodes.length; i++) {
-								 ele.target.parentNode.childNodes[i].style.opacity = '0';
+								if(ele.target.parentNode.childNodes[i].tagName == 'INPUT'){
+									ele.target.parentNode.childNodes[i].style.opacity = '0';
+								}
 	                         }
 						}
 					});
@@ -398,26 +400,29 @@ var splitField = {
 		},
 		setValue : function(id,val){
 			var ele = document.getElementById(id).children[1];
-			if(ele.classList.contains("ip_field")){
-				if(val.indexOf(".") != -1){
-					val = val.split(".");					
-					for(var x in val){if(val[x].length>3 || val[x].length==0){break;}}
+			if(val != "" ){
+				if(ele.classList.contains("ip_field")){
+					if(val.indexOf(".") != -1){
+						val = val.split(".");					
+						for(var x in val){if(val[x].length>3 || val[x].length==0){break;}}
+					}
+					paste_ele = ele;
+					for(var i = 0; i < val.length; i++){
+						paste_ele.value = val[i];
+						paste_ele.focus();
+						paste_ele = paste_ele.nextElementSibling;
+						if(paste_ele == null){break;}
+						paste_ele = paste_ele.classList.contains("separator_symbol") ? paste_ele.nextElementSibling : paste_ele;	// No I18N
+					}
+					splitField.setFullValue(ele);
+				} else {
+					if(ele.classList.contains('isNumeric')){
+						val = val.split(/[^0-9]/gi).join("");
+					}
+		    		splitField.autoFillOtp(val,ele);
 				}
-				paste_ele = ele;
-				for(var i = 0; i < val.length; i++){
-					paste_ele.value = val[i];
-					paste_ele.focus();
-					paste_ele = paste_ele.nextElementSibling;
-					if(paste_ele == null){break;}
-					paste_ele = paste_ele.classList.contains("separator_symbol") ? paste_ele.nextElementSibling : paste_ele;	// No I18N
-				}
-				splitField.setFullValue(ele);
-			}
-			else{
-				if(ele.classList.contains('isNumeric')){
-					val = val.split(/[^0-9]/gi).join("");
-				}
-		    	splitField.autoFillOtp(val,ele);
+			} else {
+				document.querySelectorAll("#"+ id +" input").forEach(function(eEle){ eEle.value =""; }); //No I18N
 			}
 		},
 		disableSplitField : function (ele){

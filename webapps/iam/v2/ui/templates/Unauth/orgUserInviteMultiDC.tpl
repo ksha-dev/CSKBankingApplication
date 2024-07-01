@@ -5,13 +5,13 @@
 		    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
 			
-		    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-		    <script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script>
-		    <link href="${SCL.getStaticFilePath("/v2/components/css/orgUserInviteMultiDC.css")}" rel="stylesheet" type="text/css" />
-		    <script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-			<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/invitation.js")}"></script>
+		    <@resource path="/v2/components/css/${customized_lang_font}" />
+		    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		    <@resource path="/v2/components/js/zresource.js" />
+		    <@resource path="/v2/components/css/orgUserInviteMultiDC.css" />
+		    <@resource path="/v2/components/js/uri.js" /> 
+			<@resource path="/v2/components/js/common_unauth.js" />
+			<@resource path="/v2/components/js/invitation.js" />
 		    <script>
 		    	var csrfParamName= "${za.csrf_paramName}";
 				var csrfCookieName = "${za.csrf_cookieName}";
@@ -68,7 +68,7 @@
 						$("#responseContainer").show();
 						}
 					},function(){
-						showErrMsg(getErrorMessage(resp))
+						showErrorMessage(getErrorMessage(resp))
 						removeButtonDisable(".rejectBtn");//No I18N
 					});
 				}
@@ -92,7 +92,7 @@
 					      if(resp.redirectUrl!=undefined){
 					      	switchto(resp.redirectUrl!=undefined?resp.redirectUrl:"");
 					      }else{
-					      	$("#responseContainer").addClass("error");
+					      	$("#responseContainer").addClass("neutral");
 							$(".responseHeader").html(resp.localized_message);
 							$(".responseDesc").html(resp.message);
 							$(".responseBtn, .invitationContainer").hide();
@@ -101,7 +101,7 @@
 					},
 				  	function(resp) 
 				  	{
-						showErrMsg(getErrorMessage(resp))
+						showErrorMessage(getErrorMessage(resp))
 						removeButtonDisable(".rejectBtn");//No I18N
 				  	}); 
 				}
@@ -192,15 +192,9 @@
 			  <div class="loadTextDiv"><div class="loadText"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.LOAD.TEXT" arg0="${clone_dc}" /></div></div>
 			</div>
 			<#include "announcement-logout.tpl">
-			<div id="error_space">
-				<div class="top_div">
-					<span class="cross_mark"> 
-					<span class="crossline1"></span>
-					<span class="crossline2"></span>
-					</span>
-					<span class="top_msg"></span>
-				</div>
-			</div>
+			
+			<#include "${location}/Unauth/invitation_errorToast.tpl">
+			
 			<div class="zoho_logo"></div>
 			<div class="invitationContainer" id="invitationContainer">
 				<div class="invite_details">
@@ -221,7 +215,11 @@
 				<div class="desc_Container">
 					<div class="desc_title"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.TITLE" arg0="${clone_dc}"/></div>
 					<div class="desc_desc"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.DESC" arg0="${clone_dc}"/></div>
-					<div class="orange_container"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.ORANGE.DESC" arg0="${learn_more_link}"/></div>
+					<#if ((learn_more_link)?has_content)>
+						<div class="orange_container"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.ORANGE.DESC" arg0="${learn_more_link}"/></div>
+					<#else>
+						<div class="orange_container"><@i18n key="IAM.ORGINVITATION.CROSS.DC.AUTH.PAGE.ORANGE.DESC.WITHOUT.LEARN"/></div>
+					</#if>
 					<#if (is_tos_needed)>
 						<div class="tos_container">
 									<input type="checkbox" class="tos_check" id="tos_input" name="tos"/>
@@ -247,15 +245,9 @@
 		</body>
 		<#else>
 		<body>
-			<div id="error_space">
-				<div class="top_div">
-					<span class="cross_mark"> 
-					<span class="crossline1"></span>
-					<span class="crossline2"></span>
-					</span>
-					<span class="top_msg"></span>
-				</div>
-			</div>
+		
+			<#include "${location}/Unauth/invitation_errorToast.tpl">
+			
 			<div class="zoho_logo"></div>
 			<div class="invitationContainer">
 				<div class="invite_details">

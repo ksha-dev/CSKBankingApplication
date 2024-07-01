@@ -2,8 +2,8 @@
 <html>
 <head>
 <title><@i18n key="IAM.CLIENT.SIGNUP.ADMIN.TAB.TITLE" /></title>
-<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
+<@resource path="/v2/components/css/${customized_lang_font}" />
+<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 	<style type=text/css>

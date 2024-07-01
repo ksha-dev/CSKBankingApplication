@@ -14,17 +14,23 @@
 		</style>
 		<#include "../zoho_line_loader.tpl">
 		
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript" defer></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/u2f-api.js")}" defer></script>
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+    	<@resource path="/v2/components/tp_pkg/xregexp-all.js" attributes="defer" />
+    	<@resource path="/v2/components/tp_pkg/u2f-api.js" attributes="defer" />
+    	<@resource path="/v2/components/tp_pkg/tippy.all.min.js" attributes="defer" />
+    	<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
+		<#if Enable_zlabs?has_content	&&		Enable_zlabs==true>
+    	
+    		<@resource path="/v2/components/tp_pkg/captcha.min.js" attributes="defer" />
+    	</#if>    	
     	 <!-- Commmon webauthn methods moved to webauthn.js and called in mfa.js and signin.js -->
-		<script src="${za.wmsjsurl}" type="text/javascript" defer></script>
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous" type="text/javascript" defer></script>
 		<meta name="robots" content="noindex, nofollow"/>
 		
 		<script type='text/javascript'>
 		
-		var aCParams= getACParms();
 			var login_id="${Encoder.encodeJavaScript(login_id)}";
 			var csrfParam= "${za.csrf_paramName}";
 			var csrfCookieName = "${za.csrf_cookieName}";
@@ -41,19 +47,54 @@
 			var org_name, org_contact;
 			var hip_required,ipRestrictedForOrg,ipPersonalRestriction;
 			var isWindowLoaded = false;
+			var wmsSRIValues = ${za.wmsSRIValues};
 			var docHead = document.head || document.getElementsByTagName("head" )[0] || document.documentElement;
 			var serviceUrl,signup_url,serviceName,redirect_url,signin_redirect_url,resendTimer,isOrgAdmin,zuid,cdigest,mdigest,head_token,mfa_modes,mzadevicepos,mfa_modes_count,isWmsRegistered,wmscallmode,wmscallid,wmscallapp,_time,is_recovery_extra_modes;
+			<#if (('${service_url}')?has_content)>
+				serviceUrl = '${Encoder.encodeJavaScript(service_url)}';
+				escapeServiceUrlHash();
+			</#if>
+			var aCParams= getACParms();
+			
+			var type,audio_timer,captchaType,zlabs_captcha_params,zlabsCaptchaObj;
+			var captcha_usecase ="${captcha_usecase}";
+			var ZlabsCapthca_enabled =${Enable_zlabs?c};
+			
 			<#if (('${digest_id}')?has_content)>
 			digest_id = "${Encoder.encodeJavaScript(digest_id)}";
 			</#if>
-			
+			var resIntegrity = {};
+			<#if (('${resIntegrity}')?has_content)>
+				resIntegrity = ${resIntegrity};		
+			</#if>
 			window.onload = function() {
 				windowLoaded();
 				return false;
 			}
+			function escapeServiceUrlHash() {
+				var locationUrl = window.location.href;
+				var tmpserviceurl = serviceUrl;
+				try {
+					if(locationUrl.indexOf('serviceurl=') !== -1) {
+						var surl = decodeURIComponent(locationUrl.substring(locationUrl.indexOf('serviceurl=')+11));
+						if(surl.indexOf('#') !== -1) {
+							if(surl.indexOf('&') !== -1) {
+								surl = surl.substr(0, surl.indexOf('&'));
+							}
+							serviceUrl = surl;	
+						}
+					}
+				}catch (e) {
+					serviceUrl = tmpserviceurl;
+				}
+			}
 			function includeScript(url, callback, excatch) {
 				var script = document.createElement("script"); 
 				script.src = url; 
+				if(resIntegrity && resIntegrity[url]) {
+					script.integrity = resIntegrity[url];
+					script.crossOrigin = "anonymous"; //No I18N
+				}
 				if(excatch){
 					script.onerror = function() {
 						callback();
@@ -88,7 +129,7 @@
 					"IAM.AC.RECOVER.LOOKUP.ERROR.EMAIL.OR.USERNAME" : '<@i18n key="IAM.AC.RECOVER.LOOKUP.ERROR.EMAIL.OR.USERNAME" />',
 					"IAM.ERROR.USER.ACTION" : '<@i18n key="IAM.ERROR.USER.ACTION" />',
 					"IAM.NEW.SIGNIN.TITLE.RANDOM" : '<@i18n key="IAM.NEW.SIGNIN.TITLE.RANDOM" />',
-					"IAM.NEW.IP.NOT.FOUND" : '<@i18n key="IAM.NEW.IP.NOT.FOUND" />',
+					"IAM.NEW.IP.NOT.FOUND.MSG" : '<@i18n key="IAM.NEW.IP.NOT.FOUND.MSG" />',
 					"IAM.NEXT" : '<@i18n key="IAM.NEXT" />',
 					"IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION" : '<@i18n key="IAM.AC.SELECT.USERNAME.EMAIL.DESCRIPTION" />',
 					"IAM.AC.SELECT.USERNAME.MOBILE.DESCRIPTION" : '<@i18n key="IAM.AC.SELECT.USERNAME.MOBILE.DESCRIPTION" />',
@@ -163,7 +204,9 @@
 					"IAM.AC.SIGNIN.EMAIL.ADDRESS.OR.MOBILE" : '<@i18n key="IAM.AC.SIGNIN.EMAIL.ADDRESS.OR.MOBILE"/>',
 					"IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" : '<@i18n key="IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" />',	
 					"IAM.ALLOWEDIP.TOIP.ERROR.EMPTY" : '<@i18n key="IAM.ALLOWEDIP.TOIP.ERROR.EMPTY" />',
-					"IAM.ALLOWEDIP.FROMIP.NOTVALID" : '<@i18n key="IAM.ALLOWEDIP.FROMIP.NOTVALID" />',			
+					"IAM.ALLOWEDIP.FROMIP.NOTVALID" : '<@i18n key="IAM.ALLOWEDIP.FROMIP.NOTVALID" />',
+					"IAM.NO.IP.RESTRICTION.FOUND" : '<@i18n key="IAM.NO.IP.RESTRICTION.FOUND" />',				
+					"IAM.NO.IP.RESTRICTION" : '<@i18n key="IAM.NO.IP.RESTRICTION" />',				
 				});
 				
 				$("#nextbtn").removeAttr("disabled"); 
@@ -178,6 +221,19 @@
 					$(".recovery_container").css("visibility","visible");
 					hideCommonLoader(); 
 				</#if>
+				
+				if(!isMobile)
+				{
+				
+					tippy('.captcha_icons span[class*="Captchaicon-"]', 
+					{
+						animation: 'scale',
+			  			arrow: true,
+						distance: 15,
+						maxWidth: "200px",
+			  			placement:'bottom'//No I18N
+					});
+				}
 			}
 			
 			function zaOnLoadHandler() {
@@ -195,6 +251,10 @@
 						var style = document.createElement("link");
 						style.href = cssURLs[i]; 
 						style.rel = "stylesheet"; 
+						if(resIntegrity && resIntegrity[cssURLs[i]]) {
+							style.integrity = resIntegrity[cssURLs[i]];
+							style.crossOrigin = "anonymous";	// No I18N
+						}
 						docHead.appendChild(style); 
 					}
 				}
@@ -227,16 +287,21 @@
 					params += "servicename=" + encodeURIComponent('${service_name}');
 					serviceName=encodeURIComponent('${service_name}');
 				</#if>
-				<#if (('${service_url}')?has_content)>
-					params += "&serviceurl="+encodeURIComponent('${Encoder.encodeJavaScript(service_url)}');
-					serviceUrl = '${Encoder.encodeJavaScript(service_url)}';
-				</#if>	
 				<#if (('${signup_url}')?has_content)>
 					params += "&signupurl="+encodeURIComponent('${Encoder.encodeJavaScript(signup_url)}');//no i18N
 					signup_url = '${Encoder.encodeJavaScript(signup_url)}';
 				</#if>
+				<#if (('${service_language}')?has_content)>
+					params += "&service_language="+encodeURIComponent('${Encoder.encodeJavaScript(service_language)}');//no i18N
+				</#if>
 				<#if (('${hide_signup}')?has_content)>
 					params += "&hide_signup="+${hide_signup};
+				</#if>
+				<#if (('${isDarkmode}') == '1' )>
+					params += "&darkmode=true";
+				</#if>
+				<#if (('${service_url}')?has_content)>
+					params += "&serviceurl="+encodeURIComponent(serviceUrl);
 				</#if>
 				
 				
@@ -248,7 +313,7 @@
 			
 	</head>
 	
-	<body <#if (isDarkmode == 1) > class="darkmode"</#if> >
+	<body <#if (isDarkmode == 1) > class="darkmode"</#if> <#if (rtl == 1) >dir = "rtl" </#if>>
 	
 		<div class="bg_one"></div>
 		
@@ -312,16 +377,23 @@
 						                <span class="menutext"></span>
 						                <span class="change_user" onclick="change_user()"><@i18n key="IAM.SIGNUP.CHANGE"/></span>
 					           	</div>
-		    					<span id="headtitle"><@i18n key="IAM.IP.RESET.HEADING"/></span>
-		    					<div class="head_info"><@i18n key="IAM.IP.RESET.DESCRIPTION"/></div>
+					           	
+					           	<div class="lookup_head">
+			    					<span id="headtitle"><@i18n key="IAM.IP.RESET.HEADING"/></span>
+			    					<div class="head_info"><@i18n key="IAM.IP.RESET.DESCRIPTION"/></div>
+			    				</div>
+			    				
+			    				<div class="hide capatcha_head">
+			    					<span id="headtitle"><@i18n key="IAM.VERIFY.CAPCTHA.HEAD"/></span>
+			    					<div class="head_info"><@i18n key="IAM.VERIFY.CAPCTHA.DESC"/></div>
+			    				</div>
+			    				
 							</div>
 							
-							<div class="fieldcontainer">
 								
 								<form name="login_id_container" onsubmit="return accountLookup(event);" novalidate >
 									<div class="searchparent" id="login_id_container">
 										<div class="textbox_div">
-											<label for='country_code_select' class='select_country_code'></label>
 											<select id="country_code_select" onchange="changeCountryCode();"  name="countryselect">
 			                  					<#list country_code as dialingcode>
 		                          					<option data-num="${dialingcode.code}" value="${dialingcode.dialcode}" id="${dialingcode.code}" >${dialingcode.display}</option>
@@ -332,18 +404,20 @@
 										</div>
 									</div>
 									
-									
 									<div class="textbox_div" id="captcha_container">
 											<div id="captcha_img" name="captcha" class="textbox"></div>
 											<span class="reloadcaptcha icon-reload" onclick="changeHip()"> </span>
 											<input id="captcha" placeholder="<@i18n key="IAM.NEW.SIGNIN.ENTER.CAPTCHA"/>" type="text" name="captcha" class="textbox" required="" onkeydown="clearCommonError('captcha'),removeCaptchaError('captcha')" autocapitalize="off" autocomplete="off" autocorrect="off" maxlength="8"/>
 											<div class="fielderror"></div> 
-										</div>
-										<span class="captchafielderror"></span>
-										<button class="btn blue" id="nextbtn" tabindex="2" disabled="disabled"><span><@i18n key="IAM.NEXT"/></span></button>								
+									</div>
+									<span class="captchafielderror"></span>
+									<button class="btn blue" id="nextbtn" tabindex="2" disabled="disabled"><span><@i18n key="IAM.NEXT"/></span></button>
+										
+									<#include "Zcaptcha.tpl">	
+																
 									</form>
+									<div id='try_signin' class="bottom_line_opt hide"><div class='bottom_option'><@i18n key="IAM.IP.TRY.SIGNIN"/></div></div>
 								
-							</div>
 		    			
 			    		</div>
 			    		
@@ -722,7 +796,7 @@
 										</div>
 										<div id=rnd_number style="display:none;"></div>
 										<button class="btn blue hide" id="device_rec_wait" tabindex="2"><span><@i18n key="IAM.NEW.SIGNIN.WAITING.APPROVAL"/></span></button>
-										<button class="btn blue hide" id="device_rec_resend" onclick="changeRECOVERYSecDevice($('#recovery_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
+										<button class="btn blue hide" id="device_rec_resend" onclick="resendRecoveryPush($('#recovery_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
 										<div class="resend_label">
 											<span id="otp_resend" class="resendotp push_resend" ></span>
 											<span class="rnd_resend_push"><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span>
@@ -1045,7 +1119,7 @@
 										</div>
 										
 										<button class="btn hide" id="device_MFA_wait" tabindex="1"><span><@i18n key="IAM.NEW.SIGNIN.WAITING.APPROVAL"/></span></button>
-										<button class="btn blue hide" id="device_MFA_resend" onclick="changeMFADevice($('#mfa_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
+										<button class="btn blue hide" id="device_MFA_resend" onclick="resendMFAPush($('#mfa_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
 										<div class="resend_label hide">
 											<span id="otp_resend" class="resendotp push_resend" ></span>
 										</div>
@@ -1335,7 +1409,7 @@
 		    						<div class="success_header"><@i18n key="IAM.RESETIP.SUCCESS.ORG.RESET"/></div>
 	    						</div>
 	    						<div class="reset_ip_success_msg"><@i18n key="IAM.RESETIP.SUCCESS.ORG.RESET.DESC"/></div>
-	    						<button class="btn blue" onclick="swicth_to_signin()" id="remove_ip" tabindex="2"><span><@i18n key="IAM.BUTTON.CONTINUE.SIGNIN"/></span></button>
+	    						<button class="btn blue" onclick="swicth_to_signin()" id="remove_ip" tabindex="2"><span><@i18n key="IAM.CONTINUE"/></span></button>
 	    					</div>
 	    				</div>
 	    				
@@ -1349,7 +1423,7 @@
 			    						<span id="headtitle"><@i18n key="IAM.NEW.SIGNIN.CONTACT.SUPPORT"/></span>
 				    					<div class="head_info">
 				    						<div style="margin-bottom:20px"><@i18n key="IAM.AC.CONTACT.SUPPORT.HELP.DESC"/> </div>
-				    						<div class="normal_mode_support_contactid" style="margin-bottom:20px"><@i18n key="IAM.AC.CONTACT.SUPPORT.NO_OPTION.CONTACT" arg0="${support_email_address}"/></div>
+				    						<div class="normal_mode_support_contactid"><@i18n key="IAM.AC.CONTACT.SUPPORT.NO_OPTION.CONTACT" arg0="${support_email_address}"/></div>
 				    					</div>
 									</div>
 									

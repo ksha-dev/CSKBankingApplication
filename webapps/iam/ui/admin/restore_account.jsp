@@ -24,7 +24,7 @@
 				<textarea class="labelvalue" name="comment"  rows="4" cols="30"></textarea>
 			</div>
                 <div class="labelkey">Enter Admin password :</div>
-                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="restoreAccount(document.restoreaccount)">
 			<span class="btnlt"></span>
@@ -48,7 +48,7 @@
                 <div class="labelkey">Enter Organization Id :</div>
                 <div class="labelvalue"><input type="text" name="zoid" class="input" autocomplete="off"/></div>
                 <div class="labelkey">Enter Admin password :</div>
-                <div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+                <div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="assignUserToOrg(document.assignuserorg)">
 			<span class="btnlt"></span>

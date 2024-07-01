@@ -63,7 +63,6 @@
       <param name="hide_remember" type="boolean" />
       <param name="go" regex="google|facebook|yahoo" />
       <param name="iamcsrcoo" regex="iamcleartextpattern" max-len="500" />
-      <param name="iamdccsrf" regex="iambase64" max-len="500" />
       <param name="hide_reg_link" type="boolean" description="To show or hide SignUp link for non registered email login error message" />
       <param name="remove_temp_token" regex="false" />
       <param name="newtheme" type="boolean" />
@@ -75,7 +74,6 @@
       <param name="portal_domain" regex="domain" description="Org domain to display the org logo"/>
       <param name="autofocus_disable" type="boolean" />
       <param name="client_auth" type="boolean" />
-      <param name="dsrc" regex="iamcleartextpattern"/>
       <param name="hidelinkedin" type="boolean" />
       <param name="hidetwitter" type="boolean" />
       <param name="hideweibo" type="boolean" />
@@ -89,6 +87,37 @@
       <param name="signupurl" regex="serviceurl" max-len="500" />
       <param name="cli_time" type="long" />
     </param-group>
+	<param-group name="fsresponseparams">
+		<param name="code" regex="iamcleartextpattern" max-len="2000" />
+		<param name="state" regex="^([a-zA-Z0-9\._\*\-%\/=+])+$" max-len="1000" />
+		<param name="oauth_token" regex="digest" max-len="100" />
+		<param name="oauth_verifier" regex="digest" max-len="100" />
+		<param name="token" regex="iamcleartextpattern" max-len="500" />
+		<param name="uid" regex="digest" max-len="100" />
+		<param name="session_state" regex="plain_str" />
+		<param name="error" regex="iamcleartextpattern" />
+		<param name="error_description" regex="iamcleartextpattern" max-len="500" />
+		<param name="error_code" regex="iamcleartextpattern" />
+		<param name="error_reason" regex="iamcleartextpattern" />
+		<param name="openid.realm" regex="url" />
+		<param name="openid.mode" regex="([a-zA-Z_]+)" />
+		<param name="openid.return_to" regex="urlwithdigest" max-len="300" />
+		<param name="openid.assoc_handle" regex="([A-Za-z0-9_\.\-]+)" max-len="300" />
+		<param name="openid.signed" regex="([a-zA-Z0-9=\.,_]+)" max-len="1000" />
+		<param name="openid.identity" regex="url" />
+		<param name="openid.claimed_id" regex="url" />
+		<param name="openid.pape.auth_level.nist" type="int" />
+		<param name="openid.ns.ax" regex="url" />
+		<param name="openid.ax.mode" regex="([a-z_]+)" />
+		<param name="openid.ax.value.language" regex="([a-zA-Z-]+)" />
+		<param name="openid.ax.value.email" regex="email" />
+		<param name="id_token" xss="antisamyfilter" max-len="10000" />
+		<param name="user" xss="antisamyfilter" max-len="10000" />
+		<param name="denied" regex="iamcleartextpattern" />
+		<param name="authuser" regex="iamcleartextpattern" />
+		<param name="hd" regex="domain" />
+		<param name="prompt" regex="iamcleartextpattern" />
+	</param-group>
 </param-groups>
 
   <urls>
@@ -118,6 +147,11 @@
       <param name="sch" type="int"/>
 	  <extraparam min-len="0" max-len="100" xss="antisamyfilter" description="To allow extra parameters and values" />
     </url>
+    
+    <url path="/emaildetachaction" method="get" >
+      <param name="digest" regex="digest" min-occurrences="1" max-len="500" />
+    </url>
+     
     <!--
         unsupported url configuration commented below
         <url path="/g/pnia" description="New User Reject invitation">
@@ -166,11 +200,6 @@
 	 </response>
      <param-group name="samlresponseparams"/>
     </url>
-    <url path="/p/setup" sl_auth="tfatemp_required" method="post" csrf="true" duration="30" lock-period="100" threshold="10" user="true" description="Setup TFA with Mobile">
-      <param name="mobile" regex="phone" />
-      <param name="countrycode" regex="countrycode" />
-      <param name="verifytype" type="int" />
-    </url>
     <url path="/goauth" description="Url for sign in using google Oauth" https="true" method="post" csrf="false" authentication="optional">
       <param name="digest" regex="digest" max-len="512" />
       <param name="redirecturl" regex="url" max-len="50000" />
@@ -212,7 +241,15 @@
      <url path="/accounts/widget/validate" https="true"  method="get">
     	<param name="user_token" regex="iambase64" max-len="1000" secret="true" />
     </url>
-    
+    <url path="/accounts/getremotejwt" https="true" authentication="required" method="post" internal="true" scoped-services="all" description="Create jwt for web widget authentication" >
+    <param name="portal_client_id" regex="client_id" min-occurrences="1"/>
+    </url>	
+    <url path="/accounts/validatejti" method="post" dc-system-auth="true" description="Validate jti to avoid replay attacks on login to CP using JWT">
+    		<param name="jti" regex="iambase64" max-len="2000"  />
+    		<param name="azp" regex="client_id" min-occurrences="1"/>
+    		<param name="kid" regex="^[0-9a-zA-Z]+$" />
+    		<param name="sub" regex="zid"/>
+    </url> 
     <url path="/api/public/v1/regiondetails" description="To get the region and associated countries" method="get" internal="true" scoped-services="all"></url>
 
     <url path="/api/public/v1/geodetails" description="To get timezone(includes compressed),country,language list " method="get"  ignore-extraparam="true">
@@ -252,6 +289,16 @@
    <url path="/.well-known/apple-app-site-association" description="To open oneauth app through associated domains for ios" />
    <url path="/.well-known/assetlinks.json" description="To open oneauth app through associated domains for android" />
    
+	<url path="/signin/oidc/${ZID}/${ZID}" url-type="multiple" sl_auth="fs_optional" authentication="optional" mweb_oauth="optional" method="get" ignore-extraparam="true" description="Org Enforced OIDC Signin">
+		<param-group name="fsresponseparams" />
+	</url>
+
+	<url path="/signin/federated" sl_auth="fs_optional" authentication="optional" mweb_oauth="optional" method="get" ignore-extraparam="true" description="Federated Signin">
+		<param-group name="fsresponseparams" />
+	</url>
+
+	<url path="/oidcauthrequest/${ZID}/${ZID}" url-type="multiple" method="get" ignore-extraparam="true" description="Org Enforced OIDC AuthRequest" />
+
     <url path="/accounts/pfs/[0-9]+/clientidpcallback" description="portal federation signin callback from IDP" method="get" ignore-extraparam="true">
 	 	<param name="state" regex="digest" max-len="5000" />
 		<param name="redirecturl"  xss="antisamyfilter" />
@@ -286,12 +333,12 @@
       <param name="dcc"  type="boolean"/>
       <param name="servicename" regex="servicename" />
       <param name="orgtype" type="int" />
-      <param name="css_url" regex="urloruriwithparams" />
+      <param name="css_url" regex="urloruriwithparams" max-len="50000"/>
       <param name="load_iframe" type="boolean" />
      </url>
-     <url path="/pconfirm" authentication="optional" https="true"  description="Portal invitation exeution" method="post" csrf="false">
-       	 <param name="password" regex="password" max-len="250" secret="true" />
-	     <param name="cpassword" regex="password" max-len="250" secret="true" />
+     <url path="/pconfirm" authentication="optional" https="true"  description="Portal invitation exeution" method="post" csrf="false" request-partial-payload-encryption="true">
+       	 <param name="password" regex="password" max-len="250" secret="true" decrypt="true" />
+	     <param name="cpassword" regex="password" max-len="250" secret="true" decrypt="true" />
 	     <param name="is_ajax" type="boolean" />
 	     <param name="digest" regex="digest" max-len="512" />
 	     <param name="redirecturl" regex="url" max-len="50000" /> 
@@ -308,7 +355,7 @@
 	 	<param name="servicename" regex="servicename" />
 	 	<param name="serviceurl" regex="serviceurl" max-len="2000"/>
 	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
-		<param name="css_url" regex="urloruriwithparams" />
+		<param name="css_url" regex="urloruriwithparams" max-len="50000"/>
 		<param name="hide_fp" type="boolean" />
 		<param name="dcc" type="boolean" />
 		<param name="portal" max-len="100" regex="iamcleartextpattern" />
@@ -318,7 +365,7 @@
 	 	<param name="servicename" regex="servicename" />
 	 	<param name="serviceurl" regex="serviceurl" max-len="2000"/>
 	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
-		<param name="css_url" regex="urloruriwithparams" />
+		<param name="css_url" regex="urloruriwithparams" max-len="50000"/>
 		<param name="hide_fp" type="boolean" />
 		<param name="dcc" type="boolean" />
 		<param name="portal" max-len="100" regex="iamcleartextpattern" />
@@ -329,6 +376,20 @@
 	 	<param name="redirecturl" regex="url" max-len="50000"/>
 	 	<param name="provider" regex="ZOHO|LINKEDIN|FACEBOOK|GOOGLE|AZURE|APPLE" />
 	 	<param name="fromnewsignin"  type="boolean" />
+	 </url>
+	 <url path="/clientidpassociate" description="portal federated signin associate request" method="get" authentication="optional">
+	 	<param name="state" regex="digest" max-len="5000" />
+	 	<param name="action" regex="signin" />
+	 	<param name="servicename" regex="servicename"/>
+	 	<param name="serviceurl" regex="serviceurl"/>
+	 	<param name="hide_fs" type="boolean" />
+	 </url>
+	 <url path="/clientidpassociate" description="portal federated signin associate request" method="post" authentication="optional">
+	 	<param name="state" regex="digest" max-len="5000" />
+	 	<param name="action" regex="signin|cancel|associate|logout" />
+	 	<param name="servicename" regex="servicename"/>
+	 	<param name="serviceurl" regex="serviceurl"/>
+	 	<param name="hide_fs" type="boolean" />
 	 </url>
 	 <url path="/samlauthrequest/(${ZID}|${domain-name})(/${ciphertext})?" url-type="multiple" description="Client Portal SAML auth request using zaaid" authentication="optional" method="get">
 		<param-group name="loginparams"/>

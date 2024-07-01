@@ -89,8 +89,8 @@ if(adminEmailIdStr != null) {
 	    var err_enter_pass = '<%=Util.getI18NMsg(request,"IAM.ERROR.ENTER_PASS")%>'; <%--No I18N--%>
 	    var err_password_maxlen = '<%=Util.getI18NMsg(request,"IAM.ERROR.PASSWORD.MAXLEN")%>'; <%--No I18N--%>
 	    var err_email_primary_notdlt = '<%=Util.getI18NMsg(request,"IAM.ERROR.PRIMARY.NOTDELETE")%>'; <%--No I18N--%>
-	    var err_email_sure_delete1 = '<%=Util.getI18NMsg(request,"IAM.EMAIL.ERROR.SURE.DELETE.CONFIRMATION")%>'; <%--No I18N--%>
-	    var err_email_sure_delete_prim = '<%=Util.getI18NMsg(request,"IAM.EMAIL.ERROR.SURE.DELETE.PRIMARY")%>'; <%--No I18N--%>
+	    var err_email_sure_delete1 = '<%=Util.getI18NMsg(request,"IAM.EMAIL.DELETE.SECONDARY")%>'; <%--No I18N--%>
+	    var err_email_sure_delete_prim = '<%=Util.getI18NMsg(request,"IAM.EMAIL.DELETE.PRIMARY")%>'; <%--No I18N--%>
 	    var err_enter_currpass = '<%=Util.getI18NMsg(request,"IAM.ERROR.ENTER.CURRENT.PASSWORD")%>'; <%--No I18N--%>
 	    var err_email_sure_delete = '<%=Util.getI18NMsg(request,"IAM.ERROR.SURE.DELETE.CONTACTS")%>'; <%--No I18N--%>
 	    var confirm_fb_delete = '<%=Util.getI18NMsg(request, "IAM.FACEBOOK.SURE_DELETE")%>'; <%-- No I18N --%>
@@ -101,7 +101,7 @@ if(adminEmailIdStr != null) {
 		var verify_email_id='<%=Util.getI18NMsg(request, "IAM.PROFILE.EMAIL.VERIFY.HEADING")%>'; <%--No I18N--%> 
 		var linked_email_del='<%=Util.getI18NMsg(request, "IAM.PROFILE.EMAIL.ADDRESS.LINKED.EMAIL.DELETION")%>'; <%--No I18N--%>
 <!-- 	    phone -->
-		var err_mobile_sure_delete1 = '<%=Util.getI18NMsg(request,"IAM.MOBILE.ERROR.SURE.DELETE.PHONE")%>'; <%--No I18N--%>  
+		var err_mobile_sure_delete1 = '<%=Util.getI18NMsg(request,"IAM.MOBILE.DELETE.MESSAGE")%>'; <%--No I18N--%>  
 		var primary_mobile_change_sure = '<%=Util.getI18NMsg(request,"IAM.MFA.MOBILE.PRIMARY.CHANGE")%>'; <%--No I18N--%>  
 		var err_update_success = '<%=Util.getI18NMsg(request,"IAM.ERROR.UPDATE.SUCCESS.MESSAGE")%>'; <%--No I18N--%>
 		var err_enter_valid_mobile = '<%=Util.getI18NMsg(request, "IAM.PHONE.ENTER.VALID.MOBILE_NUMBER")%>'; <%--No I18N--%>

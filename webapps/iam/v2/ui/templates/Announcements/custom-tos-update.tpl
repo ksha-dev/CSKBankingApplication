@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title><@i18n key="IAM.TOS.ANNOUNCEMENT.HEADER"/></title>
-<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+<@resource path="/v2/components/css/${customized_lang_font}" />
 <style>
 body {
 	margin:0px;
@@ -125,11 +125,10 @@ body {
     cursor: not-allowed;
 }
 .tos_content {
-	height: 340px;
+	height: 400px;
 	width:540px;
     margin-bottom: 30px;
-    box-shadow: inset 0px 0px 20px #0000000F;
-	border-radius: 5px;
+	border-radius: 4px;
     font-size: 14px;
     box-sizing: border-box;
     line-height: 20px;
@@ -137,9 +136,9 @@ body {
 }
 .tos_content .container_with_border {
 	border: 1px solid #EFEFEF;
-	border-radius: 5px;
+	border-radius: 4px;
 	overflow: hidden;
-    height: 338px;
+    height: 398px;
     width: 538px;
     position:absolute;
     transition: all .3s ease-in-out;
@@ -151,10 +150,64 @@ body {
     overflow: auto;
     padding: 20px 30px;
     scroll-behavior: smooth;
+    position: relative;
     box-sizing: border-box;
 }
-.disable_transition
-{
+.language_check_box{
+	display:none;
+}
+.lang_list{
+    padding: 5px 8px;
+    display: inline-block;
+    line-height: 12px;
+    border-radius:3px;
+    color:#8299AC;
+}
+.lang_hindi{
+	background:#fff;
+	color:#000;
+}
+.language_check_box:checked + .switch_cont .lang_hindi{
+	background: unset;
+	color:#8299AC;
+}
+.language_check_box:checked + .switch_cont .lang_english{
+	background: #fff;
+	color:#000;
+}
+.pop_header_with_lang{
+    padding: 12px 20px;
+    background: #FAFAFA;
+    display: flex;
+    border-bottom: 1px solid #EFEFEF;
+    align-items: center;
+	justify-content: space-between;
+}
+.lang_header{
+    max-width: 380px;
+    font-size:14px;
+    font-weight:500;
+}
+.switch_cont{
+    background: #F5F5F5;
+    border: 1px solid #E9EAEA;
+    padding: 4px;
+    border-radius: 4px;
+    font-size:10px;
+    display: inline-block;
+    cursor:pointer;
+}
+.view_popup_header{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.view_popup_header .lang_header{
+    font-size: 24px;
+    line-height: 30px;
+    max-width: 540px;
+}
+.disable_transition{
 	transition:unset !important;
 }
 .agree_text {
@@ -234,6 +287,9 @@ body {
     opacity:.9;
     transition: all 0.3s ease-in-out;
 }
+.view_tos_content .pop_header_with_lang{
+    display:none;
+}
 .button-arrow
 {
     position: absolute;
@@ -298,6 +354,7 @@ body {
     width: 100%;
     box-sizing: border-box;
     background: #fff;
+    z-index:1;
 }
 .view_tos_content .popup_header
 {
@@ -351,16 +408,16 @@ body {
 }
 .view_tos_content .container_with_border {
 	position: fixed;
-    width: 720px;
+    width: 780px;
     bottom: 50px;
     top: 50px !important;
     height:auto;
     z-index:2;
 }
 .view_tos_content .content_area {
-    width: 720px;
+    width: 780px;
     height: 100%;
-    padding: 138px 50px 30px 50px;
+    padding: 160px 50px 30px 50px;
 }
 .view_tos_content .announcement_content>div,.view_tos_content .announcement_img,.view_tos_content button,.view_tos_content .continue_button{
 	opacity:0;
@@ -496,20 +553,39 @@ body {
 	    
 	    <div class="tos_content" id="tos_content">
 	    	<div class="container_with_border" id="container_with_border" tabindex="1">
+	    		<div class="pop_header_with_lang">
+	    			<div class="lang_header"><@i18n key="IAM.TOS.CUSTOM.ANNOUNCEMENT.POPUP.HEADER"/></div>
+	    			<div class="lang_change">
+	    				<input type="checkbox" class="language_check_box" onchange="toggleLanguage(this)" id="language_opt">
+	    				<label for='language_opt' class="switch_cont">
+							<span class="lang_list lang_hindi">&#x939;&#x93F;&#x928;&#x94D;&#x926;&#x940;</span>
+		    				<span class="lang_list lang_english">English</span>
+	    				</label>
+	    			</div>
+	    		</div>
+	    		<div style="position:relative;z-index:2;">
+	    			<div class="pop_float_btn" id="pop_float_btn" onclick="toggleTOSContent()">
+						<div class="button-arrow top_arrow icon-up_small"></div>
+						<div class="button-arrow bottom_arrow icon-up_small"></div>
+					</div>
+	    		</div>
 	    		<div class="popup_header">
 	    			<div class="header_org_logo"><#if ((logo_url)?has_content)><img height="32px" width="auto" src="${logo_url}" /></#if></div>
-					<#if ((org_name)?has_content)>
-					<div class="header_announcement_heading"><@i18n key="IAM.TOS.CUSTOM.ANNOUNCEMENT.HEADER" arg0="${org_name}" /></div>
-					</#if>
+					<div class="view_popup_header">
+						<div class="lang_header"><@i18n key="IAM.TOS.CUSTOM.ANNOUNCEMENT.POPUP.HEADER"/></div>
+						<div class="lang_change">
+		    				<input type="checkbox" class="language_check_box" onchange="toggleLanguage(this)" id="language_opt_full_content">
+		    				<label for='language_opt_full_content' class="switch_cont">
+		    					<span class="lang_list lang_hindi">&#x939;&#x93F;&#x928;&#x94D;&#x926;&#x940;</span>
+		    					<span class="lang_list lang_english">English</span>
+		    				</label>
+		    			</div>
+	    			</div>
 	    		</div>
-				<div class="pop_float_btn" id="pop_float_btn" onclick="toggleTOSContent()">
-					<div class="button-arrow top_arrow icon-up_small"></div>
-					<div class="button-arrow bottom_arrow icon-up_small"></div>
-				</div>
 		    	<div class="content_area" id="content_area">
 		    	</div>
 				<div class="white_blur"></div>
-				<div class="scroll_flt_btn icon-up_large" id="scroll_flt_btn"></div>
+				<div class="scroll_flt_btn icon-up_large" onclick="goToScrollTop()" id="scroll_flt_btn"></div>
 			</div>
 	    </div>
 	    <div class="tos-container">
@@ -529,19 +605,23 @@ window.onload = function(){
 	<#if ((tos)?has_content)>
 	var tos_content_text = '${tos}';
 	document.getElementById("content_area").innerHTML = tos_content_text;
+	toggleLanguage(document.getElementById("language_opt"));
 	</#if>
 	document.getElementById("container_with_border").classList.add("disable_transition");
 	document.getElementById("container_with_border").style.left = document.getElementById("tos_content").offsetLeft+"px";
 	document.getElementById("container_with_border").style.top = document.getElementById("tos_content").offsetTop+"px";
 	document.getElementById("container_with_border").classList.remove("disable_transition");
 	document.getElementById("content_area").onscroll = function(e){
-		if(e.target.scrollTop > document.getElementById("container_with_border").clientHeight){
+		if(e.target.scrollTop > ((e.target.scrollHeight - e.target.offsetHeight)/4)){
 			document.getElementById("scroll_flt_btn").classList.add("go_top");
 		}
 		else{
 			document.getElementById("scroll_flt_btn").classList.remove("go_top");
 		}
 	}
+}
+function goToScrollTop(){
+	document.getElementById('content_area').scrollTop=0;
 }
 window.addEventListener("resize",function(){
 	document.getElementById("container_with_border").classList.add("disable_transition");
@@ -582,6 +662,15 @@ function toggleTOSContent(){
 			document.getElementById("content_area").style.background = "unset";
 			document.getElementById("tos_content").style.boxShadow = "inset 0px 0px 20px #0000000f";
 		},300);
+	}
+}
+function toggleLanguage(ele){
+	if(ele.checked){
+		document.querySelector("#tos_content .hindi_content").style.display = "none";
+		document.querySelector("#tos_content .english_content").style.display = "block";
+	}else{
+		document.querySelector("#tos_content .hindi_content").style.display = "block";
+		document.querySelector("#tos_content .english_content").style.display = "none";
 	}
 }
 function handleEsc(event){

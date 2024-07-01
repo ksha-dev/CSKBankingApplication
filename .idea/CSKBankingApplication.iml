@@ -29,5 +29,38 @@
         <jarDirectory url="file://$MODULE_DIR$/webapps/ROOT/WEB-INF/lib" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/iam" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/lib/iam" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/iam" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/lib/iam" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/iam/agent" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib/iam/agent" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/iam/zagent" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib/iam/zagent" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

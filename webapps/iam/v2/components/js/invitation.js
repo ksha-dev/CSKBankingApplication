@@ -44,7 +44,7 @@ function accept_group_invitation(signupRequired,ele) {
 		var form = document.signup_form;
 		if($(".group-input-form").is(":visible")){
 			if(form.first_name.value.trim()==""){
-				$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.ERROR.EMPTY.FIELD")+"</span>");
+				$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.NEW.SIGNUP.FIRSTNAME.VALID")+"</span>");
 				$(form.first_name).focus();
 				return false;
 			}
@@ -57,16 +57,6 @@ function accept_group_invitation(signupRequired,ele) {
 				$(form.password).after("<span class='err_text'>"+I18N.get("IAM.ERROR.CODE.U110")+"</span>");
 				$(form.password).focus();
 			  	return false;
-			}
-			if(form.con_password.value==""){
-				$(form.con_password).parent().append("<span class='err_text'>"+I18N.get("IAM.REENTER.PASSWORD")+"</span>");
-				$(form.con_password).focus();
-				return false;
-			}
-			if(!checkConfirmPassword('#signup_pass')){
-				$(form.con_password).parent().append("<span class='err_text'>"+I18N.get("IAM.PASSWORD.ERROR.WRONG.CONFIRMPASS")+"</span>");
-				$(form.con_password).focus();
-				return false;
 			}
 			if(form.tos_check.checked == false ){
 				 $(form.tos_check).parent().after("<div class='err_text'>"+I18N.get("IAM.ERROR.TERMS.POLICY")+"</div");
@@ -96,15 +86,23 @@ function accept_group_invitation(signupRequired,ele) {
   	} else {
   		var parms={};
   	}
-    var payload = GInvitation.create(parms);
-    isFormSubmitted = true;
-    handleDisableBtn(ele);
-    payload.PUT(digest).then(function(resp) {
-        showResultPopup(true,resp.ginvitation.redirect_url);
-    },
-    function(resp) {
-    	show_group_invitation_error(getErrorMessage(resp));
-    }); 
+	encryptData.encrypt([parms.password]).then(function(encryptedpassword) {
+		if(isValid(encryptedpassword)){
+			parms.password =  typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value
+		} 
+		var payload = GInvitation.create(parms);
+	    isFormSubmitted = true;
+	    handleDisableBtn(ele);
+	    payload.PUT(digest).then(function(resp) {
+	        showResultPopup(true,resp.ginvitation.redirect_url);
+	    },
+	    function(resp) {
+	    	show_group_invitation_error(getErrorMessage(resp));
+	    });
+		return false;
+	}).catch(function(error) {
+		// handle error
+	});
 }
 function showResultPopup(isAccepted,link){
 	var signupRequired = $(".group-user-signup").is(":visible");
@@ -143,17 +141,9 @@ function show_group_invitation_error(cause)
 	isFormSubmitted = false;
 	removeBtnLoaderAndDisable(".group-accept-btn"); //No I18N
 	removeBtnLoaderAndDisable(".group-reject-btn"); //No I18N
-	showErrorMsg(cause);
+	showErrorMessage(cause);
 }
 
-function showErrorMsg(errMsg){
-	$("#error_space_id").removeClass("show_error");
-	$("#error_space_id .top_msg").html(errMsg);
-	$("#error_space_id").addClass("show_error");
-	setTimeout(function() {
-		$("#error_space_id").removeClass("show_error");
-	}, 5000);
-}
 
 function togglePassHide(ele,id) {
 	if($(ele).siblings("#"+id).attr("type")=="password"){
@@ -312,10 +302,16 @@ function invitationSigninRedirect()
 	if(oldForm) {
 		document.documentElement.removeChild(oldForm);
 	}
+	var actionUrl = "";
+	if(typeof(service_name) != "undefined" && service_name != undefined && service_name != null && service_name != "") {
+		actionUrl = contextpath + "/signin?servicename=" + service_name + "&serviceurl="+euc(window.location.href); //no i18n
+	} else {
+		actionUrl = contextpath + "/signin?serviceurl="+euc(window.location.href); //no i18n	
+	}
 	var form = document.createElement("form");
 	form.setAttribute("id", "invite_signin_redirect");
 	form.setAttribute("method", "POST");
-    form.setAttribute("action", contextpath + "/signin" +"?serviceurl="+window.location.href);
+    form.setAttribute("action", actionUrl);
     form.setAttribute("target", "_self");
     
     var hiddenField = document.createElement("input");
@@ -349,7 +345,7 @@ function idp_continue()
 	if(form.first_name.value=="")
 	{
 		$(form.first_name).parent().addClass("error_field_card");
-		$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.ERROR.EMPTY.FIELD")+"</span>");
+		$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.NEW.SIGNUP.FIRSTNAME.VALID")+"</span>");
 		$(form.first_name).focus();
 		return false;
 	}
@@ -411,7 +407,7 @@ function accept_org_invitation()
 			if(form.first_name.value.trim()=="")
 			{
 				$(form.first_name).parent().addClass("error_field_card");
-				$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.ERROR.EMPTY.FIELD")+"</span>");
+				$(form.first_name).parent().append("<span class='err_text'>"+I18N.get("IAM.NEW.SIGNUP.FIRSTNAME.VALID")+"</span>");
 				$(form.first_name).focus();
 				return false;
 			}
@@ -480,45 +476,52 @@ function accept_org_invitation()
     isFormSubmitted = true;
     var disable_ele = signupRequired ? "#signup_action" :"#accept_btn";	//No I18N
     disabledButton(disable_ele);
-    payload.PUT(digest).then(function(resp) 
-    {
-    	$("#popup_signup").hide(0,function(){
-    		$("#popup_signup").removeClass("pop_anim");
-    	});
-    	$("#signup_form").hide();
-        show_resultpopup(true,resp.orguserinvitation.redirectUrl,false);
-        $(".container").hide();
-        $(".issues_contact").hide();
-        removeButtonDisable(disable_ele);
-    },
-    function(resp) 
-    {
-    	if(resp.errors[0].code=='OI108')//user exists in another DC show dcoument
-    	{
-    		$(document.signup_form.tos_check).parent().append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+    encryptData.encrypt([parms.password]).then(function(encryptedpassword) {
+    	if(encryptData.isValidData(encryptedpassword)){
+    		parms.password = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
     	}
-		else if(resp.errors[0].code=='OI113') //service team invitation prevalidation failed
-		{
-			$("#result_popup_rejected .grn_text").html(I18N.get("IAM.INVITATION.PRECHECK.ERROR.TITLE"));
-			if(isValid(resp.redirect_link))
-			{
-				var message = resp.localized_message +" "+ I18N.get("IAM.ORG.INVITATION.REDIRECT.MESSAGE");
-			}
-			else
-			{
-				var message = resp.localized_message;
-			}
-			$("#result_popup_rejected .defin_text").html(message);
-	        show_resultpopup(false, resp.redirect_link, false);
-	        $(".container").hide();
-		}
-    	else
-    	{
-    		show_org_invitation_error(getErrorMessage(resp));
-    	}
-    	 isFormSubmitted = false;
-    	 removeButtonDisable(disable_ele);
-    }); 
+		payload.PUT(digest).then(function(resp) 
+			    {
+			    	$("#popup_signup").hide(0,function(){
+			    		$("#popup_signup").removeClass("pop_anim");
+			    	});
+			    	$("#signup_form").hide();
+			        show_resultpopup(true,resp.orguserinvitation.redirectUrl,false);
+			        $(".container").hide();
+			        $(".issues_contact").hide();
+			        removeButtonDisable(disable_ele);
+			    },
+			    function(resp) 
+			    {
+			    	if(resp.errors[0].code=='OI108')//user exists in another DC show dcoument
+			    	{
+			    		$(document.signup_form.tos_check).parent().append("<span class='err_text'>"+getErrorMessage(resp)+"</span>");
+			    	}
+					else if(resp.errors[0].code=='OI113') //service team invitation prevalidation failed
+					{
+						$("#result_popup_rejected .grn_text").html(I18N.get("IAM.INVITATION.PRECHECK.ERROR.TITLE"));
+						if(isValid(resp.redirect_link))
+						{
+							var message = resp.localized_message +" "+ I18N.get("IAM.ORG.INVITATION.REDIRECT.MESSAGE");
+						}
+						else
+						{
+							var message = resp.localized_message;
+						}
+						$("#result_popup_rejected .defin_text").html(message);
+				        show_resultpopup(false, resp.redirect_link, false);
+				        $(".container").hide();
+					}
+			    	else
+			    	{
+			    		show_org_invitation_error(getErrorMessage(resp));
+			    	}
+			    	 isFormSubmitted = false;
+			    	 removeButtonDisable(disable_ele);
+			    });
+	}).catch(function(error) {
+		// handle error
+	});
 }
 
 function check_pp(cases,spl,num,minlen){
@@ -561,7 +564,7 @@ function show_signup_section()
 //	{
 		$("#basic_info_box").hide();
 		$("#signup_section").show();
-		$(".container .invite_details").addClass("small_logo");
+		//$(".container .invite_details").addClass("small_logo");
 		
 //	});
 	
@@ -609,7 +612,7 @@ function show_org_invitation_error(cause)
 {
 	isFormSubmitted = false;
 	removeButtonDisable(".disable_button");//No I18N
-	showErrMsg(cause);
+	showErrorMessage(cause);
 }
 
 
@@ -824,6 +827,10 @@ function tooltip_outFunc()
     		trigger: 'mouseenter'	//No I18N	
 		});
 }
+
+
+
+
 
 
 /***************************** Common  Inviatation js functions *********************************/

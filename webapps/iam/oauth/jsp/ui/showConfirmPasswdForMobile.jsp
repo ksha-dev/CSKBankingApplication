@@ -10,7 +10,6 @@
 <%@page import="com.zoho.accounts.internal.util.AccountsInternalConst"%>
 <%@page import="com.adventnet.iam.security.SecurityUtil"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
 String cPath = request.getContextPath();
@@ -26,6 +25,9 @@ serviceUrl=Util.getRedirectURLWithTrustedDomainCheck(IAMUtil.getCurrentUser().ge
 <title><%=IAMEncoder.encodeHTML(Util.getI18NMsg(request, "IAM.ZOHO.ACCOUNTS"))%></title>
  <link href="<%=cssurl_st%>/mobile-app-screen.css" type="text/css" rel="stylesheet" /><%-- NO OUTPUTENCODING --%>
 <script src="<%=jsurl%>/jquery-3.6.0.min.js" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
+<script type="text/javascript" src="<%=cPath%>/encryption/script"></script>
+ <script type="text/javascript" src="<%=cPath%>/v2/components/js/security.js"></script>
+ <%-- <script src="${SCL.getStaticFilePath("/v2/components/js/security.js")}"></script> --%>
 <script>
 
 function getcsrfParams() {
@@ -54,25 +56,30 @@ function getcsrfParams() {
 			document.getElementById("pwd").focus();
         	return false;
     	}
-	$.ajax({
 		
-		type: "POST",//NO I18N
-		    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/token/relogin", //NO I18N
-		    data: getcsrfParams()+"&cPass=" + paswd,//NO I18N
-		    //data: getcsrfParams()+"&is_ajax=true&cPass=" + paswd,//NO I18N
-		    dataType  : "json",//NO I18N
-		    success: function(data, status, xnr) {
-		        if(data.message == "SUCESS") { //NO I18N
-		        	window.location.replace('<%=IAMEncoder.encodeJavaScript(serviceUrl)%>');
-		        } else {
-		        	showmsg(data.message);
-		        }
-		    },
-		    error: function(data, textStatus, errorThrown){
-		    	showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>');
-		    }
+		encryptData.encrypt([paswd]).then(function(encryptedpassword) {
+			encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			$.ajax({
+				
+				type: "POST",//NO I18N
+				    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/token/relogin", //NO I18N
+				    data: getcsrfParams()+"&cPass=" + euc(encryptedpassword),//NO I18N
+				    //data: getcsrfParams()+"&is_ajax=true&cPass=" + paswd,//NO I18N
+				    dataType  : "json",//NO I18N
+				    success: function(data, status, xnr) {
+				        if(data.message == "SUCESS") { //NO I18N
+				        	window.location.replace('<%=IAMEncoder.encodeJavaScript(serviceUrl)%>');
+				        } else {
+				        	showmsg(data.message);
+				        }
+				    },
+				    error: function(data, textStatus, errorThrown){
+				    	showmsg('<%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>');
+				    }
 
-		});
+				});
+		})
+
 }
 
 function getCookie(cookieName) {
@@ -111,7 +118,7 @@ $(".primary_btn").click(function(){
 			<div class="invite_user"><%=Util.getI18NMsg(request,"IAM.TFA.HI.USERNAME", email)%> !</div>
 
 			<div class="form">
-				<input type="password" name="pwd" id ="pwd" required="" >
+				<input type="password" name="pwd" id ="pwd" required="" autocomplete="off">
 				<label><%=Util.getI18NMsg(request, "IAM.ENTER.PASS")%></label>
 			</div>
 			

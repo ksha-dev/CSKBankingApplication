@@ -4,7 +4,7 @@
 	<title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+	<@resource path="/v2/components/css/${customized_lang_font}" />
 	<style>
 		body {
 			margin:0px;
@@ -249,11 +249,11 @@
 		var totalCount = ${threshold};
 		var remaining_login = ${logins_left};
 		document.getElementById("svg_circle").setAttribute("stroke-dasharray",(2 * Math.PI * 40 * ((totalCount-remaining_login) / totalCount))+" "+(2 * Math.PI * 40));
-		if(remaining_login == 0){
-			document.getElementById("svg_circle").setAttribute("stroke","#f45353");
+		if(((totalCount - remaining_login) / totalCount) < 0.8){
+			document.getElementById("svg_circle").setAttribute("stroke","#f4a352");
 		}
 		else{
-			document.getElementById("svg_circle").setAttribute("stroke","#ffae00");
+			document.getElementById("svg_circle").setAttribute("stroke","#f45353");
 		}
 	}
 </script>

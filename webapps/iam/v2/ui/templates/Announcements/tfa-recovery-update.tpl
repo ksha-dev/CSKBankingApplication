@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><@i18n key="IAM.TFA.BACKUP.ACCESS.CODES" /></title>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-   	 <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-   	 <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+   	 <@resource path="/v2/components/js/common_unauth.js" />
+   	 <@resource path="/v2/components/css/${customized_lang_font}" />
     <style>
       @font-face {
         font-family: "AccountsUI";
@@ -462,12 +462,24 @@
     <script>
       var csrfParam= "${za.csrf_paramName}";
       var csrfCookieName = "${za.csrf_cookieName}";
-      var userPrimaryEmailAddress = "${primary_email}";
       var userName = "${Encoder.encodeJavaScript(username)}";
       var contextpath = "${za.contextpath}";
 	  I18N.load({
       	"IAM.TFA.BACKUP.ACCESS.CODES" : '<@i18n key="IAM.TFA.BACKUP.ACCESS.CODES"/>',
       	"IAM.GENERATEDTIME" : '<@i18n key="IAM.GENERATEDTIME" />',
+      	"IAM.MFA.BACKUPCODE.FILE.TEXT": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.TEXT" />',
+		"IAM.MFA.BACKUPCODE.FILE.NOTES": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES" />',
+		"IAM.LIST.BACKUPCODES.POINT1": '<@i18n key="IAM.LIST.BACKUPCODES.POINT1" />',
+		"IAM.LIST.BACKUPCODES.POINT3": '<@i18n key="IAM.LIST.BACKUPCODES.POINT3" />',
+		"IAM.MFA.BACKUPCODE.FILE.NOTES3": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES3" />',
+		"IAM.MFA.BACKUPCODE.FILE.NOTES4": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES4" />',
+		"IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE" />',
+		"IAM.GENERAL.USERNAME": '<@i18n key="IAM.GENERAL.USERNAME" />',
+		"IAM.GENERATE.ON": '<@i18n key="IAM.GENERATE.ON" />',
+		"IAM.MFA.BACKUPCODE.FILE.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.HELP.LINK" />',
+		"IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" />',
+		"IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" />',
+		"IAM.ERROR.GENERAL": '<@i18n key="IAM.ERROR.GENERAL" />',
       });
       function generateBackupCode(e){
       	e.target.setAttribute("disabled","");
@@ -492,7 +504,7 @@
 				}
 	  		} 
 	  }
-	  
+	  var recHelp= "https://zurl.to/bvc_banner_bvc_rec", newCodesHelp= "https://zurl.to/bvc_banner_bvc_gen", pmail;
 	  function show_backup(resp)
 	  {
 		var codes = resp.recovery_code;
@@ -500,6 +512,7 @@
 		var createdtime = resp.created_date;
 		var res ="<ol class='bkcodes'>"; //No I18N
 		var recCodesForPrint = "";
+		pmail = resp.primary_email
 		for(idx in recoverycodes)
 		{
 			var recCode = recoverycodes[idx];
@@ -520,33 +533,43 @@
 	  }
 	  var recTxt = "";
 	  function formatRecoveryCodes(createdtime, recoverycodes){
-		recTxt  = I18N.get('IAM.TFA.BACKUP.ACCESS.CODES')+"\n"+userPrimaryEmailAddress+"\n\n";
+		recTxt = I18N.get("IAM.MFA.BACKUPCODE.FILE.TEXT")+"\n\n\n"; //No I18N
+		recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES") + "\n"; //No I18N
+		I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES").split("").forEach(function(){recTxt=recTxt+"-"}); //No I18N
+		recTxt = recTxt + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT1") + "\n# " + I18N.get("IAM.LIST.BACKUPCODES.POINT3") + "\n# " //No I18N
+						+ I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES3") + "\n# " + I18N.get("IAM.MFA.BACKUPCODE.FILE.NOTES4") + "\n\n\n"; //No I18N
+		recTxt = recTxt + I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE") + "\n";		//No I18n
+		I18N.get("IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+		recTxt = recTxt + "\n" + I18N.get("IAM.GENERAL.USERNAME") + ": " + pmail + "\n"; //No I18N
+
+		recTxt = recTxt + I18N.get("IAM.GENERATE.ON") + ": " + createdtime + "\n\n"; //No I18N
 		recoverycodes = recoverycodes.split(",");
 		for(var idx=0; idx < recoverycodes.length; idx++){
 			var recCode = recoverycodes[idx];
 			if(recCode != ""){
-				recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18n
+				recTxt += "\n "+(idx+1)+". "+recCode.substring(0, 4)+" "+recCode.substring(4, 8)+" "+recCode.substring(8); //No I18N
 			}
 		}
-		recTxt += "\n\n"+ I18N.get('IAM.GENERATEDTIME') +" : " +createdtime; //No I18n
+		recTxt = recTxt + "\n\n\n" + I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK") + "\n"; //No I18N
+		I18N.get("IAM.MFA.BACKUPCODE.FILE.HELP.LINK").split("").forEach(function(){recTxt=recTxt+"-";}); //No I18N
+		recTxt = recTxt + "\n\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK"), recHelp) + "\n# " + Util.format(I18N.get("IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK"),newCodesHelp);	//No I18n
 	  }
 	  function copy_code_to_clipboard (createdtime, recoverycodes) {
 		if(recTxt == ""){
 			formatRecoveryCodes(createdtime, recoverycodes);
 		}
-   		var elem = document.createElement('textarea');
-   		elem.value = recTxt;
-   		document.body.appendChild(elem);
-   		elem.select();
-   		document.execCommand('copy');
-   		document.body.removeChild(elem);
-   		$(".copy_to_clpbrd").hide();
-   		$(".code_copied").show();
-   		$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
-		$(".down_copy_proceed").hide();
-		$(".cont_signin").show();
-		$("html, body").animate({scrollTop: ($(".cont_signin").offset().top)-120,},1000);
-		setFooterPosition();
+		navigator.clipboard.writeText(recTxt).then(function () {
+			$(".copy_to_clpbrd").hide();
+			$(".code_copied").show();
+			$("#printcodesbutton .tooltiptext").addClass("tooltiptext_copied");
+			$(".down_copy_proceed").hide();
+			$(".cont_signin").show();
+			$("html, body").animate({scrollTop: ($(".cont_signin").offset().top)-120,},1000);
+			setFooterPosition();
+		}).catch(function(){
+			//error occured while copying
+			showErrMsg(I18N.get("IAM.ERROR.GENERAL"))
+		});
 	  }
 	  function remove_copy_tooltip() {
 		$(".copy_to_clpbrd").show();

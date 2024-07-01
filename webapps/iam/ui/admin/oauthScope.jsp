@@ -1,6 +1,6 @@
 <%@page import="com.zoho.accounts.AppResource.RESOURCE.USERSYSTEMROLES"%>
 <%@page import="com.zoho.accounts.AppResourceProto.App.AppSystemRole"%>
-<%@page import="com.zoho.accounts.internal.util.AccountsInternalConst.ScopeExposedType"%>
+<%@page import="com.zoho.accounts.AccountsConstants.ScopeExposedType"%>
 <%@page import="com.zoho.accounts.OAuthResource"%>
 <%@page import="com.zoho.accounts.AppResourceProto.App.AppSystemRole.UserSystemRoles"%>
 <%@page import="com.zoho.resource.URI"%>
@@ -48,7 +48,10 @@
         	 if(isIAMAdmin || isOAuthAdmin || (Util.isDevelopmentSetup() && isIAMServiceAdmin)){
            	 
         %>
-        <form name="addOAuth" class="zform" method="post" onsubmit="return addOAuthScope(this, '');">
+        <a href="javascript:;" id="showBulkAdd" onclick="showBulkScopeAddition()">Bulk Scope Descriptions Update</a> <%-- No I18N --%>
+        <a href="javascript:;" id="showSingleAdd" onclick="showIndividualScopeAddition()" style="display: none">Scope Addition</a> <%-- No I18N --%>
+        
+        <form id="individualscopeadd" name="addOAuth" class="zform" method="post" onsubmit="return addOAuthScope(this, '');">
 	    <div class="labelmain">
 	    <div class="initailOauthDiv">
                 <div class="labelkey">Service Name :</div>  <%--No I18N--%>
@@ -77,10 +80,12 @@
 		<div class="labelvalue"><input type="text" class="input" name="desc"/></div>
 		<div class="labelkey">Scope Exposed Type :</div>  <%--No I18N--%>
 		<div class="labelvalue">
-             <select name="isExposed" class="select" >
-                        <option value="<%=ScopeExposedType.EXTERNAL.ordinal()%>">External</option>  <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
-                        <option value="<%=ScopeExposedType.INTERNAL.ordinal()%>">Internal</option> <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
-                        <option value="<%=ScopeExposedType.RESTRICTED.ordinal()%>">Restricted</option> <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
+             <select name="isExposed" class="select" onchange="return changeSubmitType(this)">
+             <%for(ScopeExposedType sc : ScopeExposedType.values()) {%>
+                        <option value="<%=sc.getScopeExposedType()%>"><%=sc.name() %></option>  <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
+<%--                         <option value="<%=ScopeExposedType.INTERNAL.ordinal()%>">Internal</option> NO OUTPUTENCODING No I18N --%>
+<%--                         <option value="<%=ScopeExposedType.RESTRICTED.ordinal()%>">Restricted</option> NO OUTPUTENCODING No I18N --%>
+                        <%} %>
                     </select>
         </div>
 		<div class="labelkey">Operation Type :</div>  <%--No I18N--%>
@@ -102,7 +107,23 @@
 			<div class="labelkey">DELETE:</div>  <%--No I18N--%>
 			<div class="labelvalue" style="padding:6px 0px;"><input name="delete1" class="check" type="checkbox" ></div>
 		</div>
+		<div class="scopeTypeDescON" >
 		<input type="button" class="oauthnext" value="Next" onclick="showOAuthDesc(document.addOAuth)"/>
+		</div>
+		<div class="scopeTypeDescOFF" style="display:none;">
+			<div class="accbtn Hbtn">
+		    <div class="savebtn" onclick="addOAuthScope(document.addOAuth, ''); initSelect2();">
+			<span class="btnlt"></span>
+			<span class="btnco">Add</span>  <%--No I18N--%>
+			<span class="btnrt"></span>
+		    </div>
+		    <div onclick="loadui('/ui/admin/oauthScope.jsp?t=view'); initSelect2();">
+			<span class="btnlt"></span>
+			<span class="btnco">Cancel</span>  <%--No I18N--%>
+			<span class="btnrt"></span>
+		    </div>
+		</div>
+		</div>
 		</div>
 		
 		<div class="dessOauth" style="display: none;">
@@ -163,6 +184,20 @@
 		</div>
 	    </div>
 	</form>
+    <form style="display: none" class="zform" action="<%=request.getContextPath()%>/admin/bulkupdatescope" method="post" target="uploadaction" enctype="multipart/form-data" id="bulkscopeupdate"> <%-- NO OUTPUTENCODING --%>
+	    <div class="labelmain">
+		<div class="labelkey">Input File(csv) :</div> <%-- No I18N --%>
+		<div class="labelvalue">
+		    <input type="file" name="file" id="file" class="input" required/>
+		</div>
+	    </div>
+	    <div class="accbtn Hbtn">
+		<div class="savebtn">
+		   	<input type="submit" class="edediticon" value="Update Scopes"/>
+		</div>
+	    </div>
+	    <input type="hidden" name="<%=SecurityUtil.getCSRFParamName(request)%>" value="<%=SecurityUtil.getCSRFCookie(request)%>"/> <%-- NO OUTPUTENCODING --%>
+	</form>
         <%}} else if("view".equals(type)){%>
           <%if(isIAMAdmin || isOAuthAdmin || (isIAMServiceAdmin && Util.isDevelopmentSetup())){
         	  String appname = request.getParameter("sname");
@@ -219,7 +254,8 @@
 	<div class="apikeyheader" id="headerdiv">
 	    <div class="apikeytitle" style="width:18%;">Scope</div>  <%--No I18N--%>
 	    <div class="apikeytitle" style="width:16%;">Provider</div>  <%--No I18N--%>
-	    <div class="apikeytitle" style="width:10%;">Scope Type</div>  <%--No I18N--%>
+	    <div class="apikeytitle" style="width:12%;">Scope Type</div>  <%--No I18N--%>
+	    
 	    <div class="apikeytitle">Actions</div> <%--No I18N--%>
 	</div>
         <div class="content1" id="overflowdiv">
@@ -242,8 +278,8 @@
    
                 <div class="apikey" style="width:18%;"><%=IAMEncoder.encodeHTML(scope.getScopeName())%></div>
                 <div class="apikey" style="width:16%;"><%=IAMEncoder.encodeHTML(scope.getAppName())%></div>
-                <div class="apikey" style="width:10%;"><%=scope.getScopeType() == OAuthScope.API_SCOPE ? "ApiScope" : (scope.getScopeType() == OAuthScope.OEMBED_SCOPE ? "OEmbed" : "OAuth") %></div>
-     
+                <div class="apikey" style="width:12%;"><%=scope.getScopeType() == OAuthScope.API_SCOPE ? "ApiScope" : (scope.getScopeType() == OAuthScope.OEMBED_SCOPE ? "OEmbed" : "OAuth") %></div>
+                
                 <div class="apikey apikeyactionOauth">
                  <div class="savebtn" onclick="loadui('/ui/admin/oauthScope.jsp?t=editdesc&scopeid=<%=IAMEncoder.encodeJavaScript(scope.getGroupID())%>')"> <%-- NO OUTPUTENCODING --%>
                             <span class="cbtnlt"></span>
@@ -268,9 +304,8 @@
    
                 <div class="apikey" style="width:18%;"><%=IAMEncoder.encodeHTML(scope.getScopeName())%></div>
                 <div class="apikey" style="width:16%;"><%=IAMEncoder.encodeHTML(scope.getAppName())%></div>
-                <div class="apikey" style="width:10%;"><%=scope.getScopeType() == OAuthScope.API_SCOPE ? "ApiScope" : (scope.getScopeType() == OAuthScope.OEMBED_SCOPE ? "OEmbed" : "OAuth") %></div>
-     
-                <div class="apikey apikeyactionOauth">
+                <div class="apikey" style="width:12%;"><%=(scope.getScopeType() == OAuthScope.API_SCOPE ? "ApiScope" : (scope.getScopeType() == OAuthScope.OEMBED_SCOPE ? "OEmbed" : "OAuth"))+"-"+scope.getScopeExposedType().name() %></div>
+     			<div class="apikey apikeyactionOauth">
                     <div class="Hbtn">
                         <div class="savebtn" onclick="loadui('/ui/admin/oauthScope.jsp?t=edit&scopeid=<%=scope.getGroupID()%>')"> <%-- NO OUTPUTENCODING --%>
                             <span class="cbtnlt"></span>
@@ -282,11 +317,13 @@
                             <span class="cbtnco">Delete</span> <%--No I18N--%>
                             <span class="cbtnrt"></span>
                         </div>
+                        <%if(scope.getScopeExposedType() == ScopeExposedType.EXTERNAL || scope.getScopeExposedType() == ScopeExposedType.RESTRICTED || scope.getScopeExposedType() == ScopeExposedType.SENSITIVE){ %>
                         <div class="savebtn" onclick="loadui('/ui/admin/oauthScope.jsp?t=editdesc&scopeid=<%=IAMEncoder.encodeJavaScript(scope.getGroupID())%>')"> <%-- NO OUTPUTENCODING --%>
                             <span class="cbtnlt"></span>
                             <span class="cbtnco">Edit Description</span> <%--No I18N--%>
                             <span class="cbtnrt"></span>
                         </div>
+                        <%} %>
                         <% if(scope.isGroupScope()) { %>
                         <div class="savebtn" onclick="loadupdateOAuthSubScope('/ui/admin/oauthScope.jsp?t=editSubscope&scopeid=<%=IAMEncoder.encodeJavaScript(scope.getGroupID())%>'); initSelect2();"> <%-- NO OUTPUTENCODING --%>
                             <span class="cbtnlt"></span>
@@ -348,10 +385,13 @@
 		<div class="labelvalue"><input type="text" class="input" name="desc" value="<%=IAMEncoder.encodeHTMLAttribute(scope.getDescription())%>"/></div>
 		<div class="labelkey">Scope Exposed Type :</div>  <%--No I18N--%>
 		<div class="labelvalue">
-             <select name="isExposed" class="select"  value="<%=scope.getScopeExposedType().ordinal()%>">
-                        <option value="<%=ScopeExposedType.EXTERNAL.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.EXTERNAL.ordinal()) {%>selected<%}%>>External</option>  <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
-                        <option value="<%=ScopeExposedType.INTERNAL.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.INTERNAL.ordinal()) {%>selected<%}%> >Internal</option> <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
-                        <option value="<%=ScopeExposedType.RESTRICTED.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.RESTRICTED.ordinal()) {%>selected<%}%>>Restricted</option> <%-- NO OUTPUTENCODING --%> <%--No I18N--%>
+             <select name="isExposed" class="select"  value="<%=scope.getScopeExposedType().getScopeExposedType()%>">
+               <%for(ScopeExposedType sc : ScopeExposedType.values()) {%>
+                        <option value="<%=sc.getScopeExposedType()%>" <%if(sc == scope.getScopeExposedType()){%> selected <%} %> ><%=sc.name() %></option>
+                        <%} %>
+<%--                         <option value="<%=ScopeExposedType.EXTERNAL.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.EXTERNAL.ordinal()) {%>selected<%}%>>External</option>  NO OUTPUTENCODING No I18N --%>
+<%--                         <option value="<%=ScopeExposedType.INTERNAL.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.INTERNAL.ordinal()) {%>selected<%}%> >Internal</option> NO OUTPUTENCODING No I18N --%>
+<%--                         <option value="<%=ScopeExposedType.RESTRICTED.ordinal()%>" <%if(scope.getScopeExposedType().ordinal() ==   ScopeExposedType.RESTRICTED.ordinal()) {%>selected<%}%>>Restricted</option> NO OUTPUTENCODING No I18N --%>
                     </select>
         </div>
 		<% boolean isCustom= OAuthScopeDetails.isOperationAllowed(allowedOpType, OAuthScopeOperation.CUSTOM);
@@ -481,7 +521,9 @@
         <div style="width:500px;">
          <select name="subIds" data-placeholder="Select Sub scopes" style="width:100%;" class="select2Div labelvalue" multiple tabindex="6">
           
-        <% for(Scope s : oAuthScopes) {if(s.getExposed() <= ScopeExposedType.INTERNAL.getPriority() ){%>
+        <%
+                  	for(Scope s : oAuthScopes) {if(s.getExposed() == ScopeExposedType.EXTERNAL.getScopeExposedType() ){
+                  %>
         <option value="<%=IAMEncoder.encodeHTMLAttribute(s.getScopeId())%>" <%= cuelLis.contains(s.getScopeId()) ? "selected" : ""%> ><%=IAMEncoder.encodeHTMLAttribute(s.getScope()) %></option>
 		<% } }%>
 		</select>

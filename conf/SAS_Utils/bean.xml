@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Document : bean.xml Created on : August 12, 2010, 4:40 PM Author : manikandanmg 
+	Description: Purpose of the document follows. -->
+
+<beans>
+	<!-- Every HTTP operation brought in to one transation boundary  -->
+    <Bean bean_name="CollaborationBean"
+        bean_id="Bean:bean_id:CollaborationBean"
+        module_id="SAS_Utils"
+        transaction_type="1"
+        classname="com.zoho.accounts.onprem.util.CollaborationBean">
+    </Bean>
+    <Bean bean_name="SlavePersistenceLite"
+        bean_id="Bean:bean_id:SlavePersistenceLite"
+        module_id="SAS_Utils"
+        transaction_type="1"
+        classname="com.adventnet.persistence.PersistenceBean">
+    </Bean>
+    
+    <Bean bean_id="Bean:bean_id:SlaveDataSource" bean_name="SlaveDataSource" module_id="SAS_Utils" transaction_type="3" classname="com.zoho.accounts.onprem.util.SlaveDataSourceImpl">
+        </Bean>
+    
+</beans>

@@ -4,7 +4,6 @@
 <%@page import="com.zoho.resource.Transferer.Method"%>
 <%@page import="com.zoho.resource.TransfererImpl"%>
 <%@page import="com.zoho.resource.util.RESTConstants"%>
-<%@page import="com.zoho.accounts.AccountsConstants.Header"%>
 <%@page import="com.zoho.resource.internal.LocalTransferer"%>
 <%@page import="org.apache.tomcat.jni.Local"%>
 <%@page import="com.zoho.resource.RESTRepresentation"%>

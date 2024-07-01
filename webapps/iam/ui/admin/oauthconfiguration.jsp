@@ -1,10 +1,10 @@
 <%-- $Id: $ --%>
+<%@page import="com.zoho.accounts.internal.util.AccountsInternalConst.OAuthClientPropertiesConstants"%>
 <%@page import="com.zoho.accounts.internal.oauth2.OAuth2Util"%>
 <%@page import="com.zoho.accounts.dcl.DCLUtil"%>
 <%@ include file="includes.jsp"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
 <%@page import="com.zoho.accounts.SystemResourceProto.DCLocation"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <HTML>
 <body>
 	<div class="maincontent">
@@ -37,17 +37,14 @@
 						<div class="labelkey">Sub Configuration Type :</div><%--No I18N--%>
 						<div class="labelvalue" id="subconfiglist">
 							<select name="subconfigtype" id="subconfigtype">
-								<%
-									int i = 0;
-								%>
-								<c:set var="subconfigtypes"
-									value="<%=AccountsInternalConst.OAuthClientPropertiesConstants.values()%>" /><%--No I18N--%>
-								<c:forEach items="${subconfigtypes}" var="subconfigtype">
-									<option value=<%=i%>>${subconfigtype}</option><%--No I18N--%>
-									<%
-										i++;
-									%>
-								</c:forEach>
+							<%
+								int i = 0;
+								OAuthClientPropertiesConstants[] subConfig = AccountsInternalConst.OAuthClientPropertiesConstants.values();
+								for(OAuthClientPropertiesConstants sConfig: subConfig) {%>
+									<option value=<%=i%>><%=sConfig%></option>
+							<% 
+								i++;}
+							%>
 							</select>
 						</div>
 						<div class="labelvalue" id="subconfiginput" style="display: none;">
@@ -70,7 +67,7 @@
 					</div>
 					<div id="hiddenDiv4" style="display: none;">
 						<div class="labelkey">MultiDC setups :</div><%--No I18N--%>
-						<div class="labelvalue">
+						<div class="labelvalue" style="min-height: 16px">
 							<div id="cb">
 								<%
 									String currentloc = IAMEncoder.encodeHTML(DCLUtil.getLocation());
@@ -95,10 +92,6 @@
 								%>
 							</div>
 						</div>
-						<div class="labelkey">unified secret</div><%--No I18N--%>
-						<div class="labelvalue">
-						       <input type="checkbox" class="check" name="unifiedsecret">
-						</div>
 					</div>
 					<div id="hiddenDiv5" style="display: none;">
 						<div class="labelkey">Response:</div><%--No I18N--%>
@@ -118,7 +111,7 @@
 					<div>
 						<div class="labelkey">Enter Admin Password :</div><%--No I18N--%>
 						<div class="labelvalue">
-							<input type="password" name="password" id="password" />
+							<input type="password" autocomplete="off" name="password" id="password" />
 						</div>
 					</div>
 					<div>

@@ -108,7 +108,6 @@ var customFieldData = undefined;
 						$f.append('<input type="hidden" name="tos_required" value="true">'); // No I18N
 						return;
 					}
-					alert(I18N.get("IAM.ERROR.GENERAL"));
 					throw '"' + v + '" field is not present'; // No I18N
 				}
 

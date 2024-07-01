@@ -36,13 +36,13 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 				<dl>
 					<dt><@i18n key="IAM.NEW.PASS" /></dt>
 					<dd>
-						<input type="password" name="password" autofocus maxlength="60">
+						<input type="password" autocomplete="off" name="password" autofocus maxlength="60">
 					</dd>
 				</dl>
 				<dl>
 					<dt><@i18n key="IAM.REENTER.PASSWORD" /></dt>
 					<dd>
-						<input type="password" name="cpassword" maxlength="60">
+						<input type="password" autocomplete="off" name="cpassword" maxlength="60">
 					</dd>
 				</dl>
 				<dl>

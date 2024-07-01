@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schedules>   
+    <Schedule schedule_id="Schedule:schedule_id:2" schedule_name="TokenPairCleanerJobSchedule">
+    	<Calendar unit_of_time="hours" time_of_day="16" repeat_frequency="daily"/>
+    </Schedule>  
+        
+        <TaskEngine_Task task_id="TaskEngine_Task:task_id:2" task_name="TokenPairCleanerJobTask" class_name="com.zoho.accounts.scheduler.TokenPairCleanerJob">
+                <Scheduled_Task schedule_id="Schedule:schedule_id:2">
+                        <Task_Input instance_id="Task_Input:instance_id:2"/>
+                </Scheduled_Task>
+        </TaskEngine_Task>
+     
+     <Schedule schedule_id="Schedule:schedule_id:ADUserSyncJob" schedule_name="ADUserSyncJob">
+        <Scheduled_Task audit_flag="true" retry_handler="com.adventnet.taskengine.internal.DefaultScheduleRetryHandler" task_id="TaskEngine_Task:task_id:TaskADUserSyncJob">
+            <Task_Input instance_id="Task_Input:instance_id:InstanceADUserSyncJob" pool_id="1"/>
+            <ScheduledTask_Retry retry_count="2" retry_factor="30" retry_time_period="30"/>
+        </Scheduled_Task>
+        <Periodic time_period="23" unit_of_time="hours"/>
+    </Schedule>
+    <TaskEngine_Task class_name="com.zoho.accounts.task.ADUserSyncTask" task_id="TaskEngine_Task:task_id:TaskADUserSyncJob" task_name="ADUserSync"/>
+</schedules>

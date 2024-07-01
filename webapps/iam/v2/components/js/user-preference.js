@@ -88,7 +88,7 @@ function load_Preferencedetails(Policies,Preferences)
    	}
     
     $("#dateformatid #format").uvselect({
-    	width:"220px", //No I18N
+    	"width":"220px", //No I18N
     	"dropdown-align": "right", //No I18N
     	"searchable": true, //No I18N
     	"onDropdown:select" : function(selected_option){ //No I18N
@@ -101,9 +101,21 @@ function load_Preferencedetails(Policies,Preferences)
     	}
     });
 
+	if(hasProfilePic){
+		$("#ppviewid").show();
+	}
+	else{
+		$("#noppviewid").show();
+	}
     $("#ppviewid #user_pref_photoview_permi").uvselect();
-    if(Preferences.is_photo_permission_disabled){    	
-    	$("#user_pref_photoview_permi+.uvselect").addClass("disabled_option");
+    if(Preferences.is_photo_permission_disabled){
+		if(isMobile){
+			$(".mobile_arrow_container #user_pref_photoview_permi").addClass("disabled_option");
+			$("#ppviewid .disabled_tag").insertAfter("#ppviewid .mobile_select_container");
+		}
+		else{
+			$("#user_pref_photoview_permi+.uvselect").addClass("disabled_option");	
+		}    	
     	$("#ppviewid .disabled_tag").show();
     	$("#ppviewid .disable_tooltip span").html(escapeHTML($("select#user_pref_photoview_permi option:selected").html()));
     }else{
@@ -136,8 +148,7 @@ function load_Preferencedetails(Policies,Preferences)
     	$("#tparty_access_notification").prop("disabled", true);
     }
 }
-function showuser_pref_dateformat(heading,description,button,action)
-{
+function showuser_pref_dateformat(heading,description,button,action){
 	set_popupinfo(heading,description);
 	$('#popup_user-preference_action span').html(button);
 	
@@ -161,24 +172,6 @@ function showuser_pref_dateformat(heading,description,button,action)
 		$("#user_pref_subscriptions").hide();
 	}
 	$("#pop_action").html($("#popup_user-preference_contents").html()); //load into popuop
-//	if(!isMobile){
-//		$('#pop_action #format').select2({
-//			width:"320px"		//No I18N
-//			}).on("select2:close", function (e) { 
-//				$(e.target).siblings(".select2").find(".select2-selection--single").focus();
-//		});
-//		$('#pop_action #hours_type').select2({
-//			width:"320px",//No I18N
-//			minimumResultsForSearch: Infinity
-//		});
-//		$("#format").select2({
-//			language: {
-//		        noResults: function(){
-//		            return iam_no_result_found_text;
-//		        }
-//		    }
-//		});
-//	}
 	
 	$(savedateformat).children("button").addClass("pref_disable_btn");
 	$(savedateformat).children("button").removeClass("primary_btn_check");
@@ -203,7 +196,6 @@ function showuser_pref_dateformat(heading,description,button,action)
 	});
 	closePopup(close_popupscreen,"common_popup");//No I18N
 	$("#popup_user-preference_contents form").attr("name","");
-	$("#user_pref_dateformat .select2-selection:first").focus(); 
 }
 
 function save_date_format(f)
@@ -402,31 +394,19 @@ function new_save_photoview_permi(selected) {
 	
 	payload.PUT("self","self").then(function(resp)	//No I18N
 	{
-		if(settings_data){
+		if($("#user_pref_photoview_permi").length != 0){ // user_pref_photoview_permi is the uv select present only in the settings tab so the change is in that tab
 			settings_data.UserPreferences.photo_permission = photoPermission = selected;
 		}
-		else{
+		else{ // If the photo view change made in profile tab
 			profile_data.photo_permission = photoPermission = selected;
+			closePhotoVisiabilityPopup();
 		}
 		
 		SuccessMsg(getErrorMessage(resp));
 	},
 	function(resp)
 	{
-		if($("#profile_photoview_permi").length != 0){
-			$("#profile_photoview_permi").uvselect("destroy");
-			$("#profile_photoview_permi").val(profile_data.photo_permission).uvselect({
-				"dropdown-width": "245px", //No i18N
-				"onDropdown:open" : function(dropdown){ //No I18N
-					$(dropdown).find("li:visible").each(function(ind,ele){
-					    $(ele).find("p").before("<i class='photo_perm_list_icon icon-"+$(ele).attr("data-id")+"'></i>");		//No I18N
-					});
-		    	}
-			});
-			$(".profile_photoview_permi .selectbox_overlay").after("<i id='photo_perm_icon' class='icon-"+$("#profile_photoview_permi option:selected").attr("id")+"'></i>");
-			$(".profile_photoview_permi .select_input").hide();
-		}
-		else{
+		if($("#user_pref_photoview_permi").length != 0){
 			$("#ppviewid #user_pref_photoview_permi").uvselect("destroy");
 			$("#ppviewid #user_pref_photoview_permi").val(settings_data.UserPreferences.photo_permission).uvselect();
 		}
@@ -1051,6 +1031,7 @@ function load_Linked_Accountsdetails(Policies,Linked_Accounts)
 		$("#linked_acc_box .box_info" ).after("<div id='linked_acc_exception' class='box_content_div'>"+$("#exception_tab").html()+"</div>" );
 		$("#linked_acc_exception #reload_exception").attr("onclick","reload_exception(LinkedAccounts,'linked_acc_box')");
 		$("#no_linkedaccount").addClass("hide");
+		$("#idps_slide_container").hide();
 		return;
 	}
 	
@@ -1184,7 +1165,7 @@ function thirdparty_authentication(idpProvider) {
 			form.setAttribute("id", idpProvider + "form");
 			form.setAttribute("method", "POST");
 		    form.setAttribute("action", action);
-		    form.setAttribute("target", "_blank");
+		    form.setAttribute("target", "_self");
 	    	form.appendChild(hiddenField);
 	    	document.documentElement.appendChild(form);
 	    	form.submit();
@@ -1528,15 +1509,15 @@ function show_deletepopup()
 	});
 	if(!isMobile)
 	{
-		$("#delete_acc_reason").select2({
-			minimumResultsForSearch: Infinity
+		$("#delete_acc_reason").uvselect({
+			"width" : "320px"	//No i18N
 		});
 	}
 	popup_blurHandler('6');
 	control_Enter(".blue"); //No i18N
-	$("#delete_acc_reason~.select2 .select2-selection").focus();
+	$("#delete_acc_reason~.uvselect .selectbox").focus();
 	closePopup(close_deleteaccount,"popup_deleteaccount_close");//No I18N
-	
+	showLength(de('deleteacc_cmnd'));//No I18N
 }
 
 function close_deleteaccount()

@@ -1,0 +1,10 @@
+Module=ZOHOACCOUNTS_THIRDPARTY
+SourceCoLabel=master
+BuildDate=Jun_20_2024
+BuildTime=13:14:00
+BuildLabel=ZOHOACCOUNTS_THIRDPARTY_Jun_20_2024
+build-timestamp= 1718869454
+StaticVersion=
+Current_Build_Url=https://build.zohocorp.com/zoho/zohoaccounts_thirdparty/webhost/master/Jun_20_2024
+Source_Changeset=51e95b7ffa0c1b4bcc7a17255937016b085a8499
+Build_Comment=

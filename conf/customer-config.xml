@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><extended-configurations>
-    <configuration name="ECTag" value="8b7c2e181263a2b8f32b02c4728e352853b841182939994158e69a1b402de2cfd3ff5d1e"/>
-    <configuration name="CryptTag" value="jX6GAoqOJtYbi_jF2TUH"/>
+    <configuration name="ECTag" value="a8b0b2391990102fb144ea0ca24a32be82a514ddbb28cedec42cf03e351b7c107a1d5592"/>
+    <configuration name="CryptTag" value="HIm_t04zEPJebzKmyGyO"/>
     <configuration name="mssql" value="">
-        <property name="masterkey.password" value="4c730c8d7b2661132310676e0da4a350db5f0e4c9109c3027e5820d834a9902c98d63b47"/>
-        <property name="symmetrickey.name" value="395de26390838ac2a26d495497caec9ca4b63c8dd8073ee001efe4b66e566bf9abd72d87"/>
-        <property name="certificate.subject" value="3888e3c32181ecb6b86ecc55b1e6ee3d996bcaed77d39324e149a88c897bc350eb2cd309"/>
-        <property name="certificate.name" value="d1f5fd681fcd3ad55de873d427c4ebeae8123e465527788ca031a95fe5a0e207dfb29f54"/>
+        <property name="masterkey.password" value="3feb7f878567d19e13a396ab7947c1d484da1a01f99439cdef0a4832b17e94ae6ff60a6d"/>
+        <property name="symmetrickey.name" value="a5ce39f0688e32383571cca8a5031513d0877eef5b1fe70a9e9c52248e2e275a5935fb54"/>
+        <property name="certificate.subject" value="01ba00b2c40486848abab3d1d27041c94f31c390e945e7b72fbb4cda33bd7ad88d3d5db0"/>
+        <property name="certificate.name" value="ea3fb0f2072a36d85f519a80bc27acc7b0eca3316e2ad7f3078c56676463f295e3ba8238"/>
     </configuration>
 </extended-configurations>

@@ -46,7 +46,11 @@
 	                    			</tr>
 		                          	<tr>
 		                           	 	<td style="padding:0 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
-						                        <i><@i18n key="IAM.ORG.INVITAION.EXPIRY.CONTENT" arg0="${ztpl.EXPIRY_DAYS}"/></i>
+											<#if (ztpl.EXPIRY_DAYS > 1)>
+												<i><@i18n key="IAM.ORG.INVITAION.EXPIRY.CONTENT" arg0="${ztpl.EXPIRY_DAYS}"/></i>
+											<#else>
+												<i><@i18n key="IAM.ORG.INVITAION.EXPIRY.DAY.CONTENT"/></i>
+											</#if>
 					                    </td>
 	                    			</tr>
 	                    			<#if !ztpl.is_serviceorg_invite>
@@ -118,8 +122,12 @@
 	                    			</tr>
 		                          	<tr>
 		                           	 	<td style="padding:0 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
-						                        <i><@i18n key="IAM.ORG.INVITAION.EXPIRY.CONTENT" arg0="${ztpl.EXPIRY_DAYS}"/></i>
-					                    </td>
+											<#if (ztpl.EXPIRY_DAYS > 1)>
+												<i><@i18n key="IAM.ORG.INVITAION.EXPIRY.CONTENT" arg0="${ztpl.EXPIRY_DAYS}"/></i>
+											<#else>
+												<i><@i18n key="IAM.ORG.INVITAION.EXPIRY.DAY.CONTENT"/></i>
+											</#if>
+										</td>
 	                    			</tr>
 	                    			<tr>
 					                    <td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">

@@ -4,7 +4,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.adventnet.zoho.*,com.adventnet.iam.*,com.adventnet.iam.internal.Util,java.util.regex.Pattern,com.adventnet.iam.xss.IAMEncoder,com.zoho.iam2.rest.CSPersistenceAPIImpl"%>
 <%
-if((!request.isUserInRole("IAMAdmininistrator")) && (!request.isUserInRole("IAMUser")) && (!request.isUserInRole("MarketingAdmin")) && (!request.isUserInRole("IAMOperator")) && (!request.isUserInRole("SupportAdmin")) && (!request.isUserInRole(Role.IAM_SERVICE_ADMIN)) && (!request.isUserInRole("LegalAdmin")) && (!request.isUserInRole("IAMRestViewer")) && (!request.isUserInRole("SDAdmin") && (!request.isUserInRole("OAuthAdmin")) && (!request.isUserInRole("IAMSupportAdmin")) && (!request.isUserInRole("IAMCacheAdmin")) && (!request.isUserInRole("IAMSystemAdmin")) && (!request.isUserInRole("IAMTemplateAdmin")) && (!request.isUserInRole("ChangeHistoryViewer")) && (!request.isUserInRole("IAMPrivilegeView")))) {
+if((!request.isUserInRole("IAMAdmininistrator")) && (!request.isUserInRole("IAMUser")) && (!request.isUserInRole("IAMOperator")) && (!request.isUserInRole("SupportAdmin")) && (!request.isUserInRole(Role.IAM_SERVICE_ADMIN)) && (!request.isUserInRole("IAMRestViewer")) && (!request.isUserInRole("SDAdmin") && (!request.isUserInRole("OAuthAdmin")) && (!request.isUserInRole("IAMSupportAdmin")) && (!request.isUserInRole("IAMCacheAdmin")) && (!request.isUserInRole("IAMSystemAdmin")) && (!request.isUserInRole("IAMTemplateAdmin")) && (!request.isUserInRole("ChangeHistoryViewer")))) {
     response.sendError(401, "Permission Denied");
     return;
 }

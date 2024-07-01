@@ -1,4 +1,5 @@
 <%-- // $Id: $ --%>
+<%@page import="com.zoho.accounts.internal.util.ClientPortalUtil"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
 <%@page import="com.zoho.accounts.actions.oauth2.OAuthUserAction"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
@@ -98,6 +99,16 @@ static final Logger LOGGER = Logger.getLogger("oauthErrorPage_jsp");//No I18N
 		errorTitle = Util.getI18NMsg(request, "IAM.OAUTH.UNCONFIRMED.USER");//No I18N
 		errorDescryption = Util.getI18NMsg(request, "IAM.OAUTH.UNCONFIRMED.USER.DESC");//No I18N
 		showVerifyNowOption = true;
+		break;
+	}
+	case incompatable_scope:{
+		errorTitle = Util.getI18NMsg(request,"IAM.OAUTH.INCOMPATABLE.SCOPE");//No I18N
+		errorDescryption = Util.getI18NMsg(request, "IAM.OAUTH.INCOMPATABLE.SCOPE.DESC");//No I18N
+		break;
+	}
+	case invalid_user : {
+		errorTitle = Util.getI18NMsg(request,"IAM.OAUTH.ADDEXTRASCOPE.INVALID.USER.TITLE");//No I18N
+		errorDescryption = Util.getI18NMsg(request, "IAM.OAUTH.ADDEXTRASCOPE.INVALID.USER.DESC");//No I18N
 		break;
 	}
 	default: {
@@ -273,6 +284,13 @@ function redirectTo(url){
 }
 </script>
 <body>
+	<% if(ClientPortalUtil.isClientServer()) { %>
+	<div class="container">
+		<div class="error_img raodblock"></div>
+		<div class="heading" id="errorTitle"><%=errorTitle%></div>
+		<div class="discrption" id="errorDescription"><%=errorDescryption%></div>
+	</div>
+	<% } else { %>
 	<div class="container">
 		<div class="zoho_logo"></div>
 		<div class="error_img raodblock"></div>
@@ -291,5 +309,6 @@ function redirectTo(url){
 		}
 		%>
 	</div>
+	<% } %>
 </body>
 </html>

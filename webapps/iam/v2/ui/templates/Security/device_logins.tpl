@@ -15,7 +15,7 @@
 		"linux": "",
 		"googlechrome":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
 		"safari":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
-		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
+		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
 		"microsoftedge":'<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
 		"internetexplorer":"",
 		"opera": '<span class="path1"></span><span class="path2"></span>',

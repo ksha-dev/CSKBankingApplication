@@ -28,7 +28,7 @@
 				</allowed-values>
 			</column>
 			<column name="DOB">
-				<data-type>CTEXT_CEK</data-type>
+				<data-type>CTEXT</data-type>
 				<max-size>100</max-size>
 			</column>
 			<column name="GENDER">
@@ -45,12 +45,12 @@
 				</allowed-values>
 			</column>
 			<column name="PHONE">
-				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<data-type>SEARCHABLE_CTEXT</data-type>
 				<max-size>100</max-size>
 				<nullable>false</nullable>
 			</column>
 			<column name="EMAIL">
-				<data-type>SEARCHABLE_CTEXT_CEK</data-type>
+				<data-type>SEARCHABLE_CTEXT</data-type>
 				<max-size>100</max-size>
 				<nullable>false</nullable>
 			</column>

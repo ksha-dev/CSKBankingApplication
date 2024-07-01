@@ -11,6 +11,7 @@
 <%@page import="com.zoho.accounts.internal.oauth2.OAuthTokenOrgInfo"%>
 <%@page import="com.zoho.accounts.internal.oauth2.OAuthScopeDetails"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@ include file="../../../static/includes.jspf" %>
 <%
 boolean is_ajax = request.getAttribute("is_ajax") != null ? (Boolean) request.getAttribute("is_ajax") : false;
@@ -48,11 +49,11 @@ String clientPOrtalZAID = IAMUtil.getCurrentClientPortal();
 <title><%=I18NUtil.getMessage("IAM.ZOHO.ACCOUNTS")%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/product-icon.css")%>" type="text/css" rel="stylesheet"  /><%-- NO OUTPUTENCODING --%>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/product-icon.css") %><%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/jquery-3.6.0.min.js") %> <%-- NO OUTPUTENCODING --%>
 
 <%if(isCDNEnabled){%>
-<link href="<%=StaticContentLoader.getStaticFilePath("/css/oauth.css")%>" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/css/oauth.css") %> <%-- NO OUTPUTENCODING --%>
 <%}else{ %>
 <link href="<%=cssurl%>/oauth.css" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
 <%}%>
@@ -785,9 +786,9 @@ function showmsg(msg)
              $( "#servicelogo_"+i ).addClass(prod_icon);
              $( "#servicehead_"+i).html(scopeOrgInfo[prod].DisplayName);
              <%if(!isInternal){%>
-         	 for(var j=0;j<scopeOrgInfo[prod].scopeName.length;j++){
-				$( "#scopes_"+i).append('<div><input type="checkbox" name="sel_scopes" class="checkbox_check" <%= !isScopeSelectionAllowed ? "disabled" : ""%> checked value="'+scopeOrgInfo[prod].scopeName[j]+'">' +scopeOrgInfo[prod].Description[j]+'</div>');
-			  }
+             for(var j=0;j<scopeOrgInfo[prod].scopeName.length;j++){
+            	 $( "#scopes_"+i).append('<div><input type="checkbox" name="sel_scopes" class="checkbox_check" <%= !isScopeSelectionAllowed ? "disabled" : ""%> checked value="'+scopeOrgInfo[prod].scopeName[j]+'">' +scopeOrgInfo[prod].Description[j]+'</div>');
+             }
          	 <%}%>
          	 if(fullList.hasOwnProperty(prod)){
          		isorg = true;
@@ -1085,5 +1086,18 @@ function addImplicitGrant(ischecked){
 		isImplicitGranted = false;
 	}
 }
+
+function escapeHTML(value) 
+{
+	if(value) {
+		value = value.split("<").join("&lt;");
+		value = value.split(">").join("&gt;");
+		value = value.split("\"").join("&quot;");	//No I18N
+		value = value.split("'").join("&#x27;");
+		value = value.split("/").join("&#x2F;");
+    }
+    return value;
+}
+
 </script>
 </html>

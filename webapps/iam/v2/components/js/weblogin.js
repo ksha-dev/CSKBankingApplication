@@ -11,6 +11,7 @@ var qrstate = 0;
 document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && qrstate==1) {
         closeQRview();
+        statechange();
     }
 });
 var I18N = {
@@ -38,6 +39,7 @@ var I18N = {
 function isVerifiedFromDevice() {
 	if (isWmsRegistered === false && isValid(wmsid) && wmsid != "undefined") {
 		try {
+			WmsLite.setClientSRIValues(wmsSRIValues);
 			WmsLite.setNoDomainChange();
 			WmsLite.registerAnnon('AC', wmsid); // No I18N
 			isWmsRegistered = true;
@@ -120,6 +122,7 @@ function showReload() {
 	$(".qr-container-dom").css("opacity","0.2");
 	$(".expand_qr span").css("opacity","0.4").css("cursor","default");
 	$(".qr_act_view").attr("onclick","");
+	$(".expand_qr").hide();
 	closeQRview();
 }
 function generateQrcode(){
@@ -147,6 +150,8 @@ function generateQrcode(){
     	if($('.smartsign-initial-loading').is(':visible')){
     		$("#qr_container_dom").css("opacity","1");
     		$('.smartsign-initial-loading').css('display','none');
+    		$(".qr_act_view").attr("onclick","expandQRview()");
+    		$(".expand_qr").css("display","flex");
     		if(qrstate == 1){expandQRview();}
     	}
      }
@@ -210,7 +215,7 @@ function RestrictSigninRedirect(){
 	return false;
 }
 function handleRestricSignin(ErrorCode,Localized_msg){
-	if(qrstate = 1){
+	if(qrstate == 1){
 		$(".container_expand").hide();
 		$(".greylayer").css("display","none");
 	}
@@ -225,6 +230,7 @@ function handleRestricSignin(ErrorCode,Localized_msg){
 	return false;
 }
 function expandQRview(){
+	qrstate = 1;
 	$(".greylayer").css("display","block");
 	$(".container_expand").css("opacity","1").css("z-index","2");
 	$(".container_expand").css("transform","scale(1.6)").css("transition","transform 0.3s ease-in-out");//No I18N
@@ -232,7 +238,6 @@ function expandQRview(){
 	$(".cancel_qr span").css("transform","scale(1)").css("transition","0.3s ease-in-out");//No I18N
 	$(".expand_qr span").css("transform","scale(0.65)").css("transition","0.3s ease-in-out");//No I18N
 	if(!isDarkMode){$(".signin_container").css("border","1px solid #AFAFAF");}
-	qrstate = 1;
 }
 function closeQRview(){
 	$(".greylayer").css("display","none");
@@ -243,5 +248,7 @@ function closeQRview(){
 	$(".cancel_qr").css("transform","scale(1)").css("transition","transform 0.3s ease-in-out");//No I18N
 	if(!isDarkMode){$(".signin_container").css("border","1px solid #DBDBDB");}
 	if(localStorage && localStorage.getItem("isExpandedQR")){localStorage.removeItem("isExpandedQR")}
+}
+function statechange(){
 	qrstate = 0;
 }

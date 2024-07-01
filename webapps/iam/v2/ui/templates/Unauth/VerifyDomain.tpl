@@ -7,9 +7,9 @@
     
     <meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
    <title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
-	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-    <link href="${SCL.getStaticFilePath("/v2/components/css/verifyDomainAnnouncementStyle.css")}" rel="stylesheet"type="text/css">
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
+	<@resource path="/v2/components/css/${customized_lang_font}" />
+    <@resource path="/v2/components/css/verifyDomainAnnouncementStyle.css" />
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
     <script>
     var contextpath = "${za.contextpath}";
 

@@ -4,7 +4,6 @@
 <%@ include file="includes.jsp"%> 
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
 <%@page import="com.zoho.accounts.SystemResourceProto.DCLocation"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <HTML>     
 <body>
 <div class="maincontent">
@@ -37,7 +36,7 @@
 				</div>
 				<div class="labelkey">Enter Admin Password : </div>	<%--No I18N--%>
 				<div class="labelvalue">
-					<input type="password" name="password" id="password"/>
+					<input type="password" autocomplete="off" name="password" id="password"/>
 				</div>
 			    </div>		
 			    <div>

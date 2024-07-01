@@ -11,6 +11,7 @@
 <%@page import="com.zoho.accounts.internal.oauth2.OAuthTokenOrgInfo"%>
 <%@page import="com.zoho.accounts.internal.oauth2.OAuthScopeDetails"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@ include file="../../../static/includes.jspf" %>
 <%
 boolean is_ajax = request.getAttribute("is_ajax") != null ? (Boolean) request.getAttribute("is_ajax") : false;
@@ -41,21 +42,225 @@ int subpromptcount=0;
 int overallcount=0;
 String clientPOrtalZAID = IAMUtil.getCurrentClientPortal();
 boolean isArattai = Util.isArattai();
+boolean showPublished = request.getAttribute("publishedByZoho") !=null ? (Boolean)request.getAttribute("publishedByZoho") : false;
 %>
 <html>
 <head>
 <title><%=I18NUtil.getMessage("IAM.ZOHO.ACCOUNTS")%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" type="text/css" rel="stylesheet"  />
-<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/product-icon.css")%>" type="text/css" rel="stylesheet"  /><%-- NO OUTPUTENCODING --%>
-<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")%>" type="text/javascript"></script> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %>
+<%= HtmlResourceIncluder.addResource("/v2/components/css/product-icon.css") %><%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/jquery-3.6.0.min.js") %> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/tippy.all.min.js") %> <%-- NO OUTPUTENCODING --%>
 
 <%if(isCDNEnabled){%>
-<link href="<%=StaticContentLoader.getStaticFilePath("/css/oauth.css")%>" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
+<%= HtmlResourceIncluder.addResource("/css/oauth.css") %> <%-- NO OUTPUTENCODING --%>
 <%}else{ %>
 <link href="<%=cssurl%>/oauth.css" type="text/css" rel="stylesheet"  /> <%-- NO OUTPUTENCODING --%>
 <%}%>
+<style>
+body{
+	position:relative;
+}
+.selectedbox_div{
+	margin:24px 0px;
+}
+.sensitiveIndicator:before{
+	width:6px;
+	height:6px;
+	background-color:#FF4E00 !important;
+	vertical-align:middle;
+}
+
+.scopes ul li:before{
+	width:6px;
+	height:6px;
+}
+
+.head_text{
+	display:flex;
+	line-height:28px;
+}
+
+.head_text span{
+	vertical-align:middle;
+}
+
+.batch{
+	
+	background-color:#F7F7F7;
+	border: 1px solid #F2F2F2;
+	border-radius: 14px;
+	padding:6px 8px;
+	font-size:14px;
+	margin-left:12px;
+	line-height:14px;
+	color:#333333;
+}
+
+.batch .product-icon-default{
+	font-size: 16px;
+    display: inline-block !important;
+    margin-right:4px;
+}
+
+.question-mark{
+	margin-left:8px;
+}
+
+.service-icon{
+	padding: 6px;
+    border-radius: 6px;
+    font-size: 24px;
+    background-color: #00000008;
+    margin-right:10px;
+}
+
+.servicedetails{
+	line-height:36px;
+}
+
+.servicehead{
+	margin-top:0px;
+	padding:0px;
+	font-weight:400;
+	position:relative;
+}
+
+.scopes{
+	padding:0px;
+}
+
+.scopes ul{
+	margin-top:20px;
+	margin-bottom:24px;
+}
+
+.sensitive{
+	margin-left:8px;
+	color:#FF4E00;
+	font-size:12px;
+	line-height:14px;
+	font-weight:500;
+}
+
+.sensitive .question-mark,.service-info.question-mark{
+	vertical-align:middle;
+	margin-left:4px;
+}
+
+.sensitive .question-mark{
+	fill:#FF4E00;
+}
+
+.scopes ul li{
+	margin-bottom:12px;
+	line-height:16px;
+}
+
+.showselected{
+	border:0px;
+}
+
+.showselected:hover{
+	border:0px;
+}
+
+.normal_text{
+	opacity:0.8;
+}
+
+.btn , .cancel{
+	margin-right:20px;
+}
+
+.tippy-popper{
+	pointer-events:unset;
+}
+
+.tippy-tooltip.hover-theme{
+	background-color:#FFFFFF;
+	padding:16px 20px;
+	border:1px solid #F0F0F0;
+	box-shadow:0px 0px 10px #00000029;
+	border-radius:6px;
+	background-color:#FFFFFF;
+	max-width:256px;
+	min-width:100px;
+}
+
+.tippy-tooltip.hover-theme .tippy-arrow{
+	border-color: #fff;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+.hover-theme .tippy-content{
+	color:#000;
+	font-size:12px;
+	line-height:18px;
+	opacity:0.8;
+	font-weight:400;
+}
+
+.header_desc{
+	font-size:16px;
+	line-height:20px;
+	margin-top:12px;
+	padding:0px;
+}
+
+.accept{
+	font-size:14px;
+	line-height:16px;
+	padding:0px;
+}
+
+.question-mark svg{
+	opacity:1 !important;
+	padding:0px;
+}
+
+.question-mark:hover svg{
+	opacity:1 !important; 
+}
+
+#Approve_Reject button{
+	margin-top:24px;
+}
+
+
+@media only screen and (max-width: 420px){
+	.head_text{
+		display:block;
+	}
+	.logo {
+        height: 40px;
+        width: auto;
+        margin:unset;
+    }
+    .batch{
+    	display: inline-block;
+    }
+    .logout-wrapper{
+    	position:absolute !important;
+    	top: 20px !important;
+        right: 10px !important;
+    }
+    .service-name{
+    	display:block;
+    }
+    .batch{
+    	margin-top:8px;
+    	margin-left:0px;
+    }
+    #Approve_Reject button{
+		margin-top:15px;
+	}
+}
+
+</style>
 </head>
 <script>
 var fullList = {};
@@ -73,34 +278,8 @@ var countmap = [];
             <span class="top_msg"></span>
         </div>
         </div>
-        <%if(!isMobile) {%>
-		    <div class="profile">
-                <span class="profile_pic"></span>
-                <span class="profile_name"><%=IAMEncoder.encodeHTML(user.getDisplayName())%></span>
-                <span class="hide logout" id="log_out"><%=I18NUtil.getMessage("IAM.SIGN.OUT")%></span>
-            </div>
-		
-		<%}
-        else
-        {
-        %>	
-        	<div class="mob_profile">
-            	<span class="profile_pic" style="margin-top: 13px;"></span>
-            </div>
-            <div class="mob_logout">
-            	<div class="exit_profile"><span class="close_X"></span></div>
-            	
-            	<div class="profile_info">
-            		<span class="profile_pic_enlarge"></span>
-            		<div class="white mob_name"><%=IAMEncoder.encodeHTML(user.getDisplayName())%></div>
-            		<div class="white mob_emailid"><%=IAMEncoder.encodeHTML(user.getPrimaryEmail())%></div>
-        		</div>
-        		<button class="btn log_out" id="log_out"><%=I18NUtil.getMessage("IAM.SIGN.OUT")%></button>
-        	</div>
-       
-        <%	
-        }
-        }%>
+        <%@include file="../../../ui/unauth/announcement-logout.jspf"%>
+     <%}%>      
 		<div class="screen"></div>
 			<div class="container">
             
@@ -117,7 +296,23 @@ var countmap = [];
       				if(isDirectAccess) 
       				{
       %>
-					 <div class="head_text"><%=IAMEncoder.encodeHTML(clientName)%></div>
+					 <div class="head_text">
+					 	<span class="service-name"><%=IAMEncoder.encodeHTML(clientName)%></span>
+					 	<%if(showPublished){ %>
+						 	<span class="batch"> 
+						 		<span class="product-icon-default">
+						 			<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span>
+						 		</span> 
+						 		<span><%=I18NUtil.getMessage("IAM.OAUTH.PUSLISHED.BY")%></span>
+						 		<span class="question-mark">
+						 			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"> <%--No I18N--%>
+	 									<path id="questionmark" d="M0,7a7,7,0,1,1,7,7H7A7,7,0,0,1,0,7ZM1.225,7A5.775,5.775,0,1,0,7,1.225H7A5.775,5.775,0,0,0,1.225,7h0Zm5.156,3.85a.629.629,0,1,1,.632.642h0a.638.638,0,0,1-.629-.638s0,0,0-.007h0Zm.35-2.034a.679.679,0,0,1-.173-.826l0,0a2.275,2.275,0,0,1,.617-.861l0,0A1.9,1.9,0,0,1,7.6,6.867l.012,0A1.664,1.664,0,0,0,8.618,5.153V5.16a1.588,1.588,0,0,0-3-.514l0,.009a2.209,2.209,0,0,0-.2.741V5.4a.677.677,0,0,1-.276.457h0V5.87l-.009.006a.61.61,0,0,1-.752-.089l-.006-.006a.64.64,0,0,1-.19-.456q0-.009,0-.018h0A2.85,2.85,0,0,1,5.017,3.32h0A2.815,2.815,0,0,1,7,2.507a2.856,2.856,0,0,1,.287.014H7.275a2.862,2.862,0,0,1,1.808.891v0a2.974,2.974,0,0,1,.521,3.015l.007-.02A3.3,3.3,0,0,1,8.8,7.537l0,0a2.065,2.065,0,0,1-.294.216l-.009.005a5.746,5.746,0,0,0-.531.353L7.976,8.1a1.135,1.135,0,0,0-.3.4l0,.007a.653.653,0,0,1-.182.271h0a.584.584,0,0,1-.378.141h0a.784.784,0,0,1-.381-.108l0,0Z" fill="rgba(0,0,0,0.32)"/> <%--No I18N--%>
+									</svg>	<%--No I18N--%>
+						 		</span>
+						 		<span class="batch-content" style="display:none"><%=I18NUtil.getMessage("IAM.OAUTH.ZOHO.BATCH")%></span>
+						 	</span>
+						 <%} %>
+					 </div>
 	  <%			} 
       				else 
       				{
@@ -133,7 +328,7 @@ var countmap = [];
 	  			 <%if(customoauth!=null && customoauth.has("extraData")){ %>
 	  			 <div class="normal_text"><%=customoauth.get("extraData") %></div>
 	  			 <% } else { %>
-		           <div class="normal_text">
+		           <div class="normal_text header_desc">
 						<%=!isInternal ? I18NUtil.getMessage("IAM.DEVICEOAUTH.ACCEPT.DESCRIPTION.NOTES", IAMEncoder.encodeHTML(clientName)) : I18NUtil.getMessage("IAM.INTERNAL.OAUTH.ACCEPT.DESCRIPTION.NOTES", IAMEncoder.encodeHTML(clientName))%>
 		           </div>
 		           <% } %>
@@ -274,7 +469,7 @@ var countmap = [];
 								<button class="cancel" onclick="submitRejectForm('true')" style="background: #e3e3e3;"><%=I18NUtil.getMessage("IAM.BACK.TO.APP")%></button>
 							<%}else{
 							%>
-							<div class="normal_text">
+							<div class="normal_text accept">
 									<%=I18NUtil.getMessage("IAM.ACCEPT.APPROVAL.QUERY", IAMEncoder.encodeHTML(clientName))%>
 	   						</div>
 	   							<%if(grantType){ %>
@@ -310,7 +505,7 @@ var countmap = [];
 		    <br/>
 		    </div>
 
-		  
+		  	<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" class="questionSvg hide"><path id="questionmark" d="M0,7a7,7,0,1,1,7,7H7A7,7,0,0,1,0,7ZM1.225,7A5.775,5.775,0,1,0,7,1.225H7A5.775,5.775,0,0,0,1.225,7h0Zm5.156,3.85a.629.629,0,1,1,.632.642h0a.638.638,0,0,1-.629-.638s0,0,0-.007h0Zm.35-2.034a.679.679,0,0,1-.173-.826l0,0a2.275,2.275,0,0,1,.617-.861l0,0A1.9,1.9,0,0,1,7.6,6.867l.012,0A1.664,1.664,0,0,0,8.618,5.153V5.16a1.588,1.588,0,0,0-3-.514l0,.009a2.209,2.209,0,0,0-.2.741V5.4a.677.677,0,0,1-.276.457h0V5.87l-.009.006a.61.61,0,0,1-.752-.089l-.006-.006a.64.64,0,0,1-.19-.456q0-.009,0-.018h0A2.85,2.85,0,0,1,5.017,3.32h0A2.815,2.815,0,0,1,7,2.507a2.856,2.856,0,0,1,.287.014H7.275a2.862,2.862,0,0,1,1.808.891v0a2.974,2.974,0,0,1,.521,3.015l.007-.02A3.3,3.3,0,0,1,8.8,7.537l0,0a2.065,2.065,0,0,1-.294.216l-.009.005a5.746,5.746,0,0,0-.531.353L7.976,8.1a1.135,1.135,0,0,0-.3.4l0,.007a.653.653,0,0,1-.182.271h0a.584.584,0,0,1-.378.141h0a.784.784,0,0,1-.381-.108l0,0Z" fill="rgba(0,0,0,0.32)"/></svg>    <%--No I18N--%>
 		  
             <footer id="footer">
 				<div style="font-size:14px;text-align:center;padding:5px 0px;">
@@ -335,37 +530,27 @@ var countmap = [];
         var customoauthAppData = {};
         var customoauth = <%=customoauth%>;
         var scopeOrgInfo = <%=ScopeandOrgInfo%>;
+           
 		$(function() 
 		{	
 			$('body').css("overflow-y","hidden"); //No I18N
-			servnotConfigured = <%=new JSONArray(servicesWithNoOrgs)%>;<%-- NO OUTPUTENCODING --%>
-			$(".profile_pic").css({"background":'url("<%=cPath%>/file?fs=thumb&ID=<%=IAMEncoder.encodeHTML(user.getZuid())%>")no-repeat transparent 0px 0px', "background-size":"100%"});   <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
-			<%if(isMobile) 
-			{%>
-				$(".profile_pic_enlarge").css({"background":'url("<%=cPath%>/file?fs=thumb&ID=<%=IAMEncoder.encodeHTML(user.getZuid())%>")no-repeat transparent 0px 0px', "background-size":"100%"});   <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
-			<%}
-			if(subpromptcount>0){
-				%>
+			servnotConfigured = <%=new JSONArray(servicesWithNoOrgs)%>;<%-- NO OUTPUTENCODING --%>	
+			<%if(subpromptcount>0){%>
 				$('.screen').css("display","block"); //No I18N
 				$(".modal").css("display","block"); //No I18N
 	    		$("#display_prodct_1").css("display","block"); //No I18N
 	            $("#1_prod_name").addClass("highlight");
 	            $("#back_1").hide();
 	            $("#next_"+num_of_prod).html("Submit"); //No I18N
-	            <%
-            }
-			else{
-			%>
-			$('.screen').hide();
-			$(".modal").hide();
-            $('.selectedbox_div').css("display","block"); //NO I18N
-            $('body').css("overflow-y","scroll"); //No I18N
-			$('body').css("height","100%");  //No I18N
-			$('html').css("overflow","auto");  //No I18N
-			display_selected();
-			<%
-			}
-			%>
+	        <%}else{%>
+				$('.screen').hide();
+				$(".modal").hide();
+	            $('.selectedbox_div').css("display","block"); //NO I18N
+	            $('body').css("overflow-y","scroll"); //No I18N
+				$('body').css("height","100%");  //No I18N
+				$('html').css("overflow","auto");  //No I18N
+				display_selected();
+			<%}%>
             
 			
             var offset= $("#height").outerHeight()-165;// 20 for footer and 120for top
@@ -381,26 +566,8 @@ var countmap = [];
             $("#close_btn").click(function()
             {
                 close_modal();
-            });
-            $("#log_out").click(function(){
-            	<% if(isClientPortal) {
-            	%>
-              		window.parent.location.href='<%=cPath%>'+'/accounts/logout?client_portal=true&zaid='+'<%=accZaid%>'+'&serviceurl='+'<%=IAMEncoder.encodeURL(reqOriginUrl+"?"+queryParams)%>';
-				<% } else { %>
-						var logoutUrl = '<%=IAMUtil.getLogoutURL(com.zoho.accounts.internal.util.Util.getAppName(request.getParameter("servicename")), reqOriginUrl + "?" + queryParams)%>';
-            			window.parent.location.href = logoutUrl;
-            	<% } %>
-
-            });
-            $('.profile_pic').click(function(){
-            	
-            	$('.mob_logout').show();
-            });
-            
-            $('.exit_profile').click(function(){
-            	$('.mob_logout').hide();
             });	
-		
+            tippy(".batch .question-mark",{animation: 'scale',duration:200,arrow:true,html:".batch-content",theme:"hover",maxWidth:"280px",placement:"bottom",appendTo:document.querySelector(" .batch .question-mark")});//no i18n
 		});
 		function switchradio(element,prod,count,overallcount)
 		{
@@ -720,9 +887,21 @@ function showmsg(msg)
   				$( "#selectedbox_div" ).addClass('selectedbox_arattai');
              <% } %>
              <%if(!isInternal){%>
-         	 for(var j=0;j<scopeOrgInfo[prod].Description.length;j++){
-				$( "#scopes_"+i+" ul" ).append(scopeOrgInfo[prod].Description[j]);
-			  }
+             if(scopeOrgInfo[prod].Default_Description){
+            		$(".showselected:last-child").find(".servicehead").append("<span class='service-info question-mark'></span><span class='service-info-desc hide'>" +    escapeHTML(scopeOrgInfo[prod].Default_Description) + "</span>");         		
+            		$(".showselected:last-child").find(".question-mark").append($(".questionSvg").clone(true).attr("class",''));//no i18n
+            		tippy(".showselected:last-child .service-info",{animation: 'scale',duration:200,arrow:true,html:".service-info-desc",theme:"hover",maxWidth:"280px",placement:"bottom",appendTo:document.querySelector(".showselected:last-child .service-info")});//no i18n
+             }
+         	 for(var j=0;j<scopeOrgInfo[prod].Scopes.length;j++){
+				$( "#scopes_"+i+" ul" ).append( "<li>" +  escapeHTML(scopeOrgInfo[prod].Scopes[j].Description) + "</li>");
+				if(scopeOrgInfo[prod].Scopes[j].s_e_t == 4 || scopeOrgInfo[prod].Scopes[j].s_e_t == 5){
+					$( "#scopes_"+i+" ul li:last-child" ).append("<span class='sensitive'>"  + "<%=I18NUtil.getMessage("IAM.OAUTH.SENSITIVE")%>" + "<span class='question-mark'></span></span>").addClass("sensitiveIndicator");
+					$( "#scopes_"+i+" ul li:last-child").append("<span class='sensitive-content hide'>" + "<%=I18NUtil.getMessage("IAM.OAUTH.SENSITIVE.DESC")%>" + "</span>")
+					$( "#scopes_"+i+" li:last-child .question-mark").append($(".questionSvg").clone(true).attr("class",''));//no i18n
+					$( "#scopes_"+i+" svg path").attr("fill","#FF4E00");//no i18n
+					tippy("#scopes_"+i +" .question-mark",{animation: 'scale',duration:200,arrow:true,html: "#scopes_"+i +" .sensitive-content",theme:"hover",maxWidth:"280px",placement:"bottom",appendTo:document.querySelector("#scopes_"+i +" .question-mark")});//no i18n
+				}
+				}
          	 <%}%>
          	 if(fullList.hasOwnProperty(prod)){
          		isorg = true;
@@ -1031,5 +1210,18 @@ function addImplicitGrant(ischecked){
 		isImplicitGranted = false;
 	}
 }
+
+function escapeHTML(value) 
+{
+	if(value) {
+		value = value.split("<").join("&lt;");
+		value = value.split(">").join("&gt;");
+		value = value.split("\"").join("&quot;");	//No I18N
+		value = value.split("'").join("&#x27;");
+		value = value.split("/").join("&#x2F;");
+    }
+    return value;
+}
+
 </script>
 </html>

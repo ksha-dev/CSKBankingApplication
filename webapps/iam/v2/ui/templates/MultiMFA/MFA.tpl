@@ -23,6 +23,11 @@
 			
 			</div>
 		</div>
+		<#if (showPFAMode)>
+		<div class="pfa_" onclick="clicked_tab('multiTFA', 'pfamodes')">
+			<#include "${location}/MultiMFA/PFA-modes.tpl">
+		</div>
+		</#if>
 		<div class="tfa_settings_sapce" onclick="clicked_tab('multiTFA', 'modes')">
 			<#include "${location}/MultiMFA/MFA-modes.tpl">
 		</div>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Referred from antisamy-zoho-myspace-1.4.4.xml  and customized allowed whitelisted @ character-->
+<anti-samy-rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="antisamy.xsd">
+        <include href="antisamy-common-rules.xml"/>
+        <include href="antisamy-css2-policy.xml"/>
+        <include href="antisamy-html4-policy.xml"/>
+        <url-validator>
+                <scheme name="relative">
+                        <pathinfo allowed-values="alpha|digit|-|.|_|/|;|%|=|@|{|}" />
+                </scheme>
+        </url-validator>
+        <tag-rules>
+			  <tag name="form" remove="true"/>
+        </tag-rules>
+</anti-samy-rules>

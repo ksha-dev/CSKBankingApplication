@@ -3,10 +3,31 @@
 			<div class="popup_head center_text"><@i18n key="IAM.GROUP.EDIT.HEAD" /></div>
 			
 			<div class="close_btn centre_cross" onclick="close_edit_grp_popup();"></div>
+			<div class="group_edit_info_basic">
+			<div class="group_dp_parent">
+				<div class="group_dp icon-camera" id="edit_grp_dp" >
+					<div class="bg_blur_grp"></div>
+					<img onerror="setNoImgClass(this);setDefault_dp(this)" onload="fitPicture(this)" class="profile_picture">
+				</div>
+				<div class="drop-down-container hide">
+						<span class="drop-down-arrow" ></span>
+						<div class="drop-down">
+							<div class="drop-down-item upload-group-photo">
+								<span class="icon-Upload-new"></span>
+								<div class="drop-down-text"><@i18n key="IAM.UPLOAD.NEW"/></div>
+							</div>
+							<div class="drop-down-item view-group-photo">
+								<span class="icon-expand_picture"></span>
+								<div class="drop-down-text"><@i18n key="IAM.PHOTO.EXPAND.PICTURE"/></div>
+							</div>
+							<div class="drop-down-item delete-group-photo">
+								<span class="icon-Remove"></span>
+								<div class="drop-down-text"><@i18n key="IAM.REMOVE"/></div>
+							</div>
+						</div>
+				</div>
+			</div>
 			
-			<div class="group_dp icon-camera" id="edit_grp_dp" >
-				<div class="bg_blur_grp"></div>
-				<img onerror="setDefault_dp(this)" class="profile_picture"></img>
 			</div>
 			
             <div class="grp_dp_edit_screen"></div>   

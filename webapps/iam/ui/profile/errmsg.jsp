@@ -186,11 +186,6 @@ String supportEmailId = Util.getSupportEmailId();
     var err_tfa_bkp_email_success='<%=Util.getI18NMsg(request, "IAM.TFA.BKP.EMAIL.SUCCESS")%>';<%--No I18N--%>
     var err_tfa_remote_ip_lock='<%=Util.getI18NMsg(request, "IAM.MANY.ATTEMPTS")%>';<%--No I18N--%>
     var err_blocked_domain='<%=Util.getI18NMsg(request, "IAM.TFA.BKP.EMAIL.BLOCKED.DOMAIN")%>';<%--No I18N--%>
-    var err_select_authtoken_todelete = '<%=Util.getI18NMsg(request, "IAM.ACTIVETOKEN.SELECT.TOKEN")%>'; <%--No I18N--%>
-    var authtoken_revoke_all_alert_msg = '<%=Util.getI18NMsg(request, "IAM.ACTIVETOKEN.REVOKE.ALL.ALERT.MSG")%>'; <%-- No I18N --%>
-    var err_authtoken_invalid_token_specified = '<%=Util.getI18NMsg(request, "IAM.ACTIVETOKENS.INVALIDTOKEN.SPECIFY")%>'; <%-- No I18N --%>
-    var err_authtokens_removed_success = '<%=Util.getI18NMsg(request, "IAM.ACTIVETOKENS.REMOVED_SUCCESS")%>'; <%-- No I18N --%>
-    var err_authtokens_removal_process = '<%=Util.getI18NMsg(request, "IAM.ACTIVETOKENS.REMOVAL.PROCESSING")%>'; <%-- No I18N --%>
     var err_envalid_user_fname = '<%=Util.getI18NMsg(request, "IAM.ERROR.FNAME.INVALID.CHARS")%>'; <%-- No I18N --%>
     var err_envalid_user_dname = '<%=Util.getI18NMsg(request, "IAM.ERROR.DISPLAYNAME.INVALID.CHARS")%>'; <%-- No I18N --%> 
     var err_envalid_user_skypeid = '<%=Util.getI18NMsg(request, "IAM.ERROR.SKYPEID.INVALID.CHARS")%>'; <%-- No I18N --%>

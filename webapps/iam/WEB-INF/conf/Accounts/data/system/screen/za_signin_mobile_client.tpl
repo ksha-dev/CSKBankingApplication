@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <#include "za_signin_static">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="${SCL.getStaticFilePath("/accounts/css/newMobileLogin.css")}" rel="stylesheet">
+<@resource path="/accounts/css/newMobileLogin.css" />
 <script>
 
 function errorhide() {
@@ -84,7 +84,7 @@ function onSigninReady() {
            
 
             <div class="formfield password" id="passwordid">
-                <input type="password" class="textbox" id="password" name="password" onkeydown="errorhide()" placeholder="<@i18n key="IAM.PASSWORD" />" required=""><span class="eye_icon"></span>
+                <input type="password" autocomplete="off" class="textbox" id="password" name="password" onkeydown="errorhide()" placeholder="<@i18n key="IAM.PASSWORD" />" required=""><span class="eye_icon"></span>
             </div>
             
             <div class="za-captcha-container" style="display: none;">

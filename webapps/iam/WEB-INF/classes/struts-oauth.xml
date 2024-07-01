@@ -5,6 +5,20 @@
   "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
  	<package name="oauth" namespace="/oauth" extends="struts-default">
+		<!-- defaultStack interceptor is the default interceptor which is extended from struts-default.
+		Disabled - CoopInterceptor, CoepInterceptor, FetchMetadataInterceptor, CspInterceptor.
+		 -->
+		<interceptors>
+			<interceptor-stack name="appDefault">
+				<interceptor-ref name="defaultStack">
+					<param name="coop.disabled">true</param>
+					<param name="coep.disabled">true</param>
+					<param name="fetchMetadata.disabled">true</param>
+					<param name="csp.disabled">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="appDefault" />
 		<action name="v2/auth" class="com.zoho.accounts.actions.oauth2.OAuthUserAction" method="handelGetRequest">
 			<result name="success">/oauth/jsp/ui/showGrantPage.jsp</result>
 			<result name="charmredirect">/oauth/jsp/ui/charmOAuthRedirect.jsp</result>
@@ -33,6 +47,7 @@
 		<action name="v2/org/approve" class="com.zoho.accounts.actions.oauth2.OAuthOrgAction" method="handelAppove" />
 		<action name="v2/reject" class="com.zoho.accounts.actions.oauth2.OAuthUserAction" method="handelReject" />
 		<action name="v2/token" class="com.zoho.accounts.actions.oauth2.OAuthUserAction" method="handelAccessTokenRequest" />
+		<action name="v2/internal/token" class="com.zoho.accounts.actions.oauth2.OAuthUserAction" method="handelAccessTokenRequest" />
 		<action name="v2/token/access" class="com.zoho.accounts.actions.oauth2.OAuthMobileAction" method="handelInternalClientRequest" />
 		<action name="user/info" class="com.zoho.accounts.actions.oauth2.OAuthUserProfile" method="getProfileInfo" />
 		<action name="v2/approve/internal" class="com.zoho.accounts.actions.oauth2.OAuthMobileAction" method="approveAddExtraScopeInternalClientRequest"/>
@@ -134,9 +149,7 @@
 			<result name="error">/oauth/jsp/ui/showInActiveErrorPage.jsp</result>	
 		</action>
 		<action name="v2/mobile/inactive/token/activate" class="com.zoho.accounts.actions.oauth2.OAuthMobileAction" method="handlActivateRefTokenRequest" />
-		
-		<action name="v2/internal/token/activate" class="com.zoho.accounts.actions.oauth2.OAuthMobileAction" method="handleInternalTokenActivateRequest" />
-		
+				
 		<action name="v2/internal/inactive/token" class="com.zoho.accounts.actions.oauth2.OAuthMobileAction" method="handleGetInternalInActiveTokenRequest">
 			<result name="success">/oauth/jsp/ui/showInternalMobileActivatePage.jsp</result>
 			<result name="error">/oauth/jsp/ui/showInActiveErrorPage.jsp</result>	
@@ -160,11 +173,14 @@
 			<result name="error">/oauth/jsp/ui/showErrorPage.jsp</result>
 			<result name="redirect">/oauth/jsp/ui/redirectToPage.jsp</result>
 		</action>
+		<!-- TO BE REMOVED FROM HERE -->
 		<action name="mobile/verify" class="com.zoho.accounts.actions.oauth2.OAuthUserProfile" method="verifyMobileApp" />
 		<action name="mobile/verify/prompt" class="com.zoho.accounts.actions.oauth2.OAuthUserProfile" method="showMobileVerifyPrompt">
 			<result name="success">/oauth/jsp/ui/showInternalMobileActivatePage.jsp</result>
 			<result name="error">/oauth/jsp/ui/showInActiveErrorPage.jsp</result>
 		</action>
 		<action name="mobile/verify/prompt/action" class="com.zoho.accounts.actions.oauth2.OAuthUserProfile" method="handleMobileVerifyPromptAction" />
+		<!-- TO BE REMOVED TILL HERE -->
+		<action name="mobileapp/verify" class="com.zoho.accounts.actions.oauth2.OAuthUserProfile" method="verifyMobileApplication" />
 	</package>
 </struts>

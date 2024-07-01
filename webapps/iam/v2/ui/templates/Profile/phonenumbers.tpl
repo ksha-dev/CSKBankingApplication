@@ -11,13 +11,17 @@
 				"IAM.MOBILE.OTP.REMAINING.SINGLE.COUNT" : '<@i18n key="IAM.MOBILE.OTP.REMAINING.SINGLE.COUNT" />',
 				"IAM.MOBILE.OTP.MAX.COUNT.REACHED" : '<@i18n key="IAM.MOBILE.OTP.MAX.COUNT.REACHED" />',
 				"IAM.SIGNIN.ERROR.CAPTCHA.REQUIRED" : '<@i18n key="IAM.SIGNIN.ERROR.CAPTCHA.REQUIRED" />',
-				"IAM.CONFIRM.POPUP.PHONENUMBER": '<@i18n key="IAM.CONFIRM.POPUP.PHONENUMBER" />'
+				"IAM.CONFIRM.POPUP.PHONENUMBER": '<@i18n key="IAM.CONFIRM.POPUP.PHONENUMBER" />',
+				"IAM.SIGNIN.ERROR.CAPTCHA.INVALID" : '<@i18n key="IAM.SIGNIN.ERROR.CAPTCHA.INVALID"/>',
+				"IAM.SEND.OTP":'<@i18n key="IAM.SEND.OTP" />'
 		};
 	</script>
+                <#include "${location}/utils/captcha-handler.tpl">
 		
 			
 				<div class="hide" id="phonenumber_popup_contents">
 				
+					<div id="add_mobile_captcha"></div>
 					<form  method="post" class="zform" id="phoneNumberform" onsubmit="return false;" novalidate>
 
 						<div class="field full hide" id="empty_phonenumber">
@@ -55,58 +59,13 @@
 							</select>
 						</div>
 						
-						<div class="field hide noindent" id="captcha_container">
-							<div class='box_blur hide'></div>
-							<div class='loader hide'></div>
-							<div id="captcha_img" name="captcha">
-								<img id="hip" onload="loadCircleAnimation(false)">
-							</div>
-							<span class="reloadcaptcha icon-reload" id="reload" onclick="reloadCaptcha();removeCaptchaError()"></span>
-							<input id="captcha" placeholder="Enter CAPTCHA" type="text" name="captcha" class="textbox" required autocapitalize="off" autocomplete="off" autocorrect="off" maxlength="8">
-							<div class="captcha_field_error"></div>
-						</div>
 						<button tabindex="0" class="primary_btn_check" id="popup_mobile_action"><span></span></button>
 						<button class="primary_btn_check high_cancel hide" id="add_mobile_back" type="button" tabindex="0" onclick="cancelOTPVerify()"><span><@i18n key="IAM.BACK" /> </span></button>
 					</form>
 				
 				</div>
 				
-				
-				
-				
-				
-				
-				<div class="hide popup" tabindex="0" id="addToRecovery">
-					<div class="popup_header">
-						<div class="popuphead_details">
-							<span class="popuphead_text"><@i18n key="IAM.PHONE.NUMBER" /></span>
-							<span class="popuphead_define"><@i18n key="IAM.SETUP.TFA.MOBILE.DESC" /></span>
-						</div>
-						<div class="close_btn" onclick="close_converttfa_popup()"></div>
-					</div>
-							
-					<div id="add_ph_form">
-	    				<form method="post" name="backup_to_recovery" id="backup_to_recovery" onsubmit="return false;" novalidate>   				
-	 
-		    				<div class="field full " id="select_existing_backup">
-		                  		<label class="textbox_label"><@i18n key="IAM.MOBILE.TFA.BACKUP.PHONE_NUMBERS" /></label>
-		                  		<select class="select_field" data-validate="zform_field" name="backupnumber" id="backupnumber" >
-								</select>
-								<span class="blue" onclick="show_add_mobilescreen('<@i18n key="IAM.ADD.CONTACT.MOBILE" />','<@i18n key="IAM.SETUP.TFA.MOBILE.DESC" />','<@i18n key="IAM.ADD" />','addphonenum');" title="<@i18n key="IAM.ADDNEW" />"><@i18n key="IAM.ADDNEW" /></span>
-							</div>
-		                  	
-							
-							
-							<button type="submit" class="primary_btn_check" onclick="switchBackupNoForRecovery(document.backup_to_recovery,newRecovery)" id="popup_mobile_action"><@i18n key="IAM.TFA.RCOVERY.SWITCH" /></button>
-	    				</form>
-    				</div>
-    				
-    			</div>
-    			
-    			
-    			
-    			
-    			
+	
     			
     			<div class="box big_box"  id="phnum_box">
     			
@@ -125,7 +84,6 @@
 							
 							<button class="primary_btn_check  center_btn " id="add_newnobackup" onclick="show_add_mobilescreen('<@i18n key="IAM.ADD.CONTACT.MOBILE" />','<@i18n key="IAM.SETUP.TFA.MOBILE.DESC" />','<@i18n key="IAM.ADD" />','addphonenum');" ><span><@i18n key="IAM.ADD.CONTACT.MOBILE" /></span></button>
 							
-							<button class="primary_btn_check  center_btn hide" id="addfrom_backup" onclick="show_tfa_switch_mobilescreen();" ><span><@i18n key="IAM.USE.TFA.BACKUP.NUMBER.TO.RECOVERY" /></span></button>
 						</div>
 						<div class="hide" id="disabled_add_recovery">
 							<div class="no_data disabled_trustedbrowser"></div>
@@ -194,12 +152,10 @@
 						<div class="view_more half" id="view_only" onclick="show_all_phonenumbers()"><span><@i18n key="IAM.VIEWMORE.NUMBER" /></span></div> 
 						
 						<div class="addnew half" id="addphone" onclick="show_add_mobilescreen('<@i18n key="IAM.ADD.CONTACT.MOBILE" />','<@i18n key="IAM.SETUP.TFA.MOBILE.DESC" />','<@i18n key="IAM.ADD" />','addphonenum');"><@i18n key="IAM.ADD.CONTACT.MOBILE" /></div>
-						<div class="addnew half" id="addTFAphone" onclick="show_tfa_switch_mobilescreen();"><@i18n key="IAM.ADD.CONTACT.MOBILE" />	</div>				
 					</div>
 					
 					<div class="addnew separate_addnew hide" id="addphoneonly" onclick="show_add_mobilescreen('<@i18n key="IAM.ADD.CONTACT.MOBILE" />','<@i18n key="IAM.SETUP.TFA.MOBILE.DESC" />','<@i18n key="IAM.ADD" />','addphonenum');"><@i18n key="IAM.ADD.CONTACT.MOBILE" /></div>
 					
-					<div class="addnew separate_addnew hide" id="addTFAphoneonly" onclick="show_tfa_switch_mobilescreen();"><@i18n key="IAM.ADD.CONTACT.MOBILE" /></div>					
 					
 				</div>
 				
@@ -214,7 +170,9 @@
 						<span class="mobile_dp icon-call"></span>   
 						<span class="mobile_info">
 							<div class="emailaddress_text"></div>
-							<div class="emailaddress_addredtime"><@i18n key="IAM.UNVERIFIED" /></div>
+							<div class="emailaddress_addredtime"><@i18n key="IAM.MSG.VERIFY.MOBILE" /></div>
+							<div  id="unverified_tap_to_more" class="hide red emailaddress_addredtime"><@i18n key="IAM.MSG.TAP.TO.MORE" /></div>
+							<div class="hide verify_now_text"><@i18n key="IAM.VERIFY.NOW" /></div>
 						</span>
 						<span class="profile_tags recovery_tag icon-recoveryNum">
 							<span class=" tooltiptext tooltiptext1">
@@ -244,15 +202,6 @@
 						<div class="phnum_hover_show" id="phonenumber_infohover">   
 							<span class="action_icons_div_ph">
 							
-								<span class="verify_icon resendconfirm Mob_resend_confirmation">
-	                				<div class="icon-verify"></div>
-	                				<div class="resend_options" style="display:none;">
-		                				<div class="resend_space">
-		                					<div class="resend_mob_text"></div>
-		                					<div class="resend_grn_btn"><@i18n key="IAM.SEND.OTP" /></div>
-		                				</div>
-		                			</div>
-	                			</span>
 
 							<!--	<span class="resendconfir action_icon icon-makeprimary" id="icon-primary" title="<@i18n key="IAM.MYEMAIL.MAKE.PRIMARY" />" onclick="showmake_prim_mobilescreen('<@i18n key="IAM.MODIFY.LOGIN.NAME" />','<@i18n key="IAM.PROFILE.PHONENUMBERS.MAKE.PRIMARY.POPUP.DESCRIPTION" />','<@i18n key="IAM.UPDATE" />');"></span>
 																
@@ -274,12 +223,15 @@
 				<div id="profile_popup" class="pp_popup common_center_popup hide" tabindex="1">
 				<form method="post" class="zform" name="swapnumber" onsubmit="return false;" novalidate>
 					<div class="popup_header common_center_popup">
-						<div id="phn_details" class="top_popup_header">
-							<span class="mobile_dp icon-call"></span>   
-							<span class="mobile_info">
-								<div class="emailaddress_text"></div>
-								<div class="emailaddress_addredtime"><@i18n key="IAM.UNVERIFIED" /></div>
-							</span>
+						<div class="profile_popup_head">
+							<div id="phn_details" class="top_popup_header">
+								<span class="mobile_dp icon-call"></span>   
+								<span class="mobile_info">
+									<div class="emailaddress_text"></div>
+									<div class="emailaddress_addredtime"><@i18n key="IAM.UNVERIFIED" /></div>
+								</span>
+							</div>
+							<div class="close_btn" onclick="close_profile_popupscreen()"></div>
 						</div>
 						<div class="profile_popup_body">
 							<div class="popuphead_details">
@@ -291,27 +243,27 @@
 								<input class="real_radiobtn swapNum_radiobtn" type="radio" name="phnNum_type" id="recoveryNum" value="recoveryNum" checked="checked">
 								<div class="outer_circle swapNum_outer_circle">
 								<div class="inner_circle swapNum_inner_circle"></div></div>
-								<label class="radiobtn_text swapNum_radiobtn_text recovery_heading" for="recoveryNum"><@i18n key="IAM.PROFILE.RECOVERY.NUMBER"/></label>
-								<div></div>
-								<div class="radiobtn_text swapNum_description swapNum_description_recovery"> <span class="recovery_desc"><@i18n key="IAM.PROFILE.RECOVERY.NUMBER.DESCRIPTION"/></span><span class="recovery_disabled_desc"><@i18n key="IAM.PHONENUMBERS.RECOVERY.DISABLE.CHECKBOX.TEXT"/></span> </div>
+								<label class="radiobtn_text swapNum_radiobtn_text recovery_heading" for="recoveryNum"><@i18n key="IAM.PROFILE.RECOVERY.NUMBER"/>
+									<div class="radiobtn_text swapNum_description swapNum_description_recovery"> <span class="recovery_desc"><@i18n key="IAM.PROFILE.RECOVERY.NUMBER.DESCRIPTION"/></span><span class="recovery_disabled_desc"><@i18n key="IAM.PHONENUMBERS.RECOVERY.DISABLE.CHECKBOX.TEXT"/></span> </div>
+								</label>
 							</div>
 							<div class="radiobtn_div swapNum_radiobtn_div" id="mfa_div">
 								<input class="real_radiobtn swapNum_radiobtn" type="radio" name="phnNum_type" id="mfaNum" value="mfaNum" >
 								<div class="outer_circle swapNum_outer_circle">
 								<div class="inner_circle swapNum_inner_circle"></div></div>
-								<label class="radiobtn_text swapNum_radiobtn_text mfa_heading" for="mfaNum"><@i18n key="IAM.PROFILE.MFA.NUMBER"/></label>
-								<div></div>
-								<div class="radiobtn_text swapNum_description swapNum_description_mfa"> <@i18n key="IAM.PROFILE.MFA.NUMBER.DESCRIPTION"/> </div>
+								<label class="radiobtn_text swapNum_radiobtn_text mfa_heading" for="mfaNum"><@i18n key="IAM.PROFILE.MFA.NUMBER"/>
+									<div class="radiobtn_text swapNum_description swapNum_description_mfa"> <@i18n key="IAM.PROFILE.MFA.NUMBER.DESCRIPTION"/> </div>
+								</label>
 							</div>
 							
 							<div class="phnNum_warning">
 								<div class="recovery_warning"><@i18n key="IAM.PROFILE.RECOVERY.NUMBER.WARNING"/> <span class="mfa_settings" onclick="loadTab('multiTFA','modes');"><@i18n key="IAM.PROFILE.MFA.CONFIGURE.NOW"/></span></div>
 								<div class="mfa_warning"><@i18n key="IAM.PROFILE.MFA.NUMBER.WARNING"/><span class="mfa_settings" onclick="loadTab('multiTFA','modes');"><@i18n key="IAM.MFA.SETTING"/></span></div>
 							</div>
-							
+						</div>
+						<div class="phnNum_popup_btns">
 							<button type="submit" class="primary_btn_check" id="swap_mobile_action"><@i18n key="IAM.CONFIRM" /></button>
 							<button tabindex="1" class="primary_btn_check  cancel_btn" id="swap_popup_close" onclick="close_profile_popupscreen()"><span><@i18n key="IAM.CANCEL"/></span></button>
-							<div class="close_btn" onclick="close_profile_popupscreen()"></div>
 						</div>
 					</div>
 					<div id="pop_action"></div>

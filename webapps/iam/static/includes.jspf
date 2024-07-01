@@ -30,6 +30,8 @@ public String getHTML(String value) {
     String jsurl = cPath+"/static";		//No I18N
     String imgurl = cPath+"/images";		//No I18N
     String wmsjsurl =  WebClientUtil.getWMSJSURL(request);
+    String wmsjsintegrity = WebClientUtil.getWMSIntegritry(false);
+    String wmsSRIValues = WebClientUtil.getWMSIntegritry(true);
 
     String cssurl_st = cPath+"/static";	//No I18N
     String imgurl_st = cPath+"/static";	//No I18N

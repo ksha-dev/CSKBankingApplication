@@ -6,13 +6,15 @@
 		<#else>
 		<title><@i18n key="IAM.REGISTER.ACCOUNT.CONFIRMATION" /></title>
 		</#if>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>	
-		<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script> 
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-		<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/accountUnauthStyle.css")}" rel="stylesheet"type="text/css"/>
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		<@resource path="/v2/components/tp_pkg/xregexp-all.js" />	
+		<@resource path="/v2/components/js/zresource.js" /> 
+		<@resource path="/v2/components/js/uri.js" /> 
+		<@resource path="/v2/components/js/common_unauth.js" />
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/accountUnauthStyle.css" />
+		<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
 		
 		<script type="text/javascript">
 			var redirectUrl = "${redirectUrl}";
@@ -57,7 +59,7 @@
 				});
 			</#if>
 		</script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/account_confirmation.js")}"></script>
+		<@resource path="/v2/components/js/account_confirmation.js" />
 		
 		<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 		

@@ -13,6 +13,7 @@
 <%@page import="com.zoho.accounts.internal.OpenIDUtil"%>
 <%@page import="com.zoho.accounts.internal.fs.FSConsumerUtil"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.zoho.accounts.dcl.DCLUtil"%>
@@ -28,15 +29,15 @@
 <html>
 	<head>
 		<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/common_unauth.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/splitField.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/uvselect.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<script src="<%=StaticContentLoader.getStaticFilePath("/v2/components/js/flagIcons.js")%>" type="text/javascript"></script><%-- NO OUTPUTENCODING --%>
-		<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/uvselect.css")%>" rel="stylesheet" type="text/css">
-		<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" rel="stylesheet"type="text/css">
-		<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/flagIcons.css")%>" rel="stylesheet" type="text/css">
+		<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/jquery-3.6.0.min.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/js/common_unauth.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/tp_pkg/xregexp-all.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/js/splitField.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/js/uvselect.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/js/flagIcons.js") %><%-- NO OUTPUTENCODING --%>
+		<%= HtmlResourceIncluder.addResource("/v2/components/css/uvselect.css") %>
+		<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %>
+		<%= HtmlResourceIncluder.addResource("/v2/components/css/flagIcons.css") %>
 		
 		<style >		
 		@font-face {
@@ -296,7 +297,7 @@
 		{
 		    position: relative;
 			border: 2px solid #ECECEC;
-			margin-top: 40px;
+			margin-top: 36px;
 			padding: 20px;
 			border-radius: 10px;
 		}
@@ -440,15 +441,15 @@
 		{
     		font-weight: 500;
 		    font-size: 20px;
-		    margin-bottom: 10px;
+		    margin-bottom:8px;
 		}
 		.desc_text
 		{
 			font-size:14px;
-			line-height:24px;
+			line-height:20px;
 		}
 		.user_detail_form{
-			padding-top: 30px;
+			padding-top: 24px;
 		    display: flex;
 		    justify-content: space-between;
 		    flex-wrap: wrap;
@@ -459,7 +460,11 @@
 		    border: 1px solid #C7C7C7;
 		    width: 250px;
 		    box-sizing: border-box;
-		    margin-bottom: 30px;
+		    margin-bottom: 24px;
+		}
+		.disbled_detail,.disbled_detail .user_detail_input{
+			background:#F8F8F8;
+		    color: #000;
 		}
 		.user_header{
 		    font-size: 10px;
@@ -518,7 +523,7 @@
 		    width: 5px;
 		    display: inline-block;
 		    height: 10px;
-		    border: 2px solid #fff;
+		    border: 3px solid #fff;
 		    border-left: transparent;
 		    border-top: transparent;
 		    border-radius: 1px;
@@ -551,9 +556,8 @@
 		    display: grid;
 		    grid-template-columns: 22px auto;
 		}
-		.tos-container
-		{
-			margin-bottom:20px;
+		.newsletter-container{
+			margin-top:20px;
 		}
 		.selected_div,.detail_box:focus-within
 		{
@@ -586,6 +590,10 @@
 		    box-sizing: border-box;
 	        transition: all 0.3s ease-in-out;
 		    height: 40px;
+		}
+		.form_btn:disabled {
+		 	background: #a0d7ff;
+		 	pointer-events:none;
 		}
 		.gray_btn
 		{
@@ -806,9 +814,8 @@
 		    text-transform: capitalize;	
 		}
 		.profile-img{
-		    width: 100px;
-		    height: 100px;
-		    margin-bottom: 20px;
+		    width: 64px;
+		    height: 64px;
 		    border-radius: 50%;
 		    overflow: hidden;
 		    position:relative;
@@ -890,6 +897,13 @@
 		{
 			position: relative;
 		    display: inline-block;
+		    margin-right:16px;
+		}
+		.photo_permission .selectbox{
+			opacity:.8;
+		}
+		.photo_permission .selectbox:hover,.photo_permission .selectbox--open{
+			opacity:1;
 		}
 		.flex_link_container
 		{
@@ -945,13 +959,6 @@
 			font-size:14px;
 			margin-top:10px;
 			line-height:24px;
-		}
-		.country_details
-		{
-		    width: 100%;
-		    display: flex;
-		    justify-content: space-between;
-		    flex-wrap: wrap;
 		}
 		.country_300_width
 		{
@@ -1123,11 +1130,6 @@
 			margin-left:3px;
 		}
 		
-		.uvselect input[jsid="user_country"]{
-			padding-top:0px;
-			padding-bottom:0px;
-		}
-		
 		.uvselect .basic_selectbox , .uvselect .basic_selectbox:focus , .uvselect .basic_selectbox:hover{
 			border:0px;
 		}
@@ -1158,10 +1160,6 @@
     	.mobile_country_select .selectbox_arrow{
     		margin: 0px;
     		margin-top: 7px;
-    	}
-    	
-    	.detail_box.mobile_country_select{
-    		width : 300px;
     	}
     	
     	.photo_permission_option .uvselect  {
@@ -1228,6 +1226,51 @@
 		    position: relative;
 		    top: 8px;
 		}
+		.profile_container{
+			display:flex;
+		}
+		.select_container{
+			width:230px;
+		}
+		.org_mail_alert{
+		    border: 1px solid #EBBF6D;
+		    padding: 12px 16px;
+		    background: #FFF2DB;
+		    border-radius: 4px;
+		    margin-bottom:24px;
+	        grid-template-columns: 24px auto;
+	        margin-top: -12px;
+		}
+		.org_mail_alert .agree_checkbox+label:before{
+		    top: 12px;
+    		left: 16px;
+    		border-color: #EBBF6D;
+		}
+		.org_mail_alert .agree_checkbox:checked+label:before{
+		    border-color: #1389E3;
+		}
+		.org_mail_alert .agree_checkbox+label:after{
+			top: 14px;
+   			left: 21px;
+		}
+		.org_mail_alert .agree_checkbox+label{
+			font-size: 12px;
+    		letter-spacing: unset;
+    		line-height:18px;
+		}
+		.org_mail_alert.check_container:after {
+		    content: "";
+		    display: inline-block;
+		    width: 6px;
+		    height: 6px;
+		    position: absolute;
+		    top: -4px;
+		    border-right: 1px solid #EBBF6D;
+		    border-top: 1px solid #EBBF6D;
+		    transform: rotate(-45deg);
+		    background: #FFF2DB;
+		    left: 30px;
+		}
 		
    		@media only screen and (max-width : 435px)
 		{
@@ -1278,7 +1321,7 @@
 				margin-top: 20px;
 			    margin-left: 0px;
 			}
-			.country_details .user_header:after , .dcOptionDiv .user_header:after{
+			.dcOptionDiv .user_header:after{
 			    content: "";
 			    display: inline-block;
 			    width: 0px;
@@ -1332,9 +1375,10 @@
 		</style>
 		<title><%=Util.getI18NMsg(request,"IAM.ZOHO.ACCOUNTS")%></title>
 		<script>
-			var state_data = {};
 		<%String servicename = (String) request.getAttribute("servicename");
 			String emailId = (String) request.getAttribute(FSConsumerUtil.OAUTH_EMAIL_ID);
+			int newsletter_mode = request.getAttribute("newsletterMode") != null ? (Integer)request.getAttribute("newsletterMode") : -1; 
+			emailId = emailId != null ? emailId : "";
 			Boolean skipDCSwitch = Boolean.TRUE == request.getAttribute("skipDCSwitch");
 			DCLocation remoteDeployment = skipDCSwitch ? DCLUtil.getPresentLocation() : DCLUtil.getRemoteDeployment(request);
 			String dcLocation = remoteDeployment != null ? remoteDeployment.getLocation() : null;
@@ -1374,20 +1418,6 @@
 			if(!isAssociate){
 			    termsOfServiceUrl = Util.getTermsOfServiceURL(request, servicename);
 			    privacyPolicyUrl = Util.getPrivacyURL(request, servicename);
-				HashMap<String, List<String>> countryStates = Util.getCountryVsStateList();
-		
-				if (countryStates != null && !countryStates.isEmpty()) {
-					Iterator<String> stateCountries = countryStates.keySet().iterator();
-					while (stateCountries.hasNext()) {
-						String stateCountry = stateCountries.next();
-						StringBuffer stateOptions = new StringBuffer();
-						for (String state : countryStates.get(stateCountry)) {
-							stateOptions.append("<option value=\"").append(state).append("\">").append(state).append("</option>");
-						}%>
-						state_data["<%=stateCountry%>"]='<%=stateOptions.toString()%>';
-						<%
-					}
-				}
 				redirectURL = FSConsumerUtil.constructSignInURLFromReq(request, null);
 				hasAccount = request.getAttribute("userExist") != null && (Boolean) request.getAttribute("userExist");
 			}
@@ -1481,13 +1511,14 @@
 							<div class="user_name_desc_text"><%=Util.getI18NMsg(request, "IAM.FEDERATED.SIGNUP.ASSOCIATE.LINK.OPTION.DESC",IAMEncoder.encodeHTML(emailId),IDP_name.toLowerCase())%></div>
 						</div>
 						<div class="button_container">
-							<button class="form_btn" onclick="iamMoveToSignin('<%=redirectURL%>','<%=emailId%>')"><%=Util.getI18NMsg(request,"IAM.CONTINUE")%></button>
+							<button class="form_btn" onclick="iamMoveToSignin('<%=redirectURL%>','<%=IAMEncoder.encodeHTMLAttribute(emailId)%>')"><%=Util.getI18NMsg(request,"IAM.CONTINUE")%></button>
 							<button class="form_btn gray_btn" onclick="cancelFederateFlow()"><%=Util.getI18NMsg(request,"IAM.CANCEL")%></button>
 						</div>
 				<%}
 				else{ %>
 				<div class="federated_signup_form">
 				<form onsubmit="javascript:return false;" novalidate>
+				<div class="profile_container">
 				<div class="photo_permission_option">
 					<div class="profile-img" id="profile-pic">
 	   					<div class="pro_pic_blur"></div>
@@ -1500,13 +1531,15 @@
    						<option value="0" id="Myself" selected><%=I18NUtil.getMessage("IAM.PHOTO.PERMISSION.ONLY_MYSELF")%></option>
    					</select>
    				</div> 
-
+				<div class="text_abt_profile">
 				<div class="user_name_text"><%=Util.getI18NMsg(request,"IAM.CREATE.WELCOME",IAMEncoder.encodeHTML(name))%></div>
 				<%if(!IAMUtil.isValidEmailId(emailId)){%>
 				<div class="desc_text"><%=Util.getI18NMsg(request,"IAM.FEDERATED.SIGNUP.PAGE.DESC")%></div>	
 				<%}else{ %>
 				<div class="desc_text"><%=Util.getI18NMsg(request,"IAM.FEDERATED.SIGNUP.PAGE.EMAIL.DESC",IAMEncoder.encodeHTML(emailId))%></div>
 				<%} %>
+				</div>
+				</div>
 				<div class="user_detail_form">
 				<%if(!isNameFieldOptional){%>
 					<div class="detail_box">
@@ -1521,7 +1554,7 @@
 				if(!IAMUtil.isValidEmailId(emailId) && isEmailRequired && !isMobileRequired){%>
 					<div class="detail_box" style="">
 						<div class="user_header"><%=Util.getI18NMsg(request, "IAM.EMAIL.ADDRESS")%></div>
-						<input type="text" id="user_email_id" class="user_detail_input" placeholder="<%=Util.getI18NMsg(request, "IAM.USER.ENTER.EMAIL.PLACEHOLDER")%>"/>
+						<input type="text" id="user_email_id" oninput="resetMailCheck()"  class="user_detail_input" onblur="checkOrgEmail(this)" placeholder="<%=Util.getI18NMsg(request, "IAM.USER.ENTER.EMAIL.PLACEHOLDER")%>"/>
 					</div>
 				<%} 
 				if((isMobileRequired && !isEmailRequired) || isRecoveryRequired || (isMobileRequired && isEmailRequired && !IAMUtil.isValidEmailId(emailId))){ %>
@@ -1534,44 +1567,44 @@
 						<div class="user_mobile_country_mobilemode"></div>
 						<select id="user_mobile_country" <%if(isMobile){%>onchange="change_label_mobile(this)" style="width:50px;height:20px;opacity:0;"<%}else{%>oninput=""<%}%> class="user_detail_input">
 						</select>
-						<input type="text" id="user_mobile" maxlength="15" <%if(isEmailRequired && !isRecoveryRequired && !IAMUtil.isValidEmailId(emailId)){%>oninput="checkEmailOrPhone(this)"<%}else{%>oninput="this.value = this.value.replace(/[^\d]+/g,'')"<%}%> class="user_detail_input" value=""/>
+						<input type="text" id="user_mobile" maxlength="15" <%if(isEmailRequired && !isRecoveryRequired && !IAMUtil.isValidEmailId(emailId)){%>oninput="checkEmailOrPhone(this)" onblur="checkOrgEmail(this)"<%}else{%>oninput="cursorIndent();this.value = this.value.replace(/[^\d]+/g,'')"<%}%> class="user_detail_input" value=""/>
 					</div>			
 				<%}%>
-					<div class="country_details">
-					<div class="detail_box country_select_container" id="country_select_div" style="width:300px">
-						<div class="user_header"><%=Util.getI18NMsg(request, "IAM.COUNTRY")%></div>
-						<select id="user_country" onchange="setStateData()" class="user_detail_input">
-						</select>
-					</div>
-					<div class="detail_box" style="display:none" id="state_container">
-						<div class="user_header"><%=Util.getI18NMsg(request, "IAM.GDPR.DPA.ADDRESS.STATE")%></div>
-						<select id="state_list" class="user_detail_input">
-							<option value="" disabled selected><%=Util.getI18NMsg(request, "IAM.US.STATE.SELECT")%></option>
-						</select>
-					</div>
+					<div class="alert_abt_org_mail" style="width:100%;display:none">
+					<%if(IAMUtil.isValidEmailId(emailId)){%>
+						<div class="detail_box disbled_detail" style="">
+							<div class="user_header"><%=Util.getI18NMsg(request, "IAM.EMAIL.ADDRESS")%></div>
+							<input type="text" id="" class="user_detail_input" disabled value="<%=IAMEncoder.encodeHTMLAttribute(emailId)%>"/>
+						</div>
+					<% } %>
+						<div class="org_mail_alert check_container" style="position:relative;">
+							<input tabindex="1" class="agree_checkbox" onchange="handleOrgMailCreation(this)" type="checkbox" id="org_mail" name="org_mail"/>
+							<label for="org_mail"></label>
+						</div>
 					</div>
 				</div>
 				<%
 				boolean hideDC = Boolean.TRUE == request.getAttribute("hideDC");
-				String currentCountry = "";
+				String currentDC = "";
+				String UserIPCountry = new Locale("",default_country.toUpperCase()).getDisplayCountry();
 				boolean showRemote = remoteDeployment!=null && AccountsConfiguration.getConfigurationTyped("fs.multidc.location.choice", false); // No I18N
 				if(remoteDeployment!=null){
-					currentCountry = remoteDeployment.getDescription().toUpperCase();
-				%>
-				<div style="margin-bottom:30px;font-size:14px;" class="show_cur_dc <%if(!hideDC && showRemote){%>hide<%}%>"><%=Util.getI18NMsg(request, "IAM.MULTIDC.SIGNUP.DATACENTER.CONTENT", currentCountry)%></div>
+					currentDC = remoteDeployment.getDescription().toUpperCase();
+				} else {
+					currentDC = DCLUtil.getPresentLocation().getDescription().toUpperCase();
+				} %>
+				<div style="margin-bottom:30px;font-size:14px;" class="show_cur_dc <%if(!hideDC && showRemote){%>hide<%}%>"><%=I18NUtil.getMessage("IAM.CROSSDC.SIGNUP.IP.SPECIFIC.DATACENTER.CONTENT", UserIPCountry, currentDC)%></div>
 				<%
-				}
 				if(!hideDC && showRemote) {
-					String UserIPCountry = new Locale("",default_country.toUpperCase()).getDisplayCountry().toLowerCase();
 				%>
     			<div style="margin-bottom:30px;">
 					<div class="DC_note"><%=Util.getI18NMsg(request, "IAM.FEDERATED.SIGNUP.CREATE.DATA.CENTER.IP.DESC",UserIPCountry)%></div>
-					<div class="change_dc"><%=Util.getI18NMsg(request, "IAM.MULTIDC.SIGNUP.DATACENTER.CONTENT", currentCountry)%> <span style="color:#0091FF;cursor:pointer" class="change_dc_btn" onclick="showDcOption(this)"><%=Util.getI18NMsg(request, "IAM.SIGNUP.CHANGE")%></span></div>
+					<div class="change_dc"><%=Util.getI18NMsg(request, "IAM.MULTIDC.SIGNUP.DATACENTER.CONTENT", currentDC)%> <span style="color:#0091FF;cursor:pointer" class="change_dc_btn" onclick="showDcOption(this)"><%=Util.getI18NMsg(request, "IAM.SIGNUP.CHANGE")%></span></div>
 				</div>
 				<div class="dcOptionDiv detail_box" style="display:none;" id="dc_option_div">
 					<div class="user_header"><%=Util.getI18NMsg(request, "IAM.FEDERATED.SIGNUP.CREATE.DATA.CENTER.TITLE")%></div>
 					<select id="dc_option" onchange="changeDCText(this)" class="signup-country">
-						<option value="<%=remoteDeployment.getLocation().toLowerCase()%>"><%=currentCountry%></option>
+						<option value="<%=remoteDeployment.getLocation().toLowerCase()%>"><%=currentDC%></option>
 						<option value="<%=DCLUtil.getLocation().toLowerCase()%>"><%=DCLUtil.getPresentLocation().getDescription().toUpperCase()%></option>
 					</select>
 				</div>
@@ -1642,21 +1675,19 @@
 	    var otp_length = <%=otp_length%>;
 	    var setTime;
 	    var default_country = "<%=default_country%>";
+	    var newsletter_mode = "<%=newsletter_mode%>";
 	    window.onload= function(){
 		$( "input" ).on({
 			  change : function(){removeErr()},
 			  keypress: function(){removeErr()}
 		});
 		var mobile_country_option = "";
-		var user_country_options = "";
 		
 		countryDialingList.forEach(function(country_obj){
-			if(country_obj.NEWSLETTER_MODE != undefined){user_country_options += "<option value='"+country_obj.ISO2_CODE+"' newsletter_mode='"+country_obj.NEWSLETTER_MODE+"'>"+country_obj.DISPLAY_NAME+"</option>";}
-		    if(country_obj.DIALING_CODE){mobile_country_option+="<option data-num='+"+country_obj.DIALING_CODE+"' value='"+country_obj.ISO2_CODE+"' >"+country_obj.COUNTRY_NAME+" ("+country_obj.DIALING_CODE+")</option>";}
+		    if(country_obj.DIALING_CODE){mobile_country_option+="<option data-num='+"+country_obj.DIALING_CODE+"' value='"+country_obj.ISO2_CODE+"' >"+country_obj.DISPLAY_NAME+" ("+country_obj.DIALING_CODE+")</option>";}
 		});
 		$("#user_mobile_country").html(mobile_country_option);
-		$("#user_country").html(user_country_options);
-		$("#user_mobile_country [value='"+default_country+"'],#user_country [value='"+default_country+"']").attr("selected","selected");	//no i18n
+		$("#user_mobile_country [value='"+default_country+"']").attr("selected","selected");	//no i18n
 		if($(".dcOptionDiv select").length>0){
 			if(!isMobile){
 				$("#dc_option").uvselect({
@@ -1696,29 +1727,30 @@
 			    	}});
 				 $(".photo_permission .selectbox_overlay").after("<i id='photo_perm_icon' class='icon-"+$("#photo_permission option:selected").attr("id")+"'></i>");
 				 $(".photo_permission .select_input").hide();
+				 <%if(!emailId.isEmpty() && isEmailRequired){%>
+					 checkOrgEmail();
+				 <%}else{%>	
 				 $(".container_blur").hide();
+				 <%}%>	
 				 $(".photo_permission_option").show();
 		    });
 			<%}else{%>
-				$(".container_blur,.photo_permission_option").hide();
+				$(".photo_permission_option").hide();
+				<%if(!emailId.isEmpty() && isEmailRequired){%>
+				 checkOrgEmail();
+				 <%}else{%>	
+				 $(".container_blur").hide();
+				 <%}%>
 				$(document.scrollingElement).animate({
 			        scrollTop: ($("body")[0].scrollHeight-$("body")[0].clientHeight)/2
 			    }, 0);
 			<%}%>
 			
 			if(!isMobile){
-				$("#user_country").uvselect({
-					"width": '280px', //No i18N
-					"searchable" : true, //No i18N
-					"dropdown-width": "300px", //No i18N
-					"embed-icon-class": "flagIcons", //No i18N
-					"country-flag" : true, //No i18N
-					"place-options-after" : "country_select_div" //No i18N
-				});
 				if($("#user_mobile_country").length>0){
 					$("#user_mobile_country").uvselect({
 						"searchable" : true, //No i18N
-						"dropdown-width": "300px", //No i18N
+						"dropdown-width": "250px", //No i18N
 						"embed-icon-class": "flagIcons", //No i18N
 						"country-flag" : true, //No i18N
 						"country-code" : true, //No i18N
@@ -1749,7 +1781,7 @@
 			
 			<%if(isEmailRequired && isMobileRequired && !IAMUtil.isValidEmailId(emailId)){%>
 			$(".mobile_country_select .select_container").hide();
-			$("#user_mobile").css("text-indent","0px");	//No I18N
+			$("#user_mobile").attr("style","text-indent: 0px !important");	//No I18N
 			<%}%>
 			$(document.scrollingElement).animate({
 		        scrollTop: ($("body")[0].scrollHeight-$("body")[0].clientHeight)/2
@@ -1757,39 +1789,11 @@
 		<% }else{%>
 			$(".container_blur").hide();
 		<%}%>
-			setStateData();
+		handleNewsletterField(newsletter_mode);
+		setFooterPosition();
 		};
 		
 		<% if(!hasAccount && !isAssociate){%>
-		function setStateData(){
-			var data = state_data[document.querySelector('#user_country').value.toLowerCase()];		 // No I18N
-			if(data){
-				document.querySelector('#state_list').innerHTML='<option value="<%=Util.getI18NMsg(request, "IAM.US.STATE.SELECT")%>" disabled="" selected="" style="pointer-events:none;"><%=Util.getI18NMsg(request, "IAM.US.STATE.SELECT")%></option>'+data;	 // No I18N
-				if(!isMobile){
-					$("#state_list").uvselect({
-						"width":"230px", //No i18N
-						"dropdown-width": "250px", //No i18N
-						"searchable" : true, //No i18N
-						"place-options-after" : "state_container" //No i18N
-					});
-				}
-				$(".uvselect.user_country").click(function(){
-					$(".user_country.selectbox_options_container").css("width",(parseInt(document.getElementById("country_select_div").style.width)+parseInt(window.getComputedStyle(document.getElementById("country_select_div")).borderWidth))+"px"); //No i18N
-				})
-				$(".country_select_container").css("width","250px"); //No i18N
-				$(".uvselect.user_country").css("width","230px"); //No i18N
-				$("#state_container").show();
-			}
-			else{
-				if(!isMobile){
-					$(".country_select_container").css("width","300px");			 // No I18N
-					$(".select_container.user_country").css("width","280px");	 // No I18N
-				}
-				$("#state_container").hide();
-			}
-			handleNewsletterField($("#user_country")[0]);
-			setFooterPosition();
-		}
 		
 		function showDcOption(ele){
 			$(".change_dc").parent().hide();
@@ -1798,15 +1802,10 @@
 			});
 		}
 		
-		function handleNewsletterField(selectElement) {
-			if(selectElement) {
+		function handleNewsletterField(newsletter_mode) {
 				var SHOW_FIELD_WITH_CHECKED = "<%=AccountsInternalConst.NewsLetterSubscriptionMode.SHOW_FIELD_WITH_CHECKED.getType()%>";			<%-- NO OUTPUTENCODING --%>
 				var SHOW_FIELD_WITHOUT_CHECKED = "<%=AccountsInternalConst.NewsLetterSubscriptionMode.SHOW_FIELD_WITHOUT_CHECKED.getType()%>";	<%-- NO OUTPUTENCODING --%>
 				var DOUBLE_OPT_IN = "<%=AccountsInternalConst.NewsLetterSubscriptionMode.DOUBLE_OPT_IN.getType()%>";								<%-- NO OUTPUTENCODING --%>
-				var optionEle = selectElement.options[selectElement.selectedIndex];
-				var countryCode = optionEle.value;
-				var newsletter_mode = optionEle.getAttribute("newsletter_mode");
-				var newsletterEle = $('#newsletter');
 				if(newsletter_mode == SHOW_FIELD_WITH_CHECKED) {
 			        $('#newsletter').prop('checked', true);			 //No I18N
 			        $('.newsletter-container').css('display',''); //No I18N
@@ -1817,7 +1816,6 @@
 			        $('#newsletter').prop('checked', true);			 //No I18N
 			        $('.newsletter-container').css('display','none'); //No I18N
 				}
-			}
 		}	
 		
 		function handleProPicError(){
@@ -1930,7 +1928,7 @@
 		}
 		
 		<% if(!hasAccount && !isAssociate){%>
-		var user_email = '<%=emailId%>';
+		var user_email = '<%=IAMEncoder.encodeJavaScript(emailId)%>';
 		var resend_timer=undefined;
 		var view_permission = 3;
 		var Z_Authorization = "";
@@ -1966,7 +1964,60 @@
 		        }
 		    }
 		} 
-		
+		function handleOrgMailCreation(ele){
+			if(ele.checked){
+				$("#createFormAddBtn").attr("onclick","createUser()").removeAttr("disabled");	//No i18N
+			}
+			else{
+				$("#createFormAddBtn").attr("disabled","disabled");	//No i18N
+			}
+		}
+		var lastEnteredEmail = "";
+		var mail_verified = false;
+		function checkOrgEmail(ele,continue_to_create){
+			<%if(emailId.isEmpty()){%>
+				var enteredEmail = "";
+			<%}else{%>
+				var enteredEmail = "<%=IAMEncoder.encodeJavaScript(emailId)%>";
+			<%}%>
+			if(ele){enteredEmail = ele.value;}
+			if(isEmpty(enteredEmail) || !isEmailId(enteredEmail) || lastEnteredEmail == enteredEmail){return false;}
+			var param = {
+					"signupvalidate" : {		//No i18N
+						"email" : enteredEmail			//No i18N
+					}
+			}
+			sendRequestWithCallback("/webclient/v1/register/field/validate", JSON.stringify(param),true, function(resp){		//No i18N
+				$(".container_blur").hide();
+				if(IsJsonString(resp)) 
+				{
+					var jsonStr = JSON.parse(resp);
+					var statusCode = jsonStr.status_code;
+					if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) 
+					{
+						mail_verified = true;
+						if(continue_to_create){
+							createUser();
+						}
+					}
+					else{
+						if(jsonStr.errors[0] && jsonStr.errors[0].code == "EMAIL105"){
+							mail_verified = true;
+							$(".org_mail_alert label").html(jsonStr.localized_message);
+							$(".alert_abt_org_mail").slideDown(300);
+							$("#createFormAddBtn").attr("disabled","disabled");			//No i18N
+							$(ele).focus();
+						}
+						else{
+							showErrorMessage(getErrorMessage(jsonStr));
+						}
+					}
+				}else{
+					showErrorMessage("<%=Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>");
+				}
+			});
+			lastEnteredEmail = enteredEmail;
+		}
 		
 		function change_label_mobile(ele){
 			$(".user_mobile_country_mobilemode").text($("#"+ele.id+" option[value="+'"'+ele.value+'"')[0].dataset.num);
@@ -2027,6 +2078,12 @@
 				$(".tos_error").show();
 				return false;
 			}
+			<%if(isEmailRequired){%>
+				if(!mail_verified){
+					checkOrgEmail($("#user_email_id").length == 1? $("#user_email_id")[0] : $("#user_mobile")[0],true);
+					return false;
+				}
+			<%}%>
 			if($(".photo_permission_option").is(":visible")){
 				view_permission = $("#photo_permission").val();
 			}
@@ -2055,16 +2112,15 @@
 						"firstname": $("#user_first_name").val(),			//No i18N
 						"lastname": $("#user_last_name").val(),				//No i18N
 						<%}%>
-						"country": $("#user_country").val(),				//No i18N
 						"newsletter": $("#newsletter").is(":checked"),		//No i18N
 						"tos" : $("#tog_agree").is(":checked")             //No i18N
 					}
 				}
-			if(Object.keys(state_data).indexOf(param.federatedsignup.country.toLowerCase()) != -1 && $("#state_list").val() != null){
-				param.federatedsignup.country_state = $("#state_list").val();
-			}
 			if($(".dcOptionDiv").length>0){
 				param.federatedsignup.dclocation = $("#dc_option").val();
+			}
+			if($("#org_mail").is(":checked")){
+				param.federatedsignup.orguser = true;
 			}
 			addLoadingInButton("#createFormAddBtn");					
 			sendRequestWithCallback("/webclient/v1/fsregister/signup", JSON.stringify(param),true, function(resp){		// No I18N
@@ -2126,7 +2182,7 @@
 		
 		
 		function cursorIndent(){
-			var length = $("input[jsid='user_mobile_country']")[0].dataset.num.length;
+			var length = $("#user_mobile_country option:selected").attr("data-num").length;	//No I18N
 			if(length == 2){
 				$(".uvselect input[jsid='user_mobile_country']").attr("style","width:30px !important;"); //No I18N
 			}
@@ -2144,13 +2200,21 @@
 				$("#user_mobile").attr("style","text-indent:"+($(".uvselect.user_mobile_country").width()+6)+"px"+" !important;"); //No I18N
 			}
 		}
+		function resetMailCheck(){
+			$(".alert_abt_org_mail").hide();
+			$("#org_mail").prop("checked",false);		//No i18N
+			mail_verified = false;
+			$("#createFormAddBtn").removeAttr("disabled");	//No i18N
+		}
 		
 		function checkEmailOrPhone(ele){
 			var isMobileNumber = /^(?:[0-9] ?){2,1000}[0-9]$/.test(ele.value);
+			resetMailCheck();
 			if(isMobileNumber){
 				$(".uvselect.user_mobile_country").show(); 
 				$("#user_mobile").attr("maxlength","15");	//No I18N
 				cursorIndent();
+				mail_verified = true;
 			}
 			else{
 				$(".uvselect.user_mobile_country").hide();
@@ -2193,14 +2257,10 @@
 						"lastname"			: $("#user_last_name").val(),		//No i18N
 						<%}%>
 						"vercode" 			: otp,								//No i18N
-						"country"			: $("#user_country").val(),			//No i18N
 						"newsletter"		: $("#newsletter").is(":checked"),	//No i18N
 						"tos" : $("#tog_agree").is(":checked")             //No i18N
 					}
 				}
-			if(Object.keys(state_data).indexOf(param.federatedsignupotp.country.toLowerCase()) != -1 && $("#state_list").val() != null){
-				param.federatedsignupotp.country_state = $("#state_list").val();
-			}
 			if($(".dcOptionDiv").length>0){
 				param.federatedsignupotp.dclocation = $("#dc_option").val();
 			}

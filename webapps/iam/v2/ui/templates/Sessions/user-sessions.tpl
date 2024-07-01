@@ -34,14 +34,15 @@
 		"linux": "",
 		"googlechrome":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
 		"safari":'<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>',
-		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
+		"firefox": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
 		"microsoftedge":'<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
 		"internetexplorer":"",
 		"opera": '<span class="path1"></span><span class="path2"></span>',
 		"zohocliq": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
 		"arattai": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
 		"browserunknown": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>',
-		"osunknown": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>'
+		"osunknown": '<span class="path1"></span><span class="path2"></span><span class="path3"></span>',
+		"ulaa": '<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>'			
 	};
  </script>
 
@@ -137,7 +138,7 @@
 			</div>
 
 		</div>
-		<div id="sessions_sideview" tabindex="1" >
+		<div id="sessions_sideview" tabindex="1" class="hide">
 		
 			<div class="hide full_view_more_first" tabindex="0" >
 			

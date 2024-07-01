@@ -7,9 +7,12 @@
 			<param name="format" type="int"/>
 	        <param name="client_zaid" regex="plain_str"/>
 	        <param name="oauthToken" regex="iamcleartextpattern"/>
+	        <param name="currentOAuthScope" regex="plain_str"/>
+	        <param name="allwdOper" regex="long"/>
 	        <param name="tokenType" regex="iamcleartextpattern"/>
 	        <param name="systemcall" type="boolean"/>
 	        <param name="mid" type="long"/>
+	        <param name="isscheduler" type="boolean" />
 	    </param-group>
 	</param-groups>
 
@@ -163,6 +166,22 @@
 	         <param-group name="iamapiparams" />
 	    </url>
 	    <url path="/invoker/[a-zA-Z0-9]+/AuditAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/UnifiedGroupAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="AaaServer,ZohoDirectory">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/UnifiedGroupAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="AaaServer,ZohoDirectory">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/BulkUserAPI/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
+	         <param-group name="invokerparams" />
+	         <param-group name="iamapiparams" />
+	    </url>
+	    <url path="/invoker/[a-zA-Z0-9]+/BulkUserAPIAgentCache/[a-zA-Z_$][\w$]*" internal="true" method="post" scoped-services="all">
 	         <param-group name="invokerparams" />
 	         <param-group name="iamapiparams" />
 	    </url>

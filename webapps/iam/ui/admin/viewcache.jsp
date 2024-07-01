@@ -86,7 +86,8 @@ public String getNext(Iterator itr,String datatype){
 			ax += score.longValue() + " :<br>" + tup.getElement()+"<hr>";
 		}
 		if(datatype.equals("list")){
-			ax += IAMEncoder.encodeHTML((itr.next() == null ? null : convertToString(itr.next())[0]));
+			Object value = itr.next();
+			ax += IAMEncoder.encodeHTML((value == null ? null : convertToString(value)[0]));
 		}
 		ax += "</li>";
 		if(count==25){

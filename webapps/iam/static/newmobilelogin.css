@@ -286,8 +286,7 @@ body {
     margin-top:9%;
 }
 .mobilelogo,.zohologo {
-	background: url("../images/rebrand-logos.png") no-repeat 2px -24px;
-	background-size: 100px;
+	background: url("../images/newZoho_logo.svg") no-repeat;
 }
 .Site24x7 {
 	background: url("../images/site24x7-logo.png") no-repeat 0 0 / contain;
@@ -1389,10 +1388,9 @@ span.cursor-place{
 		font-size: 24px;
 	}
 	.mobilelogo {
-	    background: url("../images/rebrand-logos.png") no-repeat 2px -34px !important;
+	    background: url("../images/newZoho_logo.svg") no-repeat !important;
 	    margin-top: 9%;
-	    background-size: 138px !important;
-	    height: 53px !important;
+	    height: 40px !important;
 	    width: 150px !important;
 	    display: inline-block;
 	}
@@ -1437,10 +1435,9 @@ span.cursor-place{
 	    margin-top: 2% !important;
 	}
 	.mobilelogo {
-	    background: url("../images/rebrand-logos.png") no-repeat 2px -34px !important;
+	    background: url("../images/newZoho_logo.svg") no-repeat !important;
 	    margin-top: 4%;
-	    background-size: 138px !important;
-	    height: 53px !important;
+	    height: 40px !important;
     	width: 150px !important;
 	    display: inline-block;
 	}

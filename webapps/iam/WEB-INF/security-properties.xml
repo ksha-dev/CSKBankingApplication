@@ -15,6 +15,8 @@
     <property name="use.iam" value="true" />
     <property name="secret.request.param.names" value="PASSWORD,password,loginpassword,current,newp,invoker_method,pwd,cpwd,ticket,CURRPASSWORD,TICKET,authtoken,temp_token" />
 
+    <property name="mask.ignore.extra.param" value="true"/>
+
     <!-- This is to push critical excetion to logs events for finding any brute force attack is happening -->
     <property name="log.push.security.exception" value="true" />
     <!-- Logging Stream content needs to enabled in new log build
@@ -31,6 +33,9 @@
     <property name="pattern.matcher.timeoutinmillis" value="5000" />
     <!-- Global value for PatternMatcher max.iterationcount -->
     <property name="pattern.matcher.max.iterationcount" value="1000000" />
+    <!-- Enable NIC Start
+    <property name="csrf.cookie.samesite.mode" value="lax" />
+    Enable NIC End -->
   </properties>
 </security>
 

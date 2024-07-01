@@ -1,7 +1,6 @@
 //$Id$
 var userPrimaryFactor,allowedmodes,prev_showmode,resendTimer,_time,secondarymodes,mobposition;
 var isTroubleinVerify = isPasswordless = isWmsRegistered = isResend =false;
-var callmode="primary";//no i18N
 var verifyCount = 0,wmscount = 0;
 
 function getCookie(cookieName) 
@@ -55,11 +54,11 @@ function setFooterPosition(){
 function sendRequestWithCallback(action, params, async, callback,method) {
 	if (typeof contextpath !== 'undefined') {
 		action = contextpath + action;
-	}
-	var serviceParam = "servicename=" + euc(service_name) + "&serviceurl=" + euc(service_url);	// No I18N
+	}	
+	var serviceParam = "servicename=" + euc(service_name) + "&serviceurl=" + euc(service_url) + "&post="+post_action;	// No I18N
 	action = action.indexOf("?") == -1 ? action +"?"+ serviceParam : action +"&"+ serviceParam;
 	action = appendActionId(action);
-    var objHTTP = xhr();
+	var objHTTP = xhr();
     objHTTP.open(method?method:'POST', action, async);
     objHTTP.setRequestHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8');
     objHTTP.setRequestHeader('X-ZCSRF-TOKEN',csrfParam+'='+euc(getCookie(csrfCookieName)));
@@ -67,9 +66,7 @@ function sendRequestWithCallback(action, params, async, callback,method) {
 	objHTTP.onreadystatechange=function() {
 	    if(objHTTP.readyState==4) {
 	    	if (objHTTP.status === 0 ) {
-    			$("#nextbtn span").removeClass("zeroheight");
-    			$("#nextbtn").removeClass("changeloadbtn");
-    			$("#nextbtn").attr("disabled", false);
+    			removeBtnLoading();
     			showErrorToast(I18N.get('IAM.PLEASE.CONNECT.INTERNET'));
     			return false;
 			}
@@ -106,6 +103,9 @@ function logoutFuntion(){
 
 function goToForgotPassword(){
 	resetPassUrl = resetPassUrl + "?serviceurl="+euc(service_url); //No I18N
+	if(window.location.search.indexOf("darkmode=true") > -1 ){
+		resetPassUrl+="&darkmode=true"; //No I18N
+	}
 	var LOGIN_ID = de('login_id').innerText.trim(); // no i18n
 	if(de('login_id') && (isUserName(LOGIN_ID) || isEmailId(LOGIN_ID) || isPhoneNumber(LOGIN_ID.split("-")[1]))){
 		var oldForm = document.getElementById("recoveryredirection");
@@ -166,6 +166,11 @@ function showErrorToast(msg,link_ele){
 function closeTopErrNotification(){
 	$(".Errormsg").css("top","-100px");
 }
+function disableReauthBtn(){
+	$("#reauth_button span").addClass("zeroheight");
+	$("#reauth_button").addClass('changeloadbtn');
+	$("#reauth_button").attr("disabled", true);
+};
 function removeBtnLoading(){
 	$("#reauth_button span").removeClass("zeroheight");
 	$("#reauth_button").removeClass("changeloadbtn");
@@ -227,12 +232,18 @@ function appendActionId(url) {
 	}
 	return url;
 }
-
-function verifyUserAuthFactor(f){
+function verifyUserAuthFactor(frm){
+	try{
+		verifyUserAuthFactorValidation(frm)
+	}
+	catch(err){
+		window.location.reload()
+	}
+	return false;
+}
+function verifyUserAuthFactorValidation(f){
 	if(reloginAuthMode === "passkey" || reloginAuthMode === "passkeyreauth"){
-		$("#reauth_button span").addClass("zeroheight");
-		$("#reauth_button").addClass('changeloadbtn');
-		$("#reauth_button").attr("disabled", true);
+		disableReauthBtn();
 		enablePasskey();
 		return false;
 	}
@@ -243,16 +254,41 @@ function verifyUserAuthFactor(f){
 			showAutheticationError(I18N.get("IAM.ERROR.ENTER.LOGINPASS"),"password_container");	//No I18N
 	    	return false;
 		}
-		$("#reauth_button span").addClass("zeroheight");
-		$("#reauth_button").addClass('changeloadbtn');
-		$("#reauth_button").attr("disabled", true);
-		var jsonData = {"passwordreauth" : {"password" : passwd}}; //No I18N
-		var passwordValidateUrl = "/relogin/v1/primary/"+zuid+"/password";// : "//no i18N
-		setTimeout(function(){sendRequestWithCallback(passwordValidateUrl,JSON.stringify(jsonData),true,passwordValidationCallback)},200);
+		disableReauthBtn();
+		encryptData.encrypt([passwd]).then(function(encryptedpassword) {
+			encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			var jsonData = {"passwordreauth" : {"password" : encryptedpassword}}; //No I18N
+			var passwordValidateUrl = "/relogin/v1/password";// : "//no i18N
+			setTimeout(function(){sendRequestWithCallback(passwordValidateUrl,JSON.stringify(jsonData),true,passwordValidationCallback)},200);
+			return false;
+		}).catch(function(error){
+			//TBD : Error should be handled
+		});
 		return false;
 	}
 	else if(reloginAuthMode === "saml"){
 		enableSamlAuth();
+		return false;
+	}
+	else if(reloginAuthMode === "totp"){
+		var totp = de('mfa_totp_field_full_value').value.trim();		//No I18N
+		if(isEmpty(totp)){
+			showAutheticationError(I18N.get("IAM.NEW.SIGNIN.INVALID.OTP.MESSAGE.EMPTY"),"mfa_totp_container");	//No I18N
+	    	return false;
+		}
+		if(totp.length != totp_size){
+			showAutheticationError(I18N.get("IAM.ERROR.VALID.OTP"),"mfa_totp_container");	//No I18N
+	    	return false;
+		}
+		var authURL = "/relogin/v1/totp/"+userAuthModes.totp.data.e_token;	//no i18N
+		var jsonData = { 'totpreauth' : { 'code' : totp} };//no i18N
+		disableReauthBtn();
+		setTimeout(function(){sendRequestWithCallback(authURL,JSON.stringify(jsonData),true,validTotpCallback,"PUT")},200);
+		return false;
+	}
+	else if(reloginAuthMode === "yubikey" || reloginAuthMode === "yubikeyreauth"){
+		disableReauthBtn();
+		enableSecurityKey();
 		return false;
 	}
 	else if(reloginAuthMode === "jwt"){
@@ -269,12 +305,10 @@ function verifyUserAuthFactor(f){
 			showAutheticationError(I18N.get("IAM.ERROR.VALID.OTP"),"otp_container");//No I18N
 			return false;
 		}
-		var loginurl = "/relogin/v1/primary/"+zuid+"/otp/"+emobile;//no i18N
+		var loginurl = "/relogin/v1/otp/"+emobile;//no i18N
 	//	if(isCaptchaNeeded){loginurl += "&captcha=" +captchavalue+"&cdigest="+cdigest;}
 		var jsonData = { 'otpreauth' : { 'code' : OTP_CODE, 'is_resend' : false } };//no i18N
-		$("#reauth_button span").addClass("zeroheight");
-		$("#reauth_button").addClass('changeloadbtn');
-		$("#reauth_button").attr("disabled", true);
+		disableReauthBtn();
 		setTimeout(function(){sendRequestWithCallback(loginurl,JSON.stringify(jsonData),true,otpValidationCallback,"PUT")},200);//no i18n
 		return false;
 	}
@@ -291,7 +325,7 @@ function verifyUserAuthFactor(f){
 				}
 				return false;
 			}
-			else if(myzohototp.length!=6){
+			else if(myzohototp.length!=totp_size){
 				if(isTroubleinVerify){					
 					showAutheticationError(I18N.get("IAM.ERROR.VALID.OTP"),"verify_totp_container");//No I18N
 				}
@@ -301,7 +335,7 @@ function verifyUserAuthFactor(f){
 				return false;
 			}
 		}
-		var loginurl="/relogin/v1/"+callmode+"/"+zuid+"/device/"+deviceid;//no i18N
+		var loginurl="/relogin/v1/device/"+deviceid;//no i18N
 		isResend = prefoption === "push" ? true : false; // no i18N
 		jsonData = prefoption==="totp" ? {'devicereauth':{ 'devicepref' : prefoption, 'code' : myzohototp } } :{'devicereauth':{'devicepref':prefoption }}; ;//no i18N
 		var method = "POST"; // no i18n
@@ -318,64 +352,74 @@ function verifyUserAuthFactor(f){
 }
 
 function setReloginForm(){
-	var isOTP = isSaml = isFederated = isNoPassword = isJwt = isEOTP = false;
+	var authModes = {
+			"isOTP": false,		// no i18n
+			"isTOTP": false,		// no i18n
+			"isJwt": false,			// no i18n
+			"isSaml": false,		// no i18n
+			"isFederated": false,	// no i18n
+			"isNoPassword": true,		// no i18n
+			"isEOTP": false,			// no i18n
+			"isOIDC": false				// no i18n
+	}
 	isPrimaryMode =  true;
 	allowedmodes = userAuthModes.allowed_modes;
 	userPrimaryFactor=prev_showmode = reloginAuthMode = allowedmodes[0];
+	if(allowedmodes.indexOf("passkey") != 0 && allowedmodes.indexOf("mzadevice") != 0){
+		allowedmodes.forEach(function(usedmodes){
+			switch(usedmodes){
+				case "otp": //no i18n
+					authModes.isOTP = true;
+					break;
+				case "totp": //no i18n
+					authModes.isTOTP = true;
+					break;
+				case "saml": //no i18n
+					authModes.isSaml = true;
+					break;
+				case "jwt": //no i18n
+					authModes.isJwt = true;
+					break;
+				case "federated": //no i18n
+					authModes.isFederated =true;
+					break;
+				case "password": //no i18n
+					authModes.isNoPassword = false;
+					break;
+				case "email": //no i18n
+					authModes.isEOTP = true;
+					break;
+				case "oidc" : //no i18n
+					authModes.isOIDC = true;
+			}
+		});
+	}
 	var altmode = allowedmodes[1];
 	var isOtherModeAvailable = typeof altmode != "undefined";//no i18n
-	$(".otp_actions .reloginwithjwt,.otp_actions .reloginwithsaml,.otp_actions .showmorereloginoption,.header_for_oneauth,#try_other_options,.fed_2show,#lineseparator").hide();	//no i18n
+	$(".otp_actions .showmorereloginoption,.header_for_oneauth,#try_other_options,.fed_2show").hide();	//no i18n
 	if(allowedmodes[0]==="passkey"){
 		if(!isWebAuthNSupported()) {
 			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.BrowserNotSupported"));
 		}
 
-		$("#relogin_primary_container,#lineseparator,.fed_2show").hide();
+		$("#relogin_primary_container,.fed_2show").hide();
 		$("#reauth_button span").html(I18N.get('IAM.RELOGIN.VERIFY.VIA.PASSKEY'));
-		$("#tryAnotherSAMLBlueText").show();
+		if(allowedmodes.length>1){
+			secondarymodes = allowedmodes;
+			$("#tryAnotherSAMLBlueText").show();
+		}
 	} 
 	if(allowedmodes[0] === "password" || allowedmodes[0] === "federated"){
 		$("#relogin_password_input").attr("type","password");		//No i18N
+		if(allowedmodes[0] === "password"){$("#enableforgot").show();}
 		if(isOtherModeAvailable){
-			var samlcount = userAuthModes && userAuthModes.saml && userAuthModes && userAuthModes.saml.count;	
-			if((allowedmodes.indexOf("otp") != -1 && allowedmodes.indexOf("saml") != -1) || (samlcount > 1)){
-				$('#enablemore').show();
-				$('#enableforgot').hide();
-			}else if(allowedmodes.indexOf("otp") != -1 && allowedmodes.indexOf("jwt") != -1){
-				$('#enablemore').show();
-				$('#enableforgot').hide();
-			}
-			else if(allowedmodes.indexOf("otp") != -1 && allowedmodes.indexOf("email") != -1){
-				$('#enablemore').show();
-				$('#enableforgot').hide();
-			}
-			else if(allowedmodes.indexOf("saml") != -1 && allowedmodes.indexOf("email") != -1){
+			if(allowedmodes.indexOf("otp") != -1 && allowedmodes.indexOf("email") != -1){
+				secondarymodes = allowedmodes;
 				$('#enablemore').show();
 				$('#enableforgot').hide();
 			}
 			else if(allowedmodes.length >= 2){
-				allowedmodes.forEach(function(usedmodes){
-					switch(usedmodes){
-						case "otp": //no i18n
-							isOTP = true;
-							break;
-						case "saml": //no i18n
-							isSaml = true;
-							break;
-						case "jwt": //no i18n
-							isJwt = true;
-							break;
-						case "federated": //no i18n
-							isFederated =true;
-							break;
-						case "password": //no i18n
-							isNoPassword = false;
-							break;
-						case "email": //no i18n
-							isEOTP = true;
-					}
-				});
-				enablePassword(isOTP, isSaml, isFederated,isNoPassword,isJwt,isEOTP);
+				enablePassword(authModes);
 				if($("#enablemore").is(":visible") || $("#enableotpoption").is(":visible")){
 					$("#enableforgot").hide();
 				}
@@ -388,7 +432,7 @@ function setReloginForm(){
 		}
 		else if(allowedmodes[0] === "federated"){
 			$(".fed_2show").show();
-			$("#relogin_password,#lineseparator").hide();
+			$("#relogin_password").hide();
 		}
 	}
 	else if( allowedmodes[0] === "otp" || allowedmodes[0] === "email" ){
@@ -397,37 +441,51 @@ function setReloginForm(){
 		rmobile = allowedmodes[0] === "otp" ? numberFormat(userAuthModes.otp.data[0].r_mobile) : userAuthModes.email.data[0].email;
 		$('#verifywithpass').hide();
 		isNoPassword = true;
-		if(allowedmodes.length >= 2){
-			allowedmodes.forEach(function(usedmodes){
-				switch(usedmodes){
-					case "otp": //no i18n
-						isOTP = true;
-						break;
-					case "password": //no i18n
-						isNoPassword = false;
-						break;
-					case "saml": //no i18n
-						isSaml = true;
-						break;
-					case "jwt": //no i18n
-						isJwt = true;
-						break;
-					case "federated": //no i18n
-						isFederated =true;
-						break;
-					case "email": //no i18n
-						isEOTP = true;
-				}
-			});
-		}
-		enablePassword(isOTP, isSaml, isFederated,isNoPassword,isJwt,isEOTP);
+		enablePassword(authModes);
 		$(".otp_actions .reloginwithjwt,.otp_actions .reloginwithsaml,.otp_actions .showmorereloginoption,#enablemore").hide();
-		showAndGenerateOtp(allowedmodes[0]);
-		$('#otp_container .textbox_actions').show();
-		if(isSaml){
-			$("#enablesaml").show();
+		if(userAuthModes.email!=undefined && userAuthModes.email.data.length > 1 && ! (userAuthModes.email.data.some(function(obj){return obj.isPrimary}))){
+			if(allowedmodes[0] === "email" && userAuthModes.email.data.length > 1){
+				emobile =  userAuthModes.email.data[0].e_email;
+				rmobile =  userAuthModes.email.data[0].email;
+				showAndGenerateOtp(allowedmodes[0]);
+				$("#otp_container .textbox_actions").show();
+			}
+			else if(userAuthModes.otp!=undefined){
+				emobile =  userAuthModes.otp.data[0].e_mobile;
+				rmobile =  numberFormat(userAuthModes.otp.data[0].r_mobile);
+				showAndGenerateOtp(allowedmodes[1]);
+				$("#otp_container .textbox_actions").show();
+			}
+			else{
+				showViaSecondaryMail();
+				$("#otp_container").hide();
+			}
+		}
+	    else if(allowedmodes[0] == 'email' && userAuthModes.email.data.length == 1){
+				emobile =  userAuthModes.email.data[0].e_email;
+				rmobile =  userAuthModes.email.data[0].email;
+				showAndGenerateOtp(allowedmodes[0]);
+				$("#otp_container .textbox_actions").show();
+		}
+		else if(userAuthModes.otp!=undefined && userAuthModes.otp.count>1 ){
+			showViaSecondaryMail();
+		}
+		else{
+			$("#reauth_button,#password_container,#otp_container").hide();
+			$(".sendotp_to_mobile .mobile_desc").html(formatMessage(I18N.get("IAM.REAUTH.SEND.OTP.TO.NUMBER"),rmobile));
+			$(".sendotp_to_mobile .btn").attr("onclick","sendOtp()");
+			$(".sendotp_to_mobile,#otp_container .textbox_actions").show();
 		}
 		setFooterPosition();
+		if(allowedmodes[0] === "otp" && userAuthModes.otp.data.length>1){
+			mobposition = 0;
+		}
+		if(allowedmodes.length>1){
+			secondarymodes = allowedmodes;
+			if(!authModes.isFederated && !authModes.isSaml && !authModes.isOIDC && !authModes.isJwt){
+				$("#tryAnotherSAMLBlueText").show();
+			}
+		}
 		return false;
 	}
 	else if(allowedmodes[0]==="mzadevice"){
@@ -438,30 +496,57 @@ function setReloginForm(){
 		enableMyZohoDevice();
 		return false;
 	}
-	else if(allowedmodes[0]==="saml"){
-		$(".blur,.loader").hide();
+	else if(allowedmodes[0]==="saml" || allowedmodes[0]==="jwt" || allowedmodes[0] === "oidc"){
 		$("#password_container").slideUp(300);
-		if(isOtherModeAvailable){$("#tryAnotherSAMLBlueText").show()}
-		changeButtonAction(I18N.get('IAM.RELOGIN.VERIFY.USING.SAML'));
-		$("#reauth_button").show();
+		$(".fed_2show").show();
+		enablePassword(authModes);
+		$(".blur,.loader,#relogin_password,.relogin_fed_text").hide();
 		setFooterPosition();
 		return false;
 	}
-	else if(allowedmodes[0]==="jwt"){
-		
-		$(".blur,.loader").hide();
-		$("#password_container").slideUp(300);
-		if(isOtherModeAvailable){$("#tryAnotherSAMLBlueText").show()}
-		changeButtonAction(I18N.get('IAM.RELOGIN.VERIFY.USING.JWT'));
-		$("#reauth_button").show();
-		setFooterPosition();
-		return false;
+	if(allowedmodes[0]==="yubikey"){
+		if(!isWebAuthNSupported()) {
+			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.BrowserNotSupported"));
+		}
+		$("#relogin_primary_container,.fed_2show,.header_content").hide();
+		$(".header_for_oneauth").show();
+		$(".header_for_oneauth .head_text").text($(".header_content .head_text").text());
+		$(".header_for_oneauth .header_desc").text(I18N.get('IAM.NEW.SIGNIN.YUBIKEY.HEADER.NEW'));
+		$("#reauth_button span").html(I18N.get('IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY'));
+		if(allowedmodes.length>1){
+			secondarymodes = allowedmodes;
+			$("#tryAnotherSAMLBlueText").show();
+		}
 	}
+	if(allowedmodes[0]==="totp"){
+		$(".header_content").hide();
+		$(".header_for_oneauth").show();
+		$(".header_for_oneauth .head_text").text($(".header_content .head_text").text());
+		$("#password_container,.fed_2show").hide();
+		$(".header_for_oneauth .header_desc").text(I18N.get('IAM.NEW.SIGNIN.MFA.TOTP.HEADER'));
+		$("#reauth_button span").html(I18N.get('IAM.NEW.SIGNIN.VERIFY'));
+		$("#mfa_totp_container").show();
+		splitField.createElement('mfa_totp_field',{
+			"splitCount":totp_size,					// No I18N
+			"charCountPerSplit" : 1,		// No I18N
+			"isNumeric" : true,				// No I18N
+			"otpAutocomplete": true,		// No I18N
+			"customClass" : "customOtp",	// No I18N
+			"inputPlaceholder":'&#9679;',	// No I18N
+			"placeholder":I18N.get("IAM.VERIFY.CODE")				// No I18N
+		});
+		$('#mfa_totp_field .customOtp').attr('onkeypress','remove_err()');
+		$("#mfa_totp_field").click();
+		if(allowedmodes.length>1){
+			secondarymodes = allowedmodes;
+			$("#tryAnotherSAMLBlueText").show();
+		}
+	} 
 	$(".blur,.loader").hide();
 }
 
 function enablePasskey(){
-	var reauthurl = "/relogin/v1/primary/"+zuid+"/passkey/self";	//no i18N
+	var reauthurl = "/relogin/v1/passkey/self";	//no i18N
 	sendRequestWithCallback(reauthurl,"",true,passkeyActivtedCallback);
 	return false;
 }
@@ -472,13 +557,13 @@ function passkeyActivtedCallback(resp){
 		var statusCode = jsonStr.status_code;
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
 			var successCode = jsonStr.code;
-			if(successCode==="SI203"){
+			if(successCode==="RA005"){
 				getAssertionLookup(jsonStr.passkeyreauth);
 			}	
 		}
 		else{
-			if(jsonStr.cause==="throttles_limit_exceeded"){
-				showErrorToast(jsonStr.localized_message);
+			if(jsonStr.cause==="throttles_limit_exceeded"||jsonStr.code === "Z225"){
+				window.location.href = logoutURL;
 				return false;
 			}
 			showErrorToast("password",jsonStr.localized_message); //no i18n
@@ -494,7 +579,7 @@ function passkeyActivtedCallback(resp){
 	return false;
 }
 
-function getAssertionLookup(parameters) {
+function getAssertionLookup(parameters,isSecKey) {
 	var requestOptions = {};
 	requestOptions.challenge = strToBin(parameters.challenge);
 	requestOptions.timeout = parameters.timeout;
@@ -543,36 +628,129 @@ function getAssertionLookup(parameters) {
 	      signature:          binToStr(_response.signature),
 	      userHandle:         binToStr(_response.userHandle)
 	    };
-	     var passkey_data ={};
-	     passkey_data.passkeyreauth = publicKeyCredential;
-	     sendRequestWithCallback("/relogin/v1/primary/"+zuid+"/passkey/self",JSON.stringify(passkey_data),true,VerifySuccess,"PUT");//no i18N
+	    var key_data ={};
+	    var authURL = "/relogin/v1/yubikey/self";	//no i18N
+	    if(isSecKey){
+	    	key_data.yubikeyreauth = publicKeyCredential;
+	    }else{
+	    	authURL = "/relogin/v1/passkey/self";	//no i18N
+	    	key_data.passkeyreauth = publicKeyCredential;
+	    }
+	    sendRequestWithCallback(authURL,JSON.stringify(key_data),true,VerifySuccess,"PUT");//no i18N
 	}).catch(function(err) {
-		changeButtonAction(I18N.get('IAM.RELOGIN.VERIFY.VIA.PASSKEY'));
-		if(err.name == 'NotAllowedError') {
-			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.NotAllowedError")); //no i18n	
-		} else if(err.name == 'InvalidStateError') {
-			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidStateError")); //no i18n
-		} else if (err.name == 'AbortError') {
-			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.NotAllowedError")); //no i18n
-		}else if (err.name == 'TypeError') {
-			showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.TYPE.ERROR"),formatMessage(I18N.get("IAM.WEBAUTHN.ERROR.HELP.HOWTO"),passkeyHelpDoc)); //no i18n
-		}
-		else {
-			showErrorToast(formatMessage(I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.ErrorOccurred"),support_email)+ '<br>' +err.toString()); //no i18n
-		}
+			changeButtonAction(isSecKey ? I18N.get('IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY') : I18N.get('IAM.RELOGIN.VERIFY.VIA.PASSKEY'));
+			if(err.name == 'NotAllowedError' || err.name == 'AbortError') {
+				showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.NotAllowedError")); //no i18n	
+			} else if(err.name == 'InvalidStateError') {
+				showErrorToast(isSecKey ? I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.InvalidStateError") : I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.InvalidStateError")); //no i18n
+			}else if (err.name == 'TypeError' && isSecKey == undefined) {
+				showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.TYPE.ERROR"),formatMessage(I18N.get("IAM.WEBAUTHN.ERROR.HELP.HOWTO"),passkeyHelpDoc)); //no i18n
+			}else{
+				showErrorToast(formatMessage(isSecKey ? I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.ErrorOccurred") : I18N.get("IAM.WEBAUTHN.ERROR.AUTHENTICATION.PASSKEY.ErrorOccurred"),support_email)+ '<br>' +err.toString()); //no i18n
+			}
 	});
 }
+
+function enableOIDCAuth(OIDCAuthID){
+	var loginurl="/relogin/v1/oidcreauth/"+OIDCAuthID;//no i18N
+	sendRequestWithCallback(loginurl,"",true,function(resp){
+		if(IsJsonString(resp)) {
+			var jsonStr = JSON.parse(resp);
+			switchto(jsonStr.oidcreauth.redirect_uri);
+		}else{
+			showErrorToast(I18N.get("IAM.ERROR.GENERAL"));
+			return false;
+		}
+	});
+	return false
+}
+
 function enableSamlAuth(samlAuthDomain){
 	if(userAuthModes.saml.data[0].redirect_uri){
 		switchto(userAuthModes.saml.data[0].redirect_uri);
 		return false;
 	}
 	samlAuthDomain = samlAuthDomain === undefined ? userAuthModes.saml.data[0].auth_domain : samlAuthDomain;
-	var loginurl="/relogin/v1/primary/"+zuid+"/samlreauth/"+samlAuthDomain;//no i18N
+	var loginurl="/relogin/v1/samlreauth/"+samlAuthDomain;//no i18N
 	sendRequestWithCallback(loginurl,"",true,handleSamlAuthdetails);
 	return false
 }
-
+function validTotpCallback(resp){
+	remove_err();
+	removeBtnLoading();
+	if(IsJsonString(resp)) {
+		var jsonStr = JSON.parse(resp);
+		var statusCode = jsonStr.status_code;
+		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) { 
+			reloginAuthMode = jsonStr.resource_name;
+			var successCode = jsonStr.code;
+			if(successCode === "RA200"){
+				if(post_action)
+				{
+					window.close();
+				}
+				else
+				{
+					window.location.href=jsonStr[reloginAuthMode].redirect_uri;; 
+				}
+				return false;
+			}
+			return false;
+		}else{
+			if(jsonStr.code === "Z225" || ((jsonStr.errors)&&(jsonStr.errors[0].code === "RA003"))){
+				window.location.href = logoutURL;
+				return false;
+			}
+			var error_resp = jsonStr.errors[0];
+			var errorCode=error_resp.code;
+			var errorMessage = jsonStr.localized_message;
+			showAutheticationError(errorMessage,"mfa_totp_container"); //no i18n
+			return false;	
+		}
+	}else{
+		showAutheticationError(I18N.get("IAM.ERROR.GENERAL"),"mfa_totp_container"); //no i18n
+		return false;
+	}
+	return false;
+}
+function enableSecurityKey(){
+	if(!isWebAuthNSupported()){
+		showErrorToast(I18N.get("IAM.WEBAUTHN.ERROR.BrowserNotSupported"));
+		return false;
+	}
+	var authURL= "/relogin/v1/yubikey/self";	//no i18n
+	sendRequestWithCallback(authURL,"",true,handleSecuritykeyDetails);
+	return false;
+}
+function handleSecuritykeyDetails(resp){
+	if(IsJsonString(resp)) {
+		var jsonStr = JSON.parse(resp);
+		reloginAuthMode = jsonStr.resource_name;
+		var statusCode = jsonStr.status_code;
+		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
+			if(jsonStr.code==="RA006"){
+				//show yubikey
+			   	getAssertionLookup(jsonStr.yubikeyreauth,true);
+			}	
+		}
+		else{
+			removeBtnLoading();
+			if(jsonStr.cause==="throttles_limit_exceeded"){
+				showErrorToast(jsonStr.localized_message);
+				return false;
+			}
+			showErrorToast(jsonStr.localized_message); 
+			return false;
+		}
+		return false;
+	   	
+	}else{
+		removeBtnLoading();
+		showErrorToast(I18N.get(jsonStr.localized_message));
+		return false;	
+	}
+	return false;
+}
 function handleSamlAuthdetails(resp){
 	if(IsJsonString(resp)) {
 		var jsonStr = JSON.parse(resp);
@@ -583,179 +761,44 @@ function handleSamlAuthdetails(resp){
 	}
 }
 
-function showMoreReloginOption(isMoreSaml){
-	$('#enablemore,#lineseparator,.nopassword_container,#tryAnotherSAMLBlueText').hide();
-	if(!isMoreSaml){
-		allowedmodes.splice(allowedmodes.indexOf(prev_showmode), 1);
-		allowedmodes.unshift(prev_showmode);
-	}
-	var problemrelogin_con = "";
-	var i18n_msg = {"passkey":["IAM.RELOGIN.VERIFY.VIA.PASSKEY","IAM.RELOGIN.VERIFY.VIA.PASSKEY.DESC"],"otp":["IAM.AC.CHOOSE.OTHER_MODES.MOBILE.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"],"saml":["IAM.RELOGIN.VERIFY.WITH.SAML.TITLE","IAM.NEW.SIGNIN.SAML.HEADER"], "password":["IAM.RELOGIN.VERIFY.WITH.PASSWORD.TITLE","IAM.RELOGIN.VERIFY.VIA.PASSWORD.HEADER"],"jwt":["IAM.RELOGIN.VERIFY.USING.JWT","IAM.NEW.SIGNIN.SAML.HEADER"],"email":["IAM.AC.CHOOSE.OTHER_MODES.EMAIL.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"]}; //No I18N
-	var problemrelogininheader = "<div class='problemrelogin_head'><span class='icon-backarrow backoption' onclick='hideOtherReloginOptions()'></span>"+I18N.get("IAM.RELOGIN.VERIFY.ANOTHER.WAY")+"</div>";
-	allowedmodes.forEach(function(prob_mode,position){
-		if((position != 0) || isMoreSaml){
-				var saml_position;
-				var secondary_header = i18n_msg[prob_mode] ?  I18N.get(i18n_msg[prob_mode][0]) : "";
-				var secondary_desc = i18n_msg[prob_mode] ?  I18N.get(i18n_msg[prob_mode][1]) : "";
-				if(prob_mode==="otp"){
-					emobile=userAuthModes.otp.data[0].e_mobile;
-					rmobile=numberFormat(userAuthModes.otp.data[0].r_mobile);
-					secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),rmobile);
-					problemrelogin_con += createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc);
-				}
-				else if(prob_mode==="saml"){
-					var saml_modes = userAuthModes.saml.data;
-					saml_modes.forEach(function(data,index){
-						var displayname = userAuthModes.saml.data[index].display_name;
-						var domainname = userAuthModes.saml.data[index].domain;
-						secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][0]),displayname);
-						secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),domainname);
-						saml_position = index;
-						problemrelogin_con += createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc);
-					});
-				}
-				else if(prob_mode==="jwt"){
-					var domainname = userAuthModes.jwt.data[0].domain;
-					secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),domainname);
-					problemrelogin_con += createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc);
-				}
-				else if(prob_mode==="email"){
-					emobile=userAuthModes.email.data[0].e_email;
-					rmobile=userAuthModes.email.data[0].email;
-					secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),rmobile);
-					problemrelogin_con += createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc);
-				}
-				else if(prob_mode==="federated"){
-					return false;
-				}
-				else if(prob_mode === "oadevice"){
-					var oadevice_modes = userAuthModes.oadevice.data;
-					oadevice_modes.forEach(function(data,index){
-						var oadevice_option = data.prefer_option;
-						var device_name = data.device_name;
-						var oneauthmode = oadevice_option ==="ONEAUTH_PUSH_NOTIF" ? "push" : oadevice_option === "ONEAUTH_TOTP" ? "totp" : oadevice_option === "ONEAUTH_SCAN_QR" ? "scanqr" : oadevice_option === "ONEAUTH_FACE_ID" ? "faceid": oadevice_option === "ONEAUTH_TOUCH_ID" ? "touchid" : "";//no i18N
-						var secondary_header = I18N.get("IAM.NEW.SIGNIN.VERIFY.VIA.ONEAUTH");
-						var secondary_desc = formatMessage(I18N.get("IAM.RELOGIN.VERIFY.VIA.ONEAUTH.DESC"),oneauthmode,device_name);
-						problemrelogin_con += createReloginMoreOptions(prob_mode,index,secondary_header,secondary_desc);
-					});
-				}else if(prob_mode==="mzadevice"){ // no I18N
-					var mzadevice_modes = userAuthModes.mzadevice.data;
-					mzadevice_modes.forEach(function(data,index){
-						var mzadevice_option = data.prefer_option;
-						var device_name = data.device_name;
-						var secondary_header = I18N.get("IAM.NEW.SIGNIN.VERIFY.VIA.ONEAUTH");
-						var secondary_desc = formatMessage(I18N.get("IAM.RELOGIN.VERIFY.VIA.ONEAUTH.DESC"),mzadevice_option,device_name);
-						problemrelogin_con += createReloginMoreOptions(prob_mode,index,secondary_header,secondary_desc,index);
-					});
-				}
-				else{
-					//if(prob_mode != "mzadevice" && prob_mode != "oadevice"){
-						problemrelogin_con += createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc);
-					//}
-				}
-		}
-	});
-	$('#other_relogin_options').html(problemrelogininheader +"<div class='problemrelogincon'>"+ problemrelogin_con+"</div>");
-	$('#password_container,#reauth_button,.header_content,#otp_container,.fed_2show').hide();
-	$('#other_relogin_options').show();
-	setFooterPosition();
-	return false;
-}
-
-function createReloginMoreOptions(prob_mode,saml_position,secondary_header,secondary_desc){
-	var prefer_icon =  prob_mode;
-	var secondary_con = "<div class='optionstry options_hover' id='secondary_"+prob_mode+"' onclick=showallowedmodes('"+prob_mode+"','"+saml_position+"')>\
-							<div class='img_option_try img_option icon-"+prefer_icon+"'></div>\
-							<div class='option_details_try decreasewidth'>\
-								<div class='option_title_try'>"+secondary_header+"</div>\
-								<div class='option_description'>"+secondary_desc+"</div>\
-							</div>\
-						</div>"
-	return secondary_con;
-}
-
-function showallowedmodes(enablemode,mode_index){
-	$(".blur,.loader").show();
-	if(enablemode === 'saml'){
-		enableSamlAuth(userAuthModes.saml.data[mode_index].auth_domain);
-		$(".blur,.loader").hide();
-		
-	}
-	else if(enablemode === 'jwt'){
-		var redirectURI = userAuthModes.jwt.data[0].redirect_uri;
-		switchto(redirectURI);
-		$(".blur,.loader").hide();
-		
-	}
-	else if(enablemode === 'otp' || enablemode === 'email'){ //no i18n
-		prev_showmode= enablemode === "federated"? prev_showmode : enablemode; // no i18n
-		$("#resendotp").show();
-		emobile = enablemode === 'email' ? userAuthModes.email.data[0].e_email : userAuthModes.otp.data[0].e_mobile;
-		rmobile = enablemode === 'email' ? userAuthModes.email.data[0].email : numberFormat(userAuthModes.otp.data[0].r_mobile);
-		$("#otp_container .header_desc").hide();
-		if(enablemode === 'email'){
-			$(".email_otp_description span").text(rmobile);
-			$(".email_otp_description").show();
-		}
-		else{
-			$(".mobile_otp_description span").text(rmobile);
-			$(".mobile_otp_description").show();
-		}
-		showAndGenerateOtp(enablemode);
-		$('.textbox_actions,.blueforgotpassword').hide();
-		goBackToCurrentMode();
-		$("#lineseparator,.fed_2show,#enablemore").show();
-	}
-	else if(enablemode === 'password'){
-		$('#enableotpoption,#resendotp,#relogin_primary_container #waitbtn').hide();
-		$(".blueforgotpassword").show();
-		prev_showmode= enablemode === "federated"? prev_showmode : enablemode; // no i18n
-		showPassword();
-		goBackToCurrentMode();	
-		if(allowedmodes.length>1){$(".showmorereloginoption").show()}
-		$("#lineseparator,.fed_2show").show();
-		$(".blur,.loader").hide();
-		$('#relogin_password_input').focus();
-	}
-	else if(enablemode === 'passkey'){
-		$('#enableotpoption,#resendotp,#lineseparator,.fed_2show,.blur,.loader').hide();
-		goBackToCurrentMode();
-		changeButtonAction(I18N.get('IAM.RELOGIN.VERIFY.VIA.PASSKEY'));//no i18n
-		reloginAuthMode = enablemode;
-		prev_showmode = enablemode;
-		$("#enablemore,#try_other_options").hide();
-		$("#tryAnotherSAMLBlueText").show();
-	}
-	else if(enablemode === "mzadevice"){//No i18N
-		isResend = false;
-		isPasswordless=true;
-		mzadevicepos = mode_index;
-		prev_showmode = enablemode;
-		secondarymodes = allowedmodes;
-		prefoption = userAuthModes.mzadevice.data[mzadevicepos].prefer_option;
-		reloginAuthMode = enablemode;
-		handleSecondaryDevices(reloginAuthMode);
-		$(".secondary_devices").val(mode_index).change();
-		if(prefoption === 'totp'){
-			goBackToCurrentMode();
-			return false;
-		}
-		$("#other_relogin_options").hide();
-	}
-	$("#try_other_options").hide();
-	setTimeout(function(){setFooterPosition()},300);
-	return false;
+function sendOtpToEmail(){
+	$(".sendotp_to_email").hide();
+	showAndGenerateOtp(allowedmodes[0]);
+	$('#otp_container .textbox_actions,#otp_container .textbox_div').show();
+	$("#reauth_button").show();
+	$(".sendotp_to_email .btn").attr("onclick","");
 }
 
 function goBackToCurrentMode(){
-	$('.header_content,.fieldcontainer,#reauth_button,#relogin_primary_container,#try_other_options').show();
+	$('.header_content,.fieldcontainer,#relogin_primary_container').show();
+	if(!$(".sendotp_to_mobile .sendotp_to_mobile_btn").is(":visible") && !$(".sendotp_to_email .sendotp_to_email_btn").is(":visible")){
+		$("#reauth_button").show();
+	}
+	if(prev_showmode === "totp"){
+		$('.header_content').hide();
+		$('.header_for_oneauth').show();
+		$("#mfa_totp_field").click();
+	}
+	$('#tryAnotherSAMLBlueText').show();
 	$('#problemreloginui,#other_relogin_options').hide();
-	if(prev_showmode === "mzadevice"){$(".tryanother,.devices .selection").show();$("#try_other_options").hide();}	
+	if(prev_showmode === "mzadevice"){$(".tryanother,.devices .selection").show();$("#try_other_options,#tryAnotherSAMLBlueText").hide();}
+	if(prev_showmode === "otp"){
+		$('.header_for_oneauth').hide();
+		if(allowedmodes.indexOf('password') == "-1"){
+			$('.otp_actions #verifywithpass').hide();
+		}
+	}
 	if(!($('.secondary_devices option').length > 1 )){
 		$('.downarrow').hide();
 		$('.devices .selection').css("pointer-events", "none");
 	}
-	if(prev_showmode === "password"){$("#enablemore").show();$('#relogin_password_input').focus();}
+	if(prev_showmode === "password"){
+		$("#enablemore").show();
+		changeButtonAction(I18N.get('IAM.CONFIRM.PASS'));//no i18n
+		$('#relogin_password_input').focus();
+	}
+	if(prev_showmode == "passkey"|| prev_showmode == "yubikey"){$("#password_container,#otp_container").hide();}
+	if(prev_showmode == "yubikey"){$(".header_content").hide();$(".header_for_oneauth").show()}
 }
 
 function hideOtherReloginOptions(){
@@ -773,65 +816,71 @@ function hideOtherReloginOptions(){
 	$("#"+show_mode+"_container").show();
 	$('#other_relogin_options').hide();
 	$('#other_relogin_options').html("");
-	if(allowedmodes[0] !== "passkey"){$("#lineseparator,.fed_2show").show();}
+	if(allowedmodes[0] !== "passkey"){$(".fed_2show").show();}
 	setFooterPosition();
 	return false;
 } 
 
-function enablePassword(isOTP,isSaml,isFederated,isNoPassword,isJwt,isEOTP){
+function enablePassword(authModes){
 	$(".blur,.loader").hide();
-	if(!isFederated && isNoPassword && isOTP){
-		$("#relogin_password .textbox_div,#reauth_button").hide()
-		$(".nopassword_container").css("position","unset");
-		$(".nopassword_container").css("width","100%");
-		$(".nopassword_container,#otp_container,#otp_container .textbox_div").show();
-		return false;
-	}
 	$("#relogin_password_input").attr("type","password");		//No i18N
 	$("#relogin_password_input").focus();
-	if (isOTP && isEOTP){
+	if (authModes.isOTP && authModes.isEOTP){
+		secondarymodes = userAuthModes.allowed_modes;
 		$("#enablemore").hide();
 		$('#enableforgot').hide();
-	}else if(isOTP){
+	}else if(authModes.isOTP){
 		$("#enableotpoption").show();
+		$('#enableforgot').hide();
 		$("#enableotpoption #reloginwithotp").attr("onclick","showAndGenerateOtp('moblie')");
 		emobile=userAuthModes.otp.data[0].e_mobile;
 		rmobile=numberFormat(userAuthModes.otp.data[0].r_mobile);
-	}else if(isEOTP){
+	}else if(authModes.isEOTP){
 		$("#enableotpoption").show();
 		$("#enableotpoption #reloginwithotp").attr("onclick","showAndGenerateOtp('email')");
 		emobile=userAuthModes.email.data[0].e_email;
 		rmobile=userAuthModes.email.data[0].email;
 	}
-	if(isSaml){
-		$("#enablesaml").show();
-	}if (isFederated){
-		$(".fed_2show,#lineseparator").show();
-		//$(".fed_div").hide();
-		if(!isOTP && !isSaml){ $("#enableforgot").show()};
+	if(authModes.isTOTP){
+		$("#tryAnotherSAMLBlueText").show();
+		secondarymodes = userAuthModes.allowed_modes;
+	}
+	if(authModes.isSaml){
+		$(".fed_2show").show();
+		userAuthModes.saml.data.forEach(function(data,ind){
+		    $(".fed_2show #all_idps").append($(".openIDP_template .saml_temp").clone().attr("id","saml_"+ind));		//No i18N
+		    var idp_ele = $(".fed_2show #all_idps #saml_"+ind);
+		    idp_ele.attr("onclick","enableSamlAuth('"+data.auth_domain+"')");	//No I18N
+		    idp_ele.find(".fed_text_avoid").text(formatMessage(idp_ele.find(".fed_text_avoid").text(),data.display_name));
+		});
+	}if (authModes.isFederated){
+		$(".fed_2show").show();
+		if(!authModes.isOTP && !authModes.isSaml){ $("#enableforgot").show()};
 		var idps = userAuthModes.federated.data;
-//		idps.forEach(function(idps){
-//			if(isValid(idps)){
-//				idp = idps.idp.toLowerCase();
-//				$("."+idp+"_fed").attr("style","display:block !important");
-//            }
-//		});
-		if((isNoPassword && isFederated) && (!isOTP && !isEOTP)){
-			$("#password_container .textbox_div,#nextbtn").hide()
-			$(".nopassword_container").css("position","absolute");
-			$(".nopassword_container").show();
+		if((authModes.isNoPassword && authModes.isFederated) && (!authModes.isOTP && !authModes.isEOTP)){
+			$("#password_container .textbox_div,#reauth_button").hide();
 		}
-	}if(!isNoPassword){
+	}if(!authModes.isNoPassword){
 		$("#verifywithpass").show();
 	}
-	if(isJwt){
-		$("#enablejwt").show();
-		var redirectURI = userAuthModes.jwt.data[0].redirect_uri;
-		$(".reloginwithjwt").attr("href",redirectURI);
+	if(authModes.isJwt){
+		$(".fed_2show").show();
+		userAuthModes.jwt.data.forEach(function(data,ind){
+		    $(".fed_2show #all_idps").append($(".openIDP_template .jwt_temp").clone().attr("id","jwt_"+ind));	//No i18N
+		    var idp_ele = $(".fed_2show #all_idps #jwt_"+ind);
+		    idp_ele.attr("onclick","switchto('"+data.redirect_uri+"')");	//No I18N
+		    idp_ele.find(".fed_text_avoid").text(formatMessage(idp_ele.find(".fed_text_avoid").text(),data.display_name));
+		});
 	}
-	if(isOTP && isSaml && !isNoPassword){
-		$('#enablemore').show();
-		$('#enableforgot').hide();
+	if(authModes.isOIDC){
+		$(".fed_2show").show();
+		userAuthModes.oidc.data.forEach(function(data,ind){
+		    $(".fed_2show #all_idps").append($(".openIDP_template .open_id_temp").clone().attr("id","oidc_"+ind));		//No i18N
+		    var idp_ele = $(".fed_2show #all_idps #oidc_"+ind);
+		    idp_ele.attr("onclick","enableOIDCAuth('"+data.oidc_id+"')");	//No I18N
+		    idp_ele.find(".fed_text_avoid").text(formatMessage(idp_ele.find(".fed_text_avoid").text(),data.display_name));
+		});
+		
 	}
 	if($("#enablemore").is(":visible") || $("#enableotpoption").is(":visible")){
 		$("#enableforgot").hide();
@@ -867,7 +916,9 @@ function showAndGenerateOtp(pmode){
 	if(showAndGenerateOtp.caller.name == "onclick"){		
 		$('#otp_container .textbox_actions').show();
 	}
+	$('#otp_container .textbox_div').show();
 	$("#otp_container").slideDown(300);
+	
 	splitField.createElement('otp_input_box',{
 		"splitCount":otp_length,					// No I18N
 		"charCountPerSplit" : 1,		// No I18N
@@ -884,9 +935,6 @@ function showAndGenerateOtp(pmode){
 	if(isPasswordless){
 		$('#verifywithpass').hide();
 		$('.relogin_head').css('margin-bottom','10px');
-		$('.service_name').html(formatMessage(I18N.get("IAM.NEW.SIGNIN.SERVICE.NAME.TITLE"),""));
-		$('#headtitle').text(I18N.get("IAM.SIGN_IN"));
-		$("#nextbtn span").text(I18N.get('IAM.SIGN_IN'));
 		//$('.username').text(deviceauthdetails.lookup.loginid);
 		resendotp_checking();
 		//if (!isRecovery) {allowedModeChecking();}
@@ -896,16 +944,14 @@ function showAndGenerateOtp(pmode){
 	
 }
 function generateOTP(isResendOnly){
-	var loginurl = "/relogin/v1/primary/"+zuid+"/otp/"+emobile;//no i18N
+	var loginurl = "/relogin/v1/otp/"+emobile;//no i18N
 	var callback = isResendOnly ? showResendInfo : enableOTPDetails;
 	!isResendOnly ? sendRequestWithCallback(loginurl,"",true,callback) : sendRequestWithCallback(loginurl,JSON.stringify({"otpreauth" : {"is_resend" : true }}),true,callback)//no i18n
 	return false;
 }
 
 function changeButtonAction(textvalue){
-	$("#reauth_button span").removeClass("zeroheight");
-	$("#reauth_button").removeClass("changeloadbtn");
-	$("#reauth_button").attr("disabled", false);
+	removeBtnLoading();
 	$("#reauth_button span").text(textvalue); //No I18N
 	return false;
 }
@@ -935,7 +981,7 @@ function passwordValidationCallback(resp){
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) { 
 			zuid = zuid ? zuid : jsonStr[reloginAuthMode].identifier;
 			var successCode = jsonStr.code;
-			if(successCode === "SI204" || successCode === "SI304"){
+			if(successCode === "RA200"){
 				if(post_action)
 				{
 					window.close();
@@ -972,7 +1018,7 @@ function otpValidationCallback(resp){
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) { 
 			zuid = zuid ? zuid : jsonStr[reloginAuthMode].identifier;
 			var successCode = jsonStr.code;
-			if(successCode === "SI204" || successCode === "SI304"){
+			if(successCode === "RA200"){
 				if(post_action)
 				{
 					window.close();
@@ -1006,6 +1052,7 @@ function otpValidationCallback(resp){
 
 function enableOTPDetails(resp){
 	if(IsJsonString(resp)) {
+		remove_err();
 		setTimeout(function(){$(".blur,.loader").hide()},300);
 		var jsonStr = JSON.parse(resp);
 		reloginAuthMode = jsonStr.resource_name;
@@ -1013,37 +1060,22 @@ function enableOTPDetails(resp){
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
 			var successCode = jsonStr.code;
 			if(successCode === "RA002"){
-				//isSecondary = deviceauthdetails.passwordauth && deviceauthdetails.passwordauth.modes.otp.count > 1 || (allowedmodes.length >1 && allowedmodes.indexOf("recoverycode") === -1) ? true : false; // no i18n
-				if(reloginAuthMode === "otpreauth"){
-					//clearCommonError("otp"); // no i18n
 					showSuccessToast(formatMessage(I18N.get("IAM.NEW.SIGNIN.OTP.SENT"),rmobile));
 					resendotp_checking();
-					allowedmodes.indexOf("saml") != -1 ? $(".otp_actions .reloginwithsaml").show() : $(".otp_actions .reloginwithsaml").hide();
-					allowedmodes.indexOf("jwt") != -1 ? $(".otp_actions .reloginwithjwt").show() : $(".otp_actions .reloginwithjwt").hide();
-					if(allowedmodes.indexOf("saml") != -1 && allowedmodes.indexOf("jwt") != -1 || allowedmodes.length>2){
-						$(".otp_actions .showmorereloginoption").show();
-						$(".otp_actions .reloginwithjwt,.otp_actions .reloginwithsaml,.otp_actions #verifywithpass").hide();
-					}
-					else{
-						$(".otp_actions .showmorereloginoption").hide();
-					}
-					if(isPasswordless){$(".otp_actions .showmorereloginoption").hide()}
+					if(isPasswordless || allowedmodes[0] == "passkey"){$(".otp_actions .showmorereloginoption").hide()}
 					$("#otp_input_box .empty_field:first").focus();
-					return false;	
-				}
-				resendotp_checking();
-				return false;
+					return false;
 			}
 			return false;
 		}
 		else{
-			if(jsonStr.code === "Z225" || ((jsonStr.errors)&&(jsonStr.errors[0].code === "RA003"))){
-				window.location.href = logoutURL;
-				return false;
-			}
-			var errorMessage = jsonStr.localized_message;
-			showAutheticationError(errorMessage,"otp_container"); //no i18n
-			return false;
+				if(jsonStr.code === "Z225" || ((jsonStr.errors)&&(jsonStr.errors[0].code === "RA003"))){
+					window.location.href = logoutURL;
+					return false;
+				}
+				var errorMessage = jsonStr.localized_message;
+				showAutheticationError(errorMessage,"otp_container"); //no i18n
+				return false;	
 		}
 	}
 	return false;
@@ -1086,10 +1118,10 @@ function enableMyZohoDevice()
 	prefoption = devicedetails.prefer_option;
 	devicename = devicedetails.device_name;
 	bioType = devicedetails.bio_type;
-	var loginurl="/relogin/v1/primary/"+zuid+"/device/"+deviceid;//no i18N
+	var loginurl="/relogin/v1/device/"+deviceid;//no i18N
 	var jsonData = {'devicereauth':{'devicepref':prefoption }};//no i18N
+	$(".blur,.loader").show();
 	sendRequestWithCallback(loginurl,JSON.stringify(jsonData),true,handleMyZohoDetails);
-	//signinathmode = callmode==="primary" ?"deviceauth":"devicesecauth";//no i18N
 	return false;
 }
 
@@ -1101,7 +1133,7 @@ function handleTotpDetails(resp){
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
 			var successCode = jsonStr.code;
 			var statusmsg = jsonStr[reloginAuthMode].status;
-			if(successCode === "SI302"|| successCode === "SI300" || successCode === "SI301" || successCode === "SI204" || successCode === "SI304"){
+			if(successCode === "RA200"){
 				switchto(jsonStr[reloginAuthMode].redirect_uri);
 				return false;
 			}
@@ -1127,13 +1159,13 @@ function handleTotpDetails(resp){
 
 function handleMyZohoDetails(resp){
 	if(IsJsonString(resp)) {
-		$(".blur,.loader").hide();
 		var jsonStr = JSON.parse(resp);
 		reloginAuthMode = jsonStr.resource_name;
 		var statusCode = jsonStr.status_code;
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
+			$(".blur,.loader").hide();
 			var successCode = jsonStr.code;
-			if(successCode === "RA001"||successCode==="MFA302"){
+			if(successCode === "RA001"){
 				if(isResend){
 					showResendPushInfo();
 					return false;
@@ -1146,7 +1178,7 @@ function handleMyZohoDetails(resp){
 				}
 				var headtitle = prefoption ==="push" ? "IAM.VERIFY.IDENTITY" : prefoption === "totp" ? "IAM.NEW.SIGNIN.TOTP" : prefoption === "scanqr" ? "IAM.NEW.SIGNIN.QR.CODE" : "";//no i18N
 				var headerdesc = prefoption ==="push" ? "IAM.RELOGIN.PASSWORDLESS.PUSH.DESC" : prefoption === "totp" ? "IAM.RELOGIN.PASSWORDLESS.TOTP.DESC" : prefoption === "scanqr" ? "IAM.RELOGIN.PASSWORDLESS.SCANQR.DESC":"";//no i18N
-				$(".header_content,#password_container,#lineseparator,.fed_2show,#otp_container,.deviceparent").hide();
+				$(".header_content,#password_container,.fed_2show,#otp_container,.deviceparent").hide();
 				$(".header_for_oneauth .head_text").text(I18N.get(headtitle));
 				$(".header_for_oneauth .header_desc").text(I18N.get(headerdesc));
 				$(".header_for_oneauth").show();
@@ -1178,7 +1210,6 @@ function handleMyZohoDetails(resp){
 	        				$(".waitbtn .waittext").text(I18N.get("IAM.PUSH.RESEND.NOTIFICATION"));
 	        				$(".loadwithbtn").hide();
 	        				$("#waitbtn").attr("disabled", false);
-	        				isFormSubmited = false;
 	        				return false;
 	        				
 	    				},20000);
@@ -1196,8 +1227,6 @@ function handleMyZohoDetails(resp){
     				$(".checkbox_div").addClass("qrwidth");
     			}
     			$(".tryanother").show();
-				isFormSubmited = false;
-			//	signinathmode = callmode === "primary" ? "deviceauth" : "devicesecauth";//no i18N
 				$(".loader,.blur").hide();
 				setFooterPosition();
 				return false;
@@ -1249,7 +1278,7 @@ function resendpush_checking(resendtiming){
 }
 
 function enableTOTPdevice(resp,isMyZohoApp,isOneAuth){
-	$(".header_content,#password_container,#lineseparator,.fed_2show,#otp_container,#forgotpassword").hide();
+	$(".header_content,#password_container,.fed_2show,#otp_container,#forgotpassword").hide();
 	$(".header_for_oneauth .head_text").text(I18N.get("IAM.NEW.SIGNIN.TOTP"));
 	$(".header_for_oneauth .header_desc").text(I18N.get("IAM.NEW.SIGNIN.MFA.TOTP.HEADER"));
 	$(".header_for_oneauth,#reauth_button").show();
@@ -1266,7 +1295,7 @@ function enableTOTPdevice(resp,isMyZohoApp,isOneAuth){
 	}	
 	$("#mfa_totp_container").show();
 	splitField.createElement('mfa_totp_field',{
-		"splitCount":6,					// No I18N
+		"splitCount":totp_size,					// No I18N
 		"charCountPerSplit" : 1,		// No I18N
 		"isNumeric" : true,				// No I18N
 		"otpAutocomplete": true,		// No I18N
@@ -1277,9 +1306,6 @@ function enableTOTPdevice(resp,isMyZohoApp,isOneAuth){
 	$('#mfa_totp_field .customOtp').attr('onkeypress','remove_err()');
 	$("#mfa_totp_field").click();
 	$(".service_name").addClass("extramargin");
-	isFormSubmited = false;
-	var mzauth = callmode==="primary" ?"deviceauth":"devicesecauth";//no i18N
-	//signinathmode = isMyZohoApp ? mzauth : "oneauthsec";//No i18N
 	if(!isMyZohoApp && !isRecovery){allowedModeChecking()};
 	return false;
 }
@@ -1293,7 +1319,6 @@ function showResendPushInfo(){
 		$(".waitbtn .waittext").text(I18N.get("IAM.PUSH.RESEND.NOTIFICATION"));
 		$(".loadwithbtn").hide();
 		$("#waitbtn").attr("disabled", false);
-		isFormSubmited = false;
 		return false;
 		
 	},25000);
@@ -1337,26 +1362,23 @@ function handleSecondaryDevices(primaryMode){
 		document.getElementsByClassName('secondary_devices')[0].innerHTML = optionElem; // no i18n
 		if(isSecondaryDevice){
 			try { 
-				$(".secondary_devices").select2({
-			        allowClear: true,
-			        dropdownAutoWidth: true,
-			        templateResult: secondaryFormat,
-			        minimumResultsForSearch: Infinity,
-			        templateSelection: function (option) {
-			              return "<div><span class='icon-device select_icon'></span><span class='select_con options_selct' value="+$(option.element).attr("value")+" version="+$(option.element).attr("version")+">"+option.text+"</span><span class='downarrow'></span></div>";
-			        },
-			        escapeMarkup: function (m) {
-			          return m;
-			        }
-			      });
+				$(".secondary_devices").uvselect({
+					"theme" : "auth-device", //no i18n
+					"searchable" : false, //No i18N
+					"prevent_mobile_style": true, // no i18n
+					"onDropdown:open" : function(){	//no i18n
+						$(".selectbox_options--auth-device .option p").before("<i class='select_icon icon-Mobile'></i>");
+					},
+					"onDropdown:select" : function(){	//no i18n
+						$(".select_input--auth-device").css("width",$(".select_input--auth-device").val().length+"ch");		//No i18N
+					}
+				});
+				$(".select_container--auth-device .select_input").before("<i class='select_icon icon-Mobile'></i>");
+				$(".select_input--auth-device").css("width",$(".select_input--auth-device").val().length+"ch");			//No i18N
 				window.setTimeout(function(){
-					  $('.devices .select2').addClass("device_select");
-					  $('.devices .select2').show();
-					  $('.devices .select2-selection--single').addClass('device_selection');
-					  $(".select2-selection__arrow").addClass("hide");
 					  if(!($('.secondary_devices option').length > 1 )){
-							$('.devices .downarrow').hide();
-							$('.devices .selection').css("pointer-events", "none");
+						  $(".select_container--auth-device .selectbox_arrow").hide();
+						  $('.select_container--auth-device').css("pointer-events", "none");
 					  }
 				},100);
 			}catch(err){
@@ -1383,6 +1405,7 @@ function isVerifiedFromDevice(prefmode,isMyZohoApp,WmsID) {
 	if(isWmsRegistered === false && isValid(WmsID) && WmsID != "undefined" ){
 		wmscallmode=prefmode;wmscallapp=isMyZohoApp;wmscallid=WmsID;
 		try {
+			WmsLite.setClientSRIValues(wmsSRIValues);
 			WmsLite.setNoDomainChange();
 	 		WmsLite.registerAnnon('AC', WmsID ); //No I18N
 	 		isWmsRegistered=true;
@@ -1398,21 +1421,25 @@ function isVerifiedFromDevice(prefmode,isMyZohoApp,WmsID) {
 	if(verifyCount > 15) {
 		return false;
 	}
-	var loginurl = isMyZohoApp ? "/relogin/v1/"+callmode+"/"+zuid+"/device/"+deviceid+"?polling=true":null;//no i18N
+	var loginurl = isMyZohoApp ? "/relogin/v1/device/"+deviceid+"?polling=true":null;//no i18N
 	//loginurl += "digest="+digest+ "&" + signinParams+"&polling="+true ; //no i18N
 	var jsonData = {'oneauthsec':{'devicepref':prefmode }};//no i18N
 	if(isMyZohoApp){
-		jsonData = callmode==="primary" ? {'devicereauth':{'devicepref':prefmode }} : {'devicesecauth':{'devicepref':prefmode }};//no i18N
+		jsonData = {'devicereauth':{'devicepref':prefmode }};//no i18N
 	}
 	sendRequestWithCallback(loginurl,JSON.stringify(jsonData),false,VerifySuccess,"PUT");//No i18N
 	verifyCount++;
 	if(isValid(WmsID) && WmsID!="undefined"){
 		wmscount++;
 		var callIntervalTime = wmscount < 6 ? 5000 : 25000;
-		_time = setInterval("isVerifiedFromDevice(\""+prefmode+"\","+isMyZohoApp+",\""+WmsID+"\")", callIntervalTime);//No I18N
+		_time = setInterval(function () {
+			isVerifiedFromDevice(prefmode, isMyZohoApp, WmsID);
+		}, callIntervalTime);
 		return false;
 	}else{
-		_time = setInterval("isVerifiedFromDevice(\""+prefmode+"\","+isMyZohoApp+",\""+WmsID+"\")", 3000);//No I18N
+		_time = setInterval(function () {
+			isVerifiedFromDevice(prefmode, isMyZohoApp, WmsID);
+		}, 3000);
 	}
 	return false;
 }
@@ -1449,7 +1476,7 @@ function VerifySuccess(res) {
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
 			var successCode = jsonStr.code;
 			var statusmsg = jsonStr[reloginAuthMode].status;
-			if(statusmsg==="success" || successCode === "SI302"|| successCode === "SI300" || successCode === "SI301" || successCode === "SI204" || successCode === "SI304"){
+			if(statusmsg==="success" || successCode === "RA200"){
 				clearInterval(_time);
 				if(post_action)
 				{
@@ -1471,10 +1498,8 @@ function VerifySuccess(res) {
 			window.location.href = logoutURL;
 			return false;
 		}
-		else if(reloginAuthMode === "passkey"){
-			$("#reauth_button span").removeClass("zeroheight");
-			$("#reauth_button").removeClass("changeloadbtn");
-			$("#reauth_button").attr("disabled", false);
+		else if(reloginAuthMode === "passkey" || reloginAuthMode === "yubikeyreauth"){
+			removeBtnLoading();
 			showErrorToast(I18N.get("IAM.ERROR.GENERAL"));
 			return false;
 		}
@@ -1484,6 +1509,9 @@ function VerifySuccess(res) {
 
 function showTryanotherWay(){
 	clearInterval(_time);
+	$(".waitbtn .waittext").text(I18N.get("IAM.PUSH.RESEND.NOTIFICATION"));
+	$(".loadwithbtn").hide();
+	$("#waitbtn").attr("disabled", false);
 	$('.optionmod').show();
 	remove_err();
 	var preferoption = userAuthModes.mzadevice.data[parseInt($(".secondary_devices").children("option:selected").val())].prefer_option;
@@ -1501,7 +1529,7 @@ function showTryanotherWay(){
 	if(preferoption === "totp") { $('#trytotp').hide();}
 	if(preferoption === "scanqr") { $('#tryscanqr').hide();}
 	preferoption === "totp" ? tryAnotherway('qr') : tryAnotherway('totp'); //no i18n	
-	$('#problemrelogin').show();
+	if(userAuthModes.allowed_modes.length>1){$('#problemrelogin').show();}
 	isTroubleinVerify =  true;
 	setFooterPosition();
 	return false;
@@ -1510,7 +1538,7 @@ function showTryanotherWay(){
 function enableQRCodeimg(){
 	prefoption = "scanqr"; // no i18n
 	var deviceid = userAuthModes.mzadevice.data[parseInt($(".secondary_devices").children("option:selected").val())].device_id;
-	var loginurl="/relogin/v1/"+callmode+"/"+zuid+"/device/"+deviceid;//no i18N
+	var loginurl="/relogin/v1/device/"+deviceid;//no i18N
 	var jsonData = {'devicereauth':{'devicepref':prefoption }};//no i18N
 	sendRequestWithCallback(loginurl,JSON.stringify(jsonData),true,handleQRCodeImg);
 	reloginAuthMode = "devicereauth";//no i18N
@@ -1530,7 +1558,7 @@ function handleQRCodeImg(resp){
 		var statusCode = jsonStr.status_code;
 		if (!isNaN(statusCode) && statusCode >= 200 && statusCode <= 299) {
 			var successCode = jsonStr.code;
-			if(successCode === "RA001" || successCode === "SI202"||successCode==="MFA302" || successCode==="SI302" || successCode==="SI201"){
+			if(successCode === "RA001"){
 				temptoken = jsonStr[reloginAuthMode].token;
 				var qrcodeurl = jsonStr[reloginAuthMode].img;
 				qrtempId =  jsonStr[reloginAuthMode].temptokenid;
@@ -1563,7 +1591,7 @@ function tryAnotherway(trymode){
 	prefoption = trymode === 'qr' ? 'scanqr' : trymode; // no i18n
 	if(trymode == "totp" && !$("#trytotp").hasClass("toggle_active")){
 		splitField.createElement('verify_totp',{
-			"splitCount":6,					// No I18N
+			"splitCount":totp_size,					// No I18N
 			"charCountPerSplit" : 1,		// No I18N
 			"isNumeric" : true,				// No I18N
 			"otpAutocomplete": true,		// No I18N
@@ -1624,7 +1652,9 @@ function problemreloginmodes(prob_mode,secondary_header,secondary_desc,index){
 }
 
 function showproblemrelogin(ele){
-	$('#verify_totp_container,.devices .selection,.devicedetails,#try_other_options,#enablemore').hide();
+	$(ele).hide();
+	remove_err();
+	$('#verify_totp_container,.devices .selection,.devicedetails,#try_other_options,#enablemore,.header_for_oneauth').hide();
 	clearInterval(_time);
 	$(".toggle_active").removeClass("toggle_active");
 	window.setTimeout(function(){
@@ -1636,7 +1666,7 @@ function showproblemrelogin(ele){
 	secondarymodes.splice(secondarymodes.indexOf(prev_showmode), 1);
 	var currentmode = (prev_showmode === "mzadevice") ? "showmzadevicemodes()" : "goBackToCurrentMode()"; //no i18n
 	secondarymodes.unshift(prev_showmode);
-	var i18n_msg = {"totp":["IAM.NEW.SIGNIN.VERIFY.VIA.AUTHENTICATOR","IAM.NEW.SIGNIN.VERIFY.VIA.AUTHENTICATOR.DESC"],"otp": ["IAM.AC.CHOOSE.OTHER_MODES.MOBILE.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"],"yubikey":["IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY","IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY.DESC"], "password":["IAM.PASSWORD.VERIFICATION","IAM.RELOGIN.VERIFY.VIA.MFA.PASSWORD.DESC"],"saml":["IAM.RELOGIN.VERIFY.WITH.SAML.TITLE","IAM.NEW.SIGNIN.SAML.HEADER"],"jwt":["IAM.RELOGIN.VERIFY.USING.JWT","IAM.NEW.SIGNIN.SAML.HEADER"],"email": ["IAM.AC.CHOOSE.OTHER_MODES.EMAIL.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"]}; //No I18N
+	var i18n_msg = {"totp":["IAM.NEW.SIGNIN.VERIFY.VIA.AUTHENTICATOR","IAM.NEW.SIGNIN.VERIFY.VIA.AUTHENTICATOR.DESC"],"otp": ["IAM.AC.CHOOSE.OTHER_MODES.MOBILE.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"],"yubikey":["IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY","IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY.DESC"], "password":["IAM.PASSWORD.VERIFICATION","IAM.RELOGIN.VERIFY.VIA.MFA.PASSWORD.DESC"],"saml":["IAM.RELOGIN.VERIFY.WITH.SAML.TITLE","IAM.NEW.SIGNIN.SAML.HEADER"],"jwt":["IAM.RELOGIN.VERIFY.USING.JWT","IAM.NEW.SIGNIN.SAML.HEADER"],"email": ["IAM.AC.CHOOSE.OTHER_MODES.EMAIL.HEADING","IAM.NEW.SIGNIN.OTP.HEADER"],"federated" : ["IAM.RELOGIN.MORE.FEDRATED.ACCOUNTS.TITLE","IAM.RELOGIN.VERIFY.VIA.IDENTITY.PROVIDER.TITLE"],"oidc":["IAM.RELOGIN.MORE.OPENID.ACCOUNTS.TITLE","IAM.NEW.SIGNIN.SAML.HEADER"]}; //No I18N
 	var problemrelogininheader = "<div class='problemrelogin_head'><span class='icon-backarrow backoption' onclick=\""+currentmode+"\"></span><span class='rec_head_text'>"+ele.innerText+"</span></div>";
 	var allowedmodes_con = "";
 	var noofmodes = 0;
@@ -1657,7 +1687,6 @@ function showproblemrelogin(ele){
 			if(prob_mode != "recoverycode" && prob_mode != "passphrase"){
 				if(prob_mode === 'passkey'){
 					//$('#enableotpoption,#resendotp,#lineseparator,.fed_2show,.blur,.loader').hide();
-					changeButtonAction(I18N.get('IAM.RELOGIN.VERIFY.VIA.PASSKEY'));//no i18n
 					var secondary_header = I18N.get("IAM.RELOGIN.VERIFY.VIA.PASSKEY");
 					var secondary_desc = I18N.get("IAM.RELOGIN.VERIFY.VIA.PASSKEY.DESC");
 					allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc);
@@ -1697,12 +1726,13 @@ function showproblemrelogin(ele){
 					//	}
 					});
 				}else if(prob_mode==="federated"){ // no i18n
-					var count = userAuthModes.federated.count;
-					var idp = userAuthModes.federated.data[0].idp.toLocaleLowerCase();
-					var secondary_header = count > 1 ? I18N.get("IAM.NEW.SIGNIN.MORE.FEDRATED.ACCOUNTS.TITLE") : "<span style='text-transform: capitalize;'>"+idp+"</span>";
-					var secondary_desc =  count > 1 ? I18N.get("IAM.NEW.SIGNIN.MORE.FEDRATED.ACCOUNTS.DESC") : formatMessage(I18N.get("IAM.RELOGIN.VERIFY.VIA.IDENTITY.PROVIDER.TITLE"),idp);
-					allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc,count);
-					noofmodes++;
+					var fed_option = userAuthModes.federated.data;
+					fed_option.forEach(function(data,index){
+						var secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][0]));
+						var secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),data.idp);
+						allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc,index);
+						noofmodes++;
+					});
 				}else if(prob_mode==="email"){//no i18n
 					rmobile = userAuthModes.email.data[0].email;
 					var secondary_header = I18N.get(i18n_msg[prob_mode][0]);
@@ -1712,21 +1742,34 @@ function showproblemrelogin(ele){
 				}else if(prob_mode==="saml"){// no i18n
 					var saml_option = userAuthModes.saml.data;
 					saml_option.forEach(function(data,index){
-						var secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][1]),data.auth_domain);
+						var secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][0]),data.auth_domain);
 						var secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),data.domain);
+						allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc,index);
+						noofmodes++;
+					});
+				}
+				else if(prob_mode==="oidc"){// no i18n
+					var oidc_option = userAuthModes.oidc.data;
+					oidc_option.forEach(function(data,index){
+						var secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][0]));
+						var secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),data.display_name);
+						allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc,index);
+						noofmodes++;
+					});
+				}
+				else if(prob_mode==="jwt"){// no i18n
+					var jwt_option = userAuthModes.jwt.data;
+					jwt_option.forEach(function(data,index){
+						var secondary_header = formatMessage(I18N.get(i18n_msg[prob_mode][0]));
+						var secondary_desc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),data.domainname);
 						allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc,index);
 						noofmodes++;
 					});
 				}
 				else{	
 					if(i18n_msg[prob_mode]){
-						var jwtDesc;
-						if(prob_mode==="jwt"){
-							var domainname = userAuthModes.jwt.data[0].domain;
-							jwtDesc = formatMessage(I18N.get(i18n_msg[prob_mode][1]),domainname);
-						}
 						var secondary_header = I18N.get(i18n_msg[prob_mode][0]);
-						var secondary_desc = prob_mode==="jwt" ? jwtDesc : I18N.get(i18n_msg[prob_mode][1]);
+						var secondary_desc = I18N.get(i18n_msg[prob_mode][1]);
 						allowedmodes_con += problemreloginmodes(prob_mode,secondary_header,secondary_desc);
 						noofmodes++;
 					}
@@ -1744,7 +1787,7 @@ function showproblemrelogin(ele){
 	if(noofmodes > 3){
 		$('.problemrelogincon').addClass('problemrelogincontainer');
 	}
-	$('.optionstry').addClass('optionmod')
+	$('.optionstry').addClass('optionmod');
 	$('#recoverybtn').show();
 	var problemmode = allowedmodes[0];
 	$('#reauth_button,#problemrelogin,.header_content,.passwordless_opt_container,#mfa_device_container,#relogin_primary_container').hide();
@@ -1755,7 +1798,7 @@ function showproblemrelogin(ele){
 function showCurrentMode(pmode,index){
 	clearInterval(_time);
 	$(".blur,.loader").show();
-	$(".tryanother,#mfa_totp_container,#mfa_scanqr_container").hide();
+    $(".sendotp_to_email,.sendotp_to_mobile,.tryanother,#mfa_totp_container,#mfa_scanqr_container").hide();
 	prev_showmode = pmode === "federated" ? prev_showmode : pmode; // no i18n
 	remove_err();
 	//clearCommonError(pmode)
@@ -1763,10 +1806,10 @@ function showCurrentMode(pmode,index){
 	if(pmode==="otp" || pmode==="email"){
 		emobile= pmode==="otp" ? userAuthModes.otp.data[index].e_mobile : userAuthModes.email.data[0].e_email;
 		rmobile= pmode==="otp" ? numberFormat(userAuthModes.otp.data[index].r_mobile) : userAuthModes.email.data[0].email;
-		if(isPasswordless){
-			showAndGenerateOtp(pmode);
-		}
-		else{generateOTP();}
+		//if(isPasswordless){
+		showAndGenerateOtp(pmode);
+		//}
+		//else{generateOTP();}
 		$('#otp_container .textbox_actions').show();
 		$("#mfa_otp").val("");
 		mobposition = index;
@@ -1774,13 +1817,47 @@ function showCurrentMode(pmode,index){
 	}else if(pmode === "mzadevice"){//No i18N
 		isResend = false;
 		mzadevicepos = index;
+		$(".blur,.loader").show();
 		prefoption = userAuthModes.mzadevice.data[mzadevicepos].prefer_option;
 		reloginAuthMode = pmode;
+		handleSecondaryDevices(pmode);
 		$(".secondary_devices").val(index).change();
 		if(prefoption === 'totp'){
 			goBackToCurrentMode();
 			return false;
 		}
+	}
+	else if(pmode === "totp"){//No i18N
+		$("#password_container,.fed_2show,#otp_container").hide();
+		$(".header_for_oneauth .header_desc").text(I18N.get('IAM.NEW.SIGNIN.MFA.TOTP.HEADER'));
+		$("#reauth_button span").html(I18N.get('IAM.NEW.SIGNIN.VERIFY'));
+		$(".header_for_oneauth .head_text").text($(".header_content .head_text").text());
+		$("#mfa_totp_container").show();
+		reloginAuthMode = pmode;
+		splitField.createElement('mfa_totp_field',{
+			"splitCount":totp_size,					// No I18N
+			"charCountPerSplit" : 1,		// No I18N
+			"isNumeric" : true,				// No I18N
+			"otpAutocomplete": true,		// No I18N
+			"customClass" : "customOtp",	// No I18N
+			"inputPlaceholder":'&#9679;',	// No I18N
+			"placeholder":I18N.get("IAM.VERIFY.CODE")				// No I18N
+		});
+		$('#mfa_totp_field .customOtp').attr('onkeypress','remove_err()');
+		$("#mfa_totp_field").click();
+		$(".blur,.loader").hide();
+	}
+	else if(pmode === "yubikey" || pmode === "yubikeyreauth"){
+		reloginAuthMode = "yubikey"; //No I18N
+		goBackToCurrentMode();	
+		$(".tryanother,#mfa_totp_container,#mfa_scanqr_container,#relogin_primary_container,#enableotpoption,#resendotp,#password_container").hide();
+		$("#reauth_button span").html(I18N.get('IAM.NEW.SIGNIN.VERIFY.VIA.YUBIKEY'));
+		$(".header_for_oneauth").show();
+		$(".header_for_oneauth .head_text").text($(".header_content .head_text").text());
+		$(".header_for_oneauth .header_desc").text(I18N.get('IAM.NEW.SIGNIN.YUBIKEY.HEADER.NEW'));
+		$(".blur,.loader,#enablemore,#try_other_options,.header_content").hide();
+		$("#tryAnotherSAMLBlueText").show();
+		return false;
 	}
 	else if(pmode === "passkey" || pmode === "passkeyreauth"){
 		reloginAuthMode = "passkey"; //No I18N
@@ -1793,10 +1870,10 @@ function showCurrentMode(pmode,index){
 	}
 	else if(pmode === "password"){//No i18N
 		showPasswordContainer();
-		$(".showmorereloginoption,.blur,.loader").hide();
+		$(".showmorereloginoption,.blur,.loader,#tryAnotherSAMLBlueText").hide();
 	}else if(pmode === "federated"){//No i18N
-		var idp = userAuthModes.federated.data[0].idp.toLowerCase();
-		index === 1 ? createandSubmitOpenIDForm(idp) : showMoreFedOptions();
+		var idp = userAuthModes.federated.data[index].idp.toLowerCase();
+		createandSubmitOpenIDForm(idp);
 		$(".blur,.loader").hide();
 		return false;
 	}else if(pmode === "saml"){ // no i18n
@@ -1805,8 +1882,11 @@ function showCurrentMode(pmode,index){
 		return false;
 	}
 	else if(pmode === "jwt"){ // no i18n
-		var redirectURI = userAuthModes.jwt.data[0].redirect_uri;
+		var redirectURI = userAuthModes.jwt.data[index].redirect_uri;
 		switchto(redirectURI);
+	}
+	else if(pmode === "oidc"){ // no i18n
+		enableOIDCAuth(userAuthModes.oidc.data[index].oidc_id);
 	}
 	if(pmode != 'mzadevice' && pmode != 'oadevice'){
 		$('.deviceparent').addClass('hide');
@@ -1814,21 +1894,20 @@ function showCurrentMode(pmode,index){
 	goBackToCurrentMode();
 	if(pmode==="otp" || pmode==="email" ||pmode === "mzadevice"){$("#enablemore").hide()}
 	$('.devices .selection,#waitbtn,#problemrelogin').hide();
-	pmode != "mzadevice" ? $('#try_other_options').show() : $('#try_other_options').hide();		// no i18n
+	if(pmode == "mzadevice"){$('#try_other_options').hide();}	// no i18n
 	$("#relogin_primary_container").show();
 	return false;
 }
 function showPasswordContainer(){
 	$("#relogin_password_input").attr("type","password").val("");		//No i18N
 	$('#password_container,#enableforgot').show();
-	$('#enablesaml,#enableotpoption,.textbox_actions,#otp_container').hide();
+	$('#enableotpoption,.textbox_actions,#otp_container').hide();
 	$('#password_container').removeClass('zeroheight');
 	changeButtonAction(I18N.get('IAM.CONFIRM.PASS'));//no i18n
 	if(isPasswordless)  { allowedModeChecking() };
 	$('.relogin_head').css('margin-bottom','30px');
 	$('#relogin_password_input').focus();
 	reloginAuthMode = "password";// No i18n
-	isFormSubmited = false;
 }
 function showmzadevicemodes(){
 	$('.devices .selection').css('display','');
@@ -1836,10 +1915,117 @@ function showmzadevicemodes(){
 	$('#problemreloginui,#recoverybtn').hide();
 	allowedModeChecking();
 }
+
 function numberFormat(params) {
         for(var i=0;i<userAuthModes.otp.data.length;i++){
             if(userAuthModes.otp.data[i].r_mobile == params){
                 return phonePattern.setMobileNumFormat(params.split("-")[1],userAuthModes.otp.data[i].country_code);     
             }
         }
+}
+function clickedSecondaryMail(emailData,mode){
+	$(".blur,.loader").show();
+	remove_err();
+	if(mode == "email"){
+		emobile = emailData.e_email;
+		var maskedMail = rmobile = emailData.email;
+		$(".email_otp_description span").text(rmobile);
+		$(".email_otp_description").show();
+		$(".mobile_otp_description").hide();
+	}
+	else if(mode == "mobile"){
+		emobile = emailData.e_mobile;
+		var maskedMail = rmobile = emailData.r_mobile.split("-")[1];
+		$(".mobile_otp_description span").text(rmobile);
+		$(".mobile_otp_description").show();
+		$(".email_otp_description").hide();
+	}
+	$(".reloginWithSecondaryEmails,.reloginWithSecondaryEmailsOTP").hide();
+	$(".secondary_verify_desc")[0].childNodes[1].nodeValue=I18N.get("IAM.VERIFY.IDENTITY");					
+	
+	if(userAuthModes.otp!=undefined && userAuthModes.email!=undefined){
+		$(".reloginWithSecondaryEmails").hide();
+		$(".reloginWithSecondaryEmailsOTP").show();
+	}
+	if($(".secondary_email_desc").is(":visible")){
+		$(".header_content").hide();
+	}		
+				
+	$(".secondary_verify_desc").css("margin-top","20px").show();//no i18n
+	$(".secondary_email_desc,.email_options,.mobile_options").hide();
+	$("#reauth_button").show();
+	$('#otp_container .textbox_div').show();
+	$("#otp_container").slideDown(300);
+	splitField.createElement('otp_input_box',{
+		"splitCount":otp_length,					// No I18N
+		"charCountPerSplit" : 1,		// No I18N
+		"isNumeric" : true,				// No I18N
+		"otpAutocomplete": true,		// No I18N
+		"customClass" : "customOtp",	// No I18N
+		"inputPlaceholder":'&#9679;',	// No I18N
+		"placeholder":I18N.get("IAM.VERIFY.CODE")				// No I18N
+	});
+	$('#otp_input_box .customOtp').attr('onkeypress','remove_err()');
+	$(".textbox_actions.otp_actions").show();
+	changeButtonAction(I18N.get('IAM.NEW.SIGNIN.VERIFY'));
+	generateOTP();
+}
+
+function showViaSecondaryMail(){
+	remove_err();
+	$(".secondary_verify_desc,#otp_container,#other_relogin_options,#password_container,#reauth_button").hide();
+	$("#relogin_primary_container,#secondary_email_container,.header_content").show();
+	$(".secondary_verify_desc .backoption").attr("onclick","showViaSecondaryMail()");
+	$(".secondary_email_desc").html(I18N.get("IAM.REAUTH.SELECT.ONE.EMAIL.ADDRESS")).show();
+	if(!$("#secondary_email_container").hasClass("completed")){
+		if(userAuthModes.otp!=undefined && userAuthModes.otp.count>1){
+			for(var i=0;i<userAuthModes.otp.data.length;i++){
+				var div = $("#secondary_mail")[0].cloneNode(true);
+				div.setAttribute("id","secondary_mail"+(i+1));
+				div.setAttribute("onclick",'clickedSecondaryMail('+JSON.stringify(userAuthModes.otp.data[i])+',"mobile")');
+				div.classList.add("mobile_options");//no i18n
+				div.querySelector(".icon").classList.add("icon-otp");//no i18n
+				div.childNodes[1].textContent=userAuthModes.otp.data[i].r_mobile;
+				document.getElementById("secondary_mail").insertAdjacentElement("beforebegin",div);//no i18n
+				$("#secondary_mail"+(i+1)).show();
+			}
+			$("#secondary_email_container").addClass("completed");
+			$("#secondary_email_verify_input").attr("placeholder",I18N.get("IAM.ENTER.PHONE.NUMBER"));
+			$(".secondary_email_desc").html(I18N.get("IAM.REAUTH.SELECT.ONE.MOBILE.NUMBER"));
+		}
+		else{
+			for(var i=0;i<userAuthModes.email.data.length;i++){
+				var div = $("#secondary_mail")[0].cloneNode(true);
+				div.setAttribute("id","secondary_mail"+(i+1));
+				div.setAttribute("onclick",'clickedSecondaryMail('+JSON.stringify(userAuthModes.email.data[i])+',"email")');
+				div.classList.add("email_options");//no i18n
+				div.querySelector(".icon").classList.add("icon-email");//no i18n
+				div.childNodes[1].textContent=userAuthModes.email.data[i].email;
+				document.getElementById("secondary_mail").insertAdjacentElement("beforebegin",div);//no i18n
+				$("#secondary_mail"+(i+1)).show();
+			}
+			$("#secondary_email_container").addClass("completed");
+			$("#secondary_email_verify_input").text("placeholder",I18N.get("IAM.ENTER.EMAIL"));//no i18n
+		}
+		$("#secondary_mail").remove();
+	}else{
+		$(".email_options").show();
+		$(".mobile_options").show();
+	}
+}
+
+function showOtp() {
+	remove_err();
+    emobile =  userAuthModes.otp.data[0].e_mobile;
+	rmobile =  numberFormat(userAuthModes.otp.data[0].r_mobile);
+	showAndGenerateOtp(allowedmodes[1]);
+    $("#secondary_email_container,.reloginWithSecondaryEmailsOTP").hide();
+    $(".header_content,.reauth_desc,.reloginWithSecondaryEmails").show();
+}
+
+function sendOtp(){
+	$(".reauth_desc").hide();
+	$(".reauth_desc,.sendotp_to_mobile_btn,.mobile_desc").hide();
+	showAndGenerateOtp(allowedmodes[0]);
+	return false;
 }

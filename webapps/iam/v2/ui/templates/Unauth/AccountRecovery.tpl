@@ -13,15 +13,22 @@
 		</style>
 		<#include "../zoho_line_loader.tpl">
 		
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript" defer></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/u2f-api.js")}" defer></script>
-		<script src="${za.wmsjsurl}" type="text/javascript" defer></script>
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+    	<@resource path="/v2/components/tp_pkg/xregexp-all.js" attributes="defer" />
+    	<@resource path="/v2/components/tp_pkg/u2f-api.js" attributes="defer" />
+    	<@resource path="/v2/components/tp_pkg/tippy.all.min.js" attributes="defer" />
+		<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
+    	<#if Enable_zlabs?has_content	&&		Enable_zlabs==true>
+    	
+    		<@resource path="/v2/components/tp_pkg/captcha.min.js" attributes="defer" />
+    	</#if>	
+    	
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous" type="text/javascript" defer></script>
 		<meta name="robots" content="noindex, nofollow"/>
 		
 		<script type='text/javascript'>
-			var aCParams= getACParms();
 			var login_id="${Encoder.encodeJavaScript(login_id)}";
 			var csrfParam= "${za.csrf_paramName}";
 			var csrfCookieName = "${za.csrf_cookieName}";
@@ -36,21 +43,56 @@
 			var supportEmailAddr = "${support_email_address}";
 			var recoveryUri = "${recovery_uri}";
 			var otp_length=${otp_length};
+			var totp_size=${totp_size};
+			var isClientPortal = parseInt("${isClientPortal}");
+			var ZlabsCapthca_enabled =${Enable_zlabs?c};
 			var isWindowLoaded = false;
+			var wmsSRIValues = ${za.wmsSRIValues};
 			var docHead = document.head || document.getElementsByTagName("head" )[0] || document.documentElement;
 			<#if (('${digest_id}')?has_content)>
 			digest_id = "${Encoder.encodeJavaScript(digest_id)}";
 			</#if>
 			var serviceUrl,signup_url,serviceName,signin_redirect_url,zuid,cdigest,head_token,resendTimer,mdigest,recovery_modes,recovery_extra_modes,device_recovery_state,contact_support_email,mfa_modes,mfa_modes_count,password_policy,mzadevicepos,isWmsRegistered,wmscallmode,wmscallid,wmscallapp,_time;
+			var type,audio_timer,captchaType,zlabs_captcha_params,zlabsCaptchaObj;
+			var captcha_usecase ="${captcha_usecase}";
 			var org_name, org_contact, reload_page, token;
-			
+			<#if (('${service_url}')?has_content)>
+				serviceUrl = '${Encoder.encodeJavaScript(service_url)}';
+				escapeServiceUrlHash();
+			</#if>
+			var resIntegrity = {};
+			<#if (('${resIntegrity}')?has_content)>
+				resIntegrity = ${resIntegrity};		
+			</#if>
+			var aCParams= getACParms();
 			window.onload = function() {
 				windowLoaded();
 				return false;
 			}
+			function escapeServiceUrlHash() {
+				var locationUrl = window.location.href;
+				var tmpserviceurl = serviceUrl;
+				try {
+					if(locationUrl.indexOf('serviceurl=') !== -1) {
+						var surl = decodeURIComponent(locationUrl.substring(locationUrl.indexOf('serviceurl=')+11));
+						if(surl.indexOf('#') !== -1) {
+							if(surl.indexOf('&') !== -1) {
+								surl = surl.substr(0, surl.indexOf('&'));
+							}
+							serviceUrl = surl;	
+						}
+					}
+				}catch (e) {
+					serviceUrl = tmpserviceurl;
+				}
+			}
 			function includeScript(url, callback, excatch) {
 				var script = document.createElement("script"); 
 				script.src = url; 
+				if(resIntegrity && resIntegrity[url]) {
+					script.integrity = resIntegrity[url];
+					script.crossOrigin = "anonymous"; //No I18N
+				}
 				if(excatch){
 					script.onerror = function() {
 						callback();
@@ -167,6 +209,7 @@
 					"IAM.NEW.SIGNIN.OTP.SENT.RESEND" : '<@i18n key="IAM.NEW.SIGNIN.OTP.SENT.RESEND" />',
 					"IAM.AC.SIGNIN.EMAIL.ADDRESS.OR.MOBILE" : '<@i18n key="IAM.AC.SIGNIN.EMAIL.ADDRESS.OR.MOBILE"/>',
 					"IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" : '<@i18n key="IAM.NEW.SIGNIN.INVALID.LOOKUP.IDENTIFIER" />',
+					"IAM.AC.RECOVER.OLD_PASSWORD.ERROR.DESCRIPTION.TOO.LONG" : '<@i18n key="IAM.AC.RECOVER.OLD_PASSWORD.ERROR.DESCRIPTION.TOO.LONG" />',
 				});
 				
 				$("#nextbtn").removeAttr("disabled"); 
@@ -197,6 +240,20 @@
 					    headTag.appendChild(salesScript);
 					}, ${salesWidgetPopTime});
 				</#if>
+				
+				if(!isMobile)
+				{
+				
+					tippy('.captcha_icons span[class*="Captchaicon-"]', 
+					{
+						animation: 'scale',
+			  			arrow: true,
+						distance: 15,
+						maxWidth: "200px",
+			  			placement:'bottom'//No I18N
+					});
+				}
+				
 			}
 			
 			function zaOnLoadHandler() {
@@ -214,6 +271,10 @@
 						var style = document.createElement("link");
 						style.href = cssURLs[i]; 
 						style.rel = "stylesheet"; 
+						if(resIntegrity && resIntegrity[cssURLs[i]]) {
+							style.integrity = resIntegrity[cssURLs[i]];
+							style.crossOrigin = "anonymous";	// No I18N
+						}
 						docHead.appendChild(style); 
 					}
 				}
@@ -246,19 +307,21 @@
 					params += "servicename=" + encodeURIComponent('${service_name}');
 					serviceName=encodeURIComponent('${service_name}');
 				</#if>
-				<#if (('${service_url}')?has_content)>
-					params += "&serviceurl="+encodeURIComponent('${Encoder.encodeJavaScript(service_url)}');
-					serviceUrl = '${Encoder.encodeJavaScript(service_url)}';
-				</#if>	
 				<#if (('${signup_url}')?has_content)>
 					params += "&signupurl="+encodeURIComponent('${Encoder.encodeJavaScript(signup_url)}');//no i18N
 					signup_url = '${Encoder.encodeJavaScript(signup_url)}';
 				</#if>
+				<#if (('${service_language}')?has_content)>
+						params += "&service_language="+encodeURIComponent('${Encoder.encodeJavaScript(service_language)}');//no i18N
+					</#if>
 				<#if (('${hide_signup}')?has_content)>
 					params += "&hide_signup="+${hide_signup};
 				</#if>
-				<#if (('${isDarkMode}') == '1' )>
+				<#if (('${isDarkmode}') == '1' )>
 					params += "&darkmode=true";
+				</#if>
+				<#if (('${service_url}')?has_content)>
+					params += "&serviceurl="+encodeURIComponent(serviceUrl);
 				</#if>
 				
 				return params;
@@ -270,7 +333,7 @@
 		
 	</head>
 	
-	 <body <#if (isDarkmode == 1) > class="darkmode"</#if> >
+	 <body <#if (isDarkmode == 1) > class="darkmode"</#if> <#if (rtl == 1) > dir='rtl' </#if>>
 		<div class="bg_one"></div>
 		
 		<div class="Alert"> <span class="tick_icon"></span> <span class="alert_message"></span> </div>
@@ -295,6 +358,7 @@
 	    						<div class="error_header error_U401"><@i18n key="IAM.ACCOUNT.RECOVERY.ERROR.ACCOUNT.INVALID.HEADER"/></div>
 	    						<div class="error_header error_U402 error_U403"><@i18n key="IAM.ACCOUNT.RECOVERY.ERROR.INACTIVE.ACCOUNT.HEADER"/></div>
 	    						<div class="error_header access_denied"><@i18n key="IAM.NEW.SIGNIN.RESTRICT.SIGNIN.HEADER"/></div>
+	    						<div class="error_header error_SI505"><@i18n key="IAM.ACCOUNT.RECOVERY.ERROR.SIGNIN.BLOCKED.HEADER"/></div>
     						</div>
     						<div class="error_desc"></div>
     						<div class="domain_wait_warn hide"><@i18n key="IAM.DOMAIN.WAIT.WARNING"/></div>
@@ -330,16 +394,22 @@
 							                <span class="menutext"></span>
 							                <span class="change_user" onclick="change_user()"><@i18n key="IAM.SIGNUP.CHANGE"/></span>
 						           	</div>
+			    				<div class="lookup_head">
 			    					<span id="headtitle"><@i18n key="IAM.FORGOT.PASSWORD.HEAD"/></span>
 			    					<div class="head_info"><@i18n key="IAM.FORGOT.PASSWORD.DESCRIPTION"/></div>
+			    				</div>
+			    				
+			    				<div class="hide capatcha_head">
+			    					<span id="headtitle"><@i18n key="IAM.VERIFY.CAPCTHA.HEAD"/></span>
+			    					<div class="head_info"><@i18n key="IAM.VERIFY.CAPCTHA.DESC"/></div>
+			    				</div>
+
 								</div>
 								
-								<div class="fieldcontainer">
 									
 									<form name="login_id_container" onsubmit="return accountLookup(event);" novalidate >
 										<div class="searchparent" id="login_id_container">
 											<div class="textbox_div">
-												<label for='country_code_select' class='select_country_code'></label>
 												<select id="country_code_select" onchange="changeCountryCode();" name="countryselect">
 				                  					<#list country_code as dialingcode>
 			                          					<option data-num="${dialingcode.code}" value="${dialingcode.dialcode}" id="${dialingcode.code}" >${dialingcode.display}</option>
@@ -359,9 +429,12 @@
 										</div>
 										<span class="captchafielderror"></span>
 										<button class="btn blue" id="nextbtn" tabindex="2" disabled="disabled"><span><@i18n key="IAM.NEXT"/></span></button>								
+										
+									<#include "Zcaptcha.tpl">	
+
+									
 									</form>
 									
-								</div>
 		    					
 		    	
     				
@@ -402,7 +475,7 @@
 									<form name="last_password_container" onsubmit="return false;" novalidate>
 										<div class="searchparent" id="last_password_container">
 											<div class="textbox_div">
-												<input id="last_password" placeholder="<@i18n key="IAM.AC.ENTER.PASSWORD"/>" type="password" name="last_password" class="textbox" required="" onkeydown="clearCommonError('last_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
+												<input id="last_password" placeholder="<@i18n key="IAM.AC.ENTER.PASSWORD"/>" type="password" autocomplete="off" name="last_password" class="textbox" required="" onkeydown="clearCommonError('last_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
 												<span class="icon-hide show_hide_password" onclick="showHidePassword();"></span>
 												<div class="fielderror"></div>						
 											</div>
@@ -429,7 +502,7 @@
 								</div>
 								
 								<div class="fieldcontainer">
-										<button class="btn blue" onclick="last_pwd_redirect('signin')" id="last_pwd_audit" tabindex="2"><span><@i18n key="IAM.AC.PASSWORD.MATCHED.SIGNIN.REDIRECT"/></span></button>
+										<button class="btn blue" onclick="last_pwd_redirect('signin')" id="last_pwd_audit" tabindex="2"><span><@i18n key="IAM.CONFIRMATION.CONTINUE_ACCOUNT"/></span></button>
 								</div>
 								
 								<div class="bottom_line_opt"><div class='bottom_option' id='continue_pwd_reset' onclick="last_pwd_redirect('fp')"><@i18n key="IAM.AC.CONTINUE.PWD_CHANGE"/></div></div>
@@ -796,7 +869,7 @@
 									</div>
 									<div id=rnd_number style="display:none;"></div>
 									<button class="btn blue hide" id="device_rec_wait" tabindex="2"><span><@i18n key="IAM.NEW.SIGNIN.WAITING.APPROVAL"/></span></button>
-									<button class="btn blue hide" id="device_rec_resend" onclick="changeRECOVERYSecDevice($('#recovery_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
+									<button class="btn blue hide" id="device_rec_resend" onclick="resendRecoveryPush($('#recovery_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
 									<div class="resend_label">
 										<span id="otp_resend" class="resendotp push_resend" ></span>
 										<span class="rnd_resend_push"><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span>
@@ -1124,7 +1197,7 @@
 										</div>
 										
 										<button class="btn hide" id="device_MFA_wait" tabindex="1"><span><@i18n key="IAM.NEW.SIGNIN.WAITING.APPROVAL"/></span></button>
-										<button class="btn blue hide" id="device_MFA_resend" onclick="changeMFADevice($('#mfa_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
+										<button class="btn blue hide" id="device_MFA_resend" onclick="resendMFAPush($('#mfa_device_select'))" tabindex="1"><span><@i18n key="IAM.PUSH.RESEND.NOTIFICATION"/></span></button>
 										<div class="resend_label hide">
 											<span id="otp_resend" class="resendotp push_resend" ></span>
 										</div>
@@ -1266,7 +1339,7 @@
 									 
 										<div class="searchparent" id="change_password_container">
 											<div class="textbox_div">
-												<input id="change_password" placeholder="<@i18n key="IAM.NEW.PASS"/>" type="password" name="change_password" class="textbox" required="" onkeyup="check_pass();" autocapitalize="off" autocorrect="off" tabindex="1" />
+												<input id="change_password" placeholder="<@i18n key="IAM.NEW.PASS"/>" type="password" autocomplete="off" name="change_password" class="textbox" required="" onkeyup="check_pass();" autocapitalize="off" autocorrect="off" tabindex="1" />
 												<span class="icon-hide show_hide_password" onclick="showHidePassword('change_password');"></span>
 												<div class="fielderror"></div>		
 											</div>
@@ -1274,7 +1347,7 @@
 										
 										<div class="searchparent" id="reneter_password_container">
 											<div class="textbox_div">
-												<input id="reneter_password" placeholder="<@i18n key="IAM.CONFIRM.PASSWORD"/>" type="password" name="reneter_password" class="textbox" required="" onkeydown="clearCommonError('reneter_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
+												<input id="reneter_password" placeholder="<@i18n key="IAM.CONFIRM.PASSWORD"/>" type="password" autocomplete="off" name="reneter_password" class="textbox" required="" onkeydown="clearCommonError('reneter_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
 												<span class="icon-hide show_hide_password" onclick="showHidePassword('reneter_password');"></span>
 												<div class="fielderror"></div>		
 											</div>
@@ -1378,7 +1451,7 @@
 			    						<span id="headtitle"><@i18n key="IAM.NEW.SIGNIN.CONTACT.SUPPORT"/></span>
 				    					<div class="head_info">
 				    						<div style="margin-bottom:20px"><@i18n key="IAM.AC.CONTACT.SUPPORT.HELP.DESC"/> </div>
-				    						<div class="normal_mode_support_contactid" style="margin-bottom:20px"><@i18n key="IAM.AC.CONTACT.SUPPORT.NO_OPTION.CONTACT" arg0="${support_email_address}"/></div>
+				    						<div class="normal_mode_support_contactid"><@i18n key="IAM.AC.CONTACT.SUPPORT.NO_OPTION.CONTACT" arg0="${support_email_address}"/></div>
 				    					</div>
 									</div>
 									

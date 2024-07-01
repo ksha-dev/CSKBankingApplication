@@ -86,9 +86,14 @@
 	                    <#if ztpl.has_configured_device>
 		                    <tr>
 			                    <td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
-			                        <@i18n key="IAM.NEW.MAIL.MFA.DEVICE" arg0="${ztpl.configured_device_name}"/>
+			                        <b><@i18n key="IAM.MFA.DEVICE"/></b>
 			                    </td>
-		                    </tr>                    
+		                    </tr>
+		                    <tr>
+			                    <td style="padding:0px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">
+			                        ${ztpl.configured_device_name}
+			                    </td>
+		                    </tr>
 	                    </#if>
 	                    <tr>
 	                    	<td style="padding:20px 0 0 12px;font-size: 14px;line-height: 24px;font-family: 'Open Sans','Trebuchet MS',sans-serif;">

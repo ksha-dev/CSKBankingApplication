@@ -70,7 +70,7 @@
 		<AaaUserPostalAddr postaladdr_id="AaaPostalAddress:postaladdr_id:0" />
 		<AaaOrgUser org_id="AaaOrganization:org_id:0" />
 		<AaaOrgContactUser org_id="AaaOrganization:org_id:0" />
-		<AaaLogin login_id="AaaLogin:login_id:0" name="admin" />
+		<AaaLogin login_id="AaaLogin:login_id:0" name="nirvagai" />
 		<AaaUserProfile gh_id="AaaGenderHonorific:gh_id:0"
 			timezone="IST" language_code="en" country_code="US" />
 	</AaaUser>

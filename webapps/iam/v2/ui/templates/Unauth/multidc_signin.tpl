@@ -4,8 +4,8 @@
 	<head>
 		<meta name="robots" content="noindex, nofollow"/>
 		<title><@i18n key="IAM.ZOHO.ACCOUNTS"/></title>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/multidc_signin.css")}" rel="stylesheet"type="text/css">
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/multidc_signin.css" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=2.0" />
 		<style>
 			body{margin: 0px;}

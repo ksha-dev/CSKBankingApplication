@@ -30,7 +30,7 @@
 		<div class="labelkey">Reason :</div> <%--No I18N--%>
 		<div class="labelvalue"><textarea name="reason" class="txtarea tmpcolor"  onfocus="clearsampletxt(this)" placeholder="Enter the reason with support ticket ID"></textarea></div><%--No I18N--%>
 		<div class="labelkey">Enter Admin password :</div> <%--No I18N--%>
-		<div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick='confirmEmail(document.confirmemail,"<%=IAMEncoder.encodeJavaScript(Util.encode(serviceUrl))%>")'>
 			<span class="btnlt"></span>

@@ -24,6 +24,7 @@
 {
 	#footer a,#footer{	
 		font-size: 12px;
+		z-index: 1;
 	}
 }
 </style>

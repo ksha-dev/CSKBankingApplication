@@ -103,7 +103,9 @@
                 var ele = de('photo_errmsg');//No I18N
                 ele.className = "pherrmsg";//No I18N
                 ele.innerHTML = msg;
-                setTimeout("de('photo_errmsg').className='hide'", 5000);
+                setTimeout(function() {
+					de('photo_errmsg').className = 'hide';
+				}, 5000);
                 if($("#loadingImg").is(":visible")){
                 	$(".photopopup").css("height","auto");//No I18N
                 	hideLoading();

@@ -1,0 +1,14 @@
+syntax = "proto2";
+package resource.redis;
+
+option java_package = "com.zoho.resource";
+option java_outer_classname = "CacheActionProto";
+
+message IAMCacheAction {
+    required string ip =1;
+    required int32 port =2;
+    required int32 db =3;
+    repeated string cachekey =4;
+    required int32 operation =5;
+    repeated string value =6;
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IAMAccounts>
+	<IAMAccount zaid="zohohealthappsorgzaid" account_name="ZohoHealthApp Service Org">
+		<IAMAccountDomain domain="zohohealthappsorgzaid" />
+	</IAMAccount>
+	<IAMAccount zaid="artifactorysorgzaid" account_name="Artifactory Service Org">
+		<IAMAccountDomain domain="artifactorysorgzaid" />
+	</IAMAccount>
+</IAMAccounts>

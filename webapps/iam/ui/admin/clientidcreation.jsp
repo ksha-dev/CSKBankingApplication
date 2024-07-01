@@ -20,7 +20,8 @@
 						<div class="labelkey">Client Type :</div>	<%--No I18N--%>
 						<div class="labelvalue">
 							<select name="clienttype" onchange="showId(this)">					
-								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_INTERNAL.getOAuthAppGroupID()+"_7")%>>USER-BASED</option>	<%--No I18N--%>		
+								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_INTERNAL.getOAuthAppGroupID()+"_7")%>>USER-BASED</option>	<%--No I18N--%>	
+								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_INTERNAL.getOAuthAppGroupID()+"_26")%>>USER-BASED-ORG-SPECIFIC</option>	<%--No I18N--%>	
 								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_ORG.getOAuthAppGroupID()+"_5")%>>ORG-BASED</option>	<%--No I18N--%>
 								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_DEVICE.getOAuthAppGroupID()+"_6")%>>DEVICE-BASED</option> <%--No I18N--%>
 								<option value=<%=IAMEncoder.encodeHTML(OAuth2Util.OAuthAppGroup.OAUTH_SPACE.getOAuthAppGroupID()+"_25")%>>EXTERNAL_CLIENTOAUTH_BROWSER_BASED</option> <%--No I18N--%>
@@ -88,7 +89,7 @@
 					    <div>
 							<div class="labelkey">Enter Admin Password : </div>	<%--No I18N--%>
 							<div class="labelvalue">
-								<input type="password" name="password1" id="password1"/>
+								<input type="password" autocomplete="off" name="password1" id="password1"/>
 							</div>
 						</div>
 					    <div>
@@ -117,7 +118,7 @@
 					</div>
 					<div class="labelkey">Enter Admin Password : </div>	 <%--No I18N--%>
 						<div class="labelvalue">
-							<input type="password" name="password2" id="password2"/>
+							<input type="password" autocomplete="off" name="password2" id="password2"/>
 						</div>
 					<div>
 						<div class="labelkey"></div>

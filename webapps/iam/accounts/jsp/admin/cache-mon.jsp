@@ -302,8 +302,9 @@ a {
 	<p class="serverInfo">Replication Status : {{model.repl}}</p>
 	<p class="serverInfo">Memory Usage : {{model.mem}}</p>
 	<table>
-    {{#each model.data as |item|}}
-      <tr><td>{{item.IP}}</td><td>{{item.NAME}}</td></tr>
+      <tr><td>IP</td><td>SERVICE NAME</td><td>USER NAME</td></tr>
+    {{#each model.client as |item|}}
+      <tr><td>{{item.IP}}</td><td>{{item.SERVICE}}</td><td>{{item.USER}}</td></tr>
     {{/each}}
     </table>
 </script>
@@ -533,7 +534,7 @@ a {
 					alert('Sending to default destination');<%--No I18N--%>
 					destination = target;
 				}
-				Ember.$.getJSON('/accounts/admin/stats?message=true&target='+destination+'&pool='+pool+'&dep=_'+dep).then(function(data){<%--No I18N--%>
+				Ember.$.getJSON('/accounts/admin/stats?message=true&target='+destination+'&pool='+pool+'&dep='+dep).then(function(data){<%--No I18N--%>
 					for(var i = 0; i < data.data.length; i++) {
 						let result = document.querySelector('#result');<%--No I18N--%>
 

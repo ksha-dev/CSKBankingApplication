@@ -1,7 +1,6 @@
 <form name="login_id_container" onsubmit="return accountLookup(event);" novalidate >
 	<div class="searchparent" id="login_id_container">
 		<div class="textbox_div">
-			<label for='country_code_select' class='select_country_code'></label>
 			<select id="country_code_select" onchange="changeCountryCode();" name="countryselect">
 				<#list country_code as dialingcode>
   					<option data-num="${dialingcode.code}" value="${dialingcode.dialcode}" id="${dialingcode.code}" >${dialingcode.display}</option>

@@ -3,7 +3,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>${i18n.title}</title>
         <script type="text/javascript" src="/accounts/js/tplibs/jquery/jquery-3.6.0.min.js"></script>
-        <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+        <@resource path="/v2/components/css/${customized_lang_font}" />
 	 <link type="text/css" href="/accounts/css/signin.css" rel="stylesheet" />
 	<!--ZOHO_ACCOUNTS_TEMPLATE-->
     </head>

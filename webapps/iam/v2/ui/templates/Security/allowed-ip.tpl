@@ -128,7 +128,7 @@
 						<div class="field" id="ip_name_container">
 							<div class="textbox_label"><@i18n key="IAM.IP.NAME" /></div>
 							<input type="text" class="textbox" tabindex="1" autocomplete="off" name="ip_name" id="ip_name" data-limit="100">
-							<div class="textbox_tip"><i><@i18n key="IAM.TFA.PASSKEY.CONFIGURATION.NAME.DESC" /></i></div>
+							<div class="textbox_tip textbox_align"><i><@i18n key="IAM.TFA.PASSKEY.CONFIGURATION.NAME.DESC" /></i></div>
 						</div>
 						<div id="current_ip" class="radiobtn_div hide">
 							<input class="real_radiobtn photo_radio" checked="checked" type="radio" name="ip_select" id="current_ip_sel" value="1">

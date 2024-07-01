@@ -114,7 +114,7 @@
 				</select>
 			</div>
 			<div class="labelkey">Enter Admin Password :</div><%--No I18N--%>
-			<div class="labelvalue"><input type="password" name="pwd" class="input"/></div>
+			<div class="labelvalue"><input type="password" autocomplete="off" name="pwd" class="input"/></div>
 			<div class="accbtn Hbtn">
 	    		<div class="savebtn" onclick="clearAgentConfigurationCache(document.clearagentcache)">
 					<span class="btnlt"></span>

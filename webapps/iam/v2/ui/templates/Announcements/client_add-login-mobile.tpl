@@ -5,44 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><@i18n key="IAM.ADD.PRIMARY.NUMBER.TITLE"/></title>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}"></script>
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+    <@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+    <@resource path="/v2/components/js/splitField.js" />
+    <@resource path="/v2/components/js/flagIcons.js" />
+	<@resource path="/v2/components/js/uvselect.js" />
+	<@resource path="/v2/components/css/uvselect.css" />
+	<@resource path="/v2/components/css/flagIcons.css" />
     <script>
 	    var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
     </script> 
-    <script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/js/phonePatternData.js" />
+    <@resource path="/v2/components/js/common_unauth.js" />
+    <@resource path="/v2/components/css/${customized_lang_font}" />
     <style>
-      @font-face {
-        font-family: "AccountsUI";
-        src: url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")}");
-        src: url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.eot")}") format("embedded-opentype"),
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.ttf")}") format("truetype"), 
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.woff")}") format("woff"),
-          url("${SCL.getStaticFilePath("/v2/components/images/fonts/AccountsUI.svg")}") format("svg");
-        font-weight: normal;
-        font-style: normal;
-        font-display: block;
-      }
-      [class^="icon-"],
-      [class*=" icon-"] {
-        font-family: "AccountsUI" !important;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      .icon-search:before,
-      .select2-search:after {
-        /*update "select2-search:after" class content also*/
-        content: "\e9a7";
-      }
       body {
         margin: 0;
         box-sizing: border-box;
@@ -237,9 +213,6 @@
         display: none;
         white-space: normal;
       }
-      .errorborder {
-        border: 2px solid #ff8484 !important;
-      }
       .already_added, .add_new_number {
       	color: #0093ff;
       	font-weight: 500;
@@ -266,65 +239,8 @@
         border: 1px solid #dddddd;
         padding: 12px 15px 12px 6px;
       }
-      #select_phonenumber .select2-container {
-        position: absolute;
-        height: 44px;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single {
-        border: none;
-        display:inline-block;
-        position: relative;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 42px;
-        letter-spacing: 0.5px;
-      }
-      #select_phonenumber .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-width: 3px;
-      }
-      #select2-countNameAddDiv-container {
-        display: inline-block;
-        margin-left: 42px;
-        margin-right: 13px;
-        padding: 0px;
-        width: auto;
-        font-size: 14px;
-      }
-      .select2-search {
-        display: block;
-        padding: 10px;
-        position: relative;
-      }
-      .select2-search__field {
-        height: 32px;
-        border: none;
-        outline: none;
-        border-radius: 4px;
-        width: 100%;
-        font-size: 13px;
-        padding: 10.5px 8px;
-        border: 1px solid #dfdfdf;
-        text-indent: 21px;
-      }
-      .select2-results__option {
-        list-style-type: none;
-        height: auto;
-        box-sizing: border-box;
-        line-height: 16px;
-        font-family: "ZohoPuvi", Georgia;
-        font-size: 13px;
-        overflow: hidden;
-        padding: 12px 18px;
-        word-break: break-word;
-      }
-      .field .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 40px;
-        color: #000;
-        background-color: transparent;
-        font-size: 14px;
-      }
-      .field .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 40px;
+      .mobile_input.selectbox--focus {
+		border: 1px solid #1389e3 !important;
       }
       .noindent {
         position: relative;
@@ -343,158 +259,6 @@
       }
       user agent stylesheet b {
         font-weight: bold;
-      }
-      span.select2-dropdown.select2-dropdown--below,
-      span.select2-dropdown.select2-dropdown--above {
-        background: #ffffff;
-        border: 1px solid #e6e6e6;
-        border-radius: 0px 0px 4px 4px;
-        margin-top: 0px;
-        box-sizing: border-box;
-        position: relative;
-        z-index: 5;
-        border-top: transparent;
-        overflow: hidden;
-      }
-      .noindent .select2-container .select2-selection--single {
-        text-indent: 0px;
-      }
-      .field .select2-container .select2-selection--single {
-        height: 42px;
-        font-size: 14px;
-      }
-      .select2-container--open + #mobile_input{
-        border: 1px solid #1389e3;
-        border-radius: 4px 4px 0px 0px;
-      }
-      .select2-search--hide {
-        display: none;
-      }
-      .select2-search__field::placeholder {
-        color: #a7a7a7;
-        opacity: 1;
-      }
-      .select2-dropdown {
-        display: inline-block;
-        min-width: 300px;
-      }
-      .select2-selection__rendered {
-        max-width: calc(100% - 30px);
-        overflow: hidden;
-        display: block;
-        text-overflow: ellipsis;
-        font-size: 14px;
-        color: #000000;
-        line-height: 18px;
-      }
-      .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 26px;
-        position: absolute;
-        top: 1px;
-        right: -6px;
-        width: 20px;
-      }
-      .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent #c6c6c6 #c6c6c6 transparent;
-        border-style: solid;
-        transform: rotate(45deg);
-        border-width: 3.5px;
-        height: 0px;
-        width: 0px;
-        position: relative;
-        top: 8px;
-        left: 6px;
-        border-radius: 1px;
-        display: inline-block;
-        margin-top: 6px;
-      }
-      .select2-container .select2-selection--single .select2-selection__rendered {
-        display: block;
-        padding-left: 8px;
-        padding-right: 30px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .select2-container--open .select2-selection {
-        border-radius: 4px 4px 0px 0px;
-      }
-      .select2-selection__arrow {
-        float: right;
-        height: 100%;
-        width: 10px;
-        position: relative;
-        top: -18px;
-      }
-      .select2-search:after {
-        font-family: "AccountsUI" !important;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        position: absolute;
-        top: 19px;
-        font-size: 14px;
-        left: 20px;
-        color: #00000080;
-      }
-      .select2-selection:hover {
-        cursor: pointer;
-      }
-      .selection {
-        display: block;
-        white-space: nowrap;
-        position: relative;
-      }
-      .select2-results__options {
-        padding-left: 0px;
-        max-height: 200px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        background: white;
-      }
-      .select2-results__option--highlighted {
-        background-color: #f8f8f8;
-        color: #000000;
-        cursor: pointer;
-      }
-      .select2-container--open .select2-selection {
-        z-index: 10;
-        border-color: #1389e3 !important;
-        border-bottom-right-radius: 0px !important;
-    	border-bottom-left-radius: 0px !important;
-      }
-      .select2-container--focus .select2-selection {
-        border-color: #1389e3 !important;
-      }
-      .select2-container--disabled.select2-container--focus .select2-selection {
-        border: 1px solid #bfbfbf !important;
-      }
-      .select2-hidden-accessible {
-        visibility: hidden;
-        border: 0 !important;
-        clip: rect(0, 0, 0, 0) !important;
-        height: 0px !important;
-        margin: -1px !important;
-        overflow: hidden !important;
-        padding: 0 !important;
-        position: absolute !important;
-        display: none;
-      }
-      .cc {
-        float: right;
-      }
-      .cn {
-        margin-left: 10px;
-        float: left;
-        max-width: 170px;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       #error_space{
 			position: fixed;
@@ -546,6 +310,13 @@
 		.show_error{
 			top:60px !important;
 		}
+		/* UV */
+		.selectbox--focus {
+			border: 1px solid #1389e3 !important;
+      	}
+      	.basic_selectbox:focus{
+      		border-color: #1389e3 !important;
+      	}
       .phone_code_label
 	  {
     	width: 60px;
@@ -572,6 +343,12 @@
     	border-radius: 1px;
     	display: inline-block;
 	  }
+	  .pcl_edit{
+	  	pointer-events: none;
+	  }
+	  .pcl_edit:after{
+	  	display: none;
+	  }
       .pic {
         width: 20px;
         height: 14px;
@@ -580,801 +357,6 @@
         background-position: -180px -238px;
         float: left;
         margin-top: 1px;
-      }
-      .selectFlag {
-        display: inline-block;
-        width: 20px;
-        height: 14px;
-        position: absolute;
-        top: 13px;
-        left: 13px;
-        background-size: 280px 252px;
-        background-image: url("/images/Flags2x.png");
-        background-position: -180px -238px;
-      }
-      .select2-container--already_numbers.select2-container--below{
-      	display: inline-block;
-      	height: 42px;
-      }
-      .field .select2-container--already_numbers .select2-container--focus .select2-selection{
-      	border-color:#dcdcdc !important;
-      }
-      .field span#select2-verfied_phnnum-container{
-      	box-sizing: border-box;
-      	padding:12px 30px 12px 15px;
-      	margin-left: 32px;
-      }
-      .field .select2-container--already_numbers .select2-selection--single{
-     	height: 42px;
-      	border: 1px solid #dcdcdc;
-      	border-radius: 4px;
-    	box-sizing: border-box;
-    	width: 300px;
-    	position: relative;
-    	display: inline-block;
-      }
-      .field .select2-container--already_numbers .select2-selection--single .select2-selection__arrow{
-      	height: 42px;
-      	top: -42px;
-      	margin-right: 6px;
-      	width: 20px;
-      }
-      .field .select2-container--already_numbers .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent #C6C6C6 #C6C6C6 transparent;
-    	border-style: solid;
-    	transform: rotate(45deg);
-    	border-width: 3.5px;
-    	height: 0px;
-    	width: 0px;
-    	position: relative;
-   		top: 8px;
-    	left: -2px;
-    	border-radius: 1px;
-    	display: inline-block;
-      }
-      
-      .flag_AF {
-        background-position: 0px 0px;
-      }
-      .flag_AL {
-        background-position: -20px 0px;
-      }
-      .flag_DZ {
-        background-position: -40px 0px;
-      }
-      .flag_AS {
-        background-position: -60px 0px;
-      }
-      .flag_AD {
-        background-position: -80px 0px;
-      }
-      .flag_AO {
-        background-position: -100px 0px;
-      }
-      .flag_AI {
-        background-position: -120px 0px;
-      }
-      .flag_AG {
-        background-position: -140px 0px;
-      }
-      .flag_AR {
-        background-position: -160px 0px;
-      }
-      .flag_AM {
-        background-position: -180px 0px;
-      }
-      .flag_AW {
-        background-position: -200px 0px;
-      }
-      .flag_AC {
-        background-position: -220px 0px;
-      }
-      .flag_AU {
-        background-position: -240px 0px;
-      }
-      .flag_AX {
-        background-position: -260px 0px;
-      }
-      .flag_AT {
-        background-position: 0px -14px;
-      }
-      .flag_AZ {
-        background-position: -20px -14px;
-      }
-      .flag_BS {
-        background-position: -40px -14px;
-      }
-      .flag_BH {
-        background-position: -60px -14px;
-      }
-      .flag_BD {
-        background-position: -80px -14px;
-      }
-      .flag_BB {
-        background-position: -100px -14px;
-      }
-      .flag_BY {
-        background-position: -120px -14px;
-      }
-      .flag_BE {
-        background-position: -140px -14px;
-      }
-      .flag_BZ {
-        background-position: -160px -14px;
-      }
-      .flag_BJ {
-        background-position: -180px -14px;
-      }
-      .flag_BM {
-        background-position: -200px -14px;
-      }
-      .flag_BT {
-        background-position: -220px -14px;
-      }
-      .flag_BO {
-        background-position: -240px -14px;
-      }
-      .flag_BA {
-        background-position: -260px -14px;
-      }
-      .flag_BW {
-        background-position: 0px -28px;
-      }
-      .flag_BR {
-        background-position: -20px -28px;
-      }
-      .flag_VG {
-        background-position: -40px -28px;
-      }
-      .flag_BN {
-        background-position: -60px -28px;
-      }
-      .flag_BG {
-        background-position: -80px -28px;
-      }
-      .flag_BF {
-        background-position: -100px -28px;
-      }
-      .flag_BI {
-        background-position: -120px -28px;
-      }
-      .flag_KH {
-        background-position: -140px -28px;
-      }
-      .flag_CM {
-        background-position: -160px -28px;
-      }
-      .flag_CA {
-        background-position: -180px -28px;
-      }
-      .flag_CV {
-        background-position: -200px -28px;
-      }
-      .flag_KY {
-        background-position: -220px -28px;
-      }
-      .flag_CF {
-        background-position: -240px -28px;
-      }
-      .flag_TD {
-        background-position: -260px -28px;
-      }
-      .flag_CL {
-        background-position: 0px -42px;
-      }
-      .flag_CN {
-        background-position: -20px -42px;
-      }
-      .flag_CO {
-        background-position: -40px -42px;
-      }
-      .flag_KM {
-        background-position: -60px -42px;
-      }
-      .flag_CG {
-        background-position: -80px -42px;
-      }
-      .flag_CK {
-        background-position: -100px -42px;
-      }
-      .flag_CR {
-        background-position: -120px -42px;
-      }
-      .flag_CI {
-        background-position: -140px -42px;
-      }
-      .flag_HR {
-        background-position: -160px -42px;
-      }
-      .flag_CU {
-        background-position: -180px -42px;
-      }
-      .flag_CW {
-        background-position: -100px -224px;
-      }
-      .flag_CY {
-        background-position: -200px -42px;
-      }
-      .flag_CZ {
-        background-position: -220px -42px;
-      }
-      .flag_CD {
-        background-position: -240px -42px;
-      }
-      .flag_DK {
-        background-position: -260px -42px;
-      }
-      .flag_DG {
-        background-position: 0px -56px;
-      }
-      .flag_DJ {
-        background-position: -20px -56px;
-      }
-      .flag_DM {
-        background-position: -40px -56px;
-      }
-      .flag_DO {
-        background-position: -60px -56px;
-      }
-      .flag_TL {
-        background-position: -80px -56px;
-      }
-      .flag_EC {
-        background-position: -100px -56px;
-      }
-      .flag_EG {
-        background-position: -120px -56px;
-      }
-      .flag_SV {
-        background-position: -140px -56px;
-      }
-      .flag_GQ {
-        background-position: -160px -56px;
-      }
-      .flag_ER {
-        background-position: -180px -56px;
-      }
-      .flag_EE {
-        background-position: -200px -56px;
-      }
-      .flag_ET {
-        background-position: -220px -56px;
-      }
-      .flag_FK {
-        background-position: -240px -56px;
-      }
-      .flag_FO {
-        background-position: -260px -56px;
-      }
-      .flag_FJ {
-        background-position: 0px -70px;
-      }
-      .flag_FI {
-        background-position: -20px -70px;
-      }
-      .flag_FR {
-        background-position: -40px -70px;
-      }
-      .flag_GF {
-        background-position: -60px -70px;
-      }
-      .flag_PF {
-        background-position: -80px -70px;
-      }
-      .flag_GA {
-        background-position: -100px -70px;
-      }
-      .flag_GM {
-        background-position: -120px -70px;
-      }
-      .flag_GE {
-        background-position: -140px -70px;
-      }
-      .flag_DE {
-        background-position: -160px -70px;
-      }
-      .flag_GH {
-        background-position: -180px -70px;
-      }
-      .flag_GI {
-        background-position: -200px -70px;
-      }
-      .flag_GR {
-        background-position: -220px -70px;
-      }
-      .flag_GL {
-        background-position: -240px -70px;
-      }
-      .flag_GD {
-        background-position: -260px -70px;
-      }
-      .flag_GP {
-        background-position: 0px -84px;
-      }
-      .flag_GU {
-        background-position: -20px -84px;
-      }
-      .flag_GT {
-        background-position: -40px -84px;
-      }
-      .flag_GN {
-        background-position: -60px -84px;
-      }
-      .flag_GW {
-        background-position: -80px -84px;
-      }preann_url
-      .flag_GY {
-        background-position: -100px -84px;
-      }
-      .flag_HT {
-        background-position: -120px -84px;
-      }
-      .flag_HN {
-        background-position: -140px -84px;
-      }
-      .flag_HK {
-        background-position: -160px -84px;
-      }
-      .flag_HU {
-        background-position: -180px -84px;
-      }
-      .flag_IS {
-        background-position: -200px -84px;
-      }
-      .flag_IN {
-        background-position: -220px -84px;
-      }
-      .flag_ID {
-        background-position: -240px -84px;
-      }
-      .flag_IR {
-        background-position: -260px -84px;
-      }
-      .flag_IQ {
-        background-position: 0px -98px;
-      }
-      .flag_IE {
-        background-position: -20px -98px;
-      }
-      .flag_IL {
-        background-position: -40px -98px;
-      }
-      .flag_IT {
-        background-position: -60px -98px;
-      }
-      .flag_JM {
-        background-position: -80px -98px;
-      }
-      .flag_JP {
-        background-position: -100px -98px;
-      }
-      .flag_JO {
-        background-position: -120px -98px;
-      }
-      .flag_KZ {
-        background-position: -140px -98px;
-      }
-      .flag_KE {
-        background-position: -160px -98px;
-      }
-      .flag_KI {
-        background-position: -180px -98px;
-      }
-      .flag_KW {
-        background-position: -200px -98px;
-      }
-      .flag_KG {
-        background-position: -220px -98px;
-      }
-      .flag_LA {
-        background-position: -240px -98px;
-      }
-      .flag_LV {
-        background-position: -260px -98px;
-      }
-      .flag_LB {
-        background-position: 0px -112px;
-      }
-      .flag_LS {
-        background-position: -20px -112px;
-      }
-      .flag_LR {
-        background-position: -40px -112px;
-      }
-      .flag_LY {
-        background-position: -60px -112px;
-      }
-      .flag_LI {
-        background-position: -80px -112px;
-      }
-      .flag_LT {
-        background-position: -100px -112px;
-      }
-      .flag_LU {
-        background-position: -120px -112px;
-      }
-      .flag_MO {
-        background-position: -140px -112px;
-      }
-      .flag_MK {
-        background-position: -160px -112px;
-      }
-      .flag_MG {
-        background-position: -180px -112px;
-      }
-      .flag_MW {
-        background-position: -200px -112px;
-      }
-      .flag_MY {
-        background-position: -220px -112px;
-      }
-      .flag_MV {
-        background-position: -240px -112px;
-      }
-      .flag_ML {
-        background-position: -260px -112px;
-      }
-      .flag_MT {
-        background-position: 0px -126px;
-      }
-      .flag_MH {
-        background-position: -20px -126px;
-      }
-      .flag_MQ {
-        background-position: -40px -126px;
-      }
-      .flag_MR {
-        background-position: -60px -126px;
-      }
-      .flag_MU {
-        background-position: -80px -126px;
-      }
-      .flag_MX {
-        background-position: -100px -126px;
-      }
-      .flag_FM {
-        background-position: -120px -126px;
-      }
-      .flag_MD {
-        background-position: -140px -126px;
-      }
-      .flag_MC {
-        background-position: -160px -126px;
-      }
-      .flag_MN {
-        background-position: -180px -126px;
-      }
-      .flag_ME {
-        background-position: -200px -126px;
-      }
-      .flag_MS {
-        background-position: -220px -126px;
-      }
-      .flag_MA {
-        background-position: -240px -126px;
-      }
-      .flag_MZ {
-        background-position: -260px -126px;
-      }
-      .flag_MM {
-        background-position: 0px -140px;
-      }
-      .flag_NA {
-        background-position: -20px -140px;
-      }
-      .flag_NR {
-        background-position: -40px -140px;
-      }
-      .flag_NP {
-        background-position: -60px -140px;
-      }
-      .flag_NL {
-        background-position: -80px -140px;
-      }
-      .flag_AN {
-        background-position: -100px -140px;
-      }
-      .flag_NC {
-        background-position: -120px -140px;
-      }
-      .flag_NZ {
-        background-position: -140px -140px;
-      }
-      .flag_NI {
-        background-position: -160px -140px;
-      }
-      .flag_NE {
-        background-position: -180px -140px;
-      }
-      .flag_NG {
-        background-position: -200px -140px;
-      }
-      .flag_NU {
-        background-position: -220px -140px;
-      }
-      .flag_KP {
-        background-position: -240px -140px;
-      }
-      .flag_MP {
-        background-position: -260px -140px;
-      }
-      .flag_NO {
-        background-position: 0px -154px;
-      }
-      .flag_OM {
-        background-position: -20px -154px;
-      }
-      .flag_PK {
-        background-position: -40px -154px;
-      }
-      .flag_PW {
-        background-position: -60px -154px;
-      }
-      .flag_PS {
-        background-position: -80px -154px;
-      }
-      .flag_PA {
-        background-position: -100px -154px;
-      }
-      .flag_PG {
-        background-position: -120px -154px;
-      }
-      .flag_PY {
-        background-position: -140px -154px;
-      }
-      .flag_PE {
-        background-position: -160px -154px;
-      }
-      .flag_PH {
-        background-position: -180px -154px;
-      }
-      .flag_PL {
-        background-position: -200px -154px;
-      }
-      .flag_PT {
-        background-position: -220px -154px;
-      }
-      .flag_PR {
-        background-position: -240px -154px;
-      }
-      .flag_QA {
-        background-position: -260px -154px;
-      }
-      .flag_RE {
-        background-position: 0px -168px;
-      }
-      .flag_RO {
-        background-position: -20px -168px;
-      }
-      .flag_RU {
-        background-position: -40px -168px;
-      }
-      .flag_RW {
-        background-position: -60px -168px;
-      }
-      .flag_SH {
-        background-position: -80px -168px;
-      }
-      .flag_KN {
-        background-position: -100px -168px;
-      }
-      .flag_LC {
-        background-position: -120px -168px;
-      }
-      .flag_PM {
-        background-position: -140px -168px;
-      }
-      .flag_VC {
-        background-position: -160px -168px;
-      }
-      .flag_WS {
-        background-position: -180px -168px;
-      }
-      .flag_SM {
-        background-position: -200px -168px;
-      }
-      .flag_ST {
-        background-position: -220px -168px;
-      }
-      .flag_SA {
-        background-position: -240px -168px;
-      }
-      .flag_SN {
-        background-position: -260px -168px;
-      }
-      .flag_RS {
-        background-position: 0px -182px;
-      }
-      .flag_SC {
-        background-position: -20px -182px;
-      }
-      .flag_SL {
-        background-position: -40px -182px;
-      }
-      .flag_SG {
-        background-position: -60px -182px;
-      }
-      .flag_SK {
-        background-position: -80px -182px;
-      }
-      .flag_SI {
-        background-position: -100px -182px;
-      }
-      .flag_SB {
-        background-position: -120px -182px;
-      }
-      .flag_SO {
-        background-position: -140px -182px;
-      }
-      .flag_ZA {
-        background-position: -160px -182px;
-      }
-      .flag_KR {
-        background-position: -180px -182px;
-      }
-      .flag_SS {
-        background-position: -120px -224px;
-      }
-      .flag_ES {
-        background-position: -200px -182px;
-      }
-      .flag_LK {
-        background-position: -220px -182px;
-      }
-      .flag_SD {
-        background-position: -240px -182px;
-      }
-      .flag_SR {
-        background-position: -260px -182px;
-      }
-      .flag_SZ {
-        background-position: 0px -196px;
-      }
-      .flag_SE {
-        background-position: -20px -196px;
-      }
-      .flag_CH {
-        background-position: -40px -196px;
-      }
-      .flag_SY {
-        background-position: -60px -196px;
-      }
-      .flag_TW {
-        background-position: -80px -196px;
-      }
-      .flag_TJ {
-        background-position: -100px -196px;
-      }
-      .flag_TZ {
-        background-position: -120px -196px;
-      }
-      .flag_TH {
-        background-position: -140px -196px;
-      }
-      .flag_TG {
-        background-position: -160px -196px;
-      }
-      .flag_TK {
-        background-position: -180px -196px;
-      }
-      .flag_TO {
-        background-position: -200px -196px;
-      }
-      .flag_TT {
-        background-position: -220px -196px;
-      }
-      .flag_TN {
-        background-position: -240px -196px;
-      }
-      .flag_TR {
-        background-position: -260px -196px;
-      }
-      .flag_TM {
-        background-position: 0px -210px;
-      }
-      .flag_TC {
-        background-position: -20px -210px;
-      }
-      .flag_TV {
-        background-position: -40px -210px;
-      }
-      .flag_UG {
-        background-position: -60px -210px;
-      }
-      .flag_UA {
-        background-position: -80px -210px;
-      }
-      .flag_AE {
-        background-position: -100px -210px;
-      }
-      .flag_GB {
-        background-position: -120px -210px;
-      }
-      .flag_US,
-      .flag_UM {
-        background-position: -140px -210px;
-      }
-      .flag_UY {
-        background-position: -160px -210px;
-      }
-      .flag_VI {
-        background-position: -180px -210px;
-      }
-      .flag_UZ {
-        background-position: -200px -210px;
-      }
-      .flag_VU {
-        background-position: -220px -210px;
-      }
-      .flag_VA {
-        background-position: -240px -210px;
-      }
-      .flag_VE {
-        background-position: -260px -210px;
-      }
-      .flag_VN {
-        background-position: 0px -224px;
-      }
-      .flag_WF {
-        background-position: -20px -224px;
-      }
-      .flag_YE {
-        background-position: -40px -224px;
-      }
-      .flag_ZM {
-        background-position: -60px -224px;
-      }
-      .flag_ZW {
-        background-position: -80px -224px;
-      }
-      .flag_AQ {
-        background-position: -160px -224px;
-      }
-      .flag_BV,
-      .flag_SJ {
-        background-position: -180px -224px;
-      }
-      .flag_IO {
-        background-position: -200px -224px;
-      }
-      .flag_CX {
-        background-position: -220px -224px;
-      }
-      .flag_CC {
-        background-position: -240px -224px;
-      }
-      .flag_TF {
-        background-position: -260px -224px;
-      }
-      .flag_GG {
-        background-position: 0px -238px;
-      }
-      .flag_HM {
-        background-position: -20px -238px;
-      }
-      .flag_JE {
-        background-position: -40px -238px;
-      }
-      .flag_YT {
-        background-position: -60px -238px;
-      }
-      .flag_NF {
-        background-position: -80px -238px;
-      }
-      .flag_PN {
-        background-position: -100px -238px;
-      }
-      .flag_GS {
-        background-position: -120px -238px;
-      }
-      .flag_EH {
-        background-position: -140px -238px;
-      }
-      .flag_IM {
-        background-position: -160px -238px;
-      }
-      #select2-localeCn-results .flag_AX {
-        background-position: -140px -224px;
       }
       #footer {
 		    width: 100%;
@@ -1450,6 +432,13 @@
 		border-bottom-color: #ffffff;
 		border-left-color: #ffffff;
 	  }
+	  .errorborder {
+        border: 2px solid #ff8484 !important;
+      }
+		.cp_display_name{
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
       @media only screen and (min-width: 435px) and (max-width: 980px) {
         .flex-container {
           padding: 50px 25px 0px 25px;
@@ -1512,17 +501,19 @@
 		var isEnforced = ${is_enforced?c};
 		var otp_length= ${otp_length};
 		I18N.load({
-      	"IAM.GENERAL.OTP.SENDING" : '<@i18n key="IAM.GENERAL.OTP.SENDING"/>',
-      	"IAM.GENERAL.OTP.SUCCESS" : '<@i18n key="IAM.GENERAL.OTP.SUCCESS"/>',
-      	"IAM.GENERAL.ERROR.INVALID.OTP" : '<@i18n key="IAM.GENERAL.ERROR.INVALID.OTP"/>',
-      	"IAM.ERROR.VALID.OTP" : '<@i18n key="IAM.ERROR.VALID.OTP" />',
-      	"IAM.ERROR.EMAIL.INVALID" : '<@i18n key="IAM.ERROR.EMAIL.INVALID"/>',
-      	"IAM.PHONE.ENTER.VALID.MOBILE_NUMBER" : '<@i18n key="IAM.PHONE.ENTER.VALID.MOBILE_NUMBER"/>',
-	  	"IAM.GENERAL.OTP.SENDING" : '<@i18n key="IAM.GENERAL.OTP.SENDING"/>',
-	  	"IAM.GENERAL.OTP.SUCCESS" : '<@i18n key="IAM.GENERAL.OTP.SUCCESS"/>',
-	  	"IAM.VERIFIED" : '<@i18n key="IAM.VERIFIED"/>',
-	  	"IAM.TFA.RESEND.OTP.COUNTDOWN" : '<@i18n key="IAM.TFA.RESEND.OTP.COUNTDOWN"/>',
-	  });
+      		"IAM.GENERAL.OTP.SENDING" : '<@i18n key="IAM.GENERAL.OTP.SENDING"/>',
+      		"IAM.GENERAL.OTP.SUCCESS" : '<@i18n key="IAM.GENERAL.OTP.SUCCESS"/>',
+      		"IAM.GENERAL.ERROR.INVALID.OTP" : '<@i18n key="IAM.GENERAL.ERROR.INVALID.OTP"/>',
+      		"IAM.ERROR.VALID.OTP" : '<@i18n key="IAM.ERROR.VALID.OTP" />',
+      		"IAM.ERROR.EMAIL.INVALID" : '<@i18n key="IAM.ERROR.EMAIL.INVALID"/>',
+      		"IAM.PHONE.ENTER.VALID.MOBILE_NUMBER" : '<@i18n key="IAM.PHONE.ENTER.VALID.MOBILE_NUMBER"/>',
+	  		"IAM.GENERAL.OTP.SENDING" : '<@i18n key="IAM.GENERAL.OTP.SENDING"/>',
+	  		"IAM.GENERAL.OTP.SUCCESS" : '<@i18n key="IAM.GENERAL.OTP.SUCCESS"/>',
+	  		"IAM.VERIFIED" : '<@i18n key="IAM.VERIFIED"/>',
+	  		"IAM.TFA.RESEND.OTP.COUNTDOWN" : '<@i18n key="IAM.TFA.RESEND.OTP.COUNTDOWN"/>',
+	  	});
+	  	var iam_search_text = '<@i18n key="IAM.SEARCHING" />';
+		var iam_no_result_found_text = '<@i18n key="IAM.NO.RESULT.FOUND" />';
 	  var cryptData;
 	  <#if nxt_preann_url??>var next = "${nxt_preann_url}";</#if>
 	  function handleEditOption(mode) {
@@ -1531,26 +522,28 @@
         $(".otp_input_container, .otp_sent_desc").slideUp(200);
         document.querySelector(".enter_eml_mob_desc").style.display = "block";
         document.querySelector(".send_otp_btn").style.display = "block";
+        altered = false
         if (!resendtiming == 0) {
           $(".send_otp_btn").prop("disabled", true);
         }
         document.querySelector("." + mode + "_input_container").style.display = "block";
         document.querySelector("#" + mode + "_input").focus();
         if(mode === "email"){
-        document.querySelector("#" + mode + "_input").value = emailormobilevalue;
+        	document.querySelector("#" + mode + "_input").value = emailormobilevalue;
         }else{
-        if(countryCode){
-		reqCountry = "#"+countryCode.toUpperCase();
-      	$('#countNameAddDiv option:selected').removeAttr('selected');
-      	$("#countNameAddDiv "+reqCountry).prop('selected', true);
-      	$("#countNameAddDiv "+reqCountry).trigger('change');
-		}
-        document.querySelector("#" + mode + "_input").value = mobile
+        	if(countryCode){
+				reqCountry = "#"+countryCode.toUpperCase();
+      			$('#countNameAddDiv option:selected').removeAttr('selected');
+      			$("#countNameAddDiv "+reqCountry).prop('selected', true);
+      			$("#countNameAddDiv "+reqCountry).trigger('change');
+			}
+        	document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobile.toString());
         }
       }
 	  
 	  function sendOTP(mode, emailormobilevalue) {
       	$(".resend_otp").html("<div class='loader'></div>"+I18N.get('IAM.GENERAL.OTP.SENDING'));
+      	$(".send_otp_btn").prop("disabled", "disabled");
         if (mode === "email") {
         	if (isEmailId(emailormobilevalue)) {
         		$("div.valueemailormobile").html(emailormobilevalue);
@@ -1558,6 +551,7 @@
             	sendRequestWithCallback("/webclient/v1/announcement/pre/loginmobile", JSON.stringify(params), true, handleOtpSent, "POST")
           	} else {
              show_error_msg("#email_input", I18N.get("IAM.ERROR.EMAIL.INVALID"));
+             $(".send_otp_btn").removeAttr("disabled");
           	}
         } else if (mode === "mobile") {
           	if (isPhoneNumber(mobile)) {
@@ -1568,12 +562,14 @@
            		sendRequestWithCallback("/webclient/v1/announcement/pre/loginmobile", JSON.stringify(params), true, handleOtpSent, "POST")
           	} else {
           		show_error_msg("#mobile_input", I18N.get("IAM.PHONE.ENTER.VALID.MOBILE_NUMBER"));
+          		$(".send_otp_btn").removeAttr("disabled");
           	}
         }
       }
       
       function handleOtpSent(respStr){
 		if(respStr!="" && respStr!= undefined){
+			$(".send_otp_btn").removeAttr("disabled");
 			var resp = JSON.parse(respStr);
 			if(resp.status_code >= 200 && resp.status_code <= 299){
 			clearError('#otp_split_input');
@@ -1596,11 +592,12 @@
 				if(mode === "email"){
 					show_error_msg("#email_input", resp.localized_message);
 				}else if(mode === "mobile"){
-					if($("#select2-verfied_phnnum-container").is(":visible")){
-          			show_error_msg(".select2-container--already_numbers .select2-selection", resp.localized_message);
-          		} else {
-					show_error_msg("#mobile_input", resp.localized_message);
-				}}
+					if($("[jsid='verfied_phnnum'].uvselect").is(":visible")){
+          				show_error_msg("[jsid='verfied_phnnum'].selectbox", resp.localized_message);
+          			} else {
+						show_error_msg("#mobile_input", resp.localized_message);
+					}
+				}
 			}
 		}
 	  }
@@ -1737,29 +734,16 @@
       function selectAlreadyNumbers(){
       	$(".mobile_input_container, .enter_eml_mob_desc, .send_otp_btn").slideUp(200);
       	$(".existing_numbers_container, .update_send_otp_btn").slideDown(200);
-      	$(document.confirm_form2.verified_nums).select2({
-      		minimumResultsForSearch: Infinity,
-      		theme: "already_numbers",
-    		templateResult: function(option){
-    		if (!option.id) { return option.text; }
-    		var string_code = $(option.element).attr("value");
-    		var number_val = $(option.element).text();
-    		var ob = '<div class="pic flag_'+string_code.toUpperCase()+'"></div><span class="cn">'+number_val+"</span>";
-    		return  ob;
-    		},templateSelection: function (option) {
-		    	selectFlag($(option.element));
-		            return option.text;
-		    },escapeMarkup: function (m) {
-			  return m;
+      	$(document.confirm_form2.verified_nums).uvselect({
+			"searchable" : true, //No I18N
+			"dropdown-align": "left", //No I18N
+			"embed-icon-class": "flagIcons", //No I18N
+			"country-flag" : true, //No I18N
+			"use-attr-as-value" : "id", //No I18N
+			"onDropdown:open" : function(){ //No I18N
+				clearError("[jsid='verfied_phnnum'].selectbox");
 			}
-    	}).on("select2:open", function () {
-            	clearError(".select2-container--already_numbers .select2-selection");
-          	}).on("select2:close", function () {
-            	$(document.confirm_form2.hidden_input).focus();
-          	});
-    	$(".existing_numbers_container .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-		selectFlag($(document.confirm_form2.verified_nums).find("option:selected"));
-		$(".select2-selection__rendered").attr("title", "");
+		});
       }
 	  function addNewNumber(){
 	  $(".mobile_input_container, .enter_eml_mob_desc, .send_otp_btn").slideDown(200);
@@ -1768,6 +752,7 @@
 	  }
 		            
       function updateAlreadyMblValue(){
+      	clearError("[jsid='verfied_phnnum'].selectbox")
       	var countryCode = $('#verfied_phnnum option:selected').attr("value");
       	var dialCodeMobile =  $('#verfied_phnnum option:selected').text();
       	mobile = dialCodeMobile.split(" ")[1];
@@ -1793,51 +778,6 @@
           $(".send_otp_btn span").html("");
           $(".send_otp_btn").prop("disabled", false);
         }
-      }
-      
-      function phoneSelectformat(option) {
-        //use to country flag structure in select2
-        var spltext;
-        if (!option.id) {
-          return option.text;
-        }
-        spltext = option.text.split("(");
-        var num_code = $(option.element).attr("data-num");
-        var string_code = $(option.element).attr("value");
-        var ob =
-          '<div class="pic flag_' +
-          string_code +
-          '" ></div><span class="cn">' +
-          spltext[0] +
-          "</span><span class='cc'>" +
-          num_code +
-          "</span>";
-        return ob;
-      }
-      
-      function selectFlag(e) {
-        var flagpos = "flag_" + $(e).val().toUpperCase();
-        $(".select2-selection__rendered").attr("title", "");
-        e.parent().siblings(".select2").find("#selectFlag").attr("class", ""); 
-        e.parent().siblings(".select2").find("#selectFlag").addClass("selectFlag"); 
-        e.parent().siblings(".select2").find("#selectFlag").addClass(flagpos); 
-      }
-      function codelengthChecking(length_id, changeid) {
-        var code_len = $(length_id).attr("data-num").length;
-        var length_ele = $(length_id)
-          .parent()
-          .siblings("#" + changeid);
-        length_ele.removeClass("textindent58");
-        length_ele.removeClass("textindent66");
-        length_ele.removeClass("textindent78");
-        if (code_len == "3") {
-          length_ele.addClass("textindent66");
-        } else if (code_len == "2") {
-          length_ele.addClass("textindent58");
-        } else if (code_len == "4") {
-          length_ele.addClass("textindent78");
-        }
-        length_ele.focus();
       }
       
       function phonecodeChangeForMobile(ele)
@@ -1911,11 +851,12 @@
 			$(document.confirm_form1.countrycode).val(countryCode);
 			$(document.confirm_form1.countrycode).trigger('change');
 			}
-			document.querySelector("#" + mode + "_input").value = mobile;
+			document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobile.toString());
 			if(!isEdit){
 				$(document.confirm_form1.mobile_no).attr("readonly",true);
-				$(".select2-container").css("pointer-events", "none");
-				$(".select2-selection__arrow").remove();
+				$(".selectbox_arrow").remove();
+				$("#countNameAddDiv").css("pointer-events", "none");
+				$(".phone_code_label").addClass("pcl_edit")
 				document.querySelector("#mobile_input").style.backgroundColor = "#f9f9f9";
 				document.querySelector("#mobile_input").style.textIndent = "72px";
 				document.querySelector("#mobile_input").classList.remove("textindent66");
@@ -1932,38 +873,20 @@
 	  function initMobileSelect(){
 	  	if (mode === "mobile") {
 	  		if(!isMobile) {
-        	$(document.confirm_form1.countrycode)
-          	.select2({
-            	width: "82px",
-            	templateResult: phoneSelectformat,
-            	templateSelection: function (option) {
-              	selectFlag($(option.element));
-              	codelengthChecking(option.element, "mobile_input");
-              	return $(option.element).attr("data-num");
-            },
-            language: {
-              noResults: function () {
-                return "<@i18n key="IAM.NO.RESULT.FOUND"/>"; 
-              },
-            },
-            escapeMarkup: function (m) {
-              return m;
-            },
-          	})
-          	.on("select2:open", function () {
-            	$(".select2-search__field").attr("placeholder", "<@i18n key="IAM.SEARCHING"/>");
-          	});
-        	$("#select_phonenumber .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-        	selectFlag($(document.confirm_form1.countrycode).find("option:selected"));
-        	$(".select2-selection__rendered").attr("title", "");
-        	$(document.confirm_form.countrycode).on("select2:close", function (e) {
-          		$(e.target).siblings("input").focus();
-        	});
-        	 phonePattern.intialize(document.confirm_form1.countrycode);
-        	 $(".phone_code_label").css("visibility" ,"hidden")
+        		$(document.confirm_form1.countrycode).uvselect({
+					"width": '80px', //No i18N
+					"searchable" : true, //No i18N
+					"dropdown-width": "300px", //No i18N
+					"dropdown-align": "left", //No i18N
+					"embed-icon-class": "flagIcons", //No i18N
+					"country-flag" : true, //No i18N
+					"country-code" : true  //No i18N
+				});
+        		$(".phone_code_label").css("visibility" ,"hidden")
       		} else {
-       		phonecodeChangeForMobile(document.confirm_form1.countrycode);
+       			phonecodeChangeForMobile(document.confirm_form1.countrycode);
       		}
+      		phonePattern.intialize(document.confirm_form1.countrycode);
     	}
 	  }
 	  </script>

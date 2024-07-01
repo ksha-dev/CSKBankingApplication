@@ -141,7 +141,7 @@ body {
 }
 
 .logo {
-	background: url("../../images/rebrand-logos.png") no-repeat scroll -5px -3px transparent;
+	background: url("../../images/newZoho_logo.svg") no-repeat transparent;
 	display: block;
 	height: 50px;
 	float: none;
@@ -332,10 +332,10 @@ hr {
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2) , only screen and (min--moz-device-pixel-ratio: 2) , only screen and (-o-min-device-pixel-ratio: 2/1) , only screen and (min-device-pixel-ratio: 2) , only screen and (min-resolution: 192dpi) , only screen and (min-resolution: 2dppx) {
 	.logo {
-		 background: url(../../images/rebrand-logos.png) no-repeat -2px -26px;
+		 background: url(../../images/newZoho_logo.svg) no-repeat;
 	    background-size: 100px;
-	    height: 30px;
-	    width: 94px;
+	    height: 40px;
+	    width: 100px;
 	    display: block;
 	    margin:0 auto;
 	}
@@ -376,7 +376,7 @@ hr {
 		
 	}
 .logo{
-	background: url(../../images/rebrand-logos.png) no-repeat 2px -37px !important;
+	background: url(../../images/newZoho_logo.svg) no-repeat !important;
     background-size: 138px !important;
     height: 40px !important;
     width: 121px !important;

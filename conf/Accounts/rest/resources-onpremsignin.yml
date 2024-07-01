@@ -1,0 +1,54 @@
+#$Id: $
+# Configuration Sample Format :
+# ``` 
+#   - resource_name: {{ResourceName in PascalCase}} (Mandatory)
+#     identifier: {{identifier}}.
+#     path: "users/:zuid". Customize REST API Path. default : {resource}/:{identifier}  
+#     downloadable: Boolean.
+#     multipart: Boolean.
+#     derived: Boolean.
+#     resources: {{SubResources}
+#     access_control: {{false}} || {{Map}}
+#       {{method}}:  # (get | post | put | delete)
+#         roles: {{Role Name}}. # Single or Comma seprated User Role. Allowed to perform this operation. 
+#                                 If `ServiceAdmin` configured its parent Roles such as SuperAdmin, Admin can also perform the action based on the weigtage of the role. 
+#         role_hierarchy: {{Boolean}} # Don't consider Parent roles hierarchy, Verify given set of Roles alone. 
+#         password: {{Boolean}} # Default is false. If you required authentication check, give true.
+# ```
+---
+api_server_url: "http://localhost:8080"
+
+prefix_uri: "accounts/p"
+
+base_uri: "onpremise/signin"
+
+versions: "v2"
+ 
+handlers_package: "com.zoho.accounts.onpremise.signin.handlers"
+
+     
+icresturi_handler_api: "com.zoho.accounts.onpremise.signin.authorization.ICRESTUriHandlerImpl"
+
+default_access_control:
+  post:
+    roles: admin
+  get:
+    roles: user
+  put:
+    roles: admin
+  delete:
+    roles: admin
+
+resources:
+  - resource_name: PrimaryAuth
+    identifier: zuid
+    path: "/primary/:zuid"
+    resource_exist: false
+    access_control: false
+    resources:
+      - resource_name: LDAPPasswordAuth
+        path: "/ldappasswordauth"
+        fields: password
+        access_control:
+          post:
+            roles: self

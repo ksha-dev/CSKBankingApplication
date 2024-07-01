@@ -148,11 +148,11 @@ function setFooterPosition(){
 	}
 }
 
-$(window).resize(function(){
+window.jquery && $ === jquery && $(window).resize(function(){
 	setFooterPosition();
 });
 
-$("document").ready(function(){
+window.jquery && $ === jquery && $("document").ready(function(){
 	setFooterPosition();
 	$.fn.focus=function(){ 
 		if(this.length){
@@ -193,6 +193,24 @@ function isPhoneNumber(str) {
     return objRegExp.test(str);
 }
 
+function hasEmoji(str) {
+	// The for loop method (hasEmoji) is used to iterate over each character in the input string replaced with "/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/u" 
+	for (var i = 0; i < str.length; i++) {
+		var codePoint = str.codePointAt(i);
+		if ((codePoint >= 0x1F300 && codePoint <= 0x1F9B3) || (codePoint >= 0x1F3FB && codePoint <= 0x1F3FF)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function isClearText(val) {
+	if (val.length > 100) {
+		return false;
+	}
+	var pattern = /^[0-9a-zA-Z_\-\+\.\$@\?\,\:\'\/\!\[\]\|\u0080-\uFFFF\s]+$/;
+	return pattern.test(val.trim());
+}
 
 function formatMessage() {
     var msg = arguments[0];
@@ -344,7 +362,7 @@ function sendRequestWithCallback(action, params, async, callback,method) {
 }  
 
 
-$(function() 
+window.jquery && $ === jquery && $(function()
 		{
 			$("input").keyup(function()
 			{
@@ -440,7 +458,7 @@ function validatePasswordPolicy(passwordPolicy) {
 		getErrorMsg: function(value, callback) {
 			if(passwordPolicy) {
 				var isInit = value ?  false : true;
-	 			value = value || '';
+	 			value = value ? value.trim() : '';
 	 			callback = callback || setErrCallback;
 	 			var rules = [ 'MIN_MAX', 'SPL', 'NUM', 'CASE']; //No I18N
 	 			var err_rules = []; 
@@ -472,6 +490,9 @@ function validatePasswordPolicy(passwordPolicy) {
 	 						break;
 	 				}
 	 			}
+	 			if(typeof isClientPortal != "undefined" && isClientPortal){
+					 err_rules.length == 0 ? $(".hover-tool-tip").hide() : $(".hover-tool-tip").show();
+				}
 	 			return err_rules.length && err_rules;
 			}
 		},
@@ -493,29 +514,55 @@ function validatePasswordPolicy(passwordPolicy) {
 	 			$(passInputID).on('focus blur', function(e){//No I18N
 	 			    if(e.type === 'focus') {//No I18N
 	 			    	var offset = document.querySelector(passInputID).getBoundingClientRect();
-	 		 			$('.hover-tool-tip').css(isMobile ? {
-	 		 				top: offset.bottom + $(window).scrollTop() + 8,
-	 		 				left: offset.x,
-	 		 				width: offset.width - 40
-	 		 			} : {
-	 		 				top: offset.y + $(window).scrollTop(),
-	 		 				left: offset.x + offset.width + 15
-	 		 			});
-	 			    	$('.hover-tool-tip').css('opacity', 1);//No I18N
+	 			    	if( $("body").attr("dir") === "rtl"){
+							 $('.hover-tool-tip').css(isMobile ? {
+		 		 				top: offset.bottom + $(window).scrollTop() + 8,
+		 		 				right: offset.x,
+		 		 				width: offset.width - 40
+	 		 				}: {
+		 		 				top: offset.y + $(window).scrollTop(),
+		 		 				right : offset.x + offset.width + 15
+		 		 			});
+						 }else{
+							 $('.hover-tool-tip').css(isMobile ? {
+		 		 				top: offset.bottom + $(window).scrollTop() + 8,
+		 		 				left: offset.x,
+		 		 				width: offset.width - 40
+		 		 				} : {
+			 		 				top: offset.y + $(window).scrollTop(),
+			 		 				left : offset.x + offset.width + 15
+		 		 			});
+	 		 			
+						 }
+						if(typeof isClientPortal != "undefined" && isClientPortal){
+							$('.hover-tool-tip').css({
+		 		 				top: offset.bottom + $(window).scrollTop() + 8,
+		 		 				left: offset.x,
+		 		 				width: offset.width - 40
+	 		 				});
+						}
+	 			    	$('.hover-tool-tip').show()
 	 			    } else {
-	 			    	$('.hover-tool-tip').css('opacity', 0);//No I18N
+	 			    	$('.hover-tool-tip').hide();
 	 			    	var offset = document.querySelector('.hover-tool-tip').getBoundingClientRect();//No I18N
-	 		 			$('.hover-tool-tip').css({
+	 			    	if($("body").attr("dir") === "rtl"){
+							 $('.hover-tool-tip').css({
 	 		 				top: -offset.height,
-	 		 				left: -(offset.width + 15)
+	 		 				right: -(offset.width + 15)
 	 		 			})
+						}else{
+		 		 			$('.hover-tool-tip').css({
+		 		 				top: -offset.height,
+		 		 				left: -(offset.width + 15)
+		 		 			})
+	 		 			}
 	 			    }
 	 			});
  			}
  		},
  		validate: function(formID, passInputID) {
 			var str=$(passInputID).val();
-			this.getErrorMsg(str, setErrCallback) ? $('.hover-tool-tip').css('opacity', 1):$('.hover-tool-tip').css('opacity', 0);
+			this.getErrorMsg(str, setErrCallback) ? $('.hover-tool-tip').show():$('.hover-tool-tip').hide();
  		}
 	}
 }
@@ -576,13 +623,19 @@ function hideCommonLoader(){
 		}, 100);
 	}
 }
+
 //mobile view of MFA and recover devices for accountrecovery and ipreset
 function mobileviewDevices(select_ID){
-	$(select_ID).parent().append($("<div class='devicelist'>" +
+	if(!$(select_ID).parent().children().hasClass("devicelist")){
+		$(select_ID).parent().append($("<div class='devicelist'>" +
 										"<span class='device_icon icon-Mobile'></span>" +
 										"<div class='devicename'></div>" +
 										"<span class='mobile_dev_arrow'></span>" +
 									"</div>"));
+	}
+	if($(select_ID+" option").length == 1){
+		$(".mobile_dev_arrow").hide();
+	}
 	updatedevices(select_ID)
 }
 function updatedevices(select_ID){
@@ -591,4 +644,25 @@ function updatedevices(select_ID){
 }
 function handlewidthOfSelect(select_ID){
 	$(select_ID).css("width",$(".devicelist").outerWidth());
+}
+function mobileflag(){
+	if($("#country_code_select").find(":selected").attr("id")){
+		if($(".mobileFlag").length == 0){
+		$("#country_code_select").parent().prepend($("<div class='MobflagContainer' style='position:absolute;'><i class='mobileFlag' style='position:absolute;margin-top:10px;'></i><label for='country_code_select' class='select_country_code'></label><span class='arrow_position'><b style='height: 0px; width: 0px;border-color: transparent #CCCCCC #CCCCCC transparent;border-style: solid;transform: rotate(45deg);border-width: 3px;display: inline-block;position: relative;'><b><span></div>"));
+		$(".MobflagContainer").hide();
+		}
+		$(".mobileFlag").html("");
+		addFlagIcon($(".mobileFlag"), $("#country_code_select").find(":selected").attr("id"));
+	}
+}
+function getToastTimeDuration(msg){
+	var timing = (msg.split(" ").length) * 333.3;
+	return timing > 3000 ? timing : 3000;
+}
+function isValidSecurityKeyName(val){
+	var pattern = /^[0-9a-zA-Z_\-\+\.\$@\,\:\'\!\[\]\|\u0080-\uFFFF\s]+$/;
+	if(pattern.test(val.trim()) && !hasEmoji(val.trim())) {
+		return true;
+	}
+	return false;
 }

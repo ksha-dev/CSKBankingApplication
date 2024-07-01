@@ -5,13 +5,32 @@
 		<url path="/robots.txt" description="For search engine bots" method="get,post"/>
 		<url path="/zsecagentnotify" method="post" internal="true" scoped-services="AppSense" description="To Notify Control Components">
 			<param name="service" regex="waf_text"/>
+			<!-- TODO Instead of type string, change it into the JSON type with proper template must be defined -->
+			<param name="configdata" type="String" max-len="50000"/>
 		    <param name="data" type="JSONArray" template="${COMPONENT}" max-len="50000"/>
 		</url>
+		<url path="/clearLocalCache" internal="true" scoped-services="AppSense" description="To Clear Local Cache Config"/>
 		<url path="/waf-agent/clean-live-window-count" method="POST" authentication="required" roles="WafAgentServiceAdmin" trusted="true">
 			<param name="app-host-ip" regex="waf_ipaddress" min-occurrences="1"/>
 		</url>
-		<!-- To avoid migration, from M2_31 isc signature is sent while triggering request. Signature verification should be mandated from M2_33 by configuring scoped-services as all -->
 		<url path="/getzsecservicename" method="get" internal="true" description="To get the service name of the requested domain" />
+		
+		<!--  Payload Encryption endpoints -->
+		<url path="/zwaf/encryption/server/keymeta" method="GET" authentication="optional" description="To get the encryption key meta supported by server"/>
+		<!-- Handshake request is invoked from webclient and mobile app. For API client, keys are shared via ZohoDirectory -->
+		<url path="/zwaf/encryption/handshake" method="post" authentication="required" oauthscope="zwafencryption" operation-type="CREATE" description="Handshake api to exchange client and server public key">
+			<!-- TODO: For initial phase, throttle conf is relaxed.Need to check and have strict conf  -->
+			<throttles key="url.path+user.remoteip" window="FIXED" scope="APPSERVER">
+      				<throttle duration="1M" threshold="500" />
+   			</throttles>
+			<!--throttles key="url.path+user.zuid" scope="APPSERVER" window="FIXED">
+            			<throttle duration="1M" threshold="20"/>
+    			</throttles-->
+			<param name="algorithm" regex="[a-zA-Z0-9_\-]+$" />
+			<param name="size" regex="(1024|2048|3072|4096)" />
+			<param name="scope" regex="[a-zA-Z0-9_\-]+$" min-occurrences="1"/>
+			<param name="data" type="JSONObject" template="pe_handshake_data" max-len="50000"/>
+		</url>
 	</urls>
    <jsontemplates>
     <jsontemplate name="PROPERTY">
@@ -74,6 +93,18 @@
 		<key name="method-name" regex="waf_method" max-occurrences="1" />
 		<key name="method-type" regex="STATIC|INTERFACE|NORMAL" max-occurrences="1"/>
 		<key name="constant-data" regex="^[a-zA-Z0-9-. ]{1,100}$" max-occurrences="1"/>
+	</jsontemplate>
+
+	<jsontemplate name="pe_handshake_data">
+		<key name="algorithm" regex="[a-zA-Z0-9_\-]+$" max-occurrences="1" />
+		<key name="size" regex="(1024|2048|3072|4096)" max-occurrences="1" />
+		<key name="client-public-key" regex="[a-zA-Z0-9_\-+/=]+$" min-occurrences="1" max-occurrences="1" max-len="10000" secret="true"/>
+	<!--
+		<key name="key-encoding" regex="Base64" max-occurrences="1"/>
+		<key name="transmission-algorithm" regex="[a-zA-Z/]+" max-occurrences="1" />
+		<key name="transmission-provider" regex="[a-zA-Z]+" max-occurrences="1" />
+		<key name="scope" regex="[a-zA-Z0-9_\-]+$"  max-occurrences="1" />
+	-->
 	</jsontemplate>
    </jsontemplates>
 
@@ -144,7 +175,8 @@
 		<param name="frameorigin" regex="url" max-len="50000" />
 		<param name="_zlat" type="double" />
 		<param name="_zlng" type="double" />
-		
+		<!-- csrf param rule added via code as we need to replace the team configured csrf param name as the parameter rule name -->
+
 		<!-- Audit Filter Default Params (Subjected to change in future)-->
 		<param name="af_orgId" type="long"/>
 		<param name="af_support_ticket_id" type="long" />

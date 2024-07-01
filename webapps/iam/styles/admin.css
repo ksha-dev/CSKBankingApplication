@@ -335,7 +335,7 @@
 	border: 1px solid black;
 	padding: 11px;
 	top: 21%;
-	font size: 18px;
+	font-size: 18px;
 	left: 11%;
 	right: 13%;
 	z-index: 100;
@@ -408,7 +408,7 @@
     padding-top:5px;
 }
 .usrinfoheader {
-    background:transparent url("../images/common-bg.gif") repeat-x 0px -385px;
+    background:linear-gradient(180deg, #b4d5f3, #d1e6f7);
     padding:0px 0px 0px 20px;
     height:28px;
     font-size:13px;
@@ -497,6 +497,7 @@
     border:1px solid #b6d5f2;
     padding-left:15px;
     color:#404040;
+    word-break: break-all;
 }
 .orgdetailtd, .orgdomaintd {width:50%;}
 .usrinfotdlt {

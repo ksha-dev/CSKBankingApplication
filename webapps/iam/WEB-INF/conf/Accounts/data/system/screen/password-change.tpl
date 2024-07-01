@@ -194,17 +194,17 @@ width:28%;
 
   <tr>
     <td class="cls" style="text-align:right;padding-right: 2%; white-space: nowrap;"><@i18n key="IAM.CURRENT.PASS" /> :</td>
-    <td class="curpass" style="width:30%;"><input type="password" placeholder="Old Password" id="text_1" name="cur" Style="width: 185px;" ></td> 
+    <td class="curpass" style="width:30%;"><input type="password" autocomplete="off" placeholder="Old Password" id="text_1" name="cur" Style="width: 185px;" ></td> 
     <td id="curpassmsg" Style="display:none;"></td>
   </tr>
   <tr>
     <td class="cls" Style="text-align:right;padding-right: 2%; white-space: nowrap;"><@i18n key="IAM.NEW.PASS" /> :</td>
-    <td class="newpass" style="width:30%;"><input type="password" placeholder="New Password" id="text_2" name="new" Style="width: 185px;"></td> 
+    <td class="newpass" style="width:30%;"><input type="password" autocomplete="off" placeholder="New Password" id="text_2" name="new" Style="width: 185px;"></td> 
     <td id="newpassmsg" Style="display:none;"></td>
   </tr>
   <tr>
     <td class="cls" Style="text-align:right;padding-right: 2%; white-space: nowrap;"><@i18n key="IAM.REENTER.PASSWORD" /> :</td>
-    <td class="retypepass" style="width:30%;"><input type="password" placeholder="New Password" id="text_3" name="retype" Style="width: 185px;"></td> 
+    <td class="retypepass" style="width:30%;"><input type="password" autocomplete="off" placeholder="New Password" id="text_3" name="retype" Style="width: 185px;"></td> 
     <td id="confirmpassmsg" Style="display:none;"></td>
   </tr>
 </table>

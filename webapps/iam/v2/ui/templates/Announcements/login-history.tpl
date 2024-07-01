@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title> <@i18n key="IAM.SIGNIN.HISTORY.ANNOUN.PAGE.TITLE" /> </title>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/css/${customized_lang_font}" />
     <style>
     	* {
         	text-rendering: geometricPrecision;
@@ -29,9 +29,9 @@
 </head>
 <body>
 	<#include "../zoho_line_loader.tpl">
-	<link href="${SCL.getStaticFilePath("/v2/components/css/product-icon.css")}" rel="stylesheet"type="text/css">
-    <link href="${SCL.getStaticFilePath("/v2/components/css/device-icon.css")}" rel="stylesheet"type="text/css">
-    <link href="${SCL.getStaticFilePath("/v2/components/css/osbrowser-icon.css")}" rel="stylesheet"type="text/css">
+	<@resource path="/v2/components/css/product-icon.css" />
+    <@resource path="/v2/components/css/device-icon.css" />
+    <@resource path="/v2/components/css/osbrowser-icon.css" />
     <link rel="preload" as="font" href="${SCL.getStaticFilePath("/v2/components/images/fonts/product-icons.woff")}" type="font/ttf" crossorigin="anonymous">
 	<link rel="preload" as="font" href="${SCL.getStaticFilePath("/v2/components/images/zohopuvi/zoho_puvi_regular.woff")}" type="font/woff" crossorigin="anonymous">
 	<link rel="preload" as="font" href="${SCL.getStaticFilePath("/v2/components/images/zohopuvi/zoho_puvi_bold.woff")}" type="font/woff" crossorigin="anonymous">
@@ -60,7 +60,7 @@
             border-radius: 5px;
             max-height: 70%;
             position: relative;
-            overflow: scroll;
+            overflow-y: scroll;
             transition: .2s max-height linear;
         }
         ol {
@@ -83,9 +83,11 @@
             font-size: 14px;
             line-height: 24px;
             pointer-events: none;
+            flex-shrink: 0;
         }
         .activity-header {
-            display: inline-block;
+            display: flex;
+            align-items: center;
             height: 50px;
             overflow: hidden;
         }
@@ -110,6 +112,7 @@
             height: 16px;
             font-size: 16px;
             margin-left: 24px;
+            flex-shrink: 0;
         }
         .info .browser-icon,
         .info .os-icon,
@@ -128,6 +131,7 @@
             margin-left: 12px;
             width: 130px;
             pointer-events: none;
+            flex-shrink: 0;
         }
         .device-name {
             font-size: 16px;
@@ -147,6 +151,11 @@
             line-height: 16px;
             margin-left: 24px;
             pointer-events: none;
+        }
+        .activity-header .location-text{
+        	overflow: hidden;
+        	text-overflow: ellipsis;
+        	white-space: nowrap;
         }
         .activity-body {
             padding-left: 30px;
@@ -276,7 +285,11 @@
 		.info-icon{
 			font-size: 14px;
 			color: #7C7C7C;
-			margin-left: 4px;
+			margin: 4px;
+			border-radius: 50%;
+		}
+		.info-icon:hover{
+			box-shadow: 0px 0px 0px 4px #e6e6e6;
 		}
 		.tippy-tooltip {
 			font-size: 14px !important;
@@ -335,10 +348,10 @@
             
         }
     </style>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
+	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+	<@resource path="/v2/components/js/common_unauth.js" />
 	<#if !is_mobile>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/tippy.all.min.js")}"></script>
+	<@resource path="/v2/components/tp_pkg/tippy.all.min.js" />
 	</#if>
 	<script>
         function addHistoryList(data){
@@ -350,13 +363,13 @@
                     addDeviceIcon(newli.querySelector(".device-icon"), historyData[i].device_info);
                     newli.querySelector(".name-login-texts .device-name").textContent = historyData[i].device_info.device_name;
                     newli.querySelector(".name-login-texts .login-ago").textContent = historyData[i].created_time_elapsed;
-                     newli.querySelector(".service-icon").setAttribute("title", historyData[i].service_name);
+                     newli.querySelector(".service-icon").setAttribute("title", historyData[i].service_display_name);
                     newli.querySelector(".service-icon").classList.add("product-icon-" + historyData[i].service_name.toLowerCase().replace(/\s/g, ''));
-                    newli.querySelector(".browser-icon").setAttribute("title", historyData[i].browser_info.browser_name +" "+ (historyData[i].browser_info.bversion && historyData[i].browser_info.bversion != "-1" ? historyData[i].browser_info.bversion : ""));
+                    newli.querySelector(".browser-icon").setAttribute("title", historyData[i].browser_info.browser_name + (historyData[i].browser_info.bversion && historyData[i].browser_info.bversion != "-1" ? " " + historyData[i].browser_info.bversion : ""));
                     addOSBrowserIcon(newli.querySelector(".browser-icon"), historyData[i].browser_info);
-                    newli.querySelector(".os-icon").setAttribute("title", historyData[i].device_info.os_name +" "+ historyData[i].device_info.version);
+                    newli.querySelector(".os-icon").setAttribute("title", historyData[i].device_info.os_name + (historyData[i].device_info.version ? " " + historyData[i].device_info.version : ""));
                     addOSBrowserIcon(newli.querySelector(".os-icon"), historyData[i].device_info);
-                    newli.querySelector(".location-text").textContent = historyData[i].location?historyData[dataIndex].location:"<@i18n key="IAM.SESSIONS.LOCATION.UNAVAILABLE" />";
+                    newli.querySelector(".location-text").textContent = historyData[i].location?historyData[i].location:"<@i18n key="IAM.SESSIONS.LOCATION.UNAVAILABLE" />";
                    	newli.querySelector(".info-icon").setAttribute("title","<@i18n key='IAM.ACTIVESESSIONS.IP.TOOLTIP.DESCRIPTION' />");
                     newli.addEventListener("click", selectAndSlide)
                     newli.addEventListener("keydown", keySelectAndSlide)
@@ -373,8 +386,8 @@
             if (e.target.classList.contains("activity-header") || e.target.classList.contains("activity-body")) {
                 currTarget = e.target.parentNode;
             }
-            if(e.target.classList.contains("browser-icon") || e.target.classList.contains("service-icon") || e.target.classList.contains("os-icon")){
-            	 currTarget = e.target.parentNode.parentNode;
+            if(e.target.classList.contains("browser-icon") || e.target.classList.contains("service-icon") || e.target.classList.contains("os-icon") || e.target.classList.contains("info-icon")){
+            	 currTarget = e.target.closest(".activity-container");
             }
             var isContainerElement = currTarget.classList.contains("activity-container");
             if (isContainerElement) {
@@ -453,9 +466,9 @@
                 ["windows", 5], ["linux", 5], ["osunknown", 4], ["macbook", 8],
                 ["iphone", 9], ["ipad", 7],
                 ["windowsphone", 8], ["samsungtab", 6],
-                ["samsung", 5], ["android", 8], ["pixel", 6],
+                ["samsung", 8], ["android", 8], ["pixel", 8],
                 ["oppo", 8], ["vivo", 6],
-                ["androidtablet", 6], ["oneplus", 7], ["mobile", 7]
+                ["androidtablet", 6], ["oneplus", 9], ["mobile", 7], ["iphone13", 4], ["iphone14", 8], ["s23ultra", 8], ["s20fe5g", 9]
             ]);
             var no_of_paths;
             var icon_class;
@@ -496,9 +509,9 @@
             element.querySelector(".activity-body .referrer-text").textContent = historyData[dataIndex].referrer;
             element.querySelector(".activity-body .browser-text").textContent = historyData[dataIndex].browser_info.browser_name+ " " +(historyData[dataIndex].browser_info.bversion && historyData[dataIndex].browser_info.bversion != "-1" ? historyData[dataIndex].browser_info.bversion : "" );
             element.querySelector(".activity-body .browser-texts").prepend(element.querySelector(".activity-header .browser-icon").cloneNode(true));
-            element.querySelector(".activity-body .os-text").textContent = historyData[dataIndex].device_info.os_name + " " + historyData[dataIndex].device_info.version;
+            element.querySelector(".activity-body .os-text").textContent = historyData[dataIndex].device_info.os_name + (historyData[dataIndex].device_info.version ? " " + historyData[dataIndex].device_info.version : "");
             element.querySelector(".activity-body .os-texts").prepend(element.querySelector(".activity-header .os-icon").cloneNode(true));
-            element.querySelector(".activity-body .service-text").textContent = historyData[dataIndex].service_name;
+            element.querySelector(".activity-body .service-text").textContent = historyData[dataIndex].service_display_name;
             element.querySelector(".activity-body .service-texts").prepend(element.querySelector(".activity-header .service-icon").cloneNode(true));
             element.querySelector(".activity-body").dataset.created = "true"
         }

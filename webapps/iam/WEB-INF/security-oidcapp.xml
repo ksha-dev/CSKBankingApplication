@@ -16,6 +16,21 @@
     		  </headers>
     	</response>
     	</url>
+    	<url path="/oauth/v2/introspect" method="post" description="OAuth 2.0 Token Introspection Endpoint" sl_auth="oauth_optional" csrf="false" api="true">
+    		<throttles key="dynamickey.introspectionkey" window="FIXED" scope="SERVICE" name="OIEThrottle">
+      			<throttle duration="60m" threshold="10" />
+   			 </throttles>   
+    		<param name="token" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true"/>
+    		<param name="token_type_hint" regex="iamcleartextpattern" />
+    	</url>
+    	
+    	<url path="/oauth/v2/internal/introspect" method="post" description="introspection api for internal use" internal="true" scoped-services="all" csrf="false">
+    		<throttles key="dynamickey.introspectionkey" window="FIXED" scope="SERVICE" name="OIEThrottle">
+      			<throttle duration="60m" threshold="10" />
+   			 </throttles>
+    		<param name="token" regex="iamcleartextpattern" max-len="350" min-len="1" secret="true"/>
+    		<param name="token_type_hint" regex="iamcleartextpattern" />
+    	</url>
     	
     	<!--  changes for appaccount based client id generation -->
     	<url path="/oauthapp/${zid}/oauthclient/register" description="Create oauth client id for app account based" https="true" authentication="required" method="post" api="true" internal="true" scoped-services="all">
@@ -109,14 +124,15 @@
    			<key name="manageoidcapp" type="JSONObject" template="oidcAppMeta" max-len="-1" />
 	     </jsontemplate>
     	<jsontemplate name="client_register">
-	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
-	 		<key name="client_type" regex="code|token|device|nativeapp"/>
+	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20" max-len="-1"/>
+	 		<key name="client_type" regex="code|token|device|nativeapp|client_credentials"/>
 	 		<key name="client_name" regex="iamcleartextpattern"/>
 	 		<key name="is_org_oauth" type="boolean"/>
+	 		<key name="custom_scope_service" regex="iamcleartextpattern"/>
 	 	</jsontemplate>
 	 	<jsontemplate name="oidcAppMeta">
 	 		<key name="app_name" regex="iamcleartextpattern"/>
-	 		<key name="identifier" regex="iamcleartextpattern"/>
+	 		<key name="identifier" regex="serviceurl"/>
 	 		<key name="description" regex="iamcleartextpattern"/>
 	 		<key name="bcl_uri_enabled" type="boolean"/>
 	 		<key name="back_channel_logout_uri" regex="serviceurl" />
@@ -125,8 +141,8 @@
 	 		<key name="status" type="boolean"/>
 	 	</jsontemplate>
 	 	<jsontemplate name="oauthClientMeta">
-	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
-	 		<key name="js_domain_uris" type="JSONArray" template="redirect_uri" array-size="1-20"/>
+	 		<key name="redirect_uris" type="JSONArray" template="redirect_uri" array-size="1-20" max-len="-1"/>
+	 		<key name="js_domain_uris" type="JSONArray" template="redirect_uri" array-size="1-20" max-len="-1"/>
 	 		<key name="status" type="boolean"/>
 	 		<key name="enabled" type="boolean"/>
 	 		<key name="client_type" regex="code|token|device|nativeapp"/>

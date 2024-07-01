@@ -114,7 +114,7 @@ body
 {
 	margin: 0px;
 }
-
+input, textarea, button {font-family: inherit}
 input {
 	font-family: 'ZohoPuvi', Georgia;
 }
@@ -225,8 +225,6 @@ input {
 	margin: 16px 0px;
 	margin-right: 20px;
 	max-width: 510px;
-}
-.error_message{
 	word-break: break-word;
 }
 .error_icon
@@ -435,7 +433,7 @@ input {
     border: 1px solid #B9B9B9;
 }
 
-#last_password {
+#last_password, #change_password, #reneter_password{
     padding-right: 40px;
 }
 
@@ -493,6 +491,12 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     margin-bottom:20px;
 }
 
+.commonErrorlabelForCaptcha a
+{
+	text-decoration: none;
+	color: #309FF4;
+}
+
 .fielderror a 
 {
     text-decoration: none;
@@ -530,7 +534,6 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     border: none;
     height: 60px;
     width: 150px;
-    margin-left: 20px;
 }
 
 #captcha_img img
@@ -703,7 +706,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     border-radius: unset;
   }
   100% {
-    height: 15px
+    height: 15px;
     width: 6px;
     opacity: 1;
     border-radius: unset;
@@ -929,7 +932,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 }
 
 #country_code_select {
-	width: 50px;
+	width: 85px;
     height: 40px;
     position: absolute;
     opacity: 0;
@@ -949,7 +952,15 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     display: none;
     z-index: 0;
 }
-
+.select_country_code{
+	margin-left:25px;
+	direction:ltr;
+}
+.arrow_position{
+	position:relative;
+	top: 8px;
+	left:75px;
+}
 .pic {
 	width: 20px;
 	height: 14px;
@@ -1288,7 +1299,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     display: inline-flex;
     justify-content: space-between;
     border: 1px solid #EEEEEE;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border-radius: 7px;
     box-sizing: border-box;
     max-width: 100%;
@@ -1317,7 +1328,8 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 .support_temp_info
 {
 	margin-bottom: 30px;
-	line-height:24px;
+    line-height: 20px;
+    font-size: 14px;
 }
 
 .menutext 
@@ -1372,10 +1384,11 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 .head_info 
 {
 	font-size: 14px;
-	margin: 16px 0px 0px 0px;
+	margin: 8px 0px 0px 0px;
 	line-height: 20px;
     font-weight: 400;
 	color: #000000e6;
+	word-break: break-word;
 }
 
 .domain_options
@@ -1403,7 +1416,9 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 {
 	width: 210px;
 	display:inline-block;
-	margin-left: 10px;	
+}
+.show-very-type .type{
+	margin-right: 10px;
 }
 .show-very-type .heading 
 {
@@ -1570,7 +1585,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 }
 .textindent62 
 {
-	text-indent: 56px;
+	text-indent: 85px;
 }
 .textintent52 
 {
@@ -1777,6 +1792,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 	border-radius:6px;
 	display:flex;
 	align-items:center;
+	direction:ltr;
 }
 .devicelist div{
 	display:inline-block;
@@ -2599,7 +2615,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     
     .recovery_container 
     {
-	    width: 100%;
+    	width: 100%;
 	    box-shadow: none;
 	    margin: 0 auto;
 	    position: relative;
@@ -2678,7 +2694,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 {
     background: #121212;
 }
-.darkmode .option_title_try, .darkmode .try_option_desc, .darkmode .splitedText, .darkmode .select_country_code
+.darkmode .option_title_try, .darkmode .try_option_desc, .darkmode .splitedText, .darkmode .error_desc, .darkmode .select_country_code, .darkmode .show-very-type .heading, .darkmode .show-very-type .value-text
 {
 	color: #e1e1e1
 }
@@ -2696,6 +2712,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 .darkmode .textbox:-webkit-autofill,.darkmode .textbox:-webkit-autofill:hover, .darkmode .textbox:-webkit-autofill:focus,.darkmode .textbox:-webkit-autofill:active{
 	-webkit-box-shadow: inset 0 0 0px 9999px #121212;
 	-webkit-text-fill-color: #e2e2e2;
+	caret-color: #ffffff;
 }
 
 .darkmode .textbox
@@ -2743,6 +2760,11 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 	font-weight: 300;
 }
 .darkmode ::selection{color: #e1e1e1; background-color: #1e81b0}
+.darkmode #captcha_img img {
+	border-radius: 2px;
+	margin-bottom: 5px;
+}
+f
 .devices .select2-container--open
 {
 	background: transparent;
@@ -2774,7 +2796,7 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
     height: 0;
     margin-left: -8px;
     top: 25px;
-    left: 0;
+    left: 0px;
     box-sizing: border-box;
     border: 6px solid black;
     border-color: #ffffff transparent transparent #ffffff;
@@ -2854,8 +2876,292 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
 		background: #ffffff;
 		height: 45px;
 	}
+	.darkmode .textbox:-webkit-autofill, .darkmode .textbox:-webkit-autofill:focus, .darkmode .textbox:-webkit-autofill:active{
+		-webkit-box-shadow: 0 0 0 30px #44454F inset !important;
+		-webkit-text-fill-color: #e2e2e2;
+		caret-color: #fff;
+	}
 	.darkmode .nonclickelem{color: #a5a5a5}
 	.darkmode .hover-tool-tip, .darkmode .backoption:hover{color: #444;}
 	.darkmode .select2-results__option,.darkmode .select2-container--open{background: #44454F;}
 	.darkmode .devices .select2-selection,.darkmode .select2-results__option--highlighted, .darkmode .optionstry:hover{background: #0004}
+}
+
+
+
+/* ======================================================Right to Left support styling==================================================== */
+
+
+[dir=rtl]{
+	.menutext{
+		direction:ltr;
+	}
+	.hidePlaceHolder, .option_details_try{
+		direction:ltr;
+		text-align:right;
+	}
+	.textbox{
+		text-align:right;
+		padding-right: 12px;
+		padding-left: 0px;
+		direction:ltr;
+	}
+	.zoho_logo{
+		background-position:right;
+	}
+	.tick_icon,.error_icon{
+		float: right;
+	}
+	.arrow_position{
+		right:75px;
+	}
+	.alert_message,.error_message{
+		margin-left: 20px;
+		margin-right:auto;
+	}
+	.error_icon:before, .error_icon:after{
+		right: 9px;
+		left:none;
+	}
+	#last_password, #change_password, #reneter_password{
+    	padding-left: 40px;
+    	padding-right:10px;
+	}
+	::-webkit-credentials-auto-fill-button{
+		left: 0px;
+	}
+	#captcha_img{
+		margin-right: 20px;
+		margin-left:auto;
+	}
+	.reloadcaptcha{
+		left: 20px;
+		right:auto;
+	}
+	.doneBtn:before{
+		transform-origin: right top;
+		border-right: 3px solid #fff;
+		border-left:none;
+		right: 12px;
+		left:auto;
+	}
+	.doneWithContent span:before{
+		transform-origin: right top;
+    		border-left: 3px solid #fff;
+		border-left: none;
+		right: -21px;
+		left:auto;
+	}
+	.doneWithContent {
+  		padding-right: 21px;
+		padding-left:0px;
+	}
+	.totp_loading:after {
+		right: 5px;
+	}
+	.show_hide_password{
+		left: 13px;
+		right:auto;
+   		float: left;
+	}
+	.select_country_code{
+		float: right;
+		margin-right:25px;
+		margin-left:auto;
+	}
+	.pic {
+		float: right;
+	}
+	.cc {
+		float: left;
+	}
+	.cn {
+		margin-right: 10px;
+		margin-left:auto;
+	}
+	.option_details_try{
+		padding-right: 12px;
+		padding-left:0px;
+	}
+	.otp_container::after,.mini_txtbox:after{
+		right: 15px;
+		left:auto;
+	}
+	.loadwithbtn{
+		border-right: 3px solid transparent;
+		border-left:none;
+	}
+	.notnowbtn .loadwithbtn{
+		border-right: 3px solid transparent;
+	}
+	.mini_btn
+	{
+   		margin-right: 10px;
+		margin-left:auto;
+		float: left;
+		margin-left: 0px;
+	}
+	.backoption{
+		float: right;
+		margin-left: 5px;
+		margin-right:auto;
+	}
+	.recovery_box {
+		float: right;
+	}
+	.menuicon{
+		float: right;
+	}
+	.ip_choose_desc{
+		margin-right:40px;
+		margin-left: 0px
+	}
+	.change_user{
+		float: left;
+		padding-left: 14px;
+		padding-right:0px;
+	}
+	.domain_options{
+		padding-right: 10px;
+		padding-left: 0px;
+	}
+	.domain-name{
+		margin-right: 10px;	
+		margin-left:auto;
+	}
+	.show-very-type .heading{
+		text-align: right;
+	}
+	.show-very-type .value-text{
+		text-align:right;
+	}
+	.customOtp{
+		text-align: right;
+	}
+	.domain_verifictaion_steps{
+		padding-right: 0;
+	}
+	.step-text{
+		margin-right: 32px;
+	}
+	.list-line{
+		right: 9px;  
+		left:autp;
+	}
+	.verify_device_qr_container{
+		padding-left: 38px;
+		padding-right:0px;
+	}
+	.qr_after{
+		margin-right: -3px;
+		margin-left:auto;
+	}
+	.qr_before{
+		margin-right: 15px;
+		margin-left:auto;
+	}
+	.otp_sent:before{
+		margin-left: 5px;
+		margin-right:auto;
+		border-left: 2px solid transparent;
+		border-right:none;
+	}
+	.device_title {
+		right: 48px;
+		left:auto;
+	}
+	.select_icon{
+		float:right;
+	}
+	.select_con{
+		float:right;
+		margin-right: 5px;
+		margin-left:auto;
+	}
+	.outer_circle {
+		float: right;
+	}
+	.radiobtn_text {
+		padding-right: 10px;
+		padding-left:0px;
+	}
+	#range_ip div {
+		float: right;
+	}
+	#range_ip .range_to_sep {
+		float: right;
+	}
+	.field_error_right 
+	{
+		margin-right: 218px;
+		margin-left:auto;
+	}
+	#terminate_session_form .checkbox_check{
+		right: 10px;
+		left:auto;
+	}
+	#terminate_session_form .checkbox{
+		float: right;
+	}
+	.checkbox_tick {
+		border-right: 2px solid #fff;
+		border-left:none;
+	}
+	#terminate_session_form .checkbox .checkbox_tick {
+		border-right: 2px solid #fff;
+		border-left:none;
+	}
+	.real_togglebtn:checked ~ .togglebase .toggle_circle 
+	{
+  	  	right: 16px;
+		left:auto;
+	}
+	.oneAuthLable .toggle_circle {
+		right: 2px;
+		left:auto;
+	}
+	@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) 
+	{
+		.Alert,.Errormsg
+		{
+			right:35%;
+			left:auto;
+		}
+	}
+	@media (min-width: 600px) and (max-width: 1024px) {
+		.recovery_box 
+		{   
+			border-left: none;
+  		  }
+	}
+	@media only screen and (max-width: 600px) {
+		.img_option{   
+			margin-left: 10px !important;
+			margin-right:auto !important;
+		 }
+		 .textindent62{
+		 	padding-right:85px;
+		 	text-indent:none;
+		 }
+		
+	}
+	.hover-tool-tip {
+		right: 30px;
+		left:auto;	
+	}
+	.hover-tool-tip::after {
+		left:auto;
+		right:-20px;
+		transform:135px;
+	}
+	.hover-tool-tip ul li::before {
+		margin-left: 10px;
+	}
+	.hover-tool-tip::after{
+		transform:rotate(135deg);
+	}
+	.ip_field_div{
+		direction:ltr;
+		text-align:right;
+	}
 }

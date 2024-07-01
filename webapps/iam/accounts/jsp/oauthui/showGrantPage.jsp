@@ -4,10 +4,10 @@
 <%@page import="com.zoho.accounts.AccountsConfiguration"%>
 <%@page import="com.zoho.accounts.internal.util.Util"%>
 <%@page import="com.adventnet.iam.security.SecurityUtil"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
 String accountsStaticURL =  Util.getServerURL(request, false);
+String scopeDetailsParam = request.getAttribute("scopeDetailsParam") != null ? (String) request.getAttribute("scopeDetailsParam") : null;
 %>
 <html>
 <head>
@@ -31,7 +31,7 @@ function submitRejectForm() {
 	$.ajax({
 		type: "POST", //NO I18N
 		    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/reject",//NO I18N
-		    data: "<s:property escapeHtml="false" value="queryParams"/>&approvedScope=<s:property escapeHtml="false" value="scopeDetailsParam"/>&" + getcsrfParams()+"&is_ajax=true",//NO I18N
+		    data: "approvedScope=<%=scopeDetailsParam%>&"+ getcsrfParams()+"&is_ajax=true",//NO I18N
 		    dataType  : "json",//NO I18N
 		    success: function(data, status, xnr) {
 		        if(data.redirect_uri) {
@@ -51,7 +51,7 @@ function submitAppriveForm() {
 	$.ajax({
 		type: "POST",//NO I18N
 		    url: "<%=IAMEncoder.encodeJavaScript(request.getContextPath())%>/oauth/v2/approve", //NO I18N
-		    data: "<s:property escapeHtml="false" value="queryParams"/>&approvedScope=<s:property escapeHtml="false" value="scopeDetailsParam"/>&" + getcsrfParams()+"&is_ajax=true",//NO I18N
+		    data: "approvedScope=<%=scopeDetailsParam%>&"+ getcsrfParams()+"&is_ajax=true",//NO I18N
 		    dataType  : "json",//NO I18N
 		    success: function(data, status, xnr) {
 		        if(data.redirect_uri) {

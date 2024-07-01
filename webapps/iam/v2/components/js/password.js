@@ -323,7 +323,12 @@ function show_password_change_popup()
 	$("#passform .field input").attr("type","password");
 	$("#passform .pass_icon").removeClass("icon-show").addClass("icon-hide");
 	$("#popup_password_change input:first").focus();
-	closePopup(close_password_change,"popup_password_change");//No I18N
+	if(isMobile && window.innerWidth <= 500){
+		closePopup(close_password_change,"popup_password_change",true);//no i18n
+	}
+	else{
+		closePopup(close_password_change,"popup_password_change");//No I18N
+	}
 }
 
 function togglePass(ele){
@@ -348,6 +353,7 @@ function close_password_change()
 		$("#terminate_session_weband_mobile_desc").show();
 	});
 	remove_error();
+	loadPage('security','security_pwd');//this line only highlighting tab not for page loading //no i18n
 	$("#passform").trigger('reset'); 
 	$("#popup_password_change a").unbind();
 }
@@ -389,11 +395,16 @@ function changepassword(f,min_Len,max_Len,login_name)
     }
     else if(validateForm(f))
     {
-    		disabledButton(f);
+		var currentData=[$('#'+f.id).find('input[name="currentPass"]').val(),$('#'+f.id).find('input[name="newPassword"]').val()];
+		encryptData.encrypt(currentData).then(function(encryptedpassword) {
+			disabledButton(f);
+			var currentPass, newPass;
+			currentPass = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			newPass = typeof encryptedpassword[0] == 'string' ? encryptedpassword[1] : encryptedpassword[1].value;
     		var parms=
     		{
-    			"currpwd":$('#'+f.id).find('input[name="currentPass"]').val(),//No I18N
-    			"pwd":$('#'+f.id).find('input[name="newPassword"]').val(),//No I18N
+    			"currpwd":currentPass,//No I18N
+    			"pwd":newPass,//No I18N
     			"incpwddata":true //No I18N
     		};
 
@@ -446,6 +457,7 @@ function changepassword(f,min_Len,max_Len,login_name)
     			showErrorMessage(getErrorMessage(resp));
     			removeButtonDisable(f)
     		});	
+		});
     }
 
     
@@ -523,10 +535,19 @@ function load_geofencing_data(geofencing_data){
 		$("#geofencing_box #set_geofencing,#geofencing_stored_data,#empty_geofencing,#usecase_abt_geofencing").hide();
 		return;
 	}
+	var orgGeoRestrict = security_data.AllowedIPs.isGeoLocationDisabled ? true: false;
 	if(geofencing_data.length == 0){
+		if(orgGeoRestrict){
+			$(".no_geofencing").addClass("iprestrict_no_ip");
+			$("#set_geofencing").hide();
+			$("#org_geo_fencing_rest_warn").show();
+		} else {
+			$("#org_geo_fencing_rest_warn").hide();
+		}
 		$("#geofencing_box .header_for_no_data,#empty_geofencing").show();
-		$("#geofencing_stored_data,#usecase_abt_geofencing").hide();
+		$("#geofencing_stored_data,#usecase_abt_geofencing,#geo_fencing_rest_configured_warn").hide();
 		$("#geofencing_box").css("padding-bottom","30px");
+		
 	}
 	else{
 		geofencing_data = geofencing_data[0];
@@ -543,9 +564,10 @@ function load_geofencing_data(geofencing_data){
 		var country_list = geofencing_data.country;
 		$("#usecase_abt_geofencing .flag_list,#usecase_abt_geofencing .country_list").html("");
 		var country_names = "";
+		$("#usecase_abt_geofencing .overflow_count").hide();
 		country_list.forEach(function(val,count){
 			country_names = country_names + $("#country_list_for_geo_fencing").find("#"+val).text() + ", ";
-			if(count<2){
+			if(count < 2){
 				var flagElement=document.createElement("div");
 				flagElement.className="flag_container flag_name_"+val;			//No I18N
 				$("#usecase_abt_geofencing .flag_list").append(flagElement);
@@ -561,10 +583,12 @@ function load_geofencing_data(geofencing_data){
 			$(".head_for_country_action .allowed").show();
 			$("#usecase_abt_geofencing .flag_list").addClass("geofencing_enabled").removeClass("geofencing_restricted");
 			$(".head_for_country_action .restricted").hide();
-			if(country_list.length>3){
+			if(country_list.length>2){
 				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ALLOWED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE"],country_list.length));  //No I18N
+				$("#geofencing_stored_data #disabled_text_with_country").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ALLOWED.COUNTRIES.COUNT"],country_list.length));	//No I18N
 			}
 			else{
+				$("#geofencing_stored_data #disabled_text_with_country").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ALLOWED.COUNTRY"],country_names));	//No I18N
 				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ALLOWED.USECASE.INFO.WITH.COUNTRY"],country_names));		//No I18N
 			}			
 		}
@@ -572,14 +596,22 @@ function load_geofencing_data(geofencing_data){
 			$("#usecase_abt_geofencing .flag_list").addClass("geofencing_restricted").removeClass("geofencing_enabled");
 			$(".head_for_country_action .allowed").hide();
 			$(".head_for_country_action .restricted").show();
-			if(country_list.length<2){
-				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY"],country_names));		//No I18N
+			if(country_list.length>2){
+				$("#geofencing_stored_data #disabled_text_with_country").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.COUNTRIES.COUNT"],country_list.length));					//No I18N
+				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE"],country_list.length));  //No I18N
 			}
 			else{
-				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY.MORE.THAN.THREE"],country_list.length));  //No I18N
+				$("#usecase_abt_geofencing .usecases_info").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.USECASE.INFO.WITH.COUNTRY"],country_names));		//No I18N
+				$("#geofencing_stored_data #disabled_text_with_country").html(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.RESTRICTED.COUNTRY"],country_names));			//No I18N
 			}
 		}
 		$("#usecase_abt_geofencing .plus_count").text("+"+(country_list.length-2));		//No I18N
+		if(orgGeoRestrict){
+			$("#edit_geo_fencing_button").addClass("red_btn").text(i18nGeofencingkeys["IAM.REMOVE.GEOFENCING"]).attr("onclick",$("#geo_fencing_delete").attr("onclick"));		//No I18N
+			$(".info_tag").addClass("grey_tag");
+			$("#usecase_abt_geofencing,#geofencing_stored_data #modified_time").hide();
+			$("#geo_fencing_rest_configured_warn,#geofencing_stored_data #disabled_text_with_country").show();
+		}
 	}
 }
 function renderExtraCoutries(val){
@@ -602,6 +634,10 @@ function go_next_to_enableGeofencing(){
 	var selected_country = $("#country_list_for_geo_fencing").val();
 	if(selected_country.length == 0){
 		$("#country_field_cont").append( '<div class="field_error">'+i18nGeofencingkeys["IAM.GEOFENCING.ERROR.SELECT.COUNTRY"]+'</div>' );
+		return false;
+	}
+	if(selected_country.length > 25){
+		$("#country_field_cont").append( '<div class="field_error">'+formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ERROR.COUNTRY.LIMIT"],25)+'</div>' );
 		return false;
 	}
 	if(document.geofencing_form.geo_fencing_value.value == ""){
@@ -721,6 +757,9 @@ function go_back_to_choose_country(){
 	$("#get_geofencing_data,#geofencing_desc_msg").show();
 }
 function showGeoFencingPopup(edit_mode){
+	if($("#edit_geo_fencing_button").hasClass("red_btn")){
+		return false;
+	}
 	$("#popup_geofencing").show(0,function(){
 		$("#popup_geofencing").addClass("pop_anim");
 	});
@@ -802,7 +841,15 @@ function deleteGeoFencing(){
 			});
 }
 
-function setValueInSelectedList(){
+function setValueInSelectedList(){	
+	if($("#country_list_for_geo_fencing").val().length>25){
+		remove_error();
+		$("#country_list_for_geo_fencing").val($("#geo_fencing_group").val().split(',')).change();
+		$(".country_list_for_geo_fencing.selectbox_options_container").remove()
+		$(".select_container.country_list_for_geo_fencing .multi_selectbox").removeClass("selectbox--open").removeClass("selectbox--focus")
+		$("#country_field_cont").append( '<div class="field_error">'+formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.ERROR.COUNTRY.LIMIT"],25)+'</div>' );
+		return
+	}
 	$("#popup_geofencing .country_listing_container").html("");
 	var country_list = $("#country_list_for_geo_fencing").val();
 	country_list.forEach(function(flag_code){
@@ -813,6 +860,7 @@ function setValueInSelectedList(){
 	if(country_list.length > 9){
 		$(".show_selected_value .blue_link").text(formatMessage(i18nGeofencingkeys["IAM.GEOFENCING.SELECTED.COUNTED"],country_list.length - 9)).css("display","inline-block");	//no i18n
 	}
+	$("#geo_fencing_group").val(country_list);
 }
 function setSelectWidth(){
 	var selectedCardLength = $(".country_list_for_geo_fencing .multiselect_input .option_card").length;
@@ -1728,6 +1776,11 @@ function addipaddress(f)
     	$('#ip_name_container #ip_name').focus();
     	return false;
 	}
+	else if(!isClearText(ip_name) || hasEmoji(ip_name)){
+		$('#ip_name_container').append( '<div class="field_error">'+err_valid_name+'</div>' );
+    	$('#ip_name_container #ip_name').focus();
+    	return false;
+	}
 	else if(security_data.AllowedIPs.IPs && ip_name in security_data.AllowedIPs.IPs){
 		$('#ip_name_container').append( '<div class="field_error">'+i18nIPkeys["IAM.ALLOWEDIP.IPNAME.ALREADY.EXISTS"]+'</div>' );
     	$('#ip_name_container #ip_name').focus();
@@ -1899,10 +1952,8 @@ function isIPinProperRange(iplist){
 
 function isIPAlreadyExist(iplist){
 	for(var x in  security_data.AllowedIPs.IPs){
-	    //console.log(security_data.AllowedIPs.IPs[x].ips)
 	    var ips = security_data.AllowedIPs.IPs[x].ips;
 	    for( var z in ips){
-	        //console.log(ips[z][0])
 	        
 	        for(var y in iplist){
 				if(iplist[y][0] == ips[z][0]){
@@ -2678,10 +2729,12 @@ function delete_app_pass(count,pwdid)
 	new URI(AppPasswordsObj,"self","self",pwdid).DELETE().then(function(resp)	//No I18N
 			{
 				SuccessMsg(getErrorMessage(resp));
-				delete security_data.AppPasswords[pwdid];
-				load_AppPasswords(security_data.Policies,security_data.AppPasswords);			
-				closeview_selected_app_pass_view();
-				if($("#app_password_web_more").is(":visible")==true)
+				delete security_data.AppPasswords[pwdid];		
+				load_AppPasswords(security_data.Policies,security_data.AppPasswords);
+				if(!$("#app_password_web_more").is(":visible")){
+					closeview_selected_app_pass_view();
+				}			
+				if($("#app_password_web_more").is(":visible"))
 				{					
 					var lenn=Object.keys(security_data.AppPasswords).length;
 					if(lenn > 1)
@@ -3786,7 +3839,7 @@ function deleteSelectedLocations(id,loc_type){
  		getErrorMsg: function(value, callback) {
  			if(passwordPolicy) {
 	 			var isInit = value ?  false : true;
-	 			value = value || '';
+	 			value = value ? value.trim() : '';
 	 			callback = callback || setErrCallback;
 	 			var rules = [ 'MIN_MAX', 'SPL', 'NUM', 'CASE']; //No I18N
 	 			var err_rules = []; 

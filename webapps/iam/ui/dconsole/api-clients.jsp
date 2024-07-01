@@ -1,4 +1,5 @@
 <%-- $Id: $ --%>
+<%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
 <%@page import="com.zoho.accounts.OAuthResourceProto.OAuthAppGroup.OAuthClient.OAuthJavaScriptDomains"%>
 <%@page import="com.zoho.accounts.internal.util.AccountsInternalConst"%>
 <%@page import="com.zoho.resource.ResourceException"%>
@@ -57,6 +58,17 @@ public OAuthClient checkAndGetCurrentUserClient(String clientZid) throws OAuthEx
 %>
 <%
 User user = IAMUtil.getCurrentUser();
+boolean restricted = Boolean.parseBoolean(AccountsConfiguration.getConfiguration("restrict.oauth.client.creation", "false")); // No I18N
+if(restricted) {
+	%>
+	<div id="add_client_div">
+		<div class="add_client_message">
+			<div><%=I18NUtil.getMessage("IAM.DEVELOPERCONSOLE.RESTRICTED", Util.getSupportEmailId(user))%></div>
+		</div>
+	</div>
+	<%
+	return;
+}
 if("addclient".equals(request.getParameter("action"))) {
 	try {
 		String clientId = request.getParameter("client_id");
@@ -211,8 +223,7 @@ if(mode == null) {
 <%
 	} else {
 		Locale locale = user.getLanguage() != null ? new Locale(user.getLanguage()) : request.getLocale();
-		String utz = user.getTimezone() != null ? user.getTimezone() : Util.getDefaultTimeZone();
-		TimeZone tz = utz != null ? TimeZone.getTimeZone(utz) : TimeZone.getDefault();
+		TimeZone tz = user.getTimezone() != null ? TimeZone.getTimeZone(user.getTimezone()) : Util.getDefaultTimeZone();
 		UserPreference upref = user.getUserPreference();
 		String udf = (upref != null && Util.isValid(upref.getDateFormat())) ? upref.getDateFormat() : Util.getDefaultDateFormat();
 		DateFormat df = new SimpleDateFormat(udf, locale);

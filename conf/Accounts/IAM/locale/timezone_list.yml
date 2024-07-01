@@ -1,0 +1,815 @@
+#normal list which contains excluded columns
+# The following exclude is based on the backward file provided by IANA done on March 2024 (might change in the future). refer - https://github.com/eggert/tz/blob/main/backward
+excluded_list:
+    -  ACT
+    -  AET
+    -  AGT
+    -  ART
+    -  AST
+    -  BET
+    -  BST
+    -  CAT
+    -  CET
+    -  CNT
+    -  CST
+    -  CTT
+    -  ECT
+    -  EST
+    -  EST5EDT
+    -  Etc/GMT
+    -  Etc/GMT+1
+    -  Etc/GMT+10
+    -  Etc/GMT+11
+    -  Etc/GMT+13
+    -  Etc/GMT+14
+    -  Etc/GMT+2
+    -  Etc/GMT+3
+    -  Etc/GMT+4
+    -  Etc/GMT+5
+    -  Etc/GMT+6
+    -  Etc/GMT+7
+    -  Etc/GMT+8
+    -  Etc/GMT+9
+    -  Etc/GMT-1
+    -  Etc/GMT-10
+    -  Etc/GMT-11
+    -  Etc/GMT-12
+    -  Etc/GMT-13
+    -  Etc/GMT-14
+    -  Etc/GMT-2
+    -  Etc/GMT-3
+    -  Etc/GMT-4
+    -  Etc/GMT-5
+    -  Etc/GMT-6
+    -  Etc/GMT-7
+    -  Etc/GMT-8
+    -  Etc/GMT-9
+    -  Etc/UTC
+    -  HST
+    -  IET
+    -  IST
+    -  JST
+    -  MIT
+    -  MST7MDT
+    -  NET
+    -  PLT
+    -  PNT
+    -  PST8PDT
+    -  SST
+    -  SystemV/AST4
+    -  SystemV/CST6
+    -  SystemV/CST6CDT
+    -  SystemV/EST5
+    -  SystemV/EST5EDT
+    -  SystemV/HST10
+    -  SystemV/MST7
+    -  SystemV/MST7MDT
+    -  SystemV/PST8
+    -  SystemV/PST8PDT
+    -  SystemV/YST9
+    -  SystemV/YST9YDT
+    -  VST
+    -  WET
+    -  Africa/Accra
+    -  Africa/Addis_Ababa
+    -  Africa/Asmara
+    -  Africa/Asmera
+    -  Africa/Bamako
+    -  Africa/Bangui
+    -  Africa/Banjul
+    -  Africa/Blantyre
+    -  Africa/Brazzaville
+    -  Africa/Bujumbura
+    -  Africa/Conakry
+    -  Africa/Dakar
+    -  Africa/Dar_es_Salaam
+    -  Africa/Djibouti
+    -  Africa/Douala
+    -  Africa/Freetown
+    -  Africa/Gaborone
+    -  Africa/Harare
+    -  Africa/Kampala
+    -  Africa/Kigali
+    -  Africa/Kinshasa
+    -  Africa/Libreville
+    -  Africa/Lome
+    -  Africa/Luanda
+    -  Africa/Lubumbashi
+    -  Africa/Lusaka
+    -  Africa/Malabo
+    -  Africa/Maseru
+    -  Africa/Mbabane
+    -  Africa/Mogadishu
+    -  Africa/Niamey
+    -  Africa/Nouakchott
+    -  Africa/Ouagadougou
+    -  Africa/Porto-Novo
+    -  Africa/Timbuktu
+    -  America/Anguilla
+    -  America/Antigua
+    -  America/Argentina/ComodRivadavia
+    -  America/Aruba
+    -  America/Atikokan
+    -  America/Atka
+    -  America/Blanc-Sablon
+    -  America/Buenos_Aires
+    -  America/Catamarca
+    -  America/Cayman
+    -  America/Coral_Harbour
+    -  America/Cordoba
+    -  America/Creston
+    -  America/Curacao
+    -  America/Dominica
+    -  America/Ensenada
+    -  America/Fort_Wayne
+    -  America/Godthab
+    -  America/Grenada
+    -  America/Guadeloupe
+    -  America/Indianapolis
+    -  America/Jujuy
+    -  America/Knox_IN
+    -  America/Kralendijk
+    -  America/Louisville
+    -  America/Lower_Princes
+    -  America/Marigot
+    -  America/Mendoza
+    -  America/Montreal
+    -  America/Montserrat
+    -  America/Nassau
+    -  America/Nipigon
+    -  America/Pangnirtung
+    -  America/Port_of_Spain
+    -  America/Porto_Acre
+    -  America/Rainy_River
+    -  America/Rosario
+    -  America/Santa_Isabel
+    -  America/Shiprock
+    -  America/St_Barthelemy
+    -  America/St_Kitts
+    -  America/St_Lucia
+    -  America/St_Thomas
+    -  America/St_Vincent
+    -  America/Thunder_Bay
+    -  America/Tortola
+    -  America/Virgin
+    -  America/Yellowknife
+    -  Antarctica/DumontDUrville
+    -  Antarctica/McMurdo
+    -  Antarctica/South_Pole
+    -  Antarctica/Syowa
+    -  Antarctica/Vostok
+    -  Arctic/Longyearbyen
+    -  Asia/Aden
+    -  Asia/Ashkhabad
+    -  Asia/Bahrain
+    -  Asia/Brunei
+    -  Asia/Calcutta
+    -  Asia/Chongqing
+    -  Asia/Chungking
+    -  Asia/Dacca
+    -  Asia/Harbin
+    -  Asia/Istanbul
+    -  Asia/Kashgar
+    -  Asia/Katmandu
+    -  Asia/Kuala_Lumpur
+    -  Asia/Kuwait
+    -  Asia/Macao
+    -  Asia/Muscat
+    -  Asia/Phnom_Penh
+    -  Asia/Rangoon
+    -  Asia/Saigon
+    -  Asia/Tel_Aviv
+    -  Asia/Thimbu
+    -  Asia/Ujung_Pandang
+    -  Asia/Ulan_Bator
+    -  Asia/Vientiane
+    -  Atlantic/Faeroe
+    -  Atlantic/Jan_Mayen
+    -  Atlantic/Reykjavik
+    -  Atlantic/St_Helena
+    -  Australia/ACT
+    -  Australia/Canberra
+    -  Australia/Currie
+    -  Australia/LHI
+    -  Australia/NSW
+    -  Australia/North
+    -  Australia/Queensland
+    -  Australia/South
+    -  Australia/Tasmania
+    -  Australia/Victoria
+    -  Australia/West
+    -  Australia/Yancowinna
+    -  Brazil/Acre
+    -  Brazil/DeNoronha
+    -  Brazil/East
+    -  Brazil/West
+    -  Canada/Atlantic
+    -  Canada/Central
+    -  Canada/Eastern
+    -  Canada/Mountain
+    -  Canada/Newfoundland
+    -  Canada/Pacific
+    -  Canada/Saskatchewan
+    -  Canada/Yukon
+    -  Chile/Continental
+    -  Chile/EasterIsland
+    -  Cuba
+    -  Egypt
+    -  Eire
+    -  Etc/GMT+0
+    -  Etc/GMT-0
+    -  Etc/GMT0
+    -  Etc/Greenwich
+    -  Etc/UCT
+    -  Etc/Universal
+    -  Etc/Zulu
+    -  Europe/Amsterdam
+    -  Europe/Belfast
+    -  Europe/Bratislava
+    -  Europe/Busingen
+    -  Europe/Copenhagen
+    -  Europe/Guernsey
+    -  Europe/Isle_of_Man
+    -  Europe/Jersey
+    -  Europe/Kiev
+    -  Europe/Ljubljana
+    -  Europe/Luxembourg
+    -  Europe/Mariehamn
+    -  Europe/Monaco
+    -  Europe/Nicosia
+    -  Europe/Oslo
+    -  Europe/Podgorica
+    -  Europe/San_Marino
+    -  Europe/Sarajevo
+    -  Europe/Skopje
+    -  Europe/Stockholm
+    -  Europe/Tiraspol
+    -  Europe/Uzhgorod
+    -  Europe/Vaduz
+    -  Europe/Vatican
+    -  Europe/Zagreb
+    -  Europe/Zaporozhye
+    -  GB
+    -  GB-Eire
+    -  GMT+0
+    -  GMT-0
+    -  GMT0
+    -  Greenwich
+    -  Hongkong
+    -  Iceland
+    -  Indian/Antananarivo
+    -  Indian/Christmas
+    -  Indian/Cocos
+    -  Indian/Comoro
+    -  Indian/Kerguelen
+    -  Indian/Mahe
+    -  Indian/Mayotte
+    -  Indian/Reunion
+    -  Iran
+    -  Israel
+    -  Jamaica
+    -  Japan
+    -  Kwajalein
+    -  Libya
+    -  Mexico/BajaNorte
+    -  Mexico/BajaSur
+    -  Mexico/General
+    -  NZ
+    -  NZ-CHAT
+    -  Navajo
+    -  PRC
+    -  Pacific/Chuuk
+    -  Pacific/Enderbury
+    -  Pacific/Funafuti
+    -  Pacific/Johnston
+    -  Pacific/Majuro
+    -  Pacific/Midway
+    -  Pacific/Pohnpei
+    -  Pacific/Ponape
+    -  Pacific/Saipan
+    -  Pacific/Samoa
+    -  Pacific/Truk
+    -  Pacific/Wake
+    -  Pacific/Wallis
+    -  Pacific/Yap
+    -  Poland
+    -  Portugal
+    -  ROC
+    -  ROK
+    -  Singapore
+    -  Turkey
+    -  UCT
+    -  US/Alaska
+    -  US/Aleutian
+    -  US/Arizona
+    -  US/Central
+    -  US/East-Indiana
+    -  US/Eastern
+    -  US/Hawaii
+    -  US/Indiana-Starke
+    -  US/Michigan
+    -  US/Mountain
+    -  US/Pacific
+    -  US/Samoa
+    -  UTC
+    -  Universal
+    -  W-SU
+    -  Zulu
+    
+#this grouped according to 2019 this grouping might change on future 
+#Old timezones are updated to latest on March 2024 based on the backward file provided by IANA.
+
+groups:
+  Africa/Algiers:
+    group:
+      - Africa/Tunis
+  Africa/Cairo:
+    group:
+      - Africa/Tripoli
+      - Europe/Kaliningrad
+  Africa/Lagos:
+    group:
+      - Africa/Ndjamena
+  Africa/Nairobi:
+    group:
+      - Africa/Juba
+      - Africa/Khartoum
+  America/Araguaina:
+    group:
+      - America/Bahia
+      - America/Belem
+      - America/Fortaleza
+      - America/Maceio
+      - America/Recife
+      - America/Santarem
+  America/Argentina/Cordoba:
+    group:
+      - America/Argentina/Catamarca
+      - America/Argentina/La_Rioja
+      - America/Argentina/Rio_Gallegos
+      - America/Argentina/Salta
+      - America/Argentina/San_Juan
+      - America/Argentina/San_Luis
+      - America/Argentina/Tucuman
+      - America/Argentina/Ushuaia
+      - America/Argentina/Buenos_Aires
+      - America/Argentina/Jujuy
+      - America/Argentina/Mendoza
+  America/Belize:
+    group:
+      - America/Costa_Rica
+      - America/El_Salvador
+      - America/Guatemala
+      - America/Managua
+      - America/Regina
+      - America/Swift_Current
+      - America/Tegucigalpa
+  America/Boa_Vista:
+    group:
+      - America/Manaus
+      - America/Porto_Velho
+  America/Danmarkshavn:
+    group:
+      - Africa/Abidjan
+      - Africa/Bissau
+      - Africa/Monrovia
+      - Africa/Sao_Tome
+  America/Jamaica:
+    group:
+      - America/Panama
+      - America/Cancun
+  America/Phoenix:
+    group:
+      - America/Dawson_Creek
+      - America/Fort_Nelson
+      - America/Hermosillo
+  America/Puerto_Rico:
+    group:
+      - America/Barbados
+      - America/Grand_Turk
+      - America/Martinique
+      - America/Santo_Domingo
+  America/Rio_Branco:
+    group:
+      - America/Eirunepe
+  America/Santiago:
+    group:
+      - Antarctica/Palmer
+  Asia/Bangkok:
+    group:
+      - Asia/Ho_Chi_Minh
+  Asia/Chita:
+    group:
+      - Asia/Irkutsk
+  Asia/Jakarta:
+    group:
+      - Asia/Pontianak
+  Asia/Kolkata:
+    group:
+      - Asia/Colombo
+  Asia/Krasnoyarsk:
+    group:
+      - Asia/Novokuznetsk
+  Asia/Riyadh:
+    group:
+      - Asia/Baghdad
+      - Asia/Qatar
+  Asia/Samarkand:
+    group:
+      - Asia/Tashkent
+  Asia/Shanghai:
+    group:
+      - Asia/Taipei
+  Asia/Singapore:
+    group:
+      - Asia/Kuching
+  Australia/Brisbane:
+    group:
+      - Australia/Lindeman
+  Australia/Perth:
+    group:
+      - Antarctica/Casey
+  Etc/UTC:
+    group:
+      - Antarctica/Troll
+  Europe/Moscow:
+    group:
+      - Europe/Simferopol
+      - Europe/Volgograd
+  Pacific/Kwajalein:
+    group:
+      - Pacific/Tarawa
+
+# countries which are in DayLight saving time will be displayed here
+  Africa/Casablanca:
+    group:
+      - Africa/El_Aaiun
+  America/Anchorage:
+    group:
+      - America/Juneau
+      - America/Nome
+      - America/Sitka
+      - America/Yakutat
+  America/Campo_Grande:
+    group:
+      - America/Cuiaba
+  America/Chicago:
+    group:
+      - America/Indiana/Knox
+      - America/Indiana/Tell_City
+      - America/Matamoros
+      - America/Menominee
+      - America/North_Dakota/Beulah
+      - America/North_Dakota/Center
+      - America/North_Dakota/New_Salem
+      - America/Winnipeg
+      - America/Rankin_Inlet
+      - America/Resolute
+  America/Chihuahua:
+    group:
+      - America/Mazatlan
+  America/Denver:
+    group:
+      - America/Boise
+      - America/Cambridge_Bay
+      - America/Edmonton
+      - America/Inuvik
+      - America/Ojinaga
+  America/Glace_Bay:
+    group:
+      - America/Goose_Bay
+      - America/Halifax
+      - America/Moncton
+      - America/Thule
+      - Atlantic/Bermuda
+  America/Mexico_City:
+    group:
+      - America/Bahia_Banderas
+      - America/Merida
+      - America/Monterrey
+  America/New_York:
+    group:
+      - America/Detroit
+      - America/Panama
+      - America/Indiana/Indianapolis
+      - America/Indiana/Marengo
+      - America/Indiana/Petersburg
+      - America/Indiana/Vevay
+      - America/Indiana/Vincennes
+      - America/Indiana/Winamac
+      - America/Iqaluit
+      - America/Kentucky/Monticello
+      - America/Kentucky/Louisville
+      - America/Toronto
+      - America/Port-au-Prince
+  America/Tijuana:
+    group:
+      - America/Dawson
+      - America/Los_Angeles
+      - America/Vancouver
+      - America/Whitehorse
+      - US/Pacific-New
+  Australia/Adelaide:
+    group:
+      - Australia/Broken_Hill
+  Australia/Melbourne:
+    group:
+      - Australia/Hobart
+  Australia/Sydney:
+    group:
+      - Australia/Hobart
+  Europe/Brussels:
+    group:
+      - Antarctica/Troll
+      - Europe/Berlin
+      - Africa/Ceuta
+      - Europe/Andorra
+      - Europe/Belgrade
+      - Europe/Prague
+      - Europe/Budapest
+      - Europe/Zurich
+      - Europe/Gibraltar
+      - Europe/Madrid
+      - Europe/Malta
+      - Europe/Paris
+      - Europe/Rome
+      - Europe/Tirane
+      - Europe/Vienna
+      - Europe/Warsaw
+  Europe/Istanbul:
+    group:
+      - Asia/Amman
+      - Asia/Beirut
+      - Asia/Damascus
+      - Asia/Gaza
+      - Asia/Hebron
+      - Asia/Nicosia
+      - Europe/Athens
+      - Europe/Bucharest
+      - Europe/Chisinau
+      - Europe/Helsinki
+      - Europe/Kyiv
+      - Europe/Riga
+      - Europe/Sofia
+      - Europe/Tallinn
+      - Europe/Vilnius
+  Europe/Lisbon:
+    group:
+      - Atlantic/Faroe
+      - Atlantic/Madeira
+      - Atlantic/Canary
+
+
+#Last updated on March 2024 based on the backward file provided by IANA. Source: https://www.iana.org/time-zones
+#For future reference: https://github.com/eggert/tz/blob/main/backward
+#Since the below data is loaded in HashMap and HashMap has only case sensitive comparison, keeping old timezone values in lowercase.
+#As of now, case sensitivity is not required for old timezones for any usecase. Also timezone values received from IPInfo are not in standard format.
+
+#=======================================================================================================================================#
+#resources/helper/timezone/oldToNewTimezoneParser.jsp can be used to update this list in the future.
+#=======================================================================================================================================#
+latest_timezones:
+  africa/accra : Africa/Abidjan
+  africa/addis_ababa : Africa/Nairobi
+  africa/asmara : Africa/Nairobi
+  africa/asmera : Africa/Nairobi
+  africa/bamako : Africa/Abidjan
+  africa/bangui : Africa/Lagos
+  africa/banjul : Africa/Abidjan
+  africa/blantyre : Africa/Maputo
+  africa/brazzaville : Africa/Lagos
+  africa/bujumbura : Africa/Maputo
+  africa/conakry : Africa/Abidjan
+  africa/dakar : Africa/Abidjan
+  africa/dar_es_salaam : Africa/Nairobi
+  africa/djibouti : Africa/Nairobi
+  africa/douala : Africa/Lagos
+  africa/freetown : Africa/Abidjan
+  africa/gaborone : Africa/Maputo
+  africa/harare : Africa/Maputo
+  africa/kampala : Africa/Nairobi
+  africa/kigali : Africa/Maputo
+  africa/kinshasa : Africa/Lagos
+  africa/libreville : Africa/Lagos
+  africa/lome : Africa/Abidjan
+  africa/luanda : Africa/Lagos
+  africa/lubumbashi : Africa/Maputo
+  africa/lusaka : Africa/Maputo
+  africa/malabo : Africa/Lagos
+  africa/maseru : Africa/Johannesburg
+  africa/mbabane : Africa/Johannesburg
+  africa/mogadishu : Africa/Nairobi
+  africa/niamey : Africa/Lagos
+  africa/nouakchott : Africa/Abidjan
+  africa/ouagadougou : Africa/Abidjan
+  africa/porto-novo : Africa/Lagos
+  africa/timbuktu : Africa/Abidjan
+  america/anguilla : America/Puerto_Rico
+  america/antigua : America/Puerto_Rico
+  america/argentina/comodrivadavia : America/Argentina/Catamarca
+  america/aruba : America/Puerto_Rico
+  america/atikokan : America/Panama
+  america/atka : America/Adak
+  america/blanc-sablon : America/Puerto_Rico
+  america/buenos_aires : America/Argentina/Buenos_Aires
+  america/catamarca : America/Argentina/Catamarca
+  america/cayman : America/Panama
+  america/coral_harbour : America/Panama
+  america/cordoba : America/Argentina/Cordoba
+  america/creston : America/Phoenix
+  america/curacao : America/Puerto_Rico
+  america/dominica : America/Puerto_Rico
+  america/ensenada : America/Tijuana
+  america/fort_wayne : America/Indiana/Indianapolis
+  america/godthab : America/Nuuk
+  america/grenada : America/Puerto_Rico
+  america/guadeloupe : America/Puerto_Rico
+  america/indianapolis : America/Indiana/Indianapolis
+  america/jujuy : America/Argentina/Jujuy
+  america/knox_in : America/Indiana/Knox
+  america/kralendijk : America/Puerto_Rico
+  america/louisville : America/Kentucky/Louisville
+  america/lower_princes : America/Puerto_Rico
+  america/marigot : America/Puerto_Rico
+  america/mendoza : America/Argentina/Mendoza
+  america/montreal : America/Toronto
+  america/montserrat : America/Puerto_Rico
+  america/nassau : America/Toronto
+  america/nipigon : America/Toronto
+  america/pangnirtung : America/Iqaluit
+  america/port_of_spain : America/Puerto_Rico
+  america/porto_acre : America/Rio_Branco
+  america/rainy_river : America/Winnipeg
+  america/rosario : America/Argentina/Cordoba
+  america/santa_isabel : America/Tijuana
+  america/shiprock : America/Denver
+  america/st_barthelemy : America/Puerto_Rico
+  america/st_kitts : America/Puerto_Rico
+  america/st_lucia : America/Puerto_Rico
+  america/st_thomas : America/Puerto_Rico
+  america/st_vincent : America/Puerto_Rico
+  america/thunder_bay : America/Toronto
+  america/tortola : America/Puerto_Rico
+  america/virgin : America/Puerto_Rico
+  america/yellowknife : America/Edmonton
+  antarctica/dumontdurville : Pacific/Port_Moresby
+  antarctica/mcmurdo : Pacific/Auckland
+  antarctica/south_pole : Pacific/Auckland
+  antarctica/syowa : Asia/Riyadh
+  arctic/longyearbyen : Europe/Berlin
+  asia/aden : Asia/Riyadh
+  asia/ashkhabad : Asia/Ashgabat
+  asia/bahrain : Asia/Qatar
+  asia/brunei : Asia/Kuching
+  asia/calcutta : Asia/Kolkata
+  asia/chongqing : Asia/Shanghai
+  asia/chungking : Asia/Shanghai
+  asia/dacca : Asia/Dhaka
+  asia/harbin : Asia/Shanghai
+  asia/istanbul : Europe/Istanbul
+  asia/kashgar : Asia/Urumqi
+  asia/katmandu : Asia/Kathmandu
+  asia/kuala_lumpur : Asia/Singapore
+  asia/kuwait : Asia/Riyadh
+  asia/macao : Asia/Macau
+  asia/muscat : Asia/Dubai
+  asia/phnom_penh : Asia/Bangkok
+  asia/rangoon : Asia/Yangon
+  asia/saigon : Asia/Ho_Chi_Minh
+  asia/tel_aviv : Asia/Jerusalem
+  asia/thimbu : Asia/Thimphu
+  asia/ujung_pandang : Asia/Makassar
+  asia/ulan_bator : Asia/Ulaanbaatar
+  asia/vientiane : Asia/Bangkok
+  atlantic/faeroe : Atlantic/Faroe
+  atlantic/jan_mayen : Europe/Berlin
+  atlantic/reykjavik : Africa/Abidjan
+  atlantic/st_helena : Africa/Abidjan
+  australia/act : Australia/Sydney
+  australia/canberra : Australia/Sydney
+  australia/currie : Australia/Hobart
+  australia/lhi : Australia/Lord_Howe
+  australia/nsw : Australia/Sydney
+  australia/north : Australia/Darwin
+  australia/queensland : Australia/Brisbane
+  australia/south : Australia/Adelaide
+  australia/tasmania : Australia/Hobart
+  australia/victoria : Australia/Melbourne
+  australia/west : Australia/Perth
+  australia/yancowinna : Australia/Broken_Hill
+  brazil/acre : America/Rio_Branco
+  brazil/denoronha : America/Noronha
+  brazil/east : America/Sao_Paulo
+  brazil/west : America/Manaus
+  canada/atlantic : America/Halifax
+  canada/central : America/Winnipeg
+  canada/eastern : America/Toronto
+  canada/mountain : America/Edmonton
+  canada/newfoundland : America/St_Johns
+  canada/pacific : America/Vancouver
+  canada/saskatchewan : America/Regina
+  canada/yukon : America/Whitehorse
+  chile/continental : America/Santiago
+  chile/easterisland : Pacific/Easter
+  cuba : America/Havana
+  egypt : Africa/Cairo
+  eire : Europe/Dublin
+  etc/gmt+0 : Etc/GMT
+  etc/gmt-0 : Etc/GMT
+  etc/gmt0 : Etc/GMT
+  etc/greenwich : Etc/GMT
+  etc/uct : Etc/UTC
+  etc/universal : Etc/UTC
+  etc/zulu : Etc/UTC
+  europe/amsterdam : Europe/Brussels
+  europe/belfast : Europe/London
+  europe/bratislava : Europe/Prague
+  europe/busingen : Europe/Zurich
+  europe/copenhagen : Europe/Berlin
+  europe/guernsey : Europe/London
+  europe/isle_of_man : Europe/London
+  europe/jersey : Europe/London
+  europe/kiev : Europe/Kyiv
+  europe/ljubljana : Europe/Belgrade
+  europe/luxembourg : Europe/Brussels
+  europe/mariehamn : Europe/Helsinki
+  europe/monaco : Europe/Paris
+  europe/nicosia : Asia/Nicosia
+  europe/oslo : Europe/Berlin
+  europe/podgorica : Europe/Belgrade
+  europe/san_marino : Europe/Rome
+  europe/sarajevo : Europe/Belgrade
+  europe/skopje : Europe/Belgrade
+  europe/stockholm : Europe/Berlin
+  europe/tiraspol : Europe/Chisinau
+  europe/uzhgorod : Europe/Kyiv
+  europe/vaduz : Europe/Zurich
+  europe/vatican : Europe/Rome
+  europe/zagreb : Europe/Belgrade
+  europe/zaporozhye : Europe/Kyiv
+  gb : Europe/London
+  gb-eire : Europe/London
+  gmt+0 : Etc/GMT
+  gmt-0 : Etc/GMT
+  gmt0 : Etc/GMT
+  greenwich : Etc/GMT
+  hongkong : Asia/Hong_Kong
+  iceland : Africa/Abidjan
+  indian/antananarivo : Africa/Nairobi
+  indian/christmas : Asia/Bangkok
+  indian/cocos : Asia/Yangon
+  indian/comoro : Africa/Nairobi
+  indian/kerguelen : Indian/Maldives
+  indian/mahe : Asia/Dubai
+  indian/mayotte : Africa/Nairobi
+  indian/reunion : Asia/Dubai
+  iran : Asia/Tehran
+  israel : Asia/Jerusalem
+  jamaica : America/Jamaica
+  japan : Asia/Tokyo
+  kwajalein : Pacific/Kwajalein
+  libya : Africa/Tripoli
+  mexico/bajanorte : America/Tijuana
+  mexico/bajasur : America/Mazatlan
+  mexico/general : America/Mexico_City
+  nz : Pacific/Auckland
+  nz-chat : Pacific/Chatham
+  navajo : America/Denver
+  prc : Asia/Shanghai
+  pacific/chuuk : Pacific/Port_Moresby
+  pacific/enderbury : Pacific/Kanton
+  pacific/funafuti : Pacific/Tarawa
+  pacific/johnston : Pacific/Honolulu
+  pacific/majuro : Pacific/Tarawa
+  pacific/midway : Pacific/Pago_Pago
+  pacific/pohnpei : Pacific/Guadalcanal
+  pacific/ponape : Pacific/Guadalcanal
+  pacific/saipan : Pacific/Guam
+  pacific/samoa : Pacific/Pago_Pago
+  pacific/truk : Pacific/Port_Moresby
+  pacific/wake : Pacific/Tarawa
+  pacific/wallis : Pacific/Tarawa
+  pacific/yap : Pacific/Port_Moresby
+  poland : Europe/Warsaw
+  portugal : Europe/Lisbon
+  roc : Asia/Taipei
+  rok : Asia/Seoul
+  singapore : Asia/Singapore
+  turkey : Europe/Istanbul
+  uct : Etc/UTC
+  us/alaska : America/Anchorage
+  us/aleutian : America/Adak
+  us/arizona : America/Phoenix
+  us/central : America/Chicago
+  us/east-indiana : America/Indiana/Indianapolis
+  us/eastern : America/New_York
+  us/hawaii : Pacific/Honolulu
+  us/indiana-starke : America/Indiana/Knox
+  us/michigan : America/Detroit
+  us/mountain : America/Denver
+  us/pacific : America/Los_Angeles
+  us/samoa : Pacific/Pago_Pago
+  utc : Etc/UTC
+  universal : Etc/UTC
+  w-su : Europe/Moscow
+  zulu : Etc/UTC

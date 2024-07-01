@@ -1,0 +1,20 @@
+aaaserver:
+  system.configurations:
+    partneraccount.defaultname: Zoho
+    partneraccount.defaultdomain: zoho.com
+    partner.name: Zoho
+    iam.server.url: http://localhost:8443
+    admin.emailid: admin@1532345zaop53647321.com
+    support.emailid: admin@1532345zaop53647321.com
+    abuse.emailid:  admin@1532345zaop53647321.com
+    support.help.link: www.zoho.com
+    send.iam3.mail.templates: zaop
+    alert.picker: admin@1532345zaop53647321.com
+    notify.email: admin@1532345zaop53647321.com
+    replyto.emailid: admin@1532345zaop53647321.com
+    trusted.domain.pattern: .*
+    trusted.cssdomain.pattern: .*
+    block.emaildomain: '@zaop.com'
+    accounts.query.set.distinct: true
+    assignuser.domaincheck.enabled: false
+  url: http://localhost:8443

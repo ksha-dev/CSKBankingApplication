@@ -21,7 +21,7 @@ window.ZACountryStateDetails = ${country_state_details}; <%-- No I18N --%>
 window.ZADefaultCountry = '${default_country_code}';<%-- No I18N --%>
 window.loadCountryOptions = '${load_country}';<%-- No I18N --%>
 <%@include file="../js/html5.js" %>
-
+var resIntegrity =  ${resIntegrity}; <%-- No I18N --%>	
 function zaOnLoadHandler() {
 	var cssURLs = "${cssURLs}"; // No I18N
 	var jsURLs = "${jsURLs}"; // No I18N
@@ -43,6 +43,10 @@ function zaOnLoadHandler() {
 			}
 			style.href = cssURLs[i]; //No I18N
 			style.rel = "stylesheet"; //No I18N
+			if(resIntegrity && resIntegrity[cssURLs[i]]) {
+				style.integrity = resIntegrity[cssURLs[i]];
+				style.crossOrigin = "anonymous";	// No I18N
+			}
 			docHead.appendChild(style); //No I18N
 		}
 	}
@@ -78,6 +82,10 @@ function zaOnLoadHandler() {
 function includeScript(url, callback) {
 	var script = document.createElement("script"); // No I18n
 	script.src = url; // No I18n
+	if(resIntegrity && resIntegrity[url]) {
+		script.integrity = resIntegrity[url];
+		script.crossOrigin = "anonymous"; //No I18N
+	}
 	if (callback) { //No I18N
 		script.onload = script.onreadystatechange = function() { //No I18N
 			if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {

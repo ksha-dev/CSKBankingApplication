@@ -30,10 +30,6 @@ String enreferer = CryptoUtil.encryptWithSalt("photo", referer, ":", true);%> <%
 	<div style="font-size:11px;color:#000;text-decoration:none;">
 	    <ul style="list-style: none; float: right; *padding-top:10px;">
 		<li style="float: left; margin-right: 20px;"><a href="<%=Util.getI18NMsg(request,"IAM.HOME.LINK")%>" title="<%=Util.getI18NMsg(request,"IAM.HOME")%>" style="color:#085DDC;text-decoration:none;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';"><%=Util.getI18NMsg(request,"IAM.HOME")%></a></li><%-- NO OUTPUTENCODING --%>
-	<%if(!"true".equals(AccountsConfiguration.getConfiguration("hide.headerlinks", "false"))) {%>
-		<li style="float: left; margin-right: 20px;"><a href="<%=Util.getI18NMsg(request,"IAM.BLOGS.LINK")%>" title="<%=Util.getI18NMsg(request,"IAM.BLOGS")%>" style="color:#085DDC;text-decoration:none;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';"><%=Util.getI18NMsg(request,"IAM.BLOGS")%></a></li><%-- NO OUTPUTENCODING --%>
-		<li style="float: left; margin-right: 20px;"><a href="<%=Util.getI18NMsg(request,"IAM.FORUMS.LINK")%>" title="<%=Util.getI18NMsg(request,"IAM.FORUMS")%>" style="color:#085DDC;text-decoration:none;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';"><%=Util.getI18NMsg(request,"IAM.FORUMS")%></a></li><%-- NO OUTPUTENCODING --%>
-	<%}%>
 		<li style="float: left; margin-right: 20px;"><a href="<%=Util.getI18NMsg(request,"IAM.FAQ.LINK")%>" title="<%=Util.getI18NMsg(request,"IAM.TITLE.FAQ.EXPAND")%>" style="color:#085DDC;text-decoration:none;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';"><%=Util.getI18NMsg(request,"IAM.HEADER.FAQ")%></a></li><%-- NO OUTPUTENCODING --%>
 	    </ul>
 	</div>

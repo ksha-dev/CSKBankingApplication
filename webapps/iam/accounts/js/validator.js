@@ -18,7 +18,9 @@ var Validator = {
 		LOWER_CHAR : /[a-z]/,
 		CONTAIN_NUMBER : /[0-9]/,
 		MOBILE : /^([0-9]{5,14})$/,
-		OTP : new RegExp("^([0-9]{" +((typeof otp_length == 'undefined' || otp_length ==null || otp_length == '')? 7 : otp_length)+"})$")
+		OTP : new RegExp("^([0-9]{" +((typeof otp_length == 'undefined' || otp_length ==null || otp_length == '')? 7 : otp_length)+"})$"),
+		CAPTCHA : /^[a-zA-Z0-9]*$/,
+		ONLY_NUMERIC_WITH_SPACE : /^[0-9 ]+$/
 	},
 	isValid : function(value) {
 		return value && value.trim().length > 0;
@@ -46,6 +48,9 @@ var Validator = {
 	},
 	isName : function(value) {
 		return value && XRegExp.test(value.trim(), Validator.PATTERN.NAME);
+	},
+	isCaptchaContainSpecialChars : function(value){
+		return value && Validator.PATTERN.CAPTCHA.test(value);
 	},
 	setJQueryMessage : function($validator, msg, element) {
 		if (msg) {
@@ -208,7 +213,8 @@ Validator.addDefaultMethods = function() {
 		$.validator.addMethod("emailormobile", function(value, element) { // No I18N
 			var validator = this;
 			if (!Validator.isMobile(value) && !Validator.isEmail(value)) {
-				return Validator.setJQueryMessage(this, "IAM.ERROR.EMAIL.OR.MOBILE.INVALID", element); // No I18N
+				var emailorMobileMsg = value.trim() == "" ? "IAM.ERROR.EMAIL.OR.MOBILE.INVALID" : Validator.PATTERN.ONLY_NUMERIC_WITH_SPACE.test(value)?"IAM.PHONE.ENTER.VALID.MOBILE_NUMBER":"IAM.ERROR.EMAIL.INVALID";//no i18n
+				return Validator.setJQueryMessage(this, emailorMobileMsg, element);
 			}
 			return true;
 		});
@@ -223,6 +229,16 @@ Validator.addDefaultMethods = function() {
 			var validator = this;
 			if (!Validator.isMobile(value)) {
 				return Validator.setJQueryMessage(this, "IAM.PHONE.ENTER.VALID.MOBILE_NUMBER", element); // No I18N
+			}
+			return true;
+		});
+		$.validator.addMethod("captchaCheck", function(value, element) { // No I18N
+			var validator = this;
+			if(!Validator.isValid(value)){
+				return Validator.setJQueryMessage(this, "IAM.ERROR.WORD.IMAGE", element); // No I18N
+			}
+			else if (!Validator.isCaptchaContainSpecialChars(value)) {
+				return Validator.setJQueryMessage(this, "IAM.SIGNIN.ERROR.CAPTCHA.INVALID", element); // No I18N
 			}
 			return true;
 		});

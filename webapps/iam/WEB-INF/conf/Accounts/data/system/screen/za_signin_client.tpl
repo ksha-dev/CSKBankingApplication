@@ -31,7 +31,7 @@
 				</dl>
 				<dl>
 					<dd>
-						<input type="password" name="password" placeholder='<@i18n key="IAM.PASSWORD" />'>
+						<input type="password" autocomplete="off" name="password" placeholder='<@i18n key="IAM.PASSWORD" />'>
 					</dd>
 				</dl>
 				<dl class="za-captcha-container" style="display: none;">

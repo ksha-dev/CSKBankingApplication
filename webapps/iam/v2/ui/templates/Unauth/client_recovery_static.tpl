@@ -1,23 +1,25 @@
 
-	<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">	
+	<@resource path="/v2/components/css/uvselect.css" />	
     <#if (('${css_url}')?has_content)>
 		<link href="${css_url}" type="text/css" rel="stylesheet"/>
 	<#else>
-	    <link href="${SCL.getStaticFilePath("/v2/components/css/clientaccountrecoveryStyle.css")}" type="text/css" rel="stylesheet"/>
+	    <@resource path="/v2/components/css/clientaccountrecoveryStyle.css" />
 	</#if>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-	<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script> 
-	<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-	<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}" type="text/javascript"></script>
-	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-	<link href="${SCL.getStaticFilePath("/v2/components/css/flagStyle.css")}" type="text/css" rel="stylesheet"/>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script> 
-	<script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
-	<link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet"type="text/css">
-	<link href="${SCL.getStaticFilePath("/v2/components/css/uv_unauthStatic.css")}" rel="stylesheet"type="text/css">
-	<script src="${SCL.getStaticFilePath("/v2/components/js/accountrecovery.js")}" type="text/javascript"></script>
+	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+	<@resource path="/v2/components/js/zresource.js" /> 
+	<@resource path="/v2/components/js/uri.js" /> 
+	<@resource path="/v2/components/js/common_unauth.js" />
+	<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+	<@resource path="/v2/components/css/${customized_lang_font}" />
+	<@resource path="/v2/components/css/flagStyle.css" />
+	<@resource path="/v2/components/js/splitField.js" /> 
+	<@resource path="/v2/components/js/uvselect.js" />
+	<@resource path="/v2/components/js/flagIcons.js" />
+	<@resource path="/v2/components/css/flagIcons.css" />
+	<@resource path="/v2/components/css/uv_unauthStatic.css" />
+	<@resource path="/v2/components/js/accountrecovery.js" />
+	<script type="text/javascript" src="${uri_prefix}/encryption/script"></script>
+	<@resource path="/v2/components/js/security.js" />
 	<meta name="robots" content="noindex, nofollow"/>
 	<script type='text/javascript'>
 			var aCParams = getACParms();
@@ -31,9 +33,13 @@
 			var uriPrefix = "${uri_prefix}";
 			var wmscount = 0;
 			var digest_id = "";
+			var isClientPortal = parseInt("${isClientPortal}");
+			var ZlabsCapthca_enabled = false;
 			var supportEmailAddr = "";
 			var recoveryUri = "${recovery_uri}";
 			var otp_length = ${otp_length};
+			var totp_size = ${totp_size};
+			var wmsSRIValues = ${za.wmsSRIValues};
 			<#if (('${digest_id}')?has_content)>
 			digest_id = "${digest_id}";
 			</#if>

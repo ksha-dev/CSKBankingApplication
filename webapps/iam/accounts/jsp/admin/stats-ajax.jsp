@@ -1,4 +1,9 @@
 <%--$Id$--%>
+<%@page import="com.zoho.waf.old.rule.policy.JSONObjectPolicy"%>
+<%@page import="com.zoho.accounts.internal.DeploymentSpecificConfiguration"%>
+<%@page import="com.zoho.accounts.cache.MemCacheConstants.RedisAuth"%>
+<%@page import="com.adventnet.iam.VOMap"%>
+<%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="java.util.List"%>
 <%@page import="com.zoho.accounts.cache.MemCacheConstants"%>
 <%@page import="java.util.logging.Level"%>
@@ -54,7 +59,7 @@ if (request.getParameter("instances") != null) {
 			break;
 		}
 		case 2: {
-			getConnectedServices(request.getParameter("ip"), Integer.valueOf(request.getParameter("port")), out);
+			out.print(getConnectedServices(request.getParameter("ip"), Integer.valueOf(request.getParameter("port"))));
 			break;
 		}
 		case 3: {
@@ -101,38 +106,53 @@ else {
 		return CacheMetrics.getServiceName(ip);
 	}
 
-	void getConnectedServices(String ip, int port, JspWriter out) throws Exception {
-		JSONObject total = new JSONObject();
-		JSONArray response = new JSONArray();
-		try {
+	JSONObject getConnectedServices(String ip, int port) {
+		JSONObject result = new JSONObject();
+		try{
 			Jedis cli = new Jedis(ip, port);
-			HashMap<String, String> serviceMap = new HashMap<String, String>();
+			VOMap<String> redisAuthMap = Util.cacheAPI.getRedisAuthMap(AccountsConstants.ACCOUNTS_SERVICE_NAME, AccountsConstants.ACCOUNTS_SERVICE_NAME, DeploymentSpecificConfiguration.valueOf(IAMProxy.getDeploymentName()).name());
+			if(redisAuthMap != null && !redisAuthMap.isEmpty()) {
+				String userName = redisAuthMap.get(RedisAuth.AUTH_USER.getConfigName());
+				String pwd = redisAuthMap.get(RedisAuth.AUTH_PASS.getConfigName());
+				cli.auth(userName, pwd);
+			}
+
 			String clients[] = cli.clientList().split("\n"); //No I18N
 			String mem = cli.info("memory");//No I18N
 			String repl = cli.info("replication");//No I18N
 			cli.close();
-			total.put("repl", repl);//No I18N
-			total.put("mem", mem);//No I18N
-			for (String client : clients) {
-				HashMap<String, String> cMap = getClientMap(client);
-				String cmd = cMap.get("cmd").toLowerCase();
-				if (cmd.contains("hincrby") || cmd.contains("ping") || cmd.contains("replconf")) {//No I18N
-					continue;
-				}
-				HostAndPort hostPort = HostAndPort.fromString(cMap.get("addr"));
-				serviceMap.put(hostPort.getHost(), cMap.get("name"));//No I18N
-			}
-			for (String ipKey : serviceMap.keySet()) {
-				JSONObject jobj = new JSONObject();
-				jobj.put("IP", ipKey);//No I18N
-				jobj.put("NAME", serviceMap.get(ipKey));//No I18N
-				response.put(jobj);
-			}
-			total.put("data", response);//No I18N
-		} catch (Exception e) {
-			response.put(e.toString());
+			result.put("repl", repl.substring(2));//No I18N
+			result.put("mem", mem.substring(2));//No I18N
+			result.put("client", getClientInfo(clients)); //No I18N
+		} catch(Exception e) {
+			logger.log(Level.WARNING, "Exception while getting ConnectServiceInfo for IP : {0}", ip);
 		}
-		out.print(total);
+
+		return result;
+	}
+
+	private JSONArray getClientInfo(String[] clients) throws Exception {
+		JSONArray clientInfoArray = new JSONArray();
+		try {
+			if(clients != null && clients.length > 0) {
+				for(String client : clients) {
+					HashMap<String, String> clientMap = getClientMap(client);
+					String cmd = clientMap.get("cmd").toLowerCase(); //No I18N
+					if (cmd.contains("hincrby") || cmd.contains("ping") || cmd.contains("replconf")) { //No I18N
+						continue;
+					}
+					JSONObject clientJSON = new JSONObject();
+					clientJSON.put("IP", HostAndPort.fromString(clientMap.get("addr")).getHost()); //No I18N
+					clientJSON.put("SERVICE", clientMap.get("name")); //No I18N
+					clientJSON.put("USER", clientMap.get("user")); //No I18N
+					clientInfoArray.put(clientJSON);
+				}
+			}
+		} catch(Exception e) {
+			logger.log(Level.WARNING, "Exception while getting ClientInfo");
+			throw e;
+		}
+		return clientInfoArray;
 	}
 
 	private HashMap<String, String> getClientMap(String clientInfo) {
@@ -141,8 +161,8 @@ else {
 			String attributes[] = clientInfo.split(" ");
 			for (String attribute : attributes) {
 				String[] keyVal = attribute.split("=");
-				if (keyVal.length != 2) {
-					clientMap.put(keyVal[0], "Unknown"); //No I18N
+				if(keyVal.length != 2 || !(keyVal[0].equalsIgnoreCase("addr") || keyVal[0].equalsIgnoreCase("name") || keyVal[0].equalsIgnoreCase("user") || keyVal[0].equalsIgnoreCase("cmd"))) {
+					continue;
 				} else {
 					clientMap.put(keyVal[0], keyVal[1]);
 				}
@@ -175,48 +195,55 @@ else {
 		long totalCount = 0;
 		Jedis pubsubClient = null;
 		JSONArray result = new JSONArray();
-		int itr = 0;
 		try {
-			URI u = AppResource.getCacheClusterURI("messagepool" + deployment);//No I18N
-			u.addSubResource(CLUSTERNODE.table());
-			for(ClusterNode node : ((CacheCluster) u.GET()).getClusterNodeList()) {
-				JSONObject data = new JSONObject();
-				List<String> pools = new ArrayList<String>();
-				itr++;
-				HostAndPort hostPort = HostAndPort.fromString(node.getServerIpPort());
-				data.put("ip", hostPort.getHost());//No I18N
-				pubsubClient = new Jedis(hostPort.getHost(),hostPort.getPort());
-				IAMNotification.Builder proto = IAMNotification.newBuilder();
-				proto.setCreatedtime(System.currentTimeMillis());
-				proto.setDestination(target);
-				proto.setHandler(className);
-				proto.setMethod(method);
-				proto.setSource("AaaServer");//No I18N
-				//Just for backward compatibility, can be removed after milestone movement
-				if(pool.equals("all")) {//No I18N
-					for(String cachepool : MemCacheConstants.getPools()) {
-						JSONArray arr = new JSONArray();
-						arr.put(IAMUtil.getCurrentTicket());
-						arr.put(cachepool); 
-						proto.setMessage(arr.toString());
-						recvCount = pubsubClient.publish(target, proto.build().toByteString().toString("ISO-8859-1"));//No I18N
-						totalCount += recvCount;
-						pools.add(cachepool);
-						pubsubClient.close();
+			CacheCluster cluster = IAMProxy._getIAMInstance().getCacheAPI().getCacheCluster("messagepool", null, IAMProxy.getServiceName(), deployment); //No I18N
+			if(cluster!=null){
+				String userName = null, password = null;
+				if(cluster.getIsSyncEnabledForGet()){
+					if(cluster.getSyncClusterName()!=null) {
+						try {
+							String data[] = cluster.getSyncClusterName().split(":@:");
+							if(!"default".equalsIgnoreCase(data[0])) {
+								userName = data[0];
+								password = data[1];
+							}
+						}catch (Exception e) {
+						}
 					}
 				}
-				JSONArray arr = new JSONArray();
-				arr.put(IAMUtil.getCurrentTicket());
-				arr.put(pool);
-				proto.setMessage(arr.toString());
-				recvCount = pubsubClient.publish(target, proto.build().toByteString().toString("ISO-8859-1"));//No I18N
-				totalCount += recvCount;
-				pools.add(pool);
-				data.put("count", totalCount);//No I18N
-				data.put("pools", pools);//No I18N
-				result.put(data);
-				pubsubClient.close();
-				totalCount = 0;
+				for(ClusterNode node : cluster.getClusterNodeList()) {
+					JSONObject data = new JSONObject();
+					List<String> pools = new ArrayList<String>();
+					HostAndPort hostPort = HostAndPort.fromString(node.getServerIpPort());
+					data.put("ip", hostPort.getHost());//No I18N
+					pubsubClient = new Jedis(hostPort.getHost(),hostPort.getPort());
+					
+					if(userName!=null && password!=null){
+						pubsubClient.auth(userName, password);
+					}
+					
+					IAMNotification.Builder proto = IAMNotification.newBuilder();
+					proto.setCreatedtime(System.currentTimeMillis());
+					proto.setDestination(target);
+					proto.setHandler(className);
+					proto.setMethod(method);
+					proto.setSource("AaaServer");//No I18N
+					JSONArray arr = new JSONArray();
+					arr.put(IAMUtil.getCurrentTicket());
+					arr.put(pool);
+					proto.setMessage(arr.toString());
+					recvCount = pubsubClient.publish(target, proto.build().toByteString().toString("ISO-8859-1"));//No I18N
+					if(target!=null && !"GLOBAL".equalsIgnoreCase(target)){
+						recvCount += pubsubClient.publish(target.toLowerCase(), proto.build().toByteString().toString("ISO-8859-1"));//No I18N
+					}
+					totalCount += recvCount;
+					pools.add(pool);
+					data.put("count", totalCount);//No I18N
+					data.put("pools", pools);//No I18N
+					result.put(data);
+					pubsubClient.close();
+					totalCount = 0;
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Exception while publishing message to {0}, pool {1}, dep {2}, {3}", new Object[]{target,pool,deployment, e});

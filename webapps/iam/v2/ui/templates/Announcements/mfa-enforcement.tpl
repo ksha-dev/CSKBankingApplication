@@ -152,19 +152,23 @@
 		<body>
 
 			<#include "../zoho_line_loader.tpl">
-			<link rel="stylesheet" href="${SCL.getStaticFilePath("/v2/components/css/mfaenforcement.css")}" type="text/css"/>
-			<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" defer type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" defer type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/webauthn.js")}" defer type="text/javascript" defer></script>
+			<#include "../utils/captcha-handler.tpl">
+			<@resource path="/v2/components/css/mfaenforcement.css" />
+			<@resource path="/v2/components/css/uvselect.css" />
+			<@resource path="/v2/components/css/flagIcons.css" />
+			<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+			<@resource path="/v2/components/js/common_unauth.js" />
+			<@resource path="/v2/components/js/splitField.js" attributes="defer" />
+			<@resource path="/v2/components/js/webauthn.js" attributes="defer" />
 			<script>
 	    		var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
     		</script> 
-		    <script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" defer type="text/javascript"></script>
-		    <script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/mfa-enforcement.js")}" type="text/javascript"></script>
+		    <@resource path="/v2/components/js/phonePatternData.js" attributes="defer" />
+		    <@resource path="/v2/components/js/zresource.js" />
+			<@resource path="/v2/components/js/uri.js" />
+			<@resource path="/v2/components/js/flagIcons.js" attributes="defer" />
+			<@resource path="/v2/components/js/uvselect.js" attributes="defer" />
+			<@resource path="/v2/components/js/mfa-enforcement.js" />
 			
 			<link rel="preload" as="image" href="${SCL.getStaticFilePath("/v2/components/images/newZoho_logo.svg")}" type="image/svg+xml" crossorigin="anonymous">
 			<link rel="preload" as="image" href="${SCL.getStaticFilePath("/v2/components/images/Announcement_oneauth_scan.png")}" type="image/png" crossorigin="anonymous">
@@ -201,6 +205,19 @@
 					"IAM.MFA.ANNOUN.USE.SAME.CONFIGURE": '<@i18n key="IAM.MFA.ANNOUN.USE.SAME.CONFIGURE" />',
 					"IAM.MFA.ANNOUN.USE.SAME.ENABLE": '<@i18n key="IAM.MFA.ANNOUN.USE.SAME.ENABLE" />',
 					"IAM.ERROR.GENERAL" : '<@i18n key="IAM.ERROR.GENERAL" />',
+					"IAM.MFA.BACKUPCODE.FILE.TEXT": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.TEXT" />',
+					"IAM.MFA.BACKUPCODE.FILE.NOTES": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES" />',
+					"IAM.LIST.BACKUPCODES.POINT1": '<@i18n key="IAM.LIST.BACKUPCODES.POINT1" />',
+					"IAM.LIST.BACKUPCODES.POINT3": '<@i18n key="IAM.LIST.BACKUPCODES.POINT3" />',
+					"IAM.MFA.BACKUPCODE.FILE.NOTES3": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES3" />',
+					"IAM.MFA.BACKUPCODE.FILE.NOTES4": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NOTES4" />',
+					"IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE" />',
+					"IAM.GENERAL.USERNAME": '<@i18n key="IAM.GENERAL.USERNAME" />',
+					"IAM.GENERATE.ON": '<@i18n key="IAM.GENERATE.ON" />',
+					"IAM.MFA.BACKUPCODE.FILE.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.HELP.LINK" />',
+					"IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" />',
+					"IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK": '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" />',
+					"IAM.ERROR.GENERAL": '<@i18n key="IAM.ERROR.GENERAL" />',
 				});
 				<#if allow_yubikey_mode??>
 				I18N.load({
@@ -288,7 +305,8 @@
 				var mobileHeader = {"0": "", "1":"IAM.NUMBER.CONFIGURED.ONE", "2":"IAM.NUMBER.CONFIGURED.MANY"};
 				var oneauthHeader = {"0": "", "1":"IAM.DEVICE.CONFIGURED.ONE", "2":"IAM.DEVICE.CONFIGURED.MANY"};
 				var yubikeyHeader = {"0": "", "1":"IAM.YUBIKEY.CONFIGURED.ONE", "2":"IAM.YUBIKEY.CONFIGURED.MANY"};
-				
+				var iam_search_text = '<@i18n key="IAM.SEARCHING" />';
+				var iam_no_result_found_text = '<@i18n key="IAM.NO.RESULT.FOUND" />';
 			</script> 
 			
 			<div class="blur"></div> 
@@ -665,7 +683,7 @@
                   						<form name="yubikey_name_form" onsubmit="return false">
                     						<div class="yubikey-three-desc general-desc margin-desc add-desc"><@i18n key="IAM.MFA.YUBIKEY.HEAD.NAME" /></div>
                     						<div>
-                    						<input type="text" placeholder="<@i18n key="IAM.MFA.ANNOUN.YUBI.PLACEHOLDER" />" id="yubikey_input" onkeydown="clearError('#yubikey_input', event)"/>
+                    						<input type="text" placeholder="<@i18n key="IAM.MFA.ANNOUN.YUBI.PLACEHOLDER" />" id="yubikey_input" oninput="clearError('#yubikey_input', event)"/>
 											</div>
 											<button class="common-btn s-common-btn configure-btn" onclick="configureYubikey(event)"><span></span><@i18n key="IAM.CONFIGURE" /></button>
 											<button class="common-btn s-common-btn back-btn" onclick="yubikeyOneStepBack()"><span></span><@i18n key="IAM.BACK" /></button>
@@ -741,6 +759,7 @@
 										<button class="common-btn s-common-btn send_otp_btn" type="submit" onclick="sendSms(event)"><@i18n key="IAM.SEND.VERIFY" /><span></span></button>
                     					<button class="common-btn s-common-btn back-btn" onclick="smsAlreadyStepBack()" style="display:none"><@i18n key="IAM.BACK" /></button>
                   					</form>
+                  					<div id="mfa-mob-captcha" class="add-desc"></div>
                   					<div class="already-verified-recovery" style="display:none">
                   						<div class="verified-recovery-desc general-desc margin-desc many add-desc" style="display:none">
                   						<@i18n key="IAM.MFA.ANNOUN.SMS.ALREADY.REC.MANY" />
@@ -793,7 +812,7 @@
 		</div>
 
 			 
-        <link rel="stylesheet" href="${SCL.getStaticFilePath("/accounts/css/flagStyle.css")}" type="text/css"/>
+        <@resource path="/accounts/css/flagStyle.css" />
 		</body>	
 		<script>
 			window.onload=function() {
@@ -840,7 +859,7 @@
       			}
       		}
       		$(document).ready(function(){
-      			if(mfaData.is_mfa_activated && alreadyConfiguredModes.length>0){
+				if(mfaData.is_mfa_activated){
       				$(".enabled-configure").show();
       			} else {
       				$(".nomodes-enable").show();
@@ -855,20 +874,23 @@
       			if(nModes === 2){
       				$(".show-all-modes-but").html(I18N.get("IAM.MFA.SHOW.OTHER.MODE.2"));
       			}
+      			var adm = true;
       			<#if allow_sms_mode??>
       			if(mfaData.otp && mfaData.otp.address_mobile && !mfaData.otp.mobile){
+      				$(".sms-container .mode-header").click();
       				$(".add-new-cont .add-new-number-but").click();
       				setTimeout(function(){
-      					$(document.confirm_form.countrycode).val(mfaData.otp.address_mobile.country_code);
+      					$("#countNameAddDiv option[value=" + mfaData.otp.address_mobile.country_code.toUpperCase() + "]").prop('selected', true);
 						$(document.confirm_form.countrycode).trigger('change');
       					var addressmob = mfaData.otp.address_mobile.r_mobile.split("-")[1];
-      					$("#mobile_input").val(phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobile.toString()));
+      					$("#mobile_input").val(phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), addressmob.toString()));
       					$("#mobile_input")[0].focus();
-      				}, 220)
+      				}, 500)
+      				adm = false;
       			}
       			</#if>
       			<#if allow_oneauth_mode??>
-					if(nModes > 1 && (alreadyConfiguredModes.length == 0 || mfaData.devices ) || checkConfiguredAllowed() ){
+					if(adm && nModes > 1 && (alreadyConfiguredModes.length == 0 || mfaData.devices ) || checkConfiguredAllowed()){
       			 		$(".sms-container, .totp-container, .yubikey-container").slideUp(200);
       			 		$(".show-all-modes-but").slideDown(200);
       			 		$(".oneauth-container .mode-header").click();

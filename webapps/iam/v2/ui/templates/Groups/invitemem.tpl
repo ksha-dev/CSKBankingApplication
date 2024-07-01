@@ -22,6 +22,9 @@
 					<div class="field full">
 							<div class="textbox_label"><@i18n key="IAM.NEW.GROUP.MEMBER.EMAILADDRESS" /></div>	
 							<div class="contacts_place"></div>
+							<#if ! no_orgusers>
+								<div class="memidex textbox_align" ><@i18n key="IAM.ORGPOLICY.PERSONALGROUP.INVITATION" arg0=org_name/></div>
+							</#if>
 					</div>
 					<div class='pop_up_overflow_btn'>
 						<button class="primary_btn_check inline" tabindex="0" ><span><@i18n key="IAM.INVITE" /></span></button>

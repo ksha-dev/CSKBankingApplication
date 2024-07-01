@@ -4,7 +4,7 @@
 	<title><@i18n key="IAM.ZOHO.ACCOUNTS" /></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+	<@resource path="/v2/components/css/${customized_lang_font}" />
 	<style>
 		body {
 			margin:0px;
@@ -159,6 +159,10 @@
 		.show_error{
 			top:60px !important;
 		}
+		.cp_display_name{
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
 		@media only screen and (max-width: 800px) and (min-width: 435px)
 		{			
 			.announcement_img{
@@ -193,17 +197,12 @@
 	</div>
 	 <div class="container">
         <div class="announcement_content">
-            <div class="logo_text">${Encoder.encodeHTML(app_display_name)}</div>  
+            <div class="cp_display_name">${Encoder.encodeHTML(app_display_name)}</div>
             <div class="announcement_heading"><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.HEADER"/></div>
             <div class="announcement_description">
             	<div><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.LIMIT.DESCRIPTION" arg0="${threshold}"/>
             	</div>
-            	<div class="to_instructions"><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.INSTRUCTION.FOLLOWING.TEXT"/></div>
-            	<ul class="instructions">
-            		<li><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.TERMINATE.INSTRUCTION1"/></li>
-            		<div style="margin-top:20px;"><@i18n key="IAM.OR"/></div>
-            		<li><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.TERMINATE.INSTRUCTION2" arg0="${threshold}"/></li>
-            	</ul>
+            	<div class="to_instructions"><@i18n key="IAM.BLOCK.SESSION.CONTINUE.TERMINATE" arg0="${threshold}"/></div>
             </div>	    	
             <a class="blue_btn continue_button" id="continue_button" onclick="terminateAllSession()" id='continueButton' ><@i18n key="IAM.BLOCK.SESSION.ANNOUNCEMENT.TERMINATE" /></a>
         </div>

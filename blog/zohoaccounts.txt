@@ -1,0 +1,10 @@
+Module=ZOHOACCOUNTS
+SourceCoLabel=release_master_21_06_24
+BuildDate=Jun_22_2024
+BuildTime=01:22:18
+BuildLabel=release_master_21_06_24_Jun_22_2024
+build-timestamp= 1718999561
+StaticVersion=M_8577836
+Current_Build_Url=https://build.zohocorp.com/zoho/zohoaccounts/webhost/release_master_21_06_24/Jun_22_2024
+Source_Changeset=c99d1dab6a3c028019de641e11f2f64189a0674f
+Build_Comment=build

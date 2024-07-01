@@ -68,13 +68,13 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 						<dl>
 							<dt><@i18n key="IAM.PASSWORD" /></dt>
 							<dd>
-								<input type="password"  name="password">
+								<input type="password"  name="password" autocomplete="off">
 							</dd>
 						</dl>
 						<dl>
 							<dt><@i18n key="IAM.CONFIRM.PASS" /></dt>
 							<dd>
-								<input type="password" name="cpassword">
+								<input type="password" name="cpassword" autocomplete="off">
 							</dd>
 						</dl>
 						<dl>

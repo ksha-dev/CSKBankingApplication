@@ -21,15 +21,15 @@
 			box-sizing: border-box;
 		}
    	</style>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/css/${customized_lang_font}" />
   </head>
   <body>
 	<#include "../zoho_line_loader.tpl">
-	<link rel="stylesheet" href="${SCL.getStaticFilePath("/v2/components/css/add_secondary_email.css")}" type="text/css"/>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
+	<@resource path="/v2/components/css/add_secondary_email.css" />
+	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+	<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+	<@resource path="/v2/components/js/splitField.js" />
+    <@resource path="/v2/components/js/common_unauth.js" />
     <link rel="preload" as="image" href="${SCL.getStaticFilePath('/v2/components/images/newZoho_logo.svg')}" type="image/svg+xml" crossorigin="anonymous">
 	<style>
 

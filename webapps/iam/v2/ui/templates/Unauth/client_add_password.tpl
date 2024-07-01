@@ -3,12 +3,12 @@
 <html>
 <head>
 <title><@i18n key="IAM.REGISTER.ACCOUNT.CONFIRMATION" /></title>
-<link  href="${SCL.getStaticFilePath("/accounts/css/common.css")}" type="text/css" rel="stylesheet" defer/>
-<link  href="${SCL.getStaticFilePath("/accounts/css/form.css")}" type="text/css" rel="stylesheet" defer/>
+<@resource path="/accounts/css/common.css" attributes="defer" />
+<@resource path="/accounts/css/form.css" attributes="defer" />
 <#if (('${zpass.css_url}')?has_content)>
 	<link href="${zpass.css_url}" type="text/css" rel="stylesheet"/>
 <#else>
-	<link href="${SCL.getStaticFilePath("/accounts/css/addpassword.css")}" type="text/css" rel="stylesheet"/>
+	<@resource path="/accounts/css/addpassword.css" />
 </#if>
 <#include "client_add_password_static.tpl">
 <script type="text/javascript">
@@ -69,13 +69,13 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 						<dl>
 							<dt><@i18n key="IAM.PASSWORD" /></dt>
 							<dd>
-								<input type="password"  name="password">
+								<input type="password" autocomplete="off"  name="password">
 							</dd>
 						</dl>
 						<dl>
 							<dt><@i18n key="IAM.CONFIRM.PASS" /></dt>
 							<dd>
-								<input type="password" name="cpassword">
+								<input type="password" autocomplete="off" name="cpassword">
 							</dd>
 						</dl>
 						<dl>

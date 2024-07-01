@@ -1,10 +1,10 @@
 <html>
 	<head>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/weblogin.css")}" type="text/css" rel="stylesheet"/>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/weblogin.js")}" type="text/javascript"></script>
-		<script src="${za.wmsjsurl}" type="text/javascript" defer></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/wmsliteimpl.js")}" type="text/javascript" defer></script>
+		<@resource path="/v2/components/css/weblogin.css" />
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		<@resource path="/v2/components/js/weblogin.js" />
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous" type="text/javascript" defer></script>
+		<@resource path="/v2/components/js/wmsliteimpl.js" attributes="defer" />
 		<meta name="robots" content="noindex, nofollow"/>
         <script type='text/javascript'>
         	var csrfParam= "${za.csrf_paramName}";
@@ -16,6 +16,7 @@
 			var signinUrl = getSigninUrl();
 			var smartSignin = false;
 			var isDarkMode = false;
+			var wmsSRIValues = ${za.wmsSRIValues};
         	window.onload = function() {
         		$(".qrloginlink").attr("href", signinUrl);
         		generateQrcode();
@@ -56,6 +57,7 @@
         <div class="logo-item-wrap flexM">
             <div class="logo-item"></div>
         </div>
+        <div class="container">
         <div class="login-container signin_container">
             <div id="qr_main_container" class="qr-container flexM posrel">
                 <div class="qr-container-dom posrel">
@@ -86,6 +88,7 @@
             </div>
             <div class="separator"></div>
             <div class="flexM clr-S" style="font-size: 14px; line-height: 17px;"><@i18n key="IAM.WEB.QR.LOGIN.MOBILE.NUMBER" arg0=""/></div>
+        </div>
         </div>
         <div id="enableCookie" style='display:none;text-align:center'>
 	            <div style="text-align: center;padding: 10px;"><@i18n key="IAM.ERROR.COOKIE_DISABLED"/></div>

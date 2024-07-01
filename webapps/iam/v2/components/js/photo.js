@@ -4,7 +4,7 @@ var photo_src;
 function close_dp_popup()
 {
 	$(".dp_change").fadeOut(200,function(){ 
-		$('html, body').css({
+		$('body').css({
 		    overflow: 'auto' //No I18N
 		});
 		$(".dp_popup_btns .savepic").removeAttr("disabled", "disabled");
@@ -66,7 +66,7 @@ function editProPicture(user_pic_url){
 	}
 }
 
-function removePicture(header,desc){
+function removePicture(header,desc,trueBtnText){
 	
 	close_pro_expand();
 	
@@ -78,6 +78,8 @@ function removePicture(header,desc){
 	$("#confirm_popup").show(0,function(){
 		$("#confirm_popup").addClass("pop_anim");
 	});
+	var oldTrueBtnText= $('#return_true').text();
+	$('#return_true').text(trueBtnText);
 	$("#confirm_popup").focus();	
     $('#return_true').click(function() {
     	disabledButton($("#confirm_popup"));
@@ -90,8 +92,15 @@ function removePicture(header,desc){
 					 $("#info_thumb_pic").attr("src",user_photo_id+"&nocache="+ct);//No i18N
 					 $(".dp_pic_blur_bg,.headder_thumb_pic_blur_bg,.info_thumb_pic_blur_bg").css("background-image","url("+user_photo_id+"&nocache="+ct+")");
 					 popupBlurHide("#confirm_popup");	//No I18N
+					 setTimeout(function(){
+						$('#return_true').text(oldTrueBtnText); 
+					 },200);
 					 removeButtonDisable($("#confirm_popup"));
 					 SuccessMsg(getErrorMessage(resp));
+					 if(settings_data && $("#user_pref_photoview_permi").length != 0){
+						 $("#ppviewid").hide();
+						 $("#noppviewid").show();
+			 		}
 				},
 				function(resp)
 				{
@@ -113,6 +122,9 @@ function removePicture(header,desc){
     
     $('#return_false').click(function() {
 		popupBlurHide("#confirm_popup"); //No I18N
+		setTimeout(function(){
+			$('#return_true').text(oldTrueBtnText);
+		},200);
 		$('#return_false').unbind();
 		$('#return_true').unbind();
 		$('.blue').unbind();
@@ -248,31 +260,18 @@ function uploadPhoto(f,callback)
 			 var ct = new Date().getTime();
 			 SuccessMsg(getErrorMessage(resp));
 			 photoPermission = $("#photo_permission").val();
-			 if(profile_data && $("#profile_photoview_permi").length != 0){
-			 	profile_data.photo_permission = photoPermission;
-				$("#profile_photoview_permi").uvselect("destroy");
-				$("#profile_photoview_permi").val(profile_data.photo_permission).uvselect({
-					"dropdown-width": "245px", //No i18N
-					"prevent_mobile_style": true,		//No i18N
-					"onDropdown:open" : function(dropdown){ //No I18N
-						$(dropdown).find("li:visible").each(function(ind,ele){
-						    $(ele).find("p").before("<i class='photo_perm_list_icon icon-"+$(ele).attr("data-id")+"'></i>");		//No I18N
-						});
-			    	}
-				});
-				$(".profile_photoview_permi .selectbox_overlay").after("<i id='photo_perm_icon' class='icon-"+$("#profile_photoview_permi option:selected").attr("id")+"'></i>");
-				$(".profile_photoview_permi .select_input").hide();
-			 }
-			 else if(settings_data && $("#user_pref_photoview_permi").length != 0){
+			 if(settings_data && $("#user_pref_photoview_permi").length != 0){
 				 settings_data.UserPreferences.photo_permission = photoPermission;
 				 $("#ppviewid #user_pref_photoview_permi").uvselect('destroy');
 				 $("#ppviewid #user_pref_photoview_permi").val(photoPermission).uvselect();
+				 $("#ppviewid").show();
+				 $("#noppviewid").hide();
 			 }
 			 
-			 $("#dp_pic").attr("src",user_photo_id+"&nocache="+ct+"&domain="+window.location.hostname);//No i18N
-			 $("#headder_thumb_pic").attr("src",user_photo_id+"&nocache="+ct+"&domain="+window.location.hostname);//No i18N
-			 $("#info_thumb_pic").attr("src",user_photo_id+"&nocache="+ct+"&domain="+window.location.hostname);//No i18N
-			 $(".dp_pic_blur_bg,.headder_thumb_pic_blur_bg,.info_thumb_pic_blur_bg").css("background-image","url("+user_photo_id+"&nocache="+ct+"&domain="+window.location.hostname+")");
+			 $("#dp_pic").attr("src",user_photo_id+"&nocache="+ct);//No i18N
+			 $("#headder_thumb_pic").attr("src",user_photo_id+"&nocache="+ct);//No i18N
+			 $("#info_thumb_pic").attr("src",user_photo_id+"&nocache="+ct);//No i18N
+			 $(".dp_pic_blur_bg,.headder_thumb_pic_blur_bg,.info_thumb_pic_blur_bg").css("background-image","url("+user_photo_id+"&nocache="+ct+")");
 			 close_dp_popup();
 		},
 		function(resp)
@@ -420,7 +419,7 @@ $("#picsrc").change(function(e)
 					}
 				});
 				$(".popup_bg").show();
-				$("html").css("overflow","hidden");//No I18N
+				$("body").css("overflow","hidden");//No I18N
 			} 
 		}   
     } 
@@ -550,10 +549,6 @@ $(document).ready(function(){
       scalemove=true;
       mymove=false;
     }
-    else
-    {
-      alert("upload pic");//No I18N
-    } 
   });
   $("#ppvalue").on('touchstart',function(event)
 		  {
@@ -562,10 +557,6 @@ $(document).ready(function(){
 		      scalemove=true;
 		      mymove=false;
 		    }
-		    else
-		    {
-		      alert("upload pic");//No I18N
-		    } 
 		  });
   $("#ppvalue").mouseup(function(event)
   {

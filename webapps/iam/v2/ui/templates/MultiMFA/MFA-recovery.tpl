@@ -108,10 +108,12 @@
 				<div class="option_grid" id="backup_code_grid">	
 					<div id="tfa_bk_new_space" class="hide">
 						<div class="mfa_backupcode_main">
-							<div class="tfa_sub_head"><@i18n key="IAM.TFA.BACKUP.ACCESS.CODES" /> </div>
-							<div class="tfa_sub_head_desc" id="tfa_bk_description" style="margin-bottom: 20px;"><@i18n key="IAM.TFA.BKP.DESCRIPTION" /></div>
-							<div class="tfa_sub_head_desc" id="tfa_bk_time" style="color: #EB8135; margin-bottom: 20px;"></div>
-							<button class="primary_btn_check circlebtn_mobile_edit " onclick="show_backupcodes()" style="margin-top: auto;"><span><@i18n key="IAM.TFA.GENERATE.NEW" /> </span></button>
+							<div class="tfa_bk_content">
+								<div class="tfa_sub_head"><@i18n key="IAM.TFA.BACKUP.ACCESS.CODES" /> </div>
+								<div class="tfa_sub_head_desc" id="tfa_bk_description"><@i18n key="IAM.TFA.BKP.DESCRIPTION" /></div>
+								<div class="tfa_sub_head_desc" id="tfa_bk_time"></div>
+							</div>
+							<button class="primary_btn_check circlebtn_mobile_edit" onclick="show_backupcodes()" style="margin-top:20px;"><span><@i18n key="IAM.TFA.GENERATE.NEW" /> </span></button>
 						</div>
 						<div class="tfa_footer_warning hide"></div>
 					</div>
@@ -119,10 +121,12 @@
 				<div class="option_grid" id="mfa_passphrase_grid">
 					<div id="mfa_passphrase">
 						<div class="mfa_passphrase_main">
-							<div class="tfa_sub_head"><@i18n key="IAM.MFA.BACKUP.PASSPHRASE" /> </div>
-							<div class="tfa_sub_head_desc" id="mfa_passphrase_description" style="margin-bottom: 20px;"><@i18n key="IAM.MFA.BACKUP.PASSPHRASE.DESCRIPTION" /></div>
-							<div class="tfa_sub_head_desc hide" id="mfa_passphrase_time" style="color: #EB8135;"></div>							
-							<button class="primary_btn_check circlebtn_mobile_edit hide" onclick="show_passphrase()"><span><@i18n key="IAM.MFA.BACKUP.GENERATE.PASSPHRASE" /> </span></button>
+							<div class="mfa_passphrase_content">
+								<div class="tfa_sub_head"><@i18n key="IAM.MFA.BACKUP.PASSPHRASE" /> </div>
+								<div class="tfa_sub_head_desc" id="mfa_passphrase_description"><@i18n key="IAM.MFA.BACKUP.PASSPHRASE.DESCRIPTION" /></div>
+								<div class="tfa_sub_head_desc hide" id="mfa_passphrase_time"></div>							
+							</div>
+							<button class="primary_btn_check circlebtn_mobile_edit hide" onclick="show_passphrase()" style="margin-top:20px;"><span><@i18n key="IAM.MFA.BACKUP.GENERATE.PASSPHRASE" /> </span></button>
 						</div>
 						<div class="tfa_footer_warning"></div>
 					</div>				

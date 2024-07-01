@@ -42,12 +42,14 @@
     		 <param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100"/>
     		 <param name="implicitGranted" type="boolean" />
     		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    		 <param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
     	</url>
     	<url path="/clientoauth/v2/[a-z0-9]+/reject" authentication="required" method="post" csrf="true" >
     		<param-group name="clientrequest"/>
     		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
     		<param name="is_ajax" type="boolean" />
     		<param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    		<param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
     	</url>
     	<url path="/clientoauth/v2/[a-z0-9]+/token" authentication="optional" method="post" csrf="false" url-type="dynamic">
     		<param-group name="clientrequest"/>
@@ -161,12 +163,14 @@
     		 <param name="approvedOrgs" regex="^[\w\/,\.]+$" split="," max-occurrences="100"/>
     		 <param name="implicitGranted" type="boolean" />
     		 <param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    		 <param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
     	</url>
     	<url path="/accounts/op/[a-z0-9]+/oauth/v2/reject" authentication="required" method="post" csrf="true" >
     		<param-group name="clientrequest"/>
     		<param name="approvedScope" regex="^[\w\/,\.]+$" split="," max-occurrences="1000"/>
     		<param name="is_ajax" type="boolean" />
     		<param name="protocol" regex="[0-9A-Za-z]+"/> <!-- Temporary Config. To be removed -->
+    		<param name="enhance_token" regex="iamcleartextpattern" max-len="1000" secret="true"/>
     	</url>
     	<url path="/accounts/op/[a-z0-9]+/oauth/v2/token" authentication="optional" method="post" csrf="false" url-type="dynamic">
     		<param-group name="clientrequest"/>

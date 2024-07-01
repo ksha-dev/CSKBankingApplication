@@ -11,15 +11,7 @@
 		                  		<input class="textbox" name="custom" oninput="check_disable(this)" id="custom" type="text">
 							</div>
 						</div>
-						
-						<div class="field hide full noindent">
-							<div class="textbox_label "><@i18n key="IAM.TIME.FORMAT" /></div>
-							<select id="hours_type" class="customised_select">
-								<option><@i18n key="IAM.USER.PREF.12.HOURS" /> </option>
-								<option><@i18n key="IAM.USER.PREF.24.HOURS" /> </option>
-							</select>
-						</div>
-						
+												
 					</div>
 					
 					
@@ -149,28 +141,35 @@
     					</select>
 					</div>
 					
-					
-					<div class="pref_option field" id="ppviewid"> 	
-						<div class="option_desc">
-							<div class="option_head"><@i18n key="IAM.PROFILE.PICTURE.VISIBILITY" /> </div>
-							<div class="option_values" id="photo_view_per"><@i18n key="IAM.SETTINGS.PHOTOVIEW.DESCRIPTION" /></div>
-							<div class="option_values hide" id="disabled_photo_view_per"><@i18n key="IAM.USERPREFERENCE.ERROR.PHOTO.PERMISSION.RESTRICTED" /></div>
+						<div class="pref_option field" id="ppviewid" style="display: none;"> 	
+							<div class="option_desc">
+								<div class="option_head"><@i18n key="IAM.PROFILE.PICTURE.VISIBILITY" /> </div>
+								<div class="option_values" id="photo_view_per"><@i18n key="IAM.SETTINGS.PHOTOVIEW.DESCRIPTION" /></div>
+								<div class="option_values hide" id="disabled_photo_view_per"><@i18n key="IAM.USERPREFERENCE.ERROR.PHOTO.PERMISSION.RESTRICTED" /></div>
+							</div>
+							<div class="disabled_tag">
+								<span class="icon-madmin"></span>
+								<span style="margin-left:5px"><@i18n key="IAM.RESTRICTED.BY.ADMIN" /></span>
+								<span class="disable_tooltip"><@i18n key="IAM.USERPREFERENCE.RESTRICTED.BY.ADMIN" /></span>
+							</div>
+							<select name="photo_permisn" id="user_pref_photoview_permi" class="visibleMobilesSelect customised_select" onchange=new_save_photoview_permi(this.value) size="medium"> 
+								<option value="3" id="3"><@i18n key="IAM.PHOTO.PERMISSION.ZOHO_USERS" /></option>
+								<option value="2" id="2"><@i18n key="IAM.PHOTO.PERMISSION.CHAT_CONTACTS" /></option>
+								<#if !isPersonalUser>
+									<option value="1" id="1"><@i18n key="IAM.PHOTO.PERMISSION.ORG_USERS" /></option>
+								</#if>
+								<option value="4" id="4"><@i18n key="IAM.PHOTO.PERMISSION.EVERYONE" /></option>
+								<option value="0" id="0"><@i18n key="IAM.PHOTO.PERMISSION.ONLY_MYSELF" /></option>
+		                	</select>
 						</div>
-						<div class="disabled_tag">
-							<span class="icon-madmin"></span>
-							<span style="margin-left:5px"><@i18n key="IAM.RESTRICTED.BY.ADMIN" /></span>
-							<span class="disable_tooltip"><@i18n key="IAM.USERPREFERENCE.RESTRICTED.BY.ADMIN" /></span>
+						
+						<div class="pref_option field" id="noppviewid" style="display: none;"> 	
+							<div class="option_desc">
+								<div class="option_head"><@i18n key="IAM.PROFILE.PICTURE.VISIBILITY" /> </div>
+								<div class="option_values"><@i18n key="IAM.ADD.PROFILE.PICTURE.DESC" /></div>
+							</div>
+							<button class="primary_btn_check" onclick="showProPicOptions()"><@i18n key="IAM.ADD.PROFILE.PICTURE" /></button>
 						</div>
-						<select name="photo_permisn" id="user_pref_photoview_permi" class="visibleMobilesSelect customised_select" onchange=new_save_photoview_permi(this.value) size="medium"> 
-							<option value="3" id="3"><@i18n key="IAM.PHOTO.PERMISSION.ZOHO_USERS" /></option>
-							<option value="2" id="2"><@i18n key="IAM.PHOTO.PERMISSION.CHAT_CONTACTS" /></option>
-							<#if !isPersonalUser>
-								<option value="1" id="1"><@i18n key="IAM.PHOTO.PERMISSION.ORG_USERS" /></option>
-							</#if>
-							<option value="4" id="4"><@i18n key="IAM.PHOTO.PERMISSION.EVERYONE" /></option>
-							<option value="0" id="0"><@i18n key="IAM.PHOTO.PERMISSION.ONLY_MYSELF" /></option>
-	                	</select>
-					</div>
 					
 					<div class="pref_box" id="email_notification">
 						<div class="option_desc">
@@ -249,6 +248,7 @@
 			
 			
 		<!-- NEWS LETTER SUBSCRIPTION -->
+				<#if (showSubTabsNIC)>
 					<div class="pref_option pref_email_option" id="subscriptionsid">
 					<div class="toggle_field">
 							<div class="toggle_text toggle_text_email"><@i18n key="IAM.USERPREFERENCE.NEWSLETTER.SUBSCRIBE" /> </div>
@@ -268,6 +268,7 @@
 						
 						
 					</div>
+				</#if>
 					
 					</div>
 

@@ -1,5 +1,6 @@
 // $Id: $
 var minLen,minNumber,minSpecialChar,mixedCase,maxLen;
+var validatedVariable = 0;
 function confirmpassword(frm){
 	var password = frm.password.value.trim();
 	if(!isValid(password)) {
@@ -19,6 +20,10 @@ function getParamFromURL(param){
 	return digest;
 }
 function addpassword(frm){
+		if(err_rules.length!=0){
+			$("input[name=password]").focus();
+			return false;
+		}
 		var cpassword = frm.cpassword.value.trim();
 		var password = frm.password.value.trim();
 		if(!isValid(password)) {
@@ -26,7 +31,7 @@ function addpassword(frm){
 			return false;
 		}
 		if(!isppexist){
-			var minlen = passwordPolicy[0] && passwordPolicy[0].minlen;
+			var minlen = passwordPolicy[0] && passwordPolicy[0].minLength;
 			if(password.length < minlen){
 				showCommonError("password",formatMessage(I18N.get("IAM.ERROR.PASS.LEN"),minlen+""));//no i18n
 				return false;
@@ -44,8 +49,11 @@ function addpassword(frm){
         }
 		var digest = getParamFromURL("digest");//no i18n
 		var servicename = getParamFromURL("servicename");//no i18n
-		var params ="password="+euc(password)+"&digest="+digest+"&is_ajax=true&servicename="+servicename;//no i18N
-		callConfirmPassword(params);
+		encryptData.encrypt([password]).then(function(encryptedpassword) {
+			encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			var params ="password="+euc(encryptedpassword)+"&digest="+digest+"&is_ajax=true&servicename="+servicename;//no i18N
+			callConfirmPassword(params);
+		})
 		return false;
 }
 function isValid(instr) {
@@ -115,36 +123,7 @@ function clearCommonError(field){
 	$("#"+container+ " .fielderror").removeClass("errorlabel");
 	$("#"+container+ " .fielderror").text("");
 }
-function setPasswordPolicy(){
-	var listvalue = "<div class='ppheader'>"+I18N.get('IAM.PASS_POLICY.HEADING')+"</div><ul>";
-	for (var i=0;i<passwordPolicy.length;i++) {
-		var passInfo = passwordPolicy[i];
-		if(passInfo.minlen){
-			minLen = passInfo.minlen;
-			listvalue+="<li class='minlen'>"+formatMessage(I18N.get("IAM.PORTAL.CONFIRM.MINIMUM.PASSLEN"),passInfo.minlen+"")+"</li>";
-		}
-		if(passInfo.minsplchar){
-			minSpecialChar = passInfo.minsplchar;
-			var templatecontent = minSpecialChar == 1 ? "IAM.PASS_POLICY.SPL_SING" : "IAM.PASS_POLICY.SPL";//no i18n
-			listvalue+="<li class='specialchar'>"+formatMessage(I18N.get(templatecontent),passInfo.minsplchar+"")+"</li>";//no i18n
-		}
-		if(passInfo.minnumchar){
-			minNumber = passInfo.minnumchar;
-			var templatecontent = minNumber == 1 ? "IAM.PASS_POLICY.NUM_SING" : "IAM.PASS_POLICY.NUM";//no i18n
-			listvalue+="<li class='numberchar'>"+formatMessage(I18N.get(templatecontent),passInfo.minnumchar+"")+"</li>";//no i18n
-		}
-		if(passInfo.mixedcase){
-			mixedCase = passInfo.mixedcase;
-			listvalue+="<li class='mixedcase'>"+I18N.get("IAM.PORTAL.CONFIRM.MINIMUM.MIXEDCASE")+"</li>";//no i18n
-		}
-		if(passInfo.maxlen){
-			maxLen = passInfo.maxlen;
-			listvalue+="<li class='maxlen'>"+formatMessage(I18N.get("IAM.PORTAL.CONFIRM.MAXIMUM.PASSLEN"),passInfo.maxlen+"")+"</li>";//no i18n
-		}
-	}
-	listvalue+="</ul>";
-	$(".passwordpolicy").html(listvalue);
-}
+
 var I18N = {
 		data : {},
 		load : function(arr) {
@@ -189,71 +168,9 @@ function escapeHTML(value) {
 function euc(i) {
 	return encodeURIComponent(i);
 }
-function showPasswordHint(){
-	if(isppexist){
-		var aspectpp = $("#password")[0].getBoundingClientRect();
-		isMobile ? $(".passwordpolicy").css("top", aspectpp.height+10).css("width",aspectpp.width): $(".passwordpolicy").css("left",aspectpp.width+20).css("width",aspectpp.width - 40);
-		$(".passwordpolicy").show();
-	}
-	return false;
-}
-function hidePasswordHint(){
-	$(".passwordpolicy").hide();
-	return false;
-}
-function validatePasswordPolicy(){
-	var password = $("#password").val();
-	var validatedVariable = 0;
-	if(password.length >= minLen){
-		$(".minlen").css("color","#008000");
-		validatedVariable++;
-	}
-	if(minNumber && Validator.isNumberContains(password)){
-		$(".numberchar").css("color","#008000");
-		validatedVariable++;
-	}
-	if(minSpecialChar && Validator.isSpecialCharecterContains(password)){
-		$(".specialchar").css("color","#008000");
-		validatedVariable++;
-	}
-	if(mixedCase && Validator.isMixedCase(password)){
-		$(".mixedcase").css("color","#008000");
-		validatedVariable++;
-	}
-	if(password.length <= maxLen){
-		$(".maxlen").css("color","#008000");
-		validatedVariable++;
-	}
-	if(password.length < minLen){
-		$(".minlen").css("color","#000");
-	}
-	if(minNumber && !Validator.isNumberContains(password)){
-		$(".numberchar").css("color","#000");
-	}
-	if(minSpecialChar && !Validator.isSpecialCharecterContains(password)){
-		$(".specialchar").css("color","#000");
-	}
-	if(mixedCase && !Validator.isMixedCase(password)){
-		$(".mixedcase").css("color","#000");
-	}
-	if(password.length > maxLen || password.length == 0){
-		$(".maxlen").css("color","#000");
-	}
-	return (validatedVariable == passwordPolicy.length-1) ? enablebutton() : false;
-}
-function enablebutton(){
-	$("#nextbtn").prop("disabled", false);
-	return true;
-}
-function validateFinal(){
-	if($("#nextbtn").prop("disabled")){
-		showPasswordHint();
-	}else{
-		return true;
-	}
-}
 function showHidePassword(id){
 	 var passType = $("#"+id).attr("type");//no i18n
+	 viewpassword++;
 	 if(passType==="password"){
 		 $("#"+id).attr("type","text");//no i18n
 		$("#"+id+"~.show_hide_password").addClass("icon-show");
@@ -264,4 +181,159 @@ function showHidePassword(id){
 	 var fieldval = $("#"+id).val();
 	 $("#"+id).val("").val(fieldval).focus();
 	 return false;
+}
+
+var isfocus = 0;
+var ppValidator;
+var err_rules;
+var viewpassword = 0;
+function validateinit(){ 
+	isfocus=1;
+	ppValidator = validatePasswordPolicy(passwordPolicy);
+	ppValidator.init("input[name=password]");//No I18N
+	$("input[name=password]").attr("onkeyup","check_pp()");
+}
+function check_pp() {
+	ppValidator.validate("input[name=password]");//no i18N
+}
+function checkData(val){
+	return isValid(val) ?  true : false;
+}
+function validatePasswordPolicy(passwordPolicy) {
+	passwordPolicy = passwordPolicy || PasswordPolicy.data;
+	var initCallback = function(id, msg) {
+		var li = document.createElement('li');//No I18N
+        li.setAttribute("id","pp_"+id);//No I18N
+        li.setAttribute("class","pass_policy_rule");//No I18N
+        li.textContent = msg;
+        return li;
+	}
+	var setErrCallback = function(id) {
+		$("#pp_"+id).removeClass('success');//No I18N
+		return id;
+	}
+	return {
+		getErrorMsg: function(value, callback) {
+			if(passwordPolicy) {
+				var isInit = value ?  false : true;
+				value = $('input[name=password]').val();
+	 			value = value || '';
+	 			value = value=='' ? $('input[name=password]').val() : value==undefined ? '' : value;
+	 			callback = callback || setErrCallback;
+	 			var rules = [];
+	 			for(var i=0;i<passwordPolicy.length;i++){
+	 				var passPolicy = passwordPolicy[i];
+	 				rules[i] = checkData(passPolicy.minLength)  ? 'MIN' : checkData(passPolicy.maxLength) ? 'MAX' : checkData(passPolicy.minSplChar) ? 'SPL' : checkData(passPolicy.minNUmChar) ? 'NUM' : (checkData(passPolicy.isEnabled) && passPolicy.ErrorCode == "PP109") ? 'CASE' : checkData(passPolicy.containsLoginName) ? 'SAMELOGIN': "" ;//no i18n
+	 			}
+	 			err_rules = []; 
+	 			var err_msg = []; 
+	 			if(!isInit) {
+	 				$('.pass_policy_rule').addClass('success');//No I18N
+	 			}
+	 			for(var i = 0; i < rules.length; i++) {
+	 				var passPolicy = passwordPolicy[i];
+	 				switch (rules[i]) {
+	 					case 'MIN': //No I18N
+	 						if(value.length<passPolicy.minLength) {
+	 							err_rules.push(callback(rules[i], isInit ? formatMessage(I18N.get("IAM.PORTAL.CONFIRM.MINIMUM.PASSLEN"), passPolicy.minLength.toString()) : undefined));
+	 						}
+	 						break;
+	 					case 'MAX': //No I18N
+	 						if(value.length >= passPolicy.maxLength || (value == "")) {
+	 							err_rules.push(callback(rules[i], isInit ? formatMessage(I18N.get("IAM.PORTAL.CONFIRM.MAXIMUM.PASSLEN"), passPolicy.maxLength.toString()) : undefined));
+	 						}
+	 						break;
+	 					case 'SPL': //No I18N
+	 						if((passPolicy.minSplChar && value=="") ||  (((value.match(new RegExp("[^a-zA-Z0-9]","g")) || []).length) < passPolicy.minSplChar)) {
+	 							err_rules.push(callback(rules[i], isInit ? formatMessage(I18N.get(passPolicy.minSplChar===1 ? "IAM.PASS_POLICY.SPL_SING": "IAM.PASS_POLICY.SPL"),passPolicy.minSplChar.toString()) : undefined));//no i18n
+	 						}
+	 						break;
+	 					case 'NUM': //No I18N
+	 						if((passPolicy.minNUmChar > 0) &&  (((value.match(new RegExp("[0-9]","g")) || []).length) < passPolicy.minNUmChar)){
+	 							err_rules.push(callback(rules[i], isInit ? formatMessage(I18N.get(passPolicy.minNUmChar===1 ? "IAM.PASS_POLICY.NUM_SING" :"IAM.PASS.POLICY.NUM"), passPolicy.minNUmChar.toString()) : undefined));//no i18n
+	 						}
+	 						break;
+	 					case 'CASE': //No I18N
+	 						if(((passPolicy.isEnabled && passPolicy.ErrorCode == "PP109") && !((new RegExp("[A-Z]","g").test(value))&&(new RegExp("[a-z]","g").test(value)))) || value=="") {
+	 							err_rules.push(callback(rules[i], isInit ? I18N.get("IAM.PORTAL.CONFIRM.MINIMUM.MIXEDCASE") : undefined));
+	 						}
+	 						break;
+	 					case 'SAMELOGIN' : //No I18n
+	 						if((passPolicy.containsLoginName && value === "") || value === emailid){
+								 err_rules.push(callback(rules[i], isInit ? I18N.get("IAM.PASSWORD.POLICY.LOGINNAME") : undefined));
+							 }
+	 				}
+	 			}
+				 if(err_rules.length == 0){
+					isfocus = 0;
+ 			    	$('.hover-tool-tip').css('opacity', 0);//No I18N
+ 			    	var offset = document.querySelector('.hover-tool-tip').getBoundingClientRect();//No I18N
+ 		 			$('.hover-tool-tip').css({
+ 		 				top: -offset.height,
+ 		 				left: -(offset.width + 15)
+ 		 			});
+				 }else{
+					var offset = document.querySelector('input[name=password]').getBoundingClientRect();//No I18N 
+ 		 			$('.hover-tool-tip').css({
+ 		 				top: offset.bottom + $(window).scrollTop() + 8,
+ 		 				left: offset.x,
+ 		 				width: offset.width
+ 		 			});
+ 			    	$('.hover-tool-tip').css('opacity', 1);//No I18N
+				 }
+	 			return err_rules.length && err_rules;
+			}
+		},
+		init: function(passInputID) {
+ 			$('.hover-tool-tip').remove();//No I18N
+ 			var tooltip = document.createElement('div');//No I18N
+ 			tooltip.setAttribute("class", "hover-tool-tip no-arrow");//No I18N
+ 			var p = document.createElement('p');//No I18N
+ 			p.textContent = I18N.get("IAM.PASS_POLICY.HEADING");//No I18N
+ 			var ul = document.createElement('ul');//No I18N
+ 			var errList = this.getErrorMsg(undefined, initCallback);
+ 			if(errList) {
+ 				errList.forEach(function(eachLi) {
+	 	 			ul.appendChild(eachLi);
+	 			});
+	 			tooltip.appendChild(p);
+	 			tooltip.appendChild(ul);
+	 			document.querySelector('body').appendChild(tooltip);//No I18N
+	 			if(isfocus){
+	 				var offset = document.querySelector(passInputID).getBoundingClientRect();
+ 		 			$('.hover-tool-tip').css({
+ 		 				top: offset.bottom + $(window).scrollTop() + 8,
+ 		 				left: offset.x,
+ 		 				width: offset.width
+ 		 			});
+ 			    	$('.hover-tool-tip').css('opacity', 1);//No I18N
+	 			}
+	 			$(passInputID).on('focus blur', function(e){//No I18N
+	 			    if(e.type === 'focus' && viewpassword==0) {//No I18N
+	 			    	var offset = document.querySelector(passInputID).getBoundingClientRect();
+	 		 			$('.hover-tool-tip').css({
+	 		 				top: offset.bottom + $(window).scrollTop() + 8,
+	 		 				left: offset.x,
+	 		 				width: offset.width
+	 		 			});
+	 			    	$('.hover-tool-tip').css('opacity', 1);//No I18N
+	 			    } else {
+	 			    	isfocus = 0;
+	 			    	$('.hover-tool-tip').css('opacity', 0);//No I18N
+	 			    	var offset = document.querySelector('.hover-tool-tip').getBoundingClientRect();//No I18N
+	 		 			$('.hover-tool-tip').css({
+	 		 				top: -offset.height,
+	 		 				left: -(offset.width + 15)
+	 		 			});
+	 			    }
+	 			    if(viewpassword!=0){viewpassword = 0;}
+	 			});
+ 			}
+ 		},
+ 		validate: function(passInputID) {
+			var str=$(passInputID).val();
+			this.getErrorMsg(str, setErrCallback);
+ 		}
+ 		
+	}
 }

@@ -1,7 +1,7 @@
 <form name="last_password_container" onsubmit="return false;" novalidate>
 	<div class="searchparent" id="last_password_container">
 		<div class="textbox_div">
-			<input id="last_password" placeholder="<@i18n key="IAM.AC.ENTER.PASSWORD"/>" type="password" name="last_password" class="textbox" required="" onkeypress="clearCommonError('last_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
+			<input id="last_password" placeholder="<@i18n key="IAM.AC.ENTER.PASSWORD"/>" type="password" autocomplete="off" name="last_password" class="textbox" required="" onkeypress="clearCommonError('last_password')" autocapitalize="off" autocorrect="off" tabindex="1" />
 			<span class="icon-hide show_hide_password" onclick="showHidePassword();"></span>
 			<div class="fielderror"></div>						
 		</div>

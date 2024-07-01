@@ -7,7 +7,7 @@
 	   	<form name="photo" method="post" id="photo_cropform" enctype="multipart/form-data" target="dummy" onSubmit="return false;">
 	   		
 			<div class="hide">
-				<input type="file" accept="image/x-png,image/gif,image/jpeg" name="picture" id="picsrc">
+				<input type="file" accept="image/png,image/gif,image/jpeg" name="picture" id="picsrc">
 				<input type="text" name ="zform_field_transform" id="transform_value"/>
 			</div>
 	   		
@@ -55,12 +55,12 @@
 					           <input id="t" data-validate="zform_field" type="hidden" name="t_value">
 					           <input id="ot" data-validate="zform_field" type="hidden" name="ot_value">   
 				<div class="dp_popup_btns">
-					<button class="btn inline_btn savepic"  onclick="Usercrop(this.form);"><@i18n key="IAM.PHOTO.DONE"/> </button>
+					<button class="btn inline_btn savepic"  onclick="Usercrop(this.form);"><@i18n key="IAM.UPDATE"/> </button>
 					<button class="btn inline_btn grey_btn dp_close" onclick="close_dp_popup();"><@i18n key="IAM.CANCEL"/> </button>
 				</div>
 					
 			</div>
 		</form>
 	</body>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/photo.js")}" type="text/javascript"></script> 
+    <@resource path="/v2/components/js/photo.js" /> 
 </html>

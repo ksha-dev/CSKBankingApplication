@@ -24,8 +24,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
-String dc = DeploymentSpecificConfiguration.getDeployment();
-dc = dc.equals("DEP") ? "" : (dc + " - ");
+String dc = DeploymentSpecificConfiguration.getDeployment() + " - ";
 %>
 <title><%=dc%>R/C Stats</title> <%--NO I18N--%>
 <style>
@@ -156,7 +155,6 @@ td, th{
 					<select id='dcInfo' class="selectstyle" onchange="refresh()">
 				<%
 					String deployment = DeploymentSpecificConfiguration.getDeployment();
-					deployment = deployment.equals("DEP") ? "LZ" : deployment;// NO I18N
 					for(DeploymentSpecificConfiguration.DEPLOYMENTS dep : DeploymentSpecificConfiguration.DEPLOYMENTS.values()) {
 						if(!dep.name().equals("DEFAULT")){
 					%>  
@@ -206,7 +204,7 @@ function removeDuplicates(){
 	    if (this.id in presentIds) {
 	    	if($(presentIds[this.id]).find("#pname").length>0&&$(this).find("#pname").length>0){//No I18N
 	    	   	if($(presentIds[this.id]).find("#pname").text().indexOf($(this).find("#pname").text())==-1){//No I18N
-	    			$(presentIds[this.id]).find("#pname").append("<br/>"+$(this).find("#pname").text());//No I18N
+	    			$(presentIds[this.id]).find("#pname").append("<br/><br/>"+$(this).find("#pname").text());//No I18N
 	       		}
 	    	}
 	    	$(this).remove();
@@ -270,6 +268,7 @@ function openTab(evt, obj) {
 				fetchTabData();
 				evt.target.className += " fetch";//No i18N
 			}
+			removeDuplicates();
 		}
 	}
 	

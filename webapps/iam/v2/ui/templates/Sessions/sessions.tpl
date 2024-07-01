@@ -3,13 +3,7 @@
 	<div id="useractivesessionstab_space" class="tetraSlideParent" onclick="clicked_tab('sessions', 'useractivesessions')">
 		<#include "${location}/Sessions/user-sessions.tpl">
 	</div>
-	
-	<#if show_active_authtokens>
-	<div id="userauthtoken_space" onclick="clicked_tab('sessions', 'userauthtoken')" >
-		<#include "${location}/Sessions/api-tokens.tpl">
-	</div>
-	</#if>
-	
+
 	<#if show_active_history>
 		<div id="useractivityhistory_space" onclick="clicked_tab('sessions', 'useractivityhistory')">
 			<#include "${location}/Sessions/login-history.tpl">

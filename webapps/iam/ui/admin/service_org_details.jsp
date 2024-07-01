@@ -1,3 +1,4 @@
+<%-- $Id: $ --%>
 <%@page import="com.zoho.accounts.internal.util.AccountsInternalConst.OrgTypeDetail"%>
 <%@page import="com.zoho.accounts.AccountsConstants.OrgType"%>
 <%@page import="com.zoho.sas.util.GridUtil"%>
@@ -91,7 +92,7 @@
 							</tr>
 							<tr>
 								<td align="right">Admin Password :</td> <%--No I18N--%>
-								<td><input type="password" class="input" name="pwd" /></td>
+								<td><input type="password" autocomplete="off" class="input" name="pwd" /></td>
 							</tr>
 						</table>
 						<div class="mrpBtn">
@@ -109,7 +110,7 @@
 							</tr>
 							<tr>
 								<td align="right">Admin Password :</td> <%--No I18N--%>
-								<td><input type="password" class="input" name="pwd" /></td>
+								<td><input type="password" autocomplete="off" class="input" name="pwd" /></td>
 							</tr>
 						</table>
 						<div class="mrpBtn">

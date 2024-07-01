@@ -3,9 +3,11 @@
 <html>
 	<head>
 		<title><@i18n key="IAM.GRPINVITATION.TITLE" /></title>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/accountUnauthStyle.css")}" rel="stylesheet"type="text/css" />
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/accountUnauthStyle.css" />
 		<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<script src="${SCL.getStaticFilePath("/v2/components/js/security.js")}"></script>
 		
 		<script>
 				function logout_olduser(link)
@@ -51,19 +53,21 @@
 	<head>
 		<title><@i18n key="IAM.GRPINVITATION.TITLE" /></title>
 		
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-		<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script> 
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/accountUnauthStyle.css")}" rel="stylesheet"type="text/css" />
-		<script src="${SCL.getStaticFilePath("/v2/components/js/invitation.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet"type="text/css">
+		<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+		<@resource path="/v2/components/js/zresource.js" /> 
+		<@resource path="/v2/components/js/uri.js" /> 
+    	<@resource path="/v2/components/tp_pkg/select2.full.min.js" />
+		<@resource path="/v2/components/js/common_unauth.js" />
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/accountUnauthStyle.css" />
+		<@resource path="/v2/components/js/invitation.js" />
+		<@resource path="/v2/components/js/uvselect.js" />
+		<@resource path="/v2/components/css/uvselect.css" />
+		<@resource path="/v2/components/js/flagIcons.js" />
+		<@resource path="/v2/components/css/flagIcons.css" />
+		<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+		<@resource path="/v2/components/js/security.js" />
 		
 		<script type="text/javascript">
 		
@@ -86,6 +90,8 @@
 			}
 			var isMobile = ${is_mobile?c};
 			var expiryTime = "${expiry_time}";
+			var ipCountry = "${ip_country}";
+			var ipCountryState = "${userState}";
 			I18N.load({
 				"IAM.ERROR.ENTER_PASS" : '<@i18n key="IAM.ERROR.ENTER_PASS" />',
 				"IAM.ERROR.ENTER.NEW.PASSWORD" : '<@i18n key="IAM.ERROR.ENTER.NEW.PASSWORD" />',
@@ -109,7 +115,8 @@
 				"IAM.SEARCHING":'<@i18n key="IAM.SEARCHING" />',
 				"IAM.NO.RESULT.FOUND":'<@i18n key="IAM.NO.RESULT.FOUND" />',
 				"IAM.HOME.LINK":'<@i18n key="IAM.HOME.LINK" />',
-				"IAM.GROUPINVITATION.GO.TO":'<@i18n key="IAM.GROUPINVITATION.GO.TO" />'
+				"IAM.GROUPINVITATION.GO.TO":'<@i18n key="IAM.GROUPINVITATION.GO.TO" />',
+				"IAM.NEW.SIGNUP.FIRSTNAME.VALID" : '<@i18n key="IAM.NEW.SIGNUP.FIRSTNAME.VALID" />'
 			});
     		var iam_search_text = I18N.get("IAM.SEARCHING");
     		var iam_no_result_found_text = I18N.get("IAM.NO.RESULT.FOUND");
@@ -117,7 +124,8 @@
 				if(signupRequired) {
 					$("#localeCn").uvselect({
     					"country-flag" : true,
-    					"width" : "260px"
+    					"width" : "260px",
+    					"theme" : "group-invite-select"
     				});
 					check_news_letter_check();
 				}
@@ -128,10 +136,10 @@
 	<body>
 		<#assign tos_link><@i18n key="IAM.LINK.TOS" /></#assign> <#assign privacy_link><@i18n key="IAM.LINK.PRIVACY" /></#assign>
 		<div class="blur"></div>
-		<div id="error_space_id" class="error_space">
-			<span class="error_icon">!</span>
-			<span class="top_msg"></span>
-		</div>
+		
+		<#include "${location}/Unauth/invitation_errorToast.tpl">
+			
+			
 		<div class="result_popup_box hide">
 			<div class="zoho_logo_new"></div>
 			<div class="result_popup hide" id="result_popup_accepted">
@@ -199,11 +207,7 @@
 									<input name="password" maxlength="250" onkeyup="check_pp('${passwordPolicy.mixed_case?c}','${passwordPolicy.min_spl_chars}','${passwordPolicy.min_numeric_chars}','${passwordPolicy.min_length}')" type="password" class="group-input-field" tabindex="1" id="signup_pass" autocomplete="off" onkeypress="err_remove()" required="" placeholder='<@i18n key="IAM.NEW.SIGNIN.PASSWORD" />'/>
 									<span class="pass_icon pass_hide" onclick="togglePassHide(this,'signup_pass')"></span>
 								</div>
-								<div class="group-input-field_box" id="pass_confirm_field">
-	    							<label class="group-input-label" for="pass_confirm_name" class=""><@i18n key="IAM.CONFIRM.PASS" /></label>
-									<input name="con_password" maxlength="250" type="password" class="group-input-field" tabindex="1" id="pass_confirm_name" onkeyup="validateConfirmPassword('#signup_pass')" autocomplete="off" onkeypress="err_remove()" required="" placeholder='<@i18n key="IAM.NEW.SIGNIN.PASSWORD" />'/>
-									<span class="pass_icon pass_hide" onclick="togglePassHide(this,'pass_confirm_name')"></span>
-								</div>
+								<div class="group-input-field_box" style="margin: 0px;"></div>
 								<div class="group-input-field_box" id="country_name_field">
 	    							<label class="group-input-label" for="" class=""><@i18n key="IAM.COUNTRY" /></label>
 	    							<select class="group-input-field" autocomplete='country-name' name="country" id="localeCn" onchange="check_for_state()" embed-icon-class="flagIcons" searchable="true" placeholder="<@i18n key="IAM.SEARCHING"/>">
@@ -214,7 +218,7 @@
 	    						</div>
 	    						<div class="group-input-field_box" id="state_name_field" style="display: none;">
 	    							<label class="group-input-label" for="" class=""><@i18n key="IAM.GDPR.DPA.ADDRESS.STATE" /></label>
-	    							<select class="profile_mode" autocomplete='country-state-name' name="country_state" id="locale-state" searchable="true">
+	    							<select class="group-input-field" autocomplete='country-state-name' name="country_state" id="locale-state" searchable="true">
 											<option id="default" disabled selected><@i18n key="IAM.US.STATE.SELECT" /></option>
 									</select>
 	    						</div>
@@ -223,8 +227,11 @@
 									<input type="checkbox" onclick="err_remove()" class="trust_check" id="news_letter" name="news_letter"/>
 									<span class="auth_checkbox">
 										<span class="checkbox_tick"></span>
-									</span> 
-									<label for="news_letter"><@i18n key="IAM.USERPREFERENCE.NEWSLETTER.SUBSCRIBE" /></label>
+									</span>
+									<#assign corp_link>
+										<@i18n key="IAM.ZOHOCORP.LINK"/>
+									</#assign>
+									<label for="news_letter"><@i18n key="IAM.TPL.ZOHO.NEWSLETTER.SUBSCRIBE1" arg0="${corp_link}" /></label>
 							</div>
     						<div class="authorize_check">
     							<div class="term-of-service">
@@ -297,6 +304,9 @@
 					groupIconText+= groupNameSplit[0][1];
 				}
 				$(".group-icon_text").html(groupIconText.toUpperCase());
+				if(ipCountry){
+					$("#localeCn").val(ipCountry.toUpperCase()).trigger("change");
+				}
 			}catch(e){}
 		}
 		var NewsLetterSubscriptionMode = {};
@@ -306,7 +316,8 @@
 		<#if CountryStates?has_content>
 				var states_details = ${CountryStates};
 					$("#locale-state").uvselect({
-						"width" : "260px"
+						"width" : "260px",
+						"theme" : "group-invite-select"
 					});
 			</#if>
 		function check_for_state()
@@ -318,6 +329,9 @@
 				  $("#state_name_field").show();
 				  $("#locale-state").html(($("#locale-state").html()+states_details[$("#localeCn").val().toLowerCase().trim()]));
 				  $("#locale-state").uvselect();
+				  if(ipCountryState && ipCountry.toUpperCase() === $("#localeCn").val().toUpperCase()){
+					  $("#locale-state").val(ipCountryState).trigger("change");
+				  }
 			}
 			else
 			{

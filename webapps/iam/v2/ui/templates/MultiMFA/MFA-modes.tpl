@@ -25,8 +25,8 @@
 				"IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.GENERATED.CODE" />',
 				"IAM.GENERATE.ON" : '<@i18n key="IAM.GENERATE.ON" />',
 				"IAM.MFA.BACKUPCODE.FILE.HELP.LINK" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.HELP.LINK" />',
-				"IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" arg0="${accountRecoveryHelpLink}"/>',
-				"IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" arg0="${newBackupCodeHelpLink}"/>',
+				"IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.RECOVERY.HELP.LINK" arg0="https://zurl.to/ac_bvc_howtorecover"/>',
+				"IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.NEW.CODE.HELP.LINK" arg0="https://zurl.to/ac_bvc_howtogenerate"/>',
 				"IAM.CONFIRM.POPUP.DELETE.MFA.NUMBER" : '<@i18n key="IAM.CONFIRM.POPUP.DELETE.MFA.NUMBER"/>',
 				"IAM.CONFIRM.POPUP.DELETE.ONEAUTH" : '<@i18n key="IAM.CONFIRM.POPUP.DELETE.ONEAUTH"/>',
 				"IAM.MFA.BACKUPCODE.FILE.TEXT" : '<@i18n key="IAM.MFA.BACKUPCODE.FILE.TEXT"/>',
@@ -70,7 +70,6 @@
 				
 				<div id="mfa_options" class="mfa_options">
 					
-					<#if canSetup_mfa_device>
 					<!-- One auth mode --> 
 					
 					<div class="option_grid" id="mfa_oneauth_mode">
@@ -125,7 +124,6 @@
 							</div>
 					
 					</div>
-					</#if>
 				
 					<!-- SMS mode -->
 				
@@ -481,6 +479,7 @@
 	    	</div>
 -->
 	    	<div id="tfa_new_tobackup" class="profile_popup_body hide">
+	    		<div id="tfa-mobile-captcha"></div>
 				<form id="newphone" onsubmit="return false;">
 				<span class="popuphead_define"><@i18n key="IAM.MFA.ADD.MOBILE.NUMBER" /></span>
 					<div class="field full noindent" id="select_phonenumber">
@@ -621,7 +620,7 @@
 				</div>								
 			</div>
 		
-		<div class="msg-popups" style="display: none" tabindex="1" onkeydown="escape(event)">
+		<div class="msg-popups pp_popup" style="display: none" tabindex="1" onkeydown="escape(event)">
       			<div class="popup-header">
         			<div class="popup-icon icon-success"></div>
         			<div class="popup-heading"></div>

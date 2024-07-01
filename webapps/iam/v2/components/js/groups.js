@@ -1,6 +1,7 @@
 //$Id$
 var frequented_contacts=[];
 var new_group_with_dp = false;
+var groupDescSpecialCharsNotAllowed = '~`#%^&*()=+[]{}|\\;\"<>';
 
 
 function get_groupFrom_GID(G_id)
@@ -64,13 +65,9 @@ function load_groups()
 			  $("#"+current_grp.group_id+" #unsuscribe_group").show();
 			  $("#"+current_grp.group_id+" #unsuscribe_group").attr("onclick","unsubscribe('"+current_grp.group_id+"')");
 		  }
-		  $("#"+current_grp.group_id+" .group_dp .bg_blur_grp").css("background","url('"+current_grp.group_photo_url+"&t=group') no-repeat transparent");
-		  $("#"+current_grp.group_id+" .group_dp .profile_picture").attr("src",current_grp.group_photo_url+"&t=group");
-		  var im_width = $("#"+current_grp.group_id+" .group_dp .profile_picture")[0].width;
-		  var im_height = $("#"+current_grp.group_id+" .group_dp .profile_picture")[0].height;
-		  checkHeightWidth(im_width,im_height,"#"+current_grp.group_id+" .group_dp");
+		  setPhotoUrlWithCache($("#"+current_grp.group_id+" .group_dp"),current_grp.group_photo_url);
 		  $("#"+current_grp.group_id+" .group_name").html(current_grp.group_name);
-		  $("#"+current_grp.group_id+" .group_members span").html(current_grp.group_strength);
+		  $("#"+current_grp.group_id+" .group_members").html(current_grp.group_strength+" "+(current_grp.group_strength>1?i18nGroupkeys["IAM.GROUP.MEMBERS"]:i18nGroupkeys["IAM.GROUP.MEMBER"]));
 		  var members=Object.keys(current_grp.group_members);
 		  
 		  if(current_grp.group_strength==1)
@@ -218,7 +215,7 @@ function close_group_info_display_space()
 {
 	remove_error();
 	$("#grp_info_side #edit_grp_dp").unbind();
-	swicth_to_accepted();
+	swicth_to_accepted(true);
     $('#grp_info_side').animate({right:"-50%"},300,function(){
     	$('#grp_info_side').hide();
     	$("#group_info_div .profile_picture").attr("src","");
@@ -228,7 +225,7 @@ function close_group_info_display_space()
     	});
     });
 	$(".blur").css("opacity","0");
-	if($(".grp_info_side").is(":visible"))
+	if($("#group_action_div").is(":visible"))
 	{
 		$("#group_action_div").slideUp(200,function(){
 			search_areaHeight();
@@ -263,9 +260,10 @@ function group_operation(action, id, e)
 		}
 		// $('#grp_info_side').show('slide',{direction: 'right'});
 		$('#grp_info_side').show(0,function(){
-			$('#grp_info_side').animate({right: "0px"},300);
+			$('#grp_info_side').animate({right: "0px"},300, function(){search_areaHeight();});
 			popup_blurHandler('6');
 		});
+		$("#group_info_div img").removeClass("no-group-photo");
 		group_info_show(iter);
 		assignHash('groups', action+"?"+id);
 		$("#grp_info_side").focus();
@@ -276,11 +274,12 @@ function group_operation(action, id, e)
 		closePopup(close_group_info_display_space,"grp_info_side");//No I18N
 		$(".grp_info_side").removeClass("grp_info_back");
 		$("#grp_info_side #edit_grp_dp").attr("onclick","");
+		$("#grp_info_side .drop-down-container").hide();
+		$("#grp_info_side #edit_grp_dp").attr("onclick","handleGrpPhotoDropDown("+id+");");
 		if($("#"+id+" .as_admin").length>0)//check if the current user is an admin of this account using the star
 		{
-			$("#grp_info_side #edit_grp_dp").attr("onclick","openUploadPhoto('group','"+id+"');");
+			$("#grp_info_side .upload-group-photo").attr("onclick","openUploadPhoto('group','"+id+"');");
 		}
-		search_areaHeight();
 		 return;
 	}
 	
@@ -306,9 +305,6 @@ function group_operation(action, id, e)
 			$("#grp_popup").addClass("pop_anim");
 		});
 		$("#grp_popup  .profile_picture").removeAttr("style");
-		var im_width = $("#grp_popup  .profile_picture")[0].width;
-		var im_height = $("#grp_popup  .profile_picture")[0].height;
-		checkHeightWidth(im_width,im_height,"#grp_popup .group_dp"); //No I18N
 		assignHash("groups",action);//No I18N
 		$("#create_grp_name").focus();
 		closePopup(close_edit_grp_popup,"grp_popup");//No I18N
@@ -331,7 +327,7 @@ function group_operation(action, id, e)
 			group_edit_info(id);
 			assignHash('groups', action+"?"+id);
 			$(".textbox:first").focus();
-			$("#grp_popup #edit_grp_dp").attr("onclick","openUploadPhoto('group','"+id+"');");
+			$("#grp_popup #edit_grp_dp").attr("onclick","handleGrpPhotoDropDown("+id+")");
 			closePopup(close_edit_grp_popup,"grp_popup");//No I18N
 		}
 		else 
@@ -482,71 +478,28 @@ function display_popup_with_conatcts()
 	{
 		$("#group_action_div").slideDown(300,function(){
 			search_areaHeight();
+			if($("#grp_info_side #invite_more_member").hasClass("inputSelect")){
+				$("#grp_info_side #invite_more_member~.uvselect .selectbox").focus();
+			}
+			else{			
+				$("#grp_info_side #invite_more_member").focus();
+			}
 		});
-		if($("#grp_info_side #invite_more_member").hasClass("inputSelect")){
-			$("#grp_info_side #invite_more_member~.select2 .select2-selection").focus();
-		}
-		else{			
-			$("#grp_info_side #invite_more_member").focus();
-		}
 	}
 	else
 	{
 		$("#grp_popup").show(0,function(){
 			$("#grp_popup").addClass("pop_anim");
 			setHeightGrpPopup();
+			if($("#grp_popup #invite_more_member").hasClass("inputSelect")){
+				$("#grp_popup #invite_more_member~.uvselect .selectbox").focus();
+			}
+			else{			
+				$("#grp_popup #invite_more_member").focus();
+			}
 		});
-		if($("#grp_popup #invite_more_member").hasClass("inputSelect")){
-			$("#grp_popup #invite_more_member~.select2 .select2-selection").focus();
-		}
-		else{			
-			$("#grp_popup #invite_more_member").focus();
-		}
 	}
 }
-	
-//search for the minium length attribute in the remopte loading select 2 ajax call and displays the default values if not staisfied
-$.fn.select2.amd.define('select2/data/extended-ajax',['./ajax', './tags', '../utils', 'module', 'jquery'], function(AjaxAdapter, Tags, Utils, module, $) //No I18N
-	    {
-	  		function ExtendedAjaxAdapter ($element,options) 
-			{
-			    //we need explicitly process minimumInputLength value 
-			    //to decide should we use AjaxAdapter or return defaultResults,
-			    //so it is impossible to use MinimumLength decorator here
-			    this.minimumInputLength = options.get('minimumInputLength');
-			    this.defaultResults     = options.get('defaultResults');
-
-			    ExtendedAjaxAdapter.__super__.constructor.call(this,$element,options);
-			}
-
-	 		Utils.Extend(ExtendedAjaxAdapter,AjaxAdapter);
-	  
-	  		//override original query function to support default results
-	  		var originQuery = AjaxAdapter.prototype.query;
-
-	  		ExtendedAjaxAdapter.prototype.query = function (params, callback) 
-	  		{
-	    		var defaultResults = (typeof this.defaultResults == 'function') ? this.defaultResults.call(this) : this.defaultResults;//No I18N
-	    		if (defaultResults && defaultResults.length && (!params.term || params.term.length < this.minimumInputLength)) 
-	    		{
-	      			var processedResults = this.processResults(defaultResults,params.term);
-	      			callback(processedResults);
-	    		} 
-	    		else 
-	    		{
-	      			originQuery.call(this, params, callback);
-	    		}
-	  		};
-
-	  		if (module.config().tags) 
-	  		{
-	    		return Utils.Decorate(ExtendedAjaxAdapter, Tags);
-	  		} 
-	  		else 
-	  		{
-	    		return ExtendedAjaxAdapter;
-	  		}	
-		});
 
 function change_conatcts_ele(id,contacts_success){
 	var id_ele = id=="select_member_email" ? "#grp_popup #create_grp_members":"#invitegrp";//No I18N
@@ -633,78 +586,6 @@ function call_othercontacts_search(id)
 		  templateResult: formatRepo,
 		  templateSelection: formatRepoSelection
 	});
-	/*$('#'+id).select2(
-	{
-		 width:"100%",//No I18N
-		 multiple:true,
-		 dataAdapter: $.fn.select2.amd.require('select2/data/extended-ajax'),//No I18N
- 		 defaultResults: frequented_contacts,
-		 minimumInputLength: 3,
-
-		 ajax: 
-		 {
-		    url: "/webclient/v1/account/self/user/self/contacts",//No I18N
-		    dataType: 'json',//No I18N
-		    delay: 150,
-		    data: function (params) 
-		    {
-		      return {
-		        q: params.term, // search term
-		        page: params.page||1,
-		        per_page: 30
-		      };
-		    },
-		    processResults: function (data, params) 
-		    {
-		    	if(data.contacts) 
-		    	{
-		    		results = data.contacts;
-		    	}
-		    	else if(data!=undefined && data.status_code==404)
-		    	{
-		    		var mailid=$("#"+id).siblings(".select2").find(".select2-search__field").val();
-		    		if(isEmailId( mailid ))
-		    		{
-		    			var serach=[{id:mailid}]
-			    		results=serach;
-		    		}
-		    		else
-		    		{
-		    			var serach=[{text:formatMessage(grp_error_email_invite,mailid)}]
-			    		results=serach;
-		    		}
-		    		
-		    	}
-		    	else if(data!=undefined)
-		    	{
-		    		results=data;
-		    	}
-		    	if(params!=undefined)
-			    {
-			       params.page = params.page;
-			    }
-			    else
-			    {
-			    	temp=[];temp.page=1;
-			      	params=temp;
-			    }
-		      return {
-		        results: results,
-		        pagination: 
-		        {
-		          more: data.has_more
-		        }
-		      };
-		    },
-		    cache: true
-		  },
-		  placeholder: grp_contacts_search,
-		  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-		  templateResult: formatRepo,
-		  templateSelection: formatRepoSelection
-	});
-	$("#"+id).siblings(".select2").find(".select2-search__field").attr("type","text");*/
-
 }
 
 //
@@ -745,12 +626,14 @@ function formatRepo (repo)
 	{
 		if(repo.id	&&	isEmailId( repo.id ))
 		{
-			if(Object.keys(groups_data[get_groupFrom_GID(gid)].group_members).indexOf(repo.id)!=-1)
+			if(!isEmpty(gid) 	&&	Object.keys(groups_data[get_groupFrom_GID(gid)].group_members).indexOf(decodeHTML(repo.id))!=-1)
 			{
 				markup= formatMessage(i18nGroupkeys["IAM.GROUP.EXISTING.MEMBERINVITE.SELECTED"],repo.id);
 			}
-			markup = "<div value='"+ repo.id +"'>" + formatMessage(grp_new_user_invite,repo.id) + "</div>";
-					
+			else
+			{
+				markup = "<div value='"+ repo.id +"'>" + formatMessage(grp_new_user_invite,repo.id) + "</div>";
+			}		
 		}
 		else
 		{
@@ -765,7 +648,7 @@ function formatRepoSelection (repo)
 {
 	remove_error();
 	var gid=$('#invitegrp').find('input[name="gid"]').val();//No I18N
-	if(	gid!=""	&&	(Object.keys(groups_data[get_groupFrom_GID(gid)].group_members).indexOf(repo.id)!=-1))
+	if(	gid!=""	&&	(Object.keys(groups_data[get_groupFrom_GID(gid)].group_members).indexOf(decodeHTML(repo.id))!=-1))
 	{
 		$(".contacts_place").append( '<div class="field_error">'+formatMessage(i18nGroupkeys["IAM.GROUP.EXISTING.MEMBERINVITE.SELECTED"], repo.id)+'</div>' );
 		return false;
@@ -808,11 +691,22 @@ function validateGroupInvite()
 		$("#create_grp_name").focus();
 		 return false;
 	}
+	else if(hasEmoji(gname))
+	{
+		$("#create_grp_name").parent().append( '<div class="field_error">'+i18nGroupkeys["IAM.GROUP.ERROR.GROUPNAME.VALID"]+'</div>' );
+		$("#create_grp_name").focus();
+		 return false;
+	}
     else if(gname.length > 100) 
     {
     	$("#create_grp_name").parent().append( '<div class="field_error">'+err_groupname_maxlen+'</div>' );
         return false;
     }
+    else if(containsHtmlEntities(gdescription)){
+    	$("#create_grp_desc").parent().append( '<div class="field_error">'+formatMessage(i18nGroupkeys["IAM.GROUP.DESCRIPTION.SYMBOL.ERROR"],groupDescSpecialCharsNotAllowed.split("").join(" "))+'</div>' );
+    	$("#create_grp_desc").focus();
+        return false;
+	}
     else if(gdescription.length > 200) 
     {
     	$("#create_grp_desc").parent().append( '<div class="field_error">'+err_groupdesc_maxlen+'</div>' );
@@ -849,7 +743,6 @@ function validateGroupInvite()
 
 function createGrp(f) 
 {
-	remove_error();
 	if(!validateGroupInvite())
 	{
 		return false;
@@ -914,11 +807,16 @@ function createGrp(f)
         	//showErrorMessage(formatMessage(err_invalid_email, str[i]));
         	$(f.grpmembers).parent().append( '<div class="field_error">'+formatMessage(err_invalid_email, str[i])+'</div>' );
             f.grpmembers.focus();
-            var objDiv = document.getElementById("create_grp");
-            objDiv.scrollTop = objDiv.scrollHeight;
+            handleScrollHeight("create_grp"); //No I18N
             removeButtonDisable(f);
             return false;
         }
+        if(str[i].length > 100){
+			$(f.grpmembers).parent().append( '<div class="field_error">'+formatMessage(i18nGroupkeys["IAM.GROUP.EMAIL.MAX.LENGTH"], str[i])+'</div>' );
+			f.grpmembers.focus();
+            handleScrollHeight("create_grp"); //No I18N
+			return false;
+		}
         if(trimmedEmails.indexOf(str[i])==-1)//to prevent same emails from adding again
         {
 			trimmedEmails.push(str[i]);
@@ -981,13 +879,12 @@ function group_edit_info(G_id)
 		showErrorMessage(incorret_GID);
 		close_edit_grp_popup();
 	}
-	$("#grp_popup #edit_grp_dp .profile_picture").attr("src",needed_grp.group_photo_url+"&t=group");//No I18N
-	$("#grp_popup #edit_grp_dp .bg_blur_grp").css("background","url('"+needed_grp.group_photo_url+"&t=group') no-repeat transparent");//No I18N
-	$("#grp_popup #edit_grp_dp .profile_picture").removeAttr("style");
-	var im_width = $("#grp_popup #edit_grp_dp .profile_picture")[0].width;
-	var im_height = $("#grp_popup #edit_grp_dp .profile_picture")[0].height;
-	checkHeightWidth(im_width,im_height,"#grp_popup #edit_grp_dp");//No I18N
-	$("#grp_popup .profile_options").attr("onclick","openUploadPhoto('group')");
+	$("#grp_popup #edit_grp_dp .profile_picture").removeClass("no-group-photo");
+	setPhotoUrl($("#grp_popup #edit_grp_dp"),G_id);
+	$("#grp_popup .profile_options").attr("onclick","handleGrpPhotoDropDown("+G_id+")");
+	$("#grp_popup .view-group-photo").attr("onclick", "handleGroupPhotoView('"+$("#grp_popup #edit_grp_dp .profile_picture").attr("src")+"')");
+	$("#grp_popup .delete-group-photo").attr("onclick", "deleteGroupPhoto('"+G_id+"' ,"+iter+")");
+	$("#grp_popup .upload-group-photo").attr("onclick","openUploadPhoto('group','"+G_id+"');");
 	
 	$("#grp_popup #grpdetails").find("input[name='gid']").val(G_id);
 	$("#grp_popup #grpdetails").find("input[name='grpname']").val(decodeHTML(needed_grp.group_name));
@@ -1002,10 +899,14 @@ function edit_group_info(f)
 	var gid=$('#'+f.id).find('input[name="gid"]').val();//No I18N
 	var Gname=$('#'+f.id).find('input[name="grpname"]').val().trim();//No I18N
 	var Gdesc=$('#'+f.id).find('textarea[name="grpdesc"]').val().trim();//No I18N
-	
 	if(isEmpty(Gname))
 	{
 		$('#'+f.id).find('input[name="grpname"]').parent().append( '<div class="field_error">'+err_groupname_empty+'</div>' );
+		 return false;
+	}
+	else if(hasEmoji(Gname))
+	{
+		$('#'+f.id).find('input[name="grpname"]').parent().append( '<div class="field_error">'+i18nGroupkeys["IAM.GROUP.ERROR.GROUPNAME.VALID"]+'</div>' );
 		 return false;
 	}
     else if(Gname.length > 100) 
@@ -1013,6 +914,11 @@ function edit_group_info(f)
     	$('#'+f.id).find('input[name="grpname"]').parent().append( '<div class="field_error">'+err_groupname_maxlen+'</div>' );
         return false;
     }
+    else if(containsHtmlEntities(Gdesc)){
+		$('#'+f.id).find('textarea[name="grpdesc"]').parent().append( '<div class="field_error">'+formatMessage(i18nGroupkeys["IAM.GROUP.DESCRIPTION.SYMBOL.ERROR"],groupDescSpecialCharsNotAllowed.split("").join(" "))+'</div>' );
+    	$('#'+f.id).find('textarea[name="grpdesc"]').focus();
+    	return false;
+	}
     else if(Gdesc.length > 200) 
     {
     	$('#'+f.id).find('textarea[name="grpdesc"]').parent().append( '<div class="field_error">'+err_groupdesc_maxlen+'</div>' );
@@ -1149,17 +1055,22 @@ function Invitefriends(f)
             {
             	$(f.grpmembers).parent().append( '<div class="field_error"></div>' );
             	$(f.grpmembers).parent().children(".field_error").text(escapeInput(formatMessage(err_invalid_email, str[i])));
-            	var objDiv = document.getElementById("invitegrp");
-                objDiv.scrollTop = objDiv.scrollHeight;
+            	handleScrollHeight("invitegrp"); //No I18N
                 f.grpmembers.focus();
                 return false;
             }
+            if(str[i].length > 100){
+				$(f.grpmembers).parent().append( '<div class="field_error">'+formatMessage(i18nGroupkeys["IAM.GROUP.EMAIL.MAX.LENGTH"], str[i])+'</div>' );
+                f.grpmembers.focus();
+                handleScrollHeight("invitegrp"); //No I18N
+                return false;
+			}
             if(trimmedEmails.indexOf(str[i])==-1)//to prevent same emails from adding again
 	        {
 				trimmedEmails.push(str[i]);
 			}
         }
-        if(intersection.length>0)
+        if(intersection.length>0	&&	!$('#invite_more_member').is('input, select')	)
         {
         	if(intersection.length == 1) 
          	{
@@ -1344,7 +1255,9 @@ function deleteMember(gid, memberEmail, event)
         								var iter=get_groupFrom_GID(gid);
         								delete groups_data[iter].group_members[memberEmail]
         								var num=--groups_data[iter].group_strength;
-        								$("#"+gid+" .group_members span").html(num);
+        								$("#"+current_grp.group_id+" .group_members").html(current_grp.group_strength+" "+(current_grp.group_strength>1?i18nGroupkeys["IAM.GROUP.MEMBERS"]:i18nGroupkeys["IAM.GROUP.MEMBER"]));
+
+        								$("#"+gid+" .group_members").html(num+" "+(num>1?i18nGroupkeys["IAM.GROUP.MEMBERS"]:i18nGroupkeys["IAM.GROUP.MEMBER"]));
         								group_operation('groupinfo',gid);	
         							},
         							function(resp)
@@ -1460,15 +1373,11 @@ function goto_grps_notfication(zgid)
 function group_info_show(iter)
 {
 	var needed_grp=groups_data[iter];
-	$("#group_info_div #edit_grp_dp img").attr("src",needed_grp.group_photo_url+"&t=group");//No I18N
-	$("#group_info_div #edit_grp_dp .bg_blur_grp").css("background","url('"+needed_grp.group_photo_url+"&t=group')");
-	$("#group_info_div #edit_grp_dp img").removeAttr("style");
-	var im_width = $("#group_info_div #edit_grp_dp .profile_picture")[0].width;
-	var im_height = $("#group_info_div #edit_grp_dp .profile_picture")[0].height;
-	checkHeightWidth(im_width,im_height,"#group_info_div #edit_grp_dp");//No I18N
+	setPhotoUrl($("#group_info_div #edit_grp_dp"),needed_grp.group_id);
 	$("#group_info_div .info_group_name").text(decodeHTML(needed_grp.group_name));
 	$("#group_info_div .info_group_discription").text(decodeHTML(needed_grp.group_description));
-	
+	$("#group_info_div .view-group-photo").attr("onclick", "handleGroupPhotoView('"+$("#group_info_div #edit_grp_dp .profile_picture").attr("src")+"')");
+	$("#group_info_div .delete-group-photo").attr("onclick", "deleteGroupPhoto('"+needed_grp.group_id+"' ,"+iter+")");
 	if(needed_grp.is_moderator)
 	{
 		$("#permission_infotab").show();
@@ -1830,7 +1739,7 @@ function reinviteUser(gid, u_mailid, isExistUser)
 
 
 
-function swicth_to_accepted()
+function swicth_to_accepted(ignore_check_height)
 {
 	 $(".acceptedtab").css("font-weight","500");
 	 $(".pendingtab").css("font-weight","400");
@@ -1838,9 +1747,13 @@ function swicth_to_accepted()
 	
 	 $("#pending_members").hide();
 	 $("#accepted_members").show();
-	 $("#grp_search_space").slideUp(200,function(){
+	 if(!ignore_check_height)
+	 {
+		$("#grp_search_space").slideUp(200,function(){
 		 search_areaHeight();
-	 });
+		 }); 
+	 }
+	 
 	 
 		var width = $(".acceptedtab").width();
 		$(".highlight_tab").css({"margin-left":"0px","width":width+"px"});
@@ -2138,8 +2051,6 @@ function upload_grp_pic(e)
 					
 				}
             	$("#grp_popup .icon-camera").removeClass("icon-loading");
-            	checkHeightWidth(wid,height,"#grp_info_side");	//No I18N
-            	checkHeightWidth(wid,height,"#grp_popup");	//No I18N
        		});
         };
      }
@@ -2162,22 +2073,15 @@ function change_grp_pic(e,GID)
 			
 			var iter=get_groupFrom_GID(GID);
 			var needed_grp=groups_data[iter];
-			var ct = new Date().getTime();
-			groups_data[iter].group_photo_url=needed_grp.group_photo_url+"&nocache="+ct;
 			if($("#grp_info_side").is(":visible"))
 			{
-				$("#grp_info_side .profile_picture").attr("src",groups_data[iter].group_photo_url+"&t=group&domain="+window.location.hostname); 
-				$("#grp_info_side .bg_blur_grp").css("background-image", "url(" +groups_data[iter].group_photo_url+"&t=group&domain="+window.location.hostname+" )");
+				setPhotoUrlWithCache($("#grp_info_side"),needed_grp.group_photo_url);
 			}
-			if($("#grp_popup").is(":visible"))
+			else if($("#grp_popup").is(":visible"))
 			{
-				$("#grp_popup .profile_picture").attr("src",groups_data[iter].group_photo_url+"&t=group&domain="+window.location.hostname); 
-				$("#grp_popup .bg_blur_grp").css("background-image","url(" +groups_data[iter].group_photo_url+"&t=group&domain="+window.location.hostname+" )");
+				setPhotoUrlWithCache($("#grp_popup"),needed_grp.group_photo_url);
 			}
-			else
-			{
-				SuccessMsg(getErrorMessage(resp));
-			}
+			SuccessMsg(getErrorMessage(resp));
 			$(slideOrPop+" .icon-camera").removeClass("icon-loading");
 			load_groups();
 			close_edit_grp_popup();
@@ -2188,23 +2092,7 @@ function change_grp_pic(e,GID)
 			showErrorMessage(getErrorMessage(resp));
 		});
 }
-function checkHeightWidth(wid,height,ele){
-	if(wid>height)
-	{
-		$(ele+" .profile_picture").css("width","100%");
-		$(ele+" .profile_picture").css("height","auto");
-	}
-	else if(wid<height)
-	{
-		$(ele+" .profile_picture").css("width","auto");
-		$(ele+" .profile_picture").css("height","100%");
-	}
-	else
-	{
-		$(ele+" .profile_picture").css("width","100%");
-		$(ele+" .profile_picture").css("height","100%");
-	}
-}
+
 function groupFromInfo(id,e){
 	if((!$(e.target).parents().hasClass("tippy-popper"))&& !$(e.target).hasClass("showmenu_div")&& !$(e.target).parents().hasClass("showmenu_div")){
 		group_operation("groupinfo",id,e);
@@ -2222,3 +2110,144 @@ function search_areaHeight(){
 	return height;
 }
 
+function setNoImgClass(ele){
+	$(ele).addClass("no-group-photo");
+}
+
+function handleGrpPhotoDropDown(groupId){
+	if($(".grp_info_side").is(":visible")){
+		if($("#"+groupId+" .as_admin").length>0){//check if the current user is an admin or moderator of this account using the star
+			if($("#grp_info_side img").hasClass("no-group-photo")){
+				openUploadPhoto('group',groupId); //No I18N
+			}
+			else {
+				$("#group_info_div .drop-down-container").show();
+			}
+		}
+		else{
+			if(!$("#grp_info_side img").hasClass("no-group-photo")){
+				$("#grp_info_side .view-group-photo").click();
+			}
+		}
+	}
+	else if($("#grp_popup").is(":visible")){
+		if($("#"+groupId+" .as_admin").length>0){//check if the current user is an admin or moderator of this account using the star
+			if($("#grp_popup img").hasClass("no-group-photo")){
+				openUploadPhoto('group',groupId); //No I18N
+			}
+			else {
+				$(".group_edit_info_basic .drop-down-container").show();
+			}
+		}
+		else{
+			if(!$("#grp_popup img").hasClass("no-group-photo")){
+				$("#grp_popup .view-group-photo").click();
+			}
+		}
+	}
+}
+
+function showGroupImage(ele){
+	var imageContainer = ele.parentElement;
+	fitPicture(ele);
+	imageContainer.querySelector(".photo_loader").classList.add("hide"); //No I18N
+	ele.classList.remove("hide"); //No I18N
+	imageContainer.querySelector(".photo_blur_dp2").classList.add("hide"); //No I18N
+}
+
+function handleGroupPhotoView(imgUrl){
+	var imageContainer = document.querySelector(".photo_container"); //No I18N
+	var blurImg1 = imageContainer.querySelector(".photo_blur_dp1"); //No I18N
+	var blurImg2 = imageContainer.querySelector(".photo_blur_dp2"); //No I18N
+	var originalImg = imageContainer.querySelector(".photo_original_dp"); //No I18N
+	var imageUrl = imgUrl;
+	blurImg1.style.backgroundImage = "url("+imageUrl+")"; //No I18N
+	blurImg2.src = imageUrl;
+	originalImg.classList.add("hide"); //No I18N
+	imageContainer.classList.add("show_photo_container"); //No I18N
+	fitPicture(blurImg2);
+	imageContainer.querySelector(".photo_loader").classList.remove("hide"); //No I18N
+	imageContainer.querySelector(".photo_blur_dp2").classList.remove("hide"); //No I18N
+	imageContainer.classList.remove("hide"); //No I18N
+	if(imageUrl.indexOf("fs=thumb")!=0){
+		imageUrl = imageUrl.replace("fs=thumb","fs=original");
+	}
+	originalImg.src = imageUrl;
+	if(isMobile){
+		imageContainer.style.height = imageContainer.clientWidth + "px";
+	}
+	imageContainer.focus();
+	closePopup(closeViewGroupPicture,"photo_container"); //No I18N
+	$(".group-back-drop").show();
+	$(".group-back-drop").click(function(){
+		closeViewGroupPicture();
+	});
+}
+
+function closeViewGroupPicture(){
+	$(".photo_container").removeClass("show_photo_container");
+	$(".group-back-drop").hide();
+	$(".group-back-drop").unbind();
+	if($(".grp_info_side").is(":visible")) {
+		$(".grp_info_side").focus();
+		closePopup(close_group_info_display_space,"grp_info_side");//No I18N
+	}
+	else if($("#grp_popup").is(":visible")) {
+		$("#grp_popup").focus();
+		closePopup(close_edit_grp_popup,"grp_popup");//No I18N
+	}
+}
+
+function fitPicture(ele){
+	$(ele).css("width","auto");
+	$(ele).css("height","auto");
+	if(ele.width>ele.height)
+	{
+		$(ele).css("width","100%");
+		$(ele).css("height","auto");
+	}
+	else if(ele.width<ele.height)
+	{
+		$(ele).css("width","auto");
+		$(ele).css("height","100%");
+	}
+	else
+	{
+		$(ele).css("width","100%");
+		$(ele).css("height","100%");
+	}
+}
+
+function handleScrollHeight(id){
+	var objDiv = document.getElementById(id);
+	objDiv.scrollTop = objDiv.scrollHeight;
+}
+
+function deleteGroupPhoto(groupId,groupIndex){
+	var slideOrPop = $("#grp_info_side").is(":visible") ? "#grp_info_side" : "#grp_popup";//No I18N	
+	$(slideOrPop+" .icon-camera").addClass("icon-loading");
+	new URI(GroupPhoto,"self","self",groupId).DELETE().then(function(resp) { //No I18N
+		setPhotoUrlWithCache($(slideOrPop),groups_data[groupIndex].group_photo_url);
+		$(slideOrPop+" .icon-camera").removeClass("icon-loading");
+		close_edit_grp_popup(groupId);
+		SuccessMsg(getErrorMessage(resp));
+		load_groups();
+	},
+	function(resp){
+		$(slideOrPop+" .icon-camera").removeClass("icon-loading");
+		showErrorMessage(getErrorMessage(resp));
+	}
+	);
+}
+
+function setPhotoUrlWithCache(element, photoUrl){
+	var ct = new Date().getTime();
+	element.find(".bg_blur_grp").css("background-image","url('"+photoUrl+"&nocache="+ct+"&t=group')"); //for background blur photo //No I18N 
+	element.find(".profile_picture").attr("src",photoUrl+"&nocache="+ct+"&t=group"); //for original photo //No I18N
+}
+
+function setPhotoUrl(element, groupId){
+	var imgUrl = $("#"+groupId+" .group_dp img").attr("src");
+	element.find(".bg_blur_grp").css("background-image","url('"+imgUrl+"')"); //No I18N
+	element.find(".profile_picture").attr("src",imgUrl); //No I18N
+}

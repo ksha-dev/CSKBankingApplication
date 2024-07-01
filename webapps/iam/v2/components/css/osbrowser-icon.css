@@ -23,7 +23,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-        .osbrowser-osx:before {
+        .osbrowser-osx:before, .osbrowser-ios:before {
             content: "\e9a8";
         }
         .osbrowser-safari .path1:before {

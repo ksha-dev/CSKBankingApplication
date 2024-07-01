@@ -136,7 +136,7 @@
 		<div class="labelkey">Validity Period :</div>
 		<div class="labelvalue"><input type="text" name="vperiod" class="input" value="<%=map.get("VALIDITY_PERIOD")%>"/></div> <%-- NO OUTPUTENCODING --%>
 		<div class="labelkey">Enter Admin password :</div>
-		<div class="labelvalue"><input type="password" class="input" name="pwd"/></div>
+		<div class="labelvalue"><input type="password" autocomplete="off" class="input" name="pwd"/></div>
 		<div class="accbtn Hbtn">
 		    <div class="savebtn" onclick="submitSecretKey(document.updatesecretkey)">
 			<span class="btnlt"></span>

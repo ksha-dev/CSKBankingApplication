@@ -1,6 +1,6 @@
 //$Id$
 function loadDomains(Domain_detail){
-	if(Object.keys(Domain_detail).length == 0 || (Object.keys(Domain_detail.verified).length == 0 && Object.keys(Domain_detail.unVerified).length == 0)){		
+	if(Object.keys(Domain_detail).length == 0 || (Object.keys(Domain_detail.verified).length == 0 && Object.keys(Domain_detail.unVerified).length == 0 && Object.keys(Domain_detail.expired).length == 0 && Object.keys(Domain_detail.aboutToExpire).length == 0)){		
 		$("#domain_content").hide();
 		$("#no_domain").show();
 		return false;
@@ -235,6 +235,7 @@ function showDomainVerifyPopup(domain, domainType, isRenewed){
 		data = org_data.DOMAINDETAILS.aboutToExpire[domain];
 		return;
 	} else { //Unverified case
+		$("#verify_domain").addClass("popup_responsive");
 		$("#verify_domain .popuphead_text").html(i18nSessionkeys["IAM.ORG.DOMAIN.POPUP.HEADER"]); //No I18N 		
 		$("#verify_domain .verifyDomain_content").show();		
 		$("#verify_domain_action span").html(i18nSessionkeys["IAM.VERIFY.NOW"]); //No I18N	
@@ -330,7 +331,8 @@ function close_domain_edit(){
 	$("#verify_domain .expiredDomain_content").hide();
 	$("#verify_domain .abtToExpireDomain_content").hide();
 	$("#verify_domain .verifyDomain_content").hide();
-	$("#verify_domain .renewed_success_content").hide();	
+	$("#verify_domain .renewed_success_content").hide();
+	$("#verify_domain").removeClass("popup_responsive");	
 }
 function close_reverify_domain(){
 	popupBlurHide("#reverify_domain",function(){	//No I18N
@@ -352,24 +354,10 @@ function changeDomainOption(ele){
 		$(".verify_option_detail .domain_info_content").show();
 		$(".verify_option_detail .domain_info_content").html(i18nSessionkeys["IAM.ORG.DOMAIN.POPUP.CNAME.FOOTER"]); //No I18N
 	}
-	//setDomainPopHeight();
 }
-function setDomainPopHeight(){
-	$(".step_box:visible").css("max-height","unset");
-	$(".verify_option_detail").css("height",$("#verify_domain").height()+"px");//No I18N
-	if(isMobile){
-		$("#verify_domain").css("height",312+$(".step_box:visible")[0].scrollHeight+"px");
-	}else{
-		$("#verify_domain").css("height",298+$(".step_box:visible")[0].scrollHeight+"px");
-	}
-	var errHeight= $(".domain_err_content")[0].scrollHeight + $('#verify_domain .popup_header')[0].scrollHeight+$('.verify_option')[0].scrollHeight+$('.dom_verify_actions')[0].scrollHeight;
-	errHeight= !isMobile ? errHeight+70 : errHeight+44;
-	$(".step_box").css("max-height","calc(100% - "+(errHeight)+"px)"); //No I18N
-}
+
 function verifyTheDomain(domain, domainType){
 	$(".domain_err_content").hide();
-	setDomainPopHeight();
-
 	var payload = DomainObj.create({"type":$(".domain_options").find("input:checked").val(), "domain_type": domainType});//No I18N
 	payload.build();
 	disabledButton("#verify_domain");	//No I18N
@@ -384,7 +372,7 @@ function verifyTheDomain(domain, domainType){
 	},
 	function(resp)
 	{
-		removeButtonDisable("#verify_domain");	//No I18N
+		removeButtonDisable("#verify_domain");	//No I18N	
 		if(resp.cause && resp.cause.trim() === "invalid_password_token") 
 		{
 			relogin_warning();
@@ -396,11 +384,6 @@ function verifyTheDomain(domain, domainType){
 			if(resp.errors[0].code=="DOMAIN500"){
 				$(".domain_err_content").html(resp.localized_message);
 				$(".domain_err_content").show();
-				var errHeight= $(".domain_err_content")[0].scrollHeight + $('#verify_domain .popup_header')[0].scrollHeight+$('.verify_option')[0].scrollHeight+$('.dom_verify_actions')[0].scrollHeight;
-				errHeight= !isMobile ? errHeight+90 : errHeight+64;
-				$(".domain_err_content").hide()
-				$(".domain_err_content").slideDown(200);
-				$(".step_box:visible").css("max-height","calc(100% - "+(errHeight)+"px)"); //No I18N
 			}
 			else{
 				showErrorMessage(getErrorMessage(resp));
@@ -438,136 +421,6 @@ function deleteDomain(title,delete_descrtion,domain){
 	);
 }
 /*********************************SAML***************************************/
-
-function load_samldetails(SAML_details)
-{
-	if(de("saml_exception"))
-	{
-		$("#saml_exception").remove();
-	}
-	if(SAML_details.exception_occured!=undefined	&&	SAML_details.exception_occured)
-	{
-		$("#saml_box .box_info" ).after("<div id='saml_exception' class='box_content_div'>"+$("#exception_tab").html()+"</div>" );
-		$("#saml_exception #reload_exception").attr("onclick","reload_exception(SAML,'saml_box')");
-		return;
-	}
-	
-	if(SAML_details!=undefined)
-	{	
-		if(SAML_details.issaml_loginenabled)
-		{
-			$("#saml_notActivated").hide();
-			$("#saml_activated").show();
-			$("#saml_info_show").show();
-//			$(".saml-setup_info").show();
-			
-			if(SAML_details.issaml_enabled)
-			{
-				$("#toggle_saml").attr("checked","checked");
-				if(SAML_details.issaml_logoutEnabled)
-				{
-					$("#saml_logout_check").attr("checked","checked");
-					$("#edit_logout_url").removeAttr("data-optional");
-				}
-				else
-				{
-					$("#saml_logout_check").removeAttr("checked");
-					$("#edit_logout_url").attr("data-optional","true");
-				}
-				
-			}
-			else
-			{
-				$("#toggle_saml").removeAttr("checked");
-				$("#saml_logout_check").removeAttr("checked");
-			}
-			
-			$("#saml_info_show #login_url").html(SAML_details.saml_login_url);
-			$("#saml_info_show #logout_url").html(SAML_details.saml_logout_url);
-			$("#saml_info_show #password_url").html(SAML_details.saml_password_url);
-			$("#saml_info_show #saml_algorithm").html(SAML_details.saml_algorithm);
-			$("#saml_info_show #SAMLservice_name").html(SAML_details.saml_service);
-			
-			
-			$("#edit_login_url").val(SAML_details.saml_login_url);
-			$("#edit_logout_url").val(SAML_details.saml_logout_url);
-			$("#edit_password_url").val(SAML_details.saml_password_url);
-			if(SAML_details.issaml_logoutEnabled && SAML_details.issaml_enabled)
-			{
-				$("#downalod_logout_response").show();
-			}
-			else
-			{
-				$("#downalod_logout_response").hide();
-			}
-			$('#edit_saml_algorithm option[value='+SAML_details.saml_algorithm+']').prop('selected', true);
-			$('#edit_SAMLservice_name option[value='+SAML_details.saml_service+']').prop('selected', true);
-			
-			if(SAML_details.issaml_jit_enabled)
-			{
-				$("#SAML_JIT_indicator").show();
-				
-				$("#saml_jit_check").attr("checked","checked");
-				$("#saml_JIT_fields").html("");
-				$("#saml_JIT_fields").show();
-				if(SAML_details.jit_attributes)
-				{
-					if(SAML_details.jit_attributes.first_name)
-					{
-						init_jit_fields();
-						$("#saml_JIT_fields select:last").val("first_name");
-						$("#saml_JIT_fields .inputText:last input")[0].name="first_name";
-						$("#saml_JIT_fields .inputText:last input")[0].value=SAML_details.jit_attributes.first_name;
-					}
-					if(SAML_details.jit_attributes.last_name)
-					{
-						init_jit_fields();
-						$("#saml_JIT_fields select:last").val("last_name");
-						$("#saml_JIT_fields .inputText:last input")[0].name="last_name";
-						$("#saml_JIT_fields .inputText:last input")[0].value=SAML_details.jit_attributes.last_name;
-					}
-					if(SAML_details.jit_attributes.display_name)
-					{
-						init_jit_fields();
-						$("#saml_JIT_fields select:last").val("display_name");
-						$("#saml_JIT_fields .inputText:last input")[0].name="display_name";
-						$("#saml_JIT_fields .inputText:last input")[0].value=SAML_details.jit_attributes.display_name;
-					}
-					$("#saml_JIT_fields .saml_jit_select").select2();
-				}
-				else
-				{
-					init_jit_fields();
-				}
-				
-			}
-			else
-			{
-				$("#SAML_JIT_indicator").hide();
-			}
-			
-		}
-		else
-		{
-			$("#samlform")[0].reset();
-			$("#saml_info_show").hide();
-			$(".saml-setup_info").hide();
-			$("#saml_notActivated").show();
-			$("#saml_notActivated .no_data_text").html(formatMessage(saml_setup_description,SAML_details.org_name));	
-			$("#saml_activated").hide();
-		}
-		
-		//moved to template resource
-//		var services=Object.keys(SAML_details.services);
-//		$('#edit_SAMLservice_name').find('option').remove();
-//		for(iter=0;iter<services.length;iter++)
-//		{
-//			var current_service=SAML_details.services[services[iter]];
-//			$("#edit_SAMLservice_name").append("<option value="+current_service.servicename+">"+current_service.displayname+"</option>");
-//		}
-	}
-}
-
 
 function updateSaml(f) 
 {
@@ -731,22 +584,6 @@ function updateSamlStatus(f)
     }
 }
 
-function show_jit_fields()
-{
-	if($('#saml_jit_check').is(":checked"))
-	{
-		$("#saml_JIT_fields").html("");
-		$("#saml_JIT_fields").show();
-		init_jit_fields();
-	}
-	else
-	{
-		$("#saml_JIT_fields").hide();
-		$("#saml_JIT_fields").html("");
-	}
-	return;
-}
-
 function change_logout_response()
 {
 	if($('#saml_logout_check').is(":checked"))
@@ -760,88 +597,9 @@ function change_logout_response()
 	return;
 }
 
-function init_jit_fields()
-{
-	var JIT_var=[];
-	$("#empty_jit_fields_format .saml_jit_select option").each(function()
-	{
-		JIT_var.push($(this).val());
-	});
-	
-	if($("#saml_JIT_fields").children().length<JIT_var.length)
-	{
-		$("#empty_jit_fields_format").children().clone().appendTo("#saml_JIT_fields"); //No I18N
-    	if($("#saml_JIT_fields .inputText").children().hasClass("saml_jit_fieldaction"))
-    	{
-    		$("#saml_JIT_fields .saml_jit_fieldaction").remove();
-    	}
-    	$("#saml_JIT_fields .inputText").not(":last").append(" <div class='saml_jit_fieldaction icon-cadd remove_field' onclick='removeEle(this)'></div>");
-    	$("#saml_JIT_fields .inputText:last").append("<div class='saml_jit_fieldaction icon-cadd add_field' onclick='init_jit_fields()'></div>");
-    	if($("#saml_JIT_fields").children().length==3)
-    	{
-        	$("#saml_JIT_fields .inputText:last .add_field").remove();
-    	}
-    	for(i=0;i<JIT_var.length;i++)
-    	{
-    		if($("#samlform input[name="+JIT_var[i]+"]").length==0)
-    		{
-    			$("#saml_JIT_fields select:last").val(JIT_var[i]);
-				$("#saml_JIT_fields .inputText:last input")[0].name=JIT_var[i];
-				break;
-    		}
-    	}
-    	
-    	$("#saml_JIT_fields .saml_jit_select").select2({
-    		minimumResultsForSearch: Infinity,
-    		theme:"saml" //No I18N
-    	});
-	}
-	$("#saml_set").scrollTop($("#saml_set")[0].scrollHeight);
-}
-
 function inputName(ele)
 {
 	  $(ele).parents(".field").find(".namebox").attr("name",$(ele).val()); //No I18N
-}
-
-function removeEle(ele)
-{
-	$(ele).parents(".field").remove();
-  	if($("#saml_JIT_fields .inputText").children().hasClass("saml_jit_fieldaction"))
-	{
-		$("#saml_JIT_fields .saml_jit_fieldaction").remove();
-	}
-	$("#saml_JIT_fields .inputText").not(":last").append(" <div class='saml_jit_fieldaction icon-cadd remove_field' onclick='removeEle(this)'></div>");
-	$("#saml_JIT_fields .inputText:last").append("<div class='saml_jit_fieldaction icon-cadd add_field' onclick='init_jit_fields()'></div>");
-}
-
-
-function showSamlsetupOption() 
-{
-	
-		$(".saml_opendiv").show(0,function(){
-			$(".saml_opendiv").addClass("pop_anim");
-		});
-		closePopup(close_SAML_edit,"saml_open_cont");//No I18N
-		popup_blurHandler('6');
-		if(!isMobile){			
-			$("#edit_saml_algorithm").select2({
-				minimumResultsForSearch: Infinity
-			});
-			$("#edit_SAMLservice_name").select2({
-				language: {
-			        noResults: function(){
-			            return iam_no_result_found_text;
-			        }
-			    },
-			    escapeMarkup: function (m) {
-			    	return m;
-			    }
-			 }).on("select2:open", function(){
-				 $(".select2-search__field").attr("placeholder", iam_search_text);//No I18N
-			 });
-		}
-		$("#saml_open_cont input:first").focus();//No I18N
 }
 
 function showSamlDownloadDropDown() {
@@ -878,48 +636,60 @@ function showSamlsetupMenu()
 	$(".saml-setup__body").scrollTop(0);
 	closePopup(closeSamlsetupMenu,"saml-setup_menu");//No I18N
 	if(!isMobile){
-			$(".saml-name-identifier").select2({
-				minimumResultsForSearch: Infinity,
-				theme: "saml-name-identifier" //no I18N
-			});
-			$(".saml-signin__list, .saml-signout__list").select2({	
-			minimumResultsForSearch: Infinity,
-			theme: "samlSignList" //no I18N
+		$(".saml-name-identifier").uvselect({
+			"width" : "320px", //No i18N
+			"theme": "saml-name-identifier" //no I18N
 		});
-		$("#edit-SAMLservice_name").select2({
-			templateResult: function(option){
-				var ob,service;
-				service = $(option.element).attr("value");
-				var serviceDisplayName = $(option.element).text();
-				serviceDisplayName = serviceDisplayName ? serviceDisplayName : service;
-				if(service){
-					ob = '<i class="service_icon product_icon product-icon-'+service.toLowerCase().replace(/\s/g, '')+'" ><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span><span class="path11"></span><span class="path12"></span><span class="path13"></span><span class="path14"></span><span class="path15"></span><span class="path16"></span></i><span class="org_name">'+serviceDisplayName+"</span>" ;
-				}
-				return ob;
+		var loginBindingStrLen = findLongestStringLengthInSelect(".saml-signin__list"); //no I18N
+		var logoutBindingStrLen = findLongestStringLengthInSelect(".saml-signout__list"); //no I18N
+		$(".saml-signin__list").uvselect({
+			"onDropdown:select" : function(){	 //no i18n
+				$(".saml-signin__list~.select_container--samlSignList").css("width",((loginBindingStrLen * 12)+26) + "px");		//No i18N
 			},
-			templateSelection: function(option){
-				var service = $(option.element).attr("value");
-				var serviceDisplayName = $(option.element).text();
-				serviceDisplayName = serviceDisplayName ? serviceDisplayName : service;
-	              $(option.element).addClass("service_icon product_icon product-icon-"+service.toLowerCase().replace(/\s/g, ''));
-	              samlSetServiceIcon(option.element,$("#edit-SAMLservice_name+.select2"));
-	              return serviceDisplayName;
+			"onDropdown:open" : function(){	 //no i18n
+				$(".selectbox_options_container--samlSignList ").css("width",((loginBindingStrLen * 12)+26) + "px");		//No i18N
 			},
-			theme: "saml-setup-service", //no I18N
-			escapeMarkup: function (m) { //this function used to convert return string to html element
-			       return m;
-			}
+			"theme": "samlSignList" //No i18N
+
 		});
-		$("#edit-SAMLservice_name+.select2 .select2-selection").append("<i id='saml_setup_service' class='selectedService'><span class='path1'></span><span class='path2'></span><span class='path3'></span><span class='path4'></span><span class='path5'></span><span class='path6'></span><span class='path7'></span><span class='path8'></span><span class='path9'></span><span class='path10'></span></i>");
-		samlSetServiceIcon($("#edit-SAMLservice_name option:selected"),$("#edit-SAMLservice_name+.select2"));
+		$(".saml-signout__list").uvselect({	
+			"onDropdown:select" : function(){	 //no i18n
+				$(".saml-signout__list~.select_container--samlSignList").css("width",((logoutBindingStrLen * 12)+26) + "px");		//No i18N
+			},
+			"onDropdown:open" : function(){	 //no i18n
+				$(".selectbox_options_container--samlSignList ").css("width",((logoutBindingStrLen * 12)+26) + "px");		//No i18N
+			},
+			"theme": "samlSignList" //no I18N
+		});
+		var serviceIconEle = "";
+		for(var path=1;path<10;path++){
+			serviceIconEle = serviceIconEle+"<span class='path"+path+"'></span>";
+		}
+		$("#edit-SAMLservice_name").uvselect({
+			"width" : "320px",	 //No I18N
+			"searchable" : true,	 //No I18N
+			"onDropdown:select" : function(){	 //no i18n
+				$(".select_container--saml_org_list .selectedService").attr("class","selectedService product_icon product-icon-"+$("#edit-SAMLservice_name").val().toLowerCase().replaceAll(/\s/g,''));
+			},
+			"onDropdown:open" : function(){	 //no i18n
+				$(".selectbox_options_container--saml_org_list .option").each(function(ind,ele){
+					$(ele).find("p").before("<i class='service_icon product_icon product-icon-"+$(ele).attr("data-service").toLowerCase().replaceAll(/\s/g,'')+"'>"+serviceIconEle+"</i>")
+				});
+			},
+			"theme":"saml_org_list" //No I18N
+		});
+		$(".saml-signout__list~.select_container--samlSignList").css("width",((logoutBindingStrLen * 12)+26) + "px");		//No i18N
+		$(".saml-signin__list~.select_container--samlSignList").css("width",((loginBindingStrLen * 12)+26) + "px");		//No i18N
+		
+		$(".select_container--saml_org_list .select_input").before("<i class='selectedService product_icon product-icon-"+$("#edit-SAMLservice_name").val().toLowerCase().replaceAll(/\s/g,'')+"'>"+serviceIconEle+"</i>");
 	}
-	$(".saml-setup__modes .params_select").select2({
-		minimumResultsForSearch: Infinity,
-		theme: "saml-sign__param" //no I18N
+	$(".saml-setup__modes .params_select").uvselect({
+		"width" : "200px",	//No I18N
+		"theme": "saml-sign__param" //no I18N
 	});
-	$(".saml-setup__modes .saml-setup__JIT-select").select2({
-		minimumResultsForSearch: Infinity,
-		theme: "saml-JIT__select" //no I18N
+	$(".saml-setup__modes .saml-setup__JIT-select").uvselect({
+		"width" : "200px",	//No I18N
+		"theme": "saml-JIT__select" //no I18N
 	});
 	$("#saml-generate-key").parent().show();
 	if(org_data.SAML.has_sp_certificate){
@@ -967,6 +737,18 @@ function showSamlsetupMenu()
 	return false;	
 }
 
+function findLongestStringLengthInSelect(selectElement){
+	var select = document.querySelector(selectElement);
+		var longestLength = 0;
+		for (var i = 0; i < select.options.length; i++) {
+			var optionValue = select.options[i].value;
+      		if (optionValue.length > longestLength) {
+				  longestLength = optionValue.length;
+			}
+		}
+		return longestLength;
+}
+
 function applySamlPublicKeyuploadEvent(){
 	$("#saml-publickey_upload").change(function () 
 	{
@@ -992,14 +774,6 @@ function applySamlPublicKeyuploadEvent(){
 function isValidMetaDatafile(fileName){
 	var re = /(\.xml)$/i;
 	return re.exec(fileName);
-}
-
-function samlSetServiceIcon(ele,selectEle) {
-	  var service = $(ele).attr("value");
-	  if(service) {
-	     $(selectEle).find(".selectedService").attr("class","selectedService product_icon product-icon-"+service.toLowerCase().replace(/\s/g, ''));
-	  }
-	  return false;
 }
 
 function resetSamlSetupMenu() {
@@ -1493,6 +1267,12 @@ function revertButtonToLoader(button){
 }
 
 function loadSamlDetails(samlDetails) {
+	if(samlDetails.exception_occured!=undefined	&&	samlDetails.exception_occured)
+	{
+		$("#saml_box .box_info" ).after("<div id='saml_exception' class='box_content_div'>"+$("#exception_tab").html()+"</div>" );
+		$("#saml_exception #reload_exception").attr("onclick","reload_exception(SAML,'saml_box')");
+		return;
+	}
 	if(samlDetails.saml_login_url) {
 		closeSamlsetupMenu();
 		$(".saml-enable_btn-div").css("display","inline");
@@ -1544,6 +1324,7 @@ function showEditSamlsetupMenu() {
 	$('#edit-SAMLservice_name option[value='+org_data.SAML.saml_service+']').prop('selected', true);
 	$('.saml-name-identifier option[id-value='+org_data.SAML.name_identifier+']').prop('selected', true);
 	$('.saml-signin__list,.saml-signout__list,#edit-SAMLservice_name,.saml-name-identifier').trigger("change");
+	$(".select_container--saml_org_list .selectedService").attr("class","selectedService product_icon product-icon-"+$("#edit-SAMLservice_name").val().toLowerCase().replaceAll(/\s/g,''));
 	if(org_data.SAML.issaml_jit_enabled) {
 		$(".saml-JIT-btn").prop("checked",true);
 		showSamlSetupModeFields($("#saml-jit"));
@@ -1771,9 +1552,10 @@ function showSamlSetupModeFields(element)
 			var emptyParamField = document.querySelector("#empty-saml-sign__param").children;//No I18N
 			var paramField = emptyParamField[0].cloneNode(true);
 			$(".param-fields").append($(paramField));
-			$(".saml-setup__modes .params_select").select2({
-				minimumResultsForSearch: Infinity,
-				theme: "saml-sign__param" //no I18N
+			$(".saml-setup__modes .params_select").uvselect({
+				"width" : "200px",	//No i18N
+				"searchable" : false, //No i18N
+				"theme": "saml-sign__param" //no I18N
 			});
 			$(".saml-setup__modes .params_select").each(function(){
 				updateSignparamInputName(this);
@@ -1803,9 +1585,10 @@ function resetJitFields() {
 	var emptyJitField = document.querySelector("#empty-saml-setup__JIT").children;//No I18N
 	var jitField = emptyJitField[0].cloneNode(true);
 	$(".saml-setup__JITs").append(jitField);
-	$(".saml-setup__modes .saml-setup__JIT-select").select2({
-		minimumResultsForSearch: Infinity,
-		theme: "saml-JIT__select" //no I18N
+	$(".saml-setup__modes .saml-setup__JIT-select").uvselect({
+		"width" : "200px",	//No i18N
+		"searchable" : false, //No i18N
+		"theme": "saml-JIT__select" //no I18N
 	});
 	return;
 }
@@ -2115,9 +1898,13 @@ function newAddSignParamField(currElement) {
 	if(org_data.SAML.saml_login_url){
 		$($(paramField)).find(".param-field_right input").attr("oninput","handleParamEdit();"); //no I18N
 	}
-	$("#"+parentId+" .params_select").select2({
-		minimumResultsForSearch: Infinity,
-		theme: "saml-sign__param" //no I18N
+	$("#"+parentId+" .params_select").uvselect("destroy");
+	$("#"+parentId+" .params_select").each(function(){
+	   $("#"+this.id).uvselect({
+			"width" : "200px",	//No i18N
+			"searchable" : false, //No i18N
+			"theme": "saml-sign__param" //no I18N
+		});
 	});
 }
 
@@ -2173,12 +1960,16 @@ function newAddJitField() {
 	$(".saml-setup__JITs").children().each(function(){
 		$(this).find("option[value='"+currSelectedValue+"']").remove();
 	});
-	$(jitField).find(".saml-setup__JIT-select").select2({
-		minimumResultsForSearch: Infinity,
-		theme: "saml-JIT__select" //no I18N
-	});
 	$($(jitField)).find(".JIT-field__right input").attr("name","jit_"+currSelectedValue); //no I18N
 	parentElement.appendChild(jitField);
+	$(".saml-setup__JITs .saml-setup__JIT-select").uvselect("destroy");
+	$(".saml-setup__JITs .saml-setup__JIT-select").each(function(){
+	   $("#"+this.id).uvselect({
+			"width" : "200px",	//No i18N
+			"searchable" : false, //No i18N
+			"theme": "saml-JIT__select" //no I18N
+		});
+	});
 	$(jitField).prev().find(".add-circle").remove();
 	if($(".saml-setup__JITs .saml-setup__JIT-select").length === $($("#empty-saml-setup__JIT")[0]).find("option").length) {
 		$(".saml-setup__JITs").find(".add-circle").remove();
@@ -2270,19 +2061,6 @@ function showOrgDomains() {
 	$("#org_domains").click();
 }
 
-function showSamlEditOption()
-{
-	$(".saml_opendiv").show(0,function(){
-		$(".saml_opendiv").addClass("pop_anim");
-	});
-	closePopup(close_SAML_edit,"saml_open_cont");//No I18N
-	popup_blurHandler('6');
-	$('#edit_SAMLservice_name option[value='+org_data.SAML.saml_service+']').prop('selected', true);
-	$('#edit_SAMLservice_name').trigger("change");
-	$(".saml_select").select2();
-	$("#saml_logout_check").prop("checked",org_data.SAML.issaml_logoutEnabled);
-	$("#saml_open_cont input:first").focus();//No I18N	
-}
 
 function close_SAML_edit()
 {

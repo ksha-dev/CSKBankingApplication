@@ -52,6 +52,9 @@ function cancelCloseProcess(zid){
 		else{
 			delete settings_data.CloseAccounts.step;
 			delete settings_data.CloseAccounts.request_id;
+			closeAccountSteps = undefined;
+			$("#final_step_to_close #delete_acc_reason")[0].selectedIndex=0;
+			$("#deleteacc_command").val("");
 			load_closeddetails(settings_data.Policies,settings_data.CloseAccounts);
 			if(!fromSSOKit){cancelInitiateOption();}
 		}
@@ -157,6 +160,14 @@ function moveToNextOption(zid,selected_tab){
 			if(fromSSOKit){
 				$("#initiated_warning,#show_close_block").hide();
 				$(".org_close_view .content_block").show();
+			}
+			if(resp.force_skipped_step == true ){
+    			//Handling to process next step when a step has no data to be shown in UI.
+				selected_tab = resp.redirected_step
+				if(resp.STEPS){
+					//Updating STEPS stored in client-side as it is updated in server side when skipping a step with empty data.
+			    	closeAccountSteps = resp.STEPS;
+				}
 			}
 			closeAccServiceData[selected_tab] = resp;
 			if(closeAccountReqID){
@@ -314,9 +325,14 @@ function listCloseAccountData(zid,selected_tab){
 						else{
 							$("#portal_table #service_"+servicename+""+portal_service_id+" .portal_id").html("<span>"+portal_service_id+"</span>");
 						}
-						$("#portal_table #service_"+servicename+""+portal_service_id).append("<span class='close_port_action'><span class='portal_blue_btn' onclick=go_to_link('"+portal_list[portal_service_id].service_url+"',true)><span class='icon-newtab'></span><span class='close_port_text'>"+i18nkeys["IAM.CLOSE.ACCOUNT.CLOSE.PORTAL"]+"</span></span></span"); //No I18N
+						$("#portal_table #service_"+servicename+""+portal_service_id).append("<span class='close_port_action'><span class='portal_blue_btn' onclick=go_to_link('"+portal_list[portal_service_id].service_url+"',true)><span class='icon-newtab'></span><span class='close_port_text'></span></span></span"); //No I18N
+						$("#portal_table #service_"+servicename+""+portal_service_id+" .close_port_text").html(portal_list[portal_service_id].custom_action_label ? portal_list[portal_service_id].custom_action_label : i18nkeys["IAM.CLOSE.ACCOUNT.CLOSE.PORTAL"]);		//No I18N
 						$("#portal_table #service_"+servicename+""+portal_service_id+" .close_port_action").append("<span class='close_portal_info icon-question'><span class='user_close_msg hide'></span></span>");
-						$("#portal_table #service_"+servicename+""+portal_service_id+" .user_close_msg").text(portal_list[portal_service_id].message);
+						$("#portal_table #service_"+servicename+""+portal_service_id+" .user_close_msg").html(portal_list[portal_service_id].localized_message);
+						if(portal_list[portal_service_id].help_link){
+							$("#portal_table #service_"+servicename+""+portal_service_id+" .user_close_msg").append("</br><span class='blue_link'>"+i18nkeys["IAM.TFA.LEARN.MORE"]+"</span>");
+							$("#portal_table #service_"+servicename+""+portal_service_id+" .user_close_msg").find(".blue_link").attr("onclick","go_to_link('"+portal_list[portal_service_id].help_link+"',true)");
+						}
 					}
 				}
 			}
@@ -397,6 +413,7 @@ function listCloseAccountData(zid,selected_tab){
 		else{
 			$(".note_for_close_org_and_acc,.close_service_form .cancel_org_with_account").show();$(".note_for_close_org,.close_service_form .cancel_org").hide();
 		}
+		showLength(document.getElementById("deleteacc_command"));
 		$("#initiate_cls_button").attr("onclick","initiateFinalStep('"+zid+"')");
 		setCloseAccButtonFunc(zid,selected_tab);
 	}
@@ -514,7 +531,7 @@ function initiateFinalStep(zid){
 		$(".close_service_form #delete_acc_reason").parents(".textbox_div ").append( '<div class="field_error">'+i18nkeys['IAM.CLOSE.ACCOUNT.REASON.OPTION.ERROR']+'</div>');
 		return false;
 	}
-	if($(".close_service_form .deleteacc_cmnd").val() === ''){
+	if($(".close_service_form .deleteacc_cmnd").val().trim() === ''){
 		$(".close_service_form .deleteacc_cmnd").parents(".textbox_div ").append( '<div class="field_error">'+i18nkeys['IAM.CLOSE.ACCOUNT.FEEDBACK.ERROR']+'</div>');
 		return false;
 	}
@@ -537,14 +554,9 @@ function initiateFinalStep(zid){
 	{
 		removeButtonDisable('.close_service_form');		//No I18N
 		SuccessMsg(resp.localized_message);
-			setTimeout(function(){
-				if(fromSSOKit){
-					go_to_link(resp.redirect_url,false);
-				}
-				else{
-					window.location.reload();
-				}
-			},3000);
+		setTimeout(function(){
+			go_to_link(resp.redirect_url,false);
+		},getToastTimeDuration(resp.localized_message)+1000);
 	},
 	function(resp)
 	{
@@ -558,4 +570,15 @@ function initiateFinalStep(zid){
 			showErrorMessage(getErrorMessage(resp));
 		}
 	});
+}
+function showLength(ele){
+	var limit = parseInt($(ele).attr("maxlength"));
+	var cur_length = $(ele).val().length;
+	if(limit === cur_length){
+		$(ele).parents(".deleteacc_cmnd_parent").addClass("limit_alert");
+	}
+	else{
+		$(".deleteacc_cmnd_parent").removeClass("limit_alert");
+	}
+	$(ele).siblings(".feedback_length").text(cur_length+"/"+limit);
 }

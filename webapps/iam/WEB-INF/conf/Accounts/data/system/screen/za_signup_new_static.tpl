@@ -12,6 +12,8 @@ window.signup_defaultmode = <#if (('${signup_defaultmode}')?has_content)>'${sign
 var isDataCenterChangeNeeded = Boolean("<#if isDataCenterChangeNeeded>true</#if>");
 var isDarkmode = parseInt('${isDarkmode}');
 var isMobile = parseInt('${isMobile}');
+var isSplitfield = Boolean("<#if isSplitfiled>true</#if>");
+var SplitInputClone;
 var uriPrefix="";
 var captchaPrefix="";
 var isCDNEnabled = Boolean("<#if isCDNEnabled>true</#if>");
@@ -22,8 +24,13 @@ var fedlist = ${fedlist};
 var iam_contextpath = "${za.iam_contextpath}";
 var showMobileNoPlaceholder = Boolean("<#if showMobileNoPlaceholder>true</#if>");
 var otp_length=${otp_length};
+var zero_included_countrylist = ${zero_included_countrylist};
 <#if (('${load_country}')?has_content)>
 	window.loadCountryOptions = "${load_country}";
+</#if>
+var resIntegrity = {};
+<#if (('${resIntegrity}')?has_content)>
+	resIntegrity = ${resIntegrity};		
 </#if>
 var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
 function iamMoveToSignin(loginurl,loginid,country_code){
@@ -80,6 +87,10 @@ function zaOnLoadHandler() {
 			}
 			style.href = cssURLs[i]; 
 			style.rel = "stylesheet"; 
+			if(resIntegrity && resIntegrity[cssURLs[i]]) {
+				style.integrity = resIntegrity[cssURLs[i]];
+				style.crossOrigin = "anonymous";	// No I18N
+			}
 			docHead.appendChild(style); 
 		}
 	}
@@ -116,6 +127,10 @@ function zaOnLoadHandler() {
 function includeScript(url, callback) {
 	var script = document.createElement("script"); 
 	script.src = url; 
+	if(resIntegrity && resIntegrity[url]) {
+		script.integrity = resIntegrity[url];
+		script.crossOrigin = "anonymous"; //No I18N
+	}
 	if (callback) { 
 		script.onload = script.onreadystatechange = function() { 
 			if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {

@@ -1,3 +1,4 @@
+
 <%-- $Id: $ --%>
 <!DOCTYPE html> <%-- No I18N --%>
 <%@page import="com.zoho.accounts.AccountsConfiguration"%>
@@ -18,6 +19,9 @@ String digest = (String)request.getAttribute("digest") != null ? (String)request
 <meta charset="utf-8">
 		<title><%=com.adventnet.iam.internal.Util.getI18NMsg(request, titleInfo)%> </title>
 <script src="<%=IAMEncoder.encodeHTMLAttribute(jsurl)%>/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=imgurl%>/encryption/script"></script>
+ <script type="text/javascript" src="<%=imgurl%>/v2/components/js/security.js"></script>
+ <%-- <script src="${SCL.getStaticFilePath("/v2/components/js/security.js")}"></script> --%>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -183,7 +187,7 @@ String digest = (String)request.getAttribute("digest") != null ? (String)request
 				<%if(showPassword){ %>
 				<div class="username"><%=IAMEncoder.encodeHTML(String.valueOf(request.getAttribute("EMAIL")))%> </div>
 				<div class="textbox_div">
-					<input id="password" placeholder="Password" type="password" class="textbox" required=""> 
+					<input id="password" placeholder="Password" type="password" class="textbox" autocomplete="off" required=""> 
 					<span class="show_hide_password"></span>
 					<div class="fielderror">Wrong Password</div> <%-- No I18N --%>
 				</div>
@@ -219,8 +223,9 @@ var digest = '<%=digest%>';
     });
 	
 	$("#nextbtn").unbind("click").click(function(){
+		var password;
 		if(showPassword){
-		    var password = $("#password").val();
+		    password = $("#password").val();
 		    if(isEmpty(password)){
 	    		$(".fielderror").text("<%= com.adventnet.iam.internal.Util.getI18NMsg(request, "IAM.ERROR.ENTER.LOGINPASS")%>");
 	    		$(".fielderror").slideDown(200);
@@ -228,39 +233,44 @@ var digest = '<%=digest%>';
 		    }
         	$("#nextbtn").prop("disabled", true); <%-- No I18N --%>
 		}
-        var xhttp = new XMLHttpRequest();
-	   	var params = "action=accept&"+ getcsrfParams(); <%-- No I18N --%>
-	   	if(showPassword){
-	   		params += "&pass="+encodeURIComponent(password);<%-- No I18N --%>
-	   	} else {
-	   		params += "&DIGEST="+digest;<%-- No I18N --%>
-	   	}
-	    xhttp.open("POST", "<%=requestUri%>", true);
-	    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	    xhttp.send(params);
-	    xhttp.onreadystatechange = function () {
-	    	if(this.readyState == 4 && this.status == 200) {
-	    		var response = this.responseText;
-	    		response = JSON.parse(response);
-	    		if(response.status == "success") {
-	    			if(showPassword){
-	    				window.location=response.url;
-	    			} else {
-	    				$(".signin_box").hide();
-		    			$(".finalDisplay").show();
-	    			}
-	    			return;
-	    		} else {
-	    			$("#nextbtn").prop("disabled", false);<%-- No I18N --%> 
-	    			$(".fielderror").text(response.message);
-	    			$(".fielderror").slideDown(200);
-	    		}
-	    	} else if(this.status != 200){
-	    		$("#nextbtn").prop("disabled", false);<%-- No I18N --%>
-	    		$(".fielderror").text("<%= com.adventnet.iam.internal.Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>");
-	    		$(".fielderror").slideDown(200);
-	    	}
-	    }
+		encryptData.encrypt([password]).then(function(encryptedpassword) {
+			if(encryptData.isValidData(encryptedpassword)){
+				encryptedpassword = typeof encryptedpassword[0] == 'string' ? encryptedpassword[0] : encryptedpassword[0].value;
+			}
+			var xhttp = new XMLHttpRequest();
+		   	var params = "action=accept&"+ getcsrfParams(); <%-- No I18N --%>
+		   	if(showPassword){
+		   		params += "&pass="+encodeURIComponent(encryptedpassword);<%-- No I18N --%>
+		   	} else {
+		   		params += "&DIGEST="+digest;<%-- No I18N --%>
+		   	}
+		    xhttp.open("POST", "<%=requestUri%>", true);
+		    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		    xhttp.send(params);
+		    xhttp.onreadystatechange = function () {
+		    	if(this.readyState == 4 && this.status == 200) {
+		    		var response = this.responseText;
+		    		response = JSON.parse(response);
+		    		if(response.status == "success") {
+		    			if(showPassword){
+		    				window.location=response.url;
+		    			} else {
+		    				$(".signin_box").hide();
+			    			$(".finalDisplay").show();
+		    			}
+		    			return;
+		    		} else {
+		    			$("#nextbtn").prop("disabled", false);<%-- No I18N --%> 
+		    			$(".fielderror").text(response.message);
+		    			$(".fielderror").slideDown(200);
+		    		}
+		    	} else if(this.status != 200){
+		    		$("#nextbtn").prop("disabled", false);<%-- No I18N --%>
+		    		$(".fielderror").text("<%= com.adventnet.iam.internal.Util.getI18NMsg(request, "IAM.ERROR.GENERAL")%>");
+		    		$(".fielderror").slideDown(200);
+		    	}
+		    }
+		})
 	});
 	
 	$("#cancelbtn").unbind("click").click(function(){

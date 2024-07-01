@@ -635,7 +635,11 @@
             }
             .selectedbox_arattai
             {
-                margin: 0px;
+                margin-top: 0px;
+            }
+            .selectedbox_arattai .scopes
+            {
+            	padding: 0px;
             }
             .selection_head
             {

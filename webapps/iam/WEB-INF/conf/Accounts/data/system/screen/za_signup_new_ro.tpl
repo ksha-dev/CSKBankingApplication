@@ -3,8 +3,8 @@
 <head>
 <title><@i18n key="IAM.CREATE.ZACCOUNT" /></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-<link href="${SCL.getStaticFilePath("/accounts/css/signupnew.css")}" type="text/css" rel="stylesheet" />
+<@resource path="/v2/components/css/${customized_lang_font}" />
+<@resource path="/accounts/css/signupnew.css" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 </head>
 <body>

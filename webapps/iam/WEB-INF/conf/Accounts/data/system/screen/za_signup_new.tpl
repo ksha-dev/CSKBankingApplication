@@ -35,14 +35,19 @@
 	@keyframes stroke-anim4 {0% {stroke-dashoffset: 150px;stroke-opacity: 0;} 74% {stroke-opacity: 1;} 75% {stroke-opacity: 1;stroke-dashoffset: 150px;} 78% {stroke-dashoffset: 150px} 96%,100% {stroke-dashoffset: 0}}
 </style>
 <script type="text/javascript" src="${za.iam_contextpath}/register/script?${signup.scriptParams}&loadcss=false&tvisit=true"></script>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-<link href="${SCL.getStaticFilePath("/accounts/css/signupnew.css")}" type="text/css" rel="stylesheet" />
-<link href="${SCL.getStaticFilePath("/accounts/css/flagStyle.css")}" type="text/css" rel="stylesheet"/>
-<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
+<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+<@resource path="/v2/components/css/${customized_lang_font}" />
+<@resource path="/accounts/css/signupnew.css" />
+<@resource path="/v2/components/js/uvselect.js" />
+<@resource path="/v2/components/css/uvselect.css" />
+<@resource path="/v2/components/js/flagIcons.js" />
+<@resource path="/v2/components/js/splitField.js" />
+<@resource path="/v2/components/css/flagIcons.css" />
+
+<@resource path="/v2/components/css/uv_unauthStatic.css" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 </head>
-<body <#if signup.isDarkmode == 1> class="darkmode"</#if> style="margin: 0; height: 100%; overflow: hidden" >
+<body <#if signup.isDarkmode == 1> class="darkmode"</#if> style="margin: 0; height: 100%; overflow: hidden" <#if signup.rtl == 1> dir='rtl'</#if> >
 <#if signup.isEnabled>
 	<div class="load-bg fade">
 		<div class="basic-box-s box-anim">
@@ -65,7 +70,8 @@
 						</dl>
 						<dl class="za-fullname-container">
 	     					<dd>
-	     						<div class="name_division" style="margin-right: 5%">
+
+	     						<div class="name_division" id="firstname_div">
 	     							<input type="text" placeholder='<@i18n key="IAM.FIRST.NAME" />' name="firstname" maxlength="100" id="firstname" />
 	     						</div>
 	     						<div class="name_division">
@@ -81,7 +87,7 @@
 	     				<dl class="za-emailormobile-container">
 	     					<dd>
 	     						<div class="za-country_code-container">
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-emailormobile" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-emailormobile" onchange="changeCountryCode();"></select>
 								</div>
 	     						<input type="text" placeholder='<@i18n key="IAM.EMAIL.ADDRESS.OR.MOBILE" />'onkeyup ="checking()" onkeydown="checking()" name="emailormobile" maxlength="100" id="phonenumber">
 	     					</dd>
@@ -89,8 +95,7 @@
 	     				<dl class="za-mobile-container">
 		     				<dd>
 		     					<div class="za-country_code-container">
-		     						<label for='country_code_select' class='select_country_code'></label>
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-code" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-code" onchange="changeCountryCode();"></select>
 								</div>
 								<input type="text" placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" onkeydown="checking()" name="mobile" id="mobilefield"  oninput="allownumonly(this)">
 							</dd>
@@ -98,7 +103,7 @@
 						<dl class="za-rmobile-container">
 							<dd>
 		     					<div class="za-country_code-container">
-									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-coderecovery" ></select>
+									<select class="form-input1 countryCnt1 za-country-select-code" name="country_code" id="country-coderecovery" onchange="changeCountryCode();"></select>
 								</div>
 								<input type="text" placeholder='<@i18n key="IAM.PHONE.NUMBER" />' onkeyup ="checking()" name="rmobile" id="rmobilefield" oninput="allownumonly(this)">
 							</dd>
@@ -123,7 +128,7 @@
 						</dl>
 						<dl class="za-password-container">
 							<dd>
-								<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onblur="$('.pwderror').hide()" onkeydown="checkPasswordStrength(event)" onkeyup="checkPasswordStrength(event)">
+								<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password" id="password" class="form-input" onblur="$('.pwderror').hide()" onkeyup="checkPasswordStrength(event)" onkeydown="checkPasswordStrength(event)">
 								<span class="icon-hide show_hide_password"  id="show-password-icon" onclick=togglePasswordField(${signup.minpwdlen});></span>
 								<div class="pwderror"></div>
 							</dd>
@@ -199,7 +204,7 @@
 							<dl class="za-otp-container">
 								<dd>
 									<input type="text" inputmode="numeric" class="form-input" name="otp" id="otpfield" placeholder='<@i18n key="IAM.VERIFY.CODE" />' onkeydown="clearCommonError();" maxlength='10'>
-									<span onclick="resendOTP()" class="resendotp"><@i18n key="IAM.SIGNUP.RESEND.OTP" /></span>
+									<span onclick="resendOTP()" class="resendotp moveRight"><@i18n key="IAM.SIGNUP.RESEND.OTP" /></span>
 								</dd>
 							</dl>
 							<dl class="za-submitbtn-otp">
@@ -245,7 +250,7 @@
 	 		 	"GITHUB":''//no i18n
 	 		 }
 	 			if(fed == 'google'){
-	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='fed_google_large'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span></span></span><span class='"+fed+"_text fed_text largeGoogleText'>"+"<@i18n key="IAM.FEDERATED.SIGNIN.WITH.GOOGLE"/>"+"</span><span class='"+fed+"_text fed_text smallGoogleText'>"+"<@i18n key="IAM.GOOGLE"/>"+"</span></div></div>"
+	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span></span><span class='"+fed+"_text fed_text largeGoogleText'>"+"<@i18n key="IAM.FEDERATED.SIGNIN.WITH.GOOGLE"/>"+"</span></div></div>"
 	 			}
 	 			else if(fed == 'slack'||fed == 'apple'||fed == 'microsoft'||fed == 'twitter'||fed == 'apple'||fed == 'yahoo'){
 	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span></span><span class='"+fed+"_text fed_text'>"+"<@i18n key="IAM.NEW.SIGNIN.SAML.TITLE"  arg0='"+fed+"'/>"+"</span></div></div>"
@@ -256,8 +261,11 @@
 	 			else if(fed == 'github'){
 	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNIN.WITH.GITHUB" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span></span><span class='"+fed+"_text fed_text'>"+"<@i18n key="IAM.FEDERATED.SIGNIN.WITH.GITHUB"/>"+"</span></div></div>"
 	 			}
+	 			else if(fed == 'qq' || fed == 'adp'){
+	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span><span class='"+fed+"_text fed_text'>"+"<@i18n key="IAM.NEW.SIGNIN.SAML.TITLE"  arg0='"+fed.toUpperCase()+"'/>"+"</span></div></div>"
+	 			}
 	 			else if(!fed.includes('_fs')){
-	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span><span class='"+fed+"_text fed_text'>"+fed+"</span></div></div>"
+	 			fedElem += "<div class='"+fed+"_fed fed_div small_box' onclick=FederatedSignIn.GO('"+fed+"') title='<@i18n key="IAM.FEDERATED.SIGNUP.TITLE" arg0='"+fed+"' />'><div style='width:max-content;margin:auto'><span class='"+fed+"_fed_icon fed_icon icon2-"+fed+"_small'>"+fontIconIdpNameToHtmlElement[fed.toUpperCase()]+"</span><span class='"+fed+"_text fed_text'>"+"<@i18n key="IAM.NEW.SIGNIN.SAML.TITLE"  arg0='"+fed+"'/>"+"</span></div></div>"
 	 			}
 	 		});
 	 		fedElem += '<span class="fed_div more" id="showIDPs" title="<@i18n key="IAM.FEDERATED.SIGNIN.MORE"/>" onclick="showMoreIdps();"> <span class="morecircle"></span> <span class="morecircle"></span> <span class="morecircle"></span></span><div class="zohosignin" onclick="showZohoSignin()"><@i18n key="IAM.NEW.SIGNUP.USING.ZOHO"/><span class="fedarrow"></span></div>'
@@ -274,66 +282,26 @@
 							document.querySelector(".load-bg").style.display = "none";
 						}, 300); $("body").attr('style','');
 					}, 500);}
-			$("#firstname").focus();
+			$(".fed_text").hide();
 			$(document.signupform).zaSignUp();
 			var countrySelect = $(".za-rmobile-container").is(":visible") ? "country-coderecovery" : $(".za-mobile-container").is(":visible") ? "country-code": $(".za-emailormobile-container").is(":visible") ? "country-emailormobile":"";
-			 if(countrySelect){
-				$("#"+countrySelect).select2({
-			        allowClear: true,
-			        templateResult: format,
-			        searchInputPlaceholder: '<@i18n key="IAM.SEARCH"/>',
-			        templateSelection: function (option) {
-			        	  selectFlag($("#"+countrySelect).find("option:selected"));
-			              return option.text;
-			        },
-			        language: {
-				        noResults: function(){
-				            return '<@i18n key="IAM.NO.RESULT.FOUND"/>';
-				        }
-				    },
-			        escapeMarkup: function (m) {
-			          return m;
-			        }
-			      });
-			      $("#"+countrySelect+"+.select2 .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-			      selectFlag($("#"+countrySelect).find("option:selected"));
-			      $("#"+countrySelect).addClass("select2_used_tag");
-			      $("#select2-"+countrySelect+"-container").html($("#"+countrySelect+" option:selected").attr("data_number"));
-	      		 $(".select_"+countrySelect).html($("#"+countrySelect+" option:selected").attr("data_number"));
-	      		 $("#"+countrySelect).change(function(){
-			        $(".country_code").html($("#"+countrySelect+" option:selected").attr("data_number"));
-			        $("#select2-"+countrySelect+"-container").html($("#"+countrySelect+" option:selected").attr("data_number"));
-			     	setIndent($("#"+countrySelect).parent().siblings("input"));
-		      });
-		     }
-		     if($(".za-country-container").is(":visible") || (typeof isDataCenterChangeNeeded !=="undefined" && isDataCenterChangeNeeded)){
-		     	$("#country").select2({
-		     		templateResult: function(option){
-				        var spltext;
-				    	if (!option.id) { return option.text; }
-				    	spltext=option.text.split("(");
-				    	var string_code = $(option.element).attr("value");
-				    	var ob = '<div class="pic flag_'+string_code.toUpperCase()+'" ></div><span class="cn">'+spltext[0]+"</span>" ;
-				    	return ob;
-				    },
-				    searchInputPlaceholder: '<@i18n key="IAM.SEARCH"/>',//no i18n
-				    templateSelection: function (option) {
-				    	selectFlag($(option.element));
-	   		            return option.text;
-				    },
-				    language: {
-				        noResults: function(){
-				            return '<@i18n key="IAM.NO.RESULT.FOUND"/>';
-				        }
-				    },
-				    escapeMarkup: function (m) {
-				       return m;
-				    }
-		     	});
-		     	$("#country+.select2 .select2-selection").append("<span id='selectFlag' class='selectFlag'></span>");
-		     	selectFlag($('#country').find("option:selected"));
-		     	$("#country_state").select2();
-		     }
+			var fieldID =  $(".za-rmobile-container").is(":visible") ? "rmobilefield" : $(".za-mobile-container").is(":visible") ? "mobilefield": $(".za-emailormobile-container").is(":visible") ? "phonenumber":"";
+			changeCountryCode();
+			 if(!isMobile){
+			 	$(".select_country_code").hide();
+				 if(countrySelect){
+					renderUV("#"+countrySelect, true, $("#"+fieldID).outerWidth()+"px", "left", "flagIcons", true, true, "country_implement", false, "value", "data_number", "value")
+			     }
+			     checking();
+			     if($(".za-country-container").is(":visible") || (typeof isDataCenterChangeNeeded !=="undefined" && isDataCenterChangeNeeded)){
+			     	renderUV("#country", true, "", "left", "flagIcons", true, false, "country-uv-select", false, "value", "", "value", "100%");
+			     	renderUV("#country_state", true, "", "left", "", false, false, "state-uv-select", false, "", "", "value", "100%");
+			     }
+			 }else if(countrySelect && countrySelect != 'country-emailormobile'){
+			 	$("#"+countrySelect).addClass("mobileselect").css("display","inline-block");
+			 }
+			 checking();
+			 $("#firstname").focus();
 			if(typeof isDataCenterChangeNeeded !=="undefined" && isDataCenterChangeNeeded && typeof loadCountryOptions !=="undefined" && loadCountryOptions !== 'false'){
 				changeDomainName(ZADefaultCountry);
 			}else{
@@ -345,6 +313,8 @@
 				}
 				checking();
 			}
+			setFooterPosition();
+			$("#firstname").focus();
 		 }
 		function fedCheck(){
 		    $(".fed_div").hide();
@@ -380,24 +350,11 @@
 			$(".fed_div,.fed_2show").show();
 			$("#showIDPs").hide();
 			$(".signupcontainer").hide();
-			$(".signin_fed_text").addClass("signin_fedtext_bold");
-			$(".signuptitle,.fed_2show_small").hide();
+			$(".fed_2show_small").hide();
 			$(".google_fed_icon").removeClass("google_small_icon");
-			$(".google_text").show();
-			$(".linkedin_fed_icon").removeClass("icon2-linkedin_small");
-			$(".linkedin_fed_icon").addClass("icon2-linkedin_L");
-			$(".baidu_fed_icon").removeClass("icon2-baidu_small");
-			$(".baidu_fed_icon").addClass("icon2-baidu_L");
-			$(".qq_text").show();
-			$(".douban_text").show();
-			$(".intuit_fed_icon").removeClass("icon2-intuit_small");
-			$(".intuit_fed_icon").addClass("icon2-intuit_L");
-			$(".wechat_text").show();
-			$(".twitter_text").show();
-			$(".microsoft_text").show();
-			$(".feishu_text").show();
-			$(".weibo_text").show();
-			$(".facebook_text").show();
+			$(".intuit_fed_icon").hide();
+			$(".fed_text").show();
+			$(".signin_fed_text").hide();
 		}
 		function showZohoSignin(){
 			$(".large_box").removeClass("large_box");
@@ -405,7 +362,6 @@
 			$(".zohosignin,.fed_2show").css("display","none");
 			$(".signupcontainer").show();
 			$(".signin_fed_text").removeClass("signin_fedtext_bold");
-			$(".signuptitle").show();
 			if($(".google_fed_icon").hasClass("show_small_icon"))
 			{
 				$(".google_fed_icon").addClass("google_small_icon");
@@ -415,20 +371,8 @@
 			if(gVerify != 1 && fedlist.indexOf("apple") != -1){
 				$(".google_text").hide();
 			}
-			$(".linkedin_fed_icon").removeClass("icon2-linkedin_L");
-			$(".linkedin_fed_icon").addClass("icon2-linkedin_small");
-			$(".baidu_fed_icon").removeClass("icon2-baidu_L");
-			$(".baidu_fed_icon").addClass("icon2-baidu_small");
-			$(".qq_text").hide();
-			$(".douban_text").hide();
-			$(".intuit_fed_icon").removeClass("icon2-intuit_L");
-			$(".intuit_fed_icon").addClass("icon2-intuit_small");
-			$(".wechat_text").hide();
-			$(".twitter_text").hide();
-			$(".microsoft_text").hide();
-			$(".feishu_text").hide();
-			$(".weibo_text").hide();
-			$(".facebook_text").hide();
+			$(".fed_text").hide();
+			$(".signin_fed_text").show();
 		}	
 	</script>
 </body>

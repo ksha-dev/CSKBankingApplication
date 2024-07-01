@@ -2474,6 +2474,159 @@ ConditionalPolicy.newBuilder = function() {
     return new ConditionalPolicy();
 };
 
+AccountMemberInfo = function() {
+    var _formprefix = "";
+    
+var switchZuid = "";
+this.setSwitchZuid = function(switchZuid) { 
+    this.switchZuid = switchZuid;
+    return this;
+};
+this.getSwitchZuid = function() {
+    return this.switchZuid;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setSwitchZuid(json["switch_zuid"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getSwitchZuid()) json += '"switch_zuid"' + ":" + '"' + jsonEscape(this.getSwitchZuid())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(AccountMemberInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.switchZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.switchZuid)) { throw new ValidationError(_formprefix + "switch_zuid", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+AccountMemberInfo.path = "accountmemberinfo";
+AccountMemberInfo.newBuilder = function() {
+    return new AccountMemberInfo();
+};
+
+OAuthMobileAppVerificationKeys = function() {
+    var _formprefix = "";
+    
+var storeId = "";
+this.setStoreId = function(storeId) { 
+    this.storeId = storeId;
+    return this;
+};
+this.getStoreId = function() {
+    return this.storeId;
+};
+var keys = "";
+this.setKeys = function(keys) { 
+    this.keys = keys;
+    return this;
+};
+this.getKeys = function() {
+    return this.keys;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setStoreId(json["store_id"]);
+		this.setKeys(json["keys"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getStoreId()) json += '"store_id"' + ":" + '"' + jsonEscape(this.getStoreId())  + '",';
+		if(this.getKeys()) json += '"keys"' + ":" + '"' + jsonEscape(this.getKeys())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthMobileAppVerificationKeys.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.storeId && !Validator.INTEGER.test(this.storeId)) { throw new ValidationError(_formprefix + "store_id", ValidationError.PATTERN_FAILED);}
+if(this.keys && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.keys)) { throw new ValidationError(_formprefix + "keys", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthMobileAppVerificationKeys.path = "oauthmobileappverificationkeys";
+OAuthMobileAppVerificationKeys.newBuilder = function() {
+    return new OAuthMobileAppVerificationKeys();
+};
+
 TokenPairAuthToken = function() {
     var _formprefix = "";
     
@@ -2877,6 +3030,14 @@ this.setIsNewSamlConfig = function(isNewSamlConfig) {
 this.getIsNewSamlConfig = function() {
     return this.isNewSamlConfig;
 };
+var isDomainless = "false";
+this.setIsDomainless = function(isDomainless) { 
+    this.isDomainless = isDomainless;
+    return this;
+};
+this.getIsDomainless = function() {
+    return this.isDomainless;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -2941,6 +3102,7 @@ this.addSamlattribute = function(samlattribute) {
 		this.setSpPrivateKey(json["sp_private_key"]);
 		this.setSpCertificateExpiryTime(json["sp_certificate_expiry_time"]);
 		this.setIsNewSamlConfig(json["is_new_saml_config"]);
+		this.setIsDomainless(json["is_domainless"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setSamlreqparams(URI.getResourceArray(json["sAMLReqParam"],"samlreqparam"));
@@ -2967,6 +3129,7 @@ this.addSamlattribute = function(samlattribute) {
 		if(this.getSpPrivateKey()) json += '"sp_private_key"' + ":" + '"' + jsonEscape(this.getSpPrivateKey())  + '",';
 		if(this.getSpCertificateExpiryTime()) json += '"sp_certificate_expiry_time"' + ":" + '"' + jsonEscape(this.getSpCertificateExpiryTime())  + '",';
 		if(this.getIsNewSamlConfig()) json += '"is_new_saml_config"' + ":" + '"' + jsonEscape(this.getIsNewSamlConfig())  + '",';
+		if(this.getIsDomainless()) json += '"is_domainless"' + ":" + '"' + jsonEscape(this.getIsDomainless())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getSamlreqparams()) json += '"sAMLReqParam"' + ":" + URI.toJSONArray(this.getSamlreqparams())  + ',';
@@ -2998,6 +3161,7 @@ if(this.isSignEnabled && !Validator.BOOLEAN.test(this.isSignEnabled)) { throw ne
 if(this.spCertificate && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.spCertificate)) { throw new ValidationError(_formprefix + "sp_certificate", ValidationError.PATTERN_FAILED);}
 if(this.spPrivateKey && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.spPrivateKey)) { throw new ValidationError(_formprefix + "sp_private_key", ValidationError.PATTERN_FAILED);}
 if(this.spCertificateExpiryTime && !Validator.INTEGER.test(this.spCertificateExpiryTime)) { throw new ValidationError(_formprefix + "sp_certificate_expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.isDomainless && !Validator.BOOLEAN.test(this.isDomainless)) { throw new ValidationError(_formprefix + "is_domainless", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.samlreqparam) { for(i=0; i < this.samlreqparam.length; i++ ) { this.samlreqparam[i].validate(); } }
@@ -4376,6 +4540,232 @@ OAuthAccessToken.newBuilder = function() {
     return new OAuthAccessToken();
 };
 
+OAuthProject = function() {
+    var _formprefix = "";
+    
+var projectId = "";
+this.setProjectId = function(projectId) { 
+    this.projectId = projectId;
+    return this;
+};
+this.getProjectId = function() {
+    return this.projectId;
+};
+var projectType = "1";
+this.setProjectType = function(projectType) { 
+    this.projectType = projectType;
+    return this;
+};
+this.getProjectType = function() {
+    return this.projectType;
+};
+var projectName = "";
+this.setProjectName = function(projectName) { 
+    this.projectName = projectName;
+    return this;
+};
+this.getProjectName = function() {
+    return this.projectName;
+};
+var ownerZid = "";
+this.setOwnerZid = function(ownerZid) { 
+    this.ownerZid = ownerZid;
+    return this;
+};
+this.getOwnerZid = function() {
+    return this.ownerZid;
+};
+var supportMail = "";
+this.setSupportMail = function(supportMail) { 
+    this.supportMail = supportMail;
+    return this;
+};
+this.getSupportMail = function() {
+    return this.supportMail;
+};
+var isSupportMailVerified = "false";
+this.setIsSupportMailVerified = function(isSupportMailVerified) { 
+    this.isSupportMailVerified = isSupportMailVerified;
+    return this;
+};
+this.getIsSupportMailVerified = function() {
+    return this.isSupportMailVerified;
+};
+var privacyPolicyUrl = "";
+this.setPrivacyPolicyUrl = function(privacyPolicyUrl) { 
+    this.privacyPolicyUrl = privacyPolicyUrl;
+    return this;
+};
+this.getPrivacyPolicyUrl = function() {
+    return this.privacyPolicyUrl;
+};
+var termsOfServiceUrl = "";
+this.setTermsOfServiceUrl = function(termsOfServiceUrl) { 
+    this.termsOfServiceUrl = termsOfServiceUrl;
+    return this;
+};
+this.getTermsOfServiceUrl = function() {
+    return this.termsOfServiceUrl;
+};
+var homePageUrl = "";
+this.setHomePageUrl = function(homePageUrl) { 
+    this.homePageUrl = homePageUrl;
+    return this;
+};
+this.getHomePageUrl = function() {
+    return this.homePageUrl;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var oauthprojectclients = undefined;
+this.setOauthprojectclientss = function(oauthprojectclients) { 
+    this.oauthprojectclients = oauthprojectclients;
+    return this;
+};
+this.getOauthprojectclientss = function() {
+    return this.oauthprojectclients;
+};
+this.addOauthprojectclients = function(oauthprojectclients) { 
+ if(!this.oauthprojectclients) this.oauthprojectclients = new Array(); 
+  this.oauthprojectclients.push(oauthprojectclients); 
+ return this;
+};
+
+var oauthprojectopenid = undefined;
+this.setOauthprojectopenids = function(oauthprojectopenid) { 
+    this.oauthprojectopenid = oauthprojectopenid;
+    return this;
+};
+this.getOauthprojectopenids = function() {
+    return this.oauthprojectopenid;
+};
+this.addOauthprojectopenid = function(oauthprojectopenid) { 
+ if(!this.oauthprojectopenid) this.oauthprojectopenid = new Array(); 
+  this.oauthprojectopenid.push(oauthprojectopenid); 
+ return this;
+};
+
+var oauthprojectproperties = undefined;
+this.setOauthprojectpropertiess = function(oauthprojectproperties) { 
+    this.oauthprojectproperties = oauthprojectproperties;
+    return this;
+};
+this.getOauthprojectpropertiess = function() {
+    return this.oauthprojectproperties;
+};
+this.addOauthprojectproperties = function(oauthprojectproperties) { 
+ if(!this.oauthprojectproperties) this.oauthprojectproperties = new Array(); 
+  this.oauthprojectproperties.push(oauthprojectproperties); 
+ return this;
+};
+
+var oauthprojectdcdetails = undefined;
+this.setOauthprojectdcdetailss = function(oauthprojectdcdetails) { 
+    this.oauthprojectdcdetails = oauthprojectdcdetails;
+    return this;
+};
+this.getOauthprojectdcdetailss = function() {
+    return this.oauthprojectdcdetails;
+};
+this.addOauthprojectdcdetails = function(oauthprojectdcdetails) { 
+ if(!this.oauthprojectdcdetails) this.oauthprojectdcdetails = new Array(); 
+  this.oauthprojectdcdetails.push(oauthprojectdcdetails); 
+ return this;
+};
+
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setProjectId(json["project_id"]);
+		this.setProjectType(json["project_type"]);
+		this.setProjectName(json["project_name"]);
+		this.setOwnerZid(json["owner_zid"]);
+		this.setSupportMail(json["support_mail"]);
+		this.setIsSupportMailVerified(json["is_support_mail_verified"]);
+		this.setPrivacyPolicyUrl(json["privacy_policy_url"]);
+		this.setTermsOfServiceUrl(json["terms_of_service_url"]);
+		this.setHomePageUrl(json["home_page_url"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setOauthprojectclientss(URI.getResourceArray(json["oAuthProjectClients"],"oauthprojectclients"));
+		this.setOauthprojectopenids(URI.getResourceArray(json["oAuthProjectOpenID"],"oauthprojectopenid"));
+		this.setOauthprojectpropertiess(URI.getResourceArray(json["oAuthProjectProperties"],"oauthprojectproperties"));
+		this.setOauthprojectdcdetailss(URI.getResourceArray(json["oAuthProjectDcDetails"],"oauthprojectdcdetails"));
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getProjectId()) json += '"project_id"' + ":" + '"' + jsonEscape(this.getProjectId())  + '",';
+		if(this.getProjectType()) json += '"project_type"' + ":" + '"' + jsonEscape(this.getProjectType())  + '",';
+		if(this.getProjectName()) json += '"project_name"' + ":" + '"' + jsonEscape(this.getProjectName())  + '",';
+		if(this.getOwnerZid()) json += '"owner_zid"' + ":" + '"' + jsonEscape(this.getOwnerZid())  + '",';
+		if(this.getSupportMail()) json += '"support_mail"' + ":" + '"' + jsonEscape(this.getSupportMail())  + '",';
+		if(this.getIsSupportMailVerified()) json += '"is_support_mail_verified"' + ":" + '"' + jsonEscape(this.getIsSupportMailVerified())  + '",';
+		if(this.getPrivacyPolicyUrl()) json += '"privacy_policy_url"' + ":" + '"' + jsonEscape(this.getPrivacyPolicyUrl())  + '",';
+		if(this.getTermsOfServiceUrl()) json += '"terms_of_service_url"' + ":" + '"' + jsonEscape(this.getTermsOfServiceUrl())  + '",';
+		if(this.getHomePageUrl()) json += '"home_page_url"' + ":" + '"' + jsonEscape(this.getHomePageUrl())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOauthprojectclientss()) json += '"oAuthProjectClients"' + ":" + URI.toJSONArray(this.getOauthprojectclientss())  + ',';
+		if(this.getOauthprojectopenids()) json += '"oAuthProjectOpenID"' + ":" + URI.toJSONArray(this.getOauthprojectopenids())  + ',';
+		if(this.getOauthprojectpropertiess()) json += '"oAuthProjectProperties"' + ":" + URI.toJSONArray(this.getOauthprojectpropertiess())  + ',';
+		if(this.getOauthprojectdcdetailss()) json += '"oAuthProjectDcDetails"' + ":" + URI.toJSONArray(this.getOauthprojectdcdetailss())  + ',';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProject.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.projectId && !(/^[a-zA-Z0-9_\-]+$/).test(this.projectId)) { throw new ValidationError(_formprefix + "project_id", ValidationError.PATTERN_FAILED);}
+if(this.projectName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.projectName)) { throw new ValidationError(_formprefix + "project_name", ValidationError.PATTERN_FAILED);}
+if(this.ownerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.ownerZid)) { throw new ValidationError(_formprefix + "owner_zid", ValidationError.PATTERN_FAILED);}
+if(this.supportMail && !(/^[\p{L}\p{M}\p{N}\_]([\p{L}\p{M}\p{N}\_\+\-\.\'&\!]*)@(?=.{4,256}$)(([\p{L}\p{M}\p{N}]+)(([\-\_]*[\p{L}\p{M}\p{N}])*)[\.])+[\p{L}\p{M}]{2,22}$/).test(this.supportMail)) { throw new ValidationError(_formprefix + "support_mail", ValidationError.PATTERN_FAILED);}
+if(this.isSupportMailVerified && !Validator.BOOLEAN.test(this.isSupportMailVerified)) { throw new ValidationError(_formprefix + "is_support_mail_verified", ValidationError.PATTERN_FAILED);}
+if(this.privacyPolicyUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.privacyPolicyUrl)) { throw new ValidationError(_formprefix + "privacy_policy_url", ValidationError.PATTERN_FAILED);}
+if(this.termsOfServiceUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.termsOfServiceUrl)) { throw new ValidationError(_formprefix + "terms_of_service_url", ValidationError.PATTERN_FAILED);}
+if(this.homePageUrl && !(/^([\p{L}\p{M}\p{N}]([\p{L}\p{M}\p{N}\-]{0,61}[\p{L}\p{M}\p{N}])?\.)+[\p{L}\p{M}]{2,6}$/).test(this.homePageUrl)) { throw new ValidationError(_formprefix + "home_page_url", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oauthprojectclients) { for(i=0; i < this.oauthprojectclients.length; i++ ) { this.oauthprojectclients[i].validate(); } }
+if(this.oauthprojectopenid) { for(i=0; i < this.oauthprojectopenid.length; i++ ) { this.oauthprojectopenid[i].validate(); } }
+if(this.oauthprojectproperties) { for(i=0; i < this.oauthprojectproperties.length; i++ ) { this.oauthprojectproperties[i].validate(); } }
+if(this.oauthprojectdcdetails) { for(i=0; i < this.oauthprojectdcdetails.length; i++ ) { this.oauthprojectdcdetails[i].validate(); } }
+
+	return this;
+    }
+}
+OAuthProject.path = "oauthproject";
+OAuthProject.newBuilder = function() {
+    return new OAuthProject();
+};
+
 DeploymentConfig = function() {
     var _formprefix = "";
     
@@ -4596,6 +4986,201 @@ if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new Va
 RebrandL10n.path = "rebrandl10n";
 RebrandL10n.newBuilder = function() {
     return new RebrandL10n();
+};
+
+OIDCAuthentication = function() {
+    var _formprefix = "";
+    
+var oidcId = "";
+this.setOidcId = function(oidcId) { 
+    this.oidcId = oidcId;
+    return this;
+};
+this.getOidcId = function() {
+    return this.oidcId;
+};
+var displayName = "";
+this.setDisplayName = function(displayName) { 
+    this.displayName = displayName;
+    return this;
+};
+this.getDisplayName = function() {
+    return this.displayName;
+};
+var clientId = "";
+this.setClientId = function(clientId) { 
+    this.clientId = clientId;
+    return this;
+};
+this.getClientId = function() {
+    return this.clientId;
+};
+var clientSecret = "";
+this.setClientSecret = function(clientSecret) { 
+    this.clientSecret = clientSecret;
+    return this;
+};
+this.getClientSecret = function() {
+    return this.clientSecret;
+};
+var scopes = "";
+this.setScopes = function(scopes) { 
+    this.scopes = scopes;
+    return this;
+};
+this.getScopes = function() {
+    return this.scopes;
+};
+var authorizationUrl = "";
+this.setAuthorizationUrl = function(authorizationUrl) { 
+    this.authorizationUrl = authorizationUrl;
+    return this;
+};
+this.getAuthorizationUrl = function() {
+    return this.authorizationUrl;
+};
+var tokenUrl = "";
+this.setTokenUrl = function(tokenUrl) { 
+    this.tokenUrl = tokenUrl;
+    return this;
+};
+this.getTokenUrl = function() {
+    return this.tokenUrl;
+};
+var tokenAuthMethod = "0";
+this.setTokenAuthMethod = function(tokenAuthMethod) { 
+    this.tokenAuthMethod = tokenAuthMethod;
+    return this;
+};
+this.getTokenAuthMethod = function() {
+    return this.tokenAuthMethod;
+};
+var userinfoUrl = "";
+this.setUserinfoUrl = function(userinfoUrl) { 
+    this.userinfoUrl = userinfoUrl;
+    return this;
+};
+this.getUserinfoUrl = function() {
+    return this.userinfoUrl;
+};
+var logoutUrl = "";
+this.setLogoutUrl = function(logoutUrl) { 
+    this.logoutUrl = logoutUrl;
+    return this;
+};
+this.getLogoutUrl = function() {
+    return this.logoutUrl;
+};
+var isEnabled = "true";
+this.setIsEnabled = function(isEnabled) { 
+    this.isEnabled = isEnabled;
+    return this;
+};
+this.getIsEnabled = function() {
+    return this.isEnabled;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var oidcattribute = undefined;
+this.setOidcattributes = function(oidcattribute) { 
+    this.oidcattribute = oidcattribute;
+    return this;
+};
+this.getOidcattributes = function() {
+    return this.oidcattribute;
+};
+this.addOidcattribute = function(oidcattribute) { 
+ if(!this.oidcattribute) this.oidcattribute = new Array(); 
+  this.oidcattribute.push(oidcattribute); 
+ return this;
+};
+
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setOidcId(json["oidc_id"]);
+		this.setDisplayName(json["display_name"]);
+		this.setClientId(json["client_id"]);
+		this.setClientSecret(json["client_secret"]);
+		this.setScopes(json["scopes"]);
+		this.setAuthorizationUrl(json["authorization_url"]);
+		this.setTokenUrl(json["token_url"]);
+		this.setTokenAuthMethod(json["token_auth_method"]);
+		this.setUserinfoUrl(json["userinfo_url"]);
+		this.setLogoutUrl(json["logout_url"]);
+		this.setIsEnabled(json["is_enabled"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setOidcattributes(URI.getResourceArray(json["oIDCAttribute"],"oidcattribute"));
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getOidcId()) json += '"oidc_id"' + ":" + '"' + jsonEscape(this.getOidcId())  + '",';
+		if(this.getDisplayName()) json += '"display_name"' + ":" + '"' + jsonEscape(this.getDisplayName())  + '",';
+		if(this.getClientId()) json += '"client_id"' + ":" + '"' + jsonEscape(this.getClientId())  + '",';
+		if(this.getClientSecret()) json += '"client_secret"' + ":" + '"' + jsonEscape(this.getClientSecret())  + '",';
+		if(this.getScopes()) json += '"scopes"' + ":" + '"' + jsonEscape(this.getScopes())  + '",';
+		if(this.getAuthorizationUrl()) json += '"authorization_url"' + ":" + '"' + jsonEscape(this.getAuthorizationUrl())  + '",';
+		if(this.getTokenUrl()) json += '"token_url"' + ":" + '"' + jsonEscape(this.getTokenUrl())  + '",';
+		if(this.getTokenAuthMethod()) json += '"token_auth_method"' + ":" + '"' + jsonEscape(this.getTokenAuthMethod())  + '",';
+		if(this.getUserinfoUrl()) json += '"userinfo_url"' + ":" + '"' + jsonEscape(this.getUserinfoUrl())  + '",';
+		if(this.getLogoutUrl()) json += '"logout_url"' + ":" + '"' + jsonEscape(this.getLogoutUrl())  + '",';
+		if(this.getIsEnabled()) json += '"is_enabled"' + ":" + '"' + jsonEscape(this.getIsEnabled())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOidcattributes()) json += '"oIDCAttribute"' + ":" + URI.toJSONArray(this.getOidcattributes())  + ',';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OIDCAuthentication.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.clientId && !(/^[a-zA-Z0-9_\-]+$/).test(this.clientId)) { throw new ValidationError(_formprefix + "client_id", ValidationError.PATTERN_FAILED);}
+if(this.clientSecret && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.clientSecret)) { throw new ValidationError(_formprefix + "client_secret", ValidationError.PATTERN_FAILED);}
+if(this.scopes && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.scopes)) { throw new ValidationError(_formprefix + "scopes", ValidationError.PATTERN_FAILED);}
+if(this.authorizationUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.authorizationUrl)) { throw new ValidationError(_formprefix + "authorization_url", ValidationError.PATTERN_FAILED);}
+if(this.tokenUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.tokenUrl)) { throw new ValidationError(_formprefix + "token_url", ValidationError.PATTERN_FAILED);}
+if(this.userinfoUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.userinfoUrl)) { throw new ValidationError(_formprefix + "userinfo_url", ValidationError.PATTERN_FAILED);}
+if(this.logoutUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.logoutUrl)) { throw new ValidationError(_formprefix + "logout_url", ValidationError.PATTERN_FAILED);}
+if(this.isEnabled && !Validator.BOOLEAN.test(this.isEnabled)) { throw new ValidationError(_formprefix + "is_enabled", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oidcattribute) { for(i=0; i < this.oidcattribute.length; i++ ) { this.oidcattribute[i].validate(); } }
+
+	return this;
+    }
+}
+OIDCAuthentication.path = "oidcauthentication";
+OIDCAuthentication.newBuilder = function() {
+    return new OIDCAuthentication();
 };
 
 ResourceAction = function() {
@@ -5012,8 +5597,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.policyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.policyName)) { throw new ValidationError(_formprefix + "policy_name", ValidationError.PATTERN_FAILED);}
-if(this.policyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.policyValue)) { throw new ValidationError(_formprefix + "policy_value", ValidationError.PATTERN_FAILED);}
+	if(this.policyName && !(/xss:throwerror/).test(this.policyName)) { throw new ValidationError(_formprefix + "policy_name", ValidationError.PATTERN_FAILED);}
+if(this.policyValue && !(/xss:throwerror/).test(this.policyValue)) { throw new ValidationError(_formprefix + "policy_value", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -6806,8 +7391,8 @@ this.getModifiedTime = function() {
     this.validate = function() {
 	var i = 0;
 	if(this.zgpid && !Validator.INTEGER.test(this.zgpid)) { throw new ValidationError(_formprefix + "zgpid", ValidationError.PATTERN_FAILED);}
-if(this.propertyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propertyName)) { throw new ValidationError(_formprefix + "property_name", ValidationError.PATTERN_FAILED);}
-if(this.propertyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propertyValue)) { throw new ValidationError(_formprefix + "property_value", ValidationError.PATTERN_FAILED);}
+if(this.propertyName && !(/xss:throwerror/).test(this.propertyName)) { throw new ValidationError(_formprefix + "property_name", ValidationError.PATTERN_FAILED);}
+if(this.propertyValue && !(/xss:throwerror/).test(this.propertyValue)) { throw new ValidationError(_formprefix + "property_value", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -8633,6 +9218,120 @@ AppAccountFinancialSettings.newBuilder = function() {
     return new AppAccountFinancialSettings();
 };
 
+AppAccountServiceInfo = function() {
+    var _formprefix = "";
+    
+var bundleType = "-1";
+this.setBundleType = function(bundleType) { 
+    this.bundleType = bundleType;
+    return this;
+};
+this.getBundleType = function() {
+    return this.bundleType;
+};
+var productionZid = "";
+this.setProductionZid = function(productionZid) { 
+    this.productionZid = productionZid;
+    return this;
+};
+this.getProductionZid = function() {
+    return this.productionZid;
+};
+var partnerZid = "";
+this.setPartnerZid = function(partnerZid) { 
+    this.partnerZid = partnerZid;
+    return this;
+};
+this.getPartnerZid = function() {
+    return this.partnerZid;
+};
+var accountType = "-1";
+this.setAccountType = function(accountType) { 
+    this.accountType = accountType;
+    return this;
+};
+this.getAccountType = function() {
+    return this.accountType;
+};
+var isPayloadEncrypted = "0";
+this.setIsPayloadEncrypted = function(isPayloadEncrypted) { 
+    this.isPayloadEncrypted = isPayloadEncrypted;
+    return this;
+};
+this.getIsPayloadEncrypted = function() {
+    return this.isPayloadEncrypted;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setBundleType(json["bundle_type"]);
+		this.setProductionZid(json["production_zid"]);
+		this.setPartnerZid(json["partner_zid"]);
+		this.setAccountType(json["account_type"]);
+		this.setIsPayloadEncrypted(json["is_payload_encrypted"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getBundleType()) json += '"bundle_type"' + ":" + '"' + jsonEscape(this.getBundleType())  + '",';
+		if(this.getProductionZid()) json += '"production_zid"' + ":" + '"' + jsonEscape(this.getProductionZid())  + '",';
+		if(this.getPartnerZid()) json += '"partner_zid"' + ":" + '"' + jsonEscape(this.getPartnerZid())  + '",';
+		if(this.getAccountType()) json += '"account_type"' + ":" + '"' + jsonEscape(this.getAccountType())  + '",';
+		if(this.getIsPayloadEncrypted()) json += '"is_payload_encrypted"' + ":" + '"' + jsonEscape(this.getIsPayloadEncrypted())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(AppAccountServiceInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.bundleType && !Validator.INTEGER.test(this.bundleType)) { throw new ValidationError(_formprefix + "bundle_type", ValidationError.PATTERN_FAILED);}
+if(this.productionZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.productionZid)) { throw new ValidationError(_formprefix + "production_zid", ValidationError.PATTERN_FAILED);}
+if(this.partnerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.partnerZid)) { throw new ValidationError(_formprefix + "partner_zid", ValidationError.PATTERN_FAILED);}
+if(this.accountType && !Validator.INTEGER.test(this.accountType)) { throw new ValidationError(_formprefix + "account_type", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+AppAccountServiceInfo.path = "appaccountserviceinfo";
+AppAccountServiceInfo.newBuilder = function() {
+    return new AppAccountServiceInfo();
+};
+
 Statement = function() {
     var _formprefix = "";
     
@@ -10080,6 +10779,14 @@ this.addAppaccountconfiguration = function(appaccountconfiguration) {
  return this;
 };
 
+var appaccountserviceinfo = undefined;
+this.setAppaccountserviceinfo = function(appaccountserviceinfo) { 
+    this.appaccountserviceinfo = appaccountserviceinfo;
+    return this;
+};
+this.getAppaccountserviceinfo = function() {
+    return this.appaccountserviceinfo;
+};
 var appaccountlicense = undefined;
 this.setAppaccountlicenses = function(appaccountlicense) { 
     this.appaccountlicense = appaccountlicense;
@@ -10142,6 +10849,7 @@ this.addAppaccountinvitationtemplate = function(appaccountinvitationtemplate) {
 		this.setAccountoauthaccessgrants(URI.getResourceArray(json["accountOAuthAccessGrant"],"accountoauthaccessgrant"));
 		this.setAccountmembers(URI.getResourceArray(json["accountMember"],"accountmember"));
 		this.setAppaccountconfigurations(URI.getResourceArray(json["appAccountConfiguration"],"appaccountconfiguration"));
+		this.setAppaccountserviceinfo(URI.getResource(json["appAccountServiceInfo"],"appaccountserviceinfo"));
 		this.setAppaccountlicenses(URI.getResourceArray(json["appAccountLicense"],"appaccountlicense"));
 		this.setPortalaccountmappings(URI.getResourceArray(json["portalAccountMapping"],"portalaccountmapping"));
 		this.setAppaccountinvitationtemplates(URI.getResourceArray(json["appAccountInvitationTemplate"],"appaccountinvitationtemplate"));
@@ -10167,6 +10875,7 @@ this.addAppaccountinvitationtemplate = function(appaccountinvitationtemplate) {
 		if(this.getAccountoauthaccessgrants()) json += '"accountOAuthAccessGrant"' + ":" + URI.toJSONArray(this.getAccountoauthaccessgrants())  + ',';
 		if(this.getAccountmembers()) json += '"accountMember"' + ":" + URI.toJSONArray(this.getAccountmembers())  + ',';
 		if(this.getAppaccountconfigurations()) json += '"appAccountConfiguration"' + ":" + URI.toJSONArray(this.getAppaccountconfigurations())  + ',';
+		if(this.getAppaccountserviceinfo()) json += '"appAccountServiceInfo"' + ":" + this.getAppaccountserviceinfo().toJSON()  + ',';
 		if(this.getAppaccountlicenses()) json += '"appAccountLicense"' + ":" + URI.toJSONArray(this.getAppaccountlicenses())  + ',';
 		if(this.getPortalaccountmappings()) json += '"portalAccountMapping"' + ":" + URI.toJSONArray(this.getPortalaccountmappings())  + ',';
 		if(this.getAppaccountinvitationtemplates()) json += '"appAccountInvitationTemplate"' + ":" + URI.toJSONArray(this.getAppaccountinvitationtemplates())  + ',';
@@ -10205,6 +10914,7 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 if(this.accountoauthaccessgrant) { for(i=0; i < this.accountoauthaccessgrant.length; i++ ) { this.accountoauthaccessgrant[i].validate(); } }
 if(this.accountmember) { for(i=0; i < this.accountmember.length; i++ ) { this.accountmember[i].validate(); } }
 if(this.appaccountconfiguration) { for(i=0; i < this.appaccountconfiguration.length; i++ ) { this.appaccountconfiguration[i].validate(); } }
+if(this.appaccountserviceinfo) { this.appaccountserviceinfo.validate(); }
 if(this.appaccountlicense) { for(i=0; i < this.appaccountlicense.length; i++ ) { this.appaccountlicense[i].validate(); } }
 if(this.portalaccountmapping) { for(i=0; i < this.portalaccountmapping.length; i++ ) { this.portalaccountmapping[i].validate(); } }
 if(this.appaccountinvitationtemplate) { for(i=0; i < this.appaccountinvitationtemplate.length; i++ ) { this.appaccountinvitationtemplate[i].validate(); } }
@@ -11867,6 +12577,96 @@ ClientPortalOrgType.newBuilder = function() {
     return new ClientPortalOrgType();
 };
 
+OIDCAttribute = function() {
+    var _formprefix = "";
+    
+var appId = "";
+this.setAppId = function(appId) { 
+    this.appId = appId;
+    return this;
+};
+this.getAppId = function() {
+    return this.appId;
+};
+var fieldName = "";
+this.setFieldName = function(fieldName) { 
+    this.fieldName = fieldName;
+    return this;
+};
+this.getFieldName = function() {
+    return this.fieldName;
+};
+var attributeName = "";
+this.setAttributeName = function(attributeName) { 
+    this.attributeName = attributeName;
+    return this;
+};
+this.getAttributeName = function() {
+    return this.attributeName;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setAppId(json["app_id"]);
+		this.setFieldName(json["field_name"]);
+		this.setAttributeName(json["attribute_name"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getAppId()) json += '"app_id"' + ":" + '"' + jsonEscape(this.getAppId())  + '",';
+		if(this.getFieldName()) json += '"field_name"' + ":" + '"' + jsonEscape(this.getFieldName())  + '",';
+		if(this.getAttributeName()) json += '"attribute_name"' + ":" + '"' + jsonEscape(this.getAttributeName())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OIDCAttribute.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OIDCAttribute.path = "oidcattribute";
+OIDCAttribute.newBuilder = function() {
+    return new OIDCAttribute();
+};
+
 PortalMapping = function() {
     var _formprefix = "";
     
@@ -12075,6 +12875,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -12089,6 +12897,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -12098,6 +12907,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -12120,6 +12930,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -15157,6 +15968,14 @@ this.setSuperAdminZuid = function(superAdminZuid) {
 this.getSuperAdminZuid = function() {
     return this.superAdminZuid;
 };
+var departmentHead = "";
+this.setDepartmentHead = function(departmentHead) { 
+    this.departmentHead = departmentHead;
+    return this;
+};
+this.getDepartmentHead = function() {
+    return this.departmentHead;
+};
 var groupName = "";
 this.setGroupName = function(groupName) { 
     this.groupName = groupName;
@@ -15349,6 +16168,7 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 		this.setZgid(json["zgid"]);
 		this.setGroupStatus(json["group_status"]);
 		this.setSuperAdminZuid(json["super_admin_zuid"]);
+		this.setDepartmentHead(json["department_head"]);
 		this.setGroupName(json["group_name"]);
 		this.setGroupDescription(json["group_description"]);
 		this.setGroupType(json["group_type"]);
@@ -15375,6 +16195,7 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 		if(this.getZgid()) json += '"zgid"' + ":" + '"' + jsonEscape(this.getZgid())  + '",';
 		if(this.getGroupStatus()) json += '"group_status"' + ":" + '"' + jsonEscape(this.getGroupStatus())  + '",';
 		if(this.getSuperAdminZuid()) json += '"super_admin_zuid"' + ":" + '"' + jsonEscape(this.getSuperAdminZuid())  + '",';
+		if(this.getDepartmentHead()) json += '"department_head"' + ":" + '"' + jsonEscape(this.getDepartmentHead())  + '",';
 		if(this.getGroupName()) json += '"group_name"' + ":" + '"' + jsonEscape(this.getGroupName())  + '",';
 		if(this.getGroupDescription()) json += '"group_description"' + ":" + '"' + jsonEscape(this.getGroupDescription())  + '",';
 		if(this.getGroupType()) json += '"group_type"' + ":" + '"' + jsonEscape(this.getGroupType())  + '",';
@@ -15413,8 +16234,9 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 	var i = 0;
 	if(this.zgid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zgid)) { throw new ValidationError(_formprefix + "zgid", ValidationError.PATTERN_FAILED);}
 if(this.superAdminZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.superAdminZuid)) { throw new ValidationError(_formprefix + "super_admin_zuid", ValidationError.PATTERN_FAILED);}
-if(this.groupName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupName)) { throw new ValidationError(_formprefix + "group_name", ValidationError.PATTERN_FAILED);}
-if(this.groupDescription && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupDescription)) { throw new ValidationError(_formprefix + "group_description", ValidationError.PATTERN_FAILED);}
+if(this.departmentHead && !(/^[a-zA-Z0-9_\-]+$/).test(this.departmentHead)) { throw new ValidationError(_formprefix + "department_head", ValidationError.PATTERN_FAILED);}
+if(this.groupName && !(/xss:throwerror/).test(this.groupName)) { throw new ValidationError(_formprefix + "group_name", ValidationError.PATTERN_FAILED);}
+if(this.groupDescription && !(/xss:throwerror/).test(this.groupDescription)) { throw new ValidationError(_formprefix + "group_description", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -18910,6 +19732,14 @@ this.setCreatedTime = function(createdTime) {
 this.getCreatedTime = function() {
     return this.createdTime;
 };
+var serviceorgmemberinfo = undefined;
+this.setServiceorgmemberinfo = function(serviceorgmemberinfo) { 
+    this.serviceorgmemberinfo = serviceorgmemberinfo;
+    return this;
+};
+this.getServiceorgmemberinfo = function() {
+    return this.serviceorgmemberinfo;
+};
 var serviceorgmemberrole = undefined;
 this.setServiceorgmemberroles = function(serviceorgmemberrole) { 
     this.serviceorgmemberrole = serviceorgmemberrole;
@@ -18933,6 +19763,7 @@ this.addServiceorgmemberrole = function(serviceorgmemberrole) {
 		this.setUserType(json["user_type"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setCreatedTime(json["created_time"]);
+		this.setServiceorgmemberinfo(URI.getResource(json["serviceOrgMemberInfo"],"serviceorgmemberinfo"));
 		this.setServiceorgmemberroles(URI.getResourceArray(json["serviceOrgMemberRole"],"serviceorgmemberrole"));
 
 	return this;
@@ -18945,6 +19776,7 @@ this.addServiceorgmemberrole = function(serviceorgmemberrole) {
 		if(this.getUserType()) json += '"user_type"' + ":" + '"' + jsonEscape(this.getUserType())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getServiceorgmemberinfo()) json += '"serviceOrgMemberInfo"' + ":" + this.getServiceorgmemberinfo().toJSON()  + ',';
 		if(this.getServiceorgmemberroles()) json += '"serviceOrgMemberRole"' + ":" + URI.toJSONArray(this.getServiceorgmemberroles())  + ',';
 
 	json = removeLastComma(json);
@@ -18969,6 +19801,7 @@ if(this.userRole && !Validator.INTEGER.test(this.userRole)) { throw new Validati
 if(this.userType && !Validator.INTEGER.test(this.userType)) { throw new ValidationError(_formprefix + "user_type", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.serviceorgmemberinfo) { this.serviceorgmemberinfo.validate(); }
 if(this.serviceorgmemberrole) { for(i=0; i < this.serviceorgmemberrole.length; i++ ) { this.serviceorgmemberrole[i].validate(); } }
 
 	return this;
@@ -20529,6 +21362,87 @@ AccountAudit.newBuilder = function() {
     return new AccountAudit();
 };
 
+OAuthProjectClients = function() {
+    var _formprefix = "";
+    
+var clientZid = "";
+this.setClientZid = function(clientZid) { 
+    this.clientZid = clientZid;
+    return this;
+};
+this.getClientZid = function() {
+    return this.clientZid;
+};
+var distributionStatus = "1";
+this.setDistributionStatus = function(distributionStatus) { 
+    this.distributionStatus = distributionStatus;
+    return this;
+};
+this.getDistributionStatus = function() {
+    return this.distributionStatus;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setClientZid(json["client_zid"]);
+		this.setDistributionStatus(json["distribution_status"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
+		if(this.getDistributionStatus()) json += '"distribution_status"' + ":" + '"' + jsonEscape(this.getDistributionStatus())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectClients.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectClients.path = "oauthprojectclients";
+OAuthProjectClients.newBuilder = function() {
+    return new OAuthProjectClients();
+};
+
 OAuthMobileAppService = function() {
     var _formprefix = "";
     
@@ -21442,6 +22356,20 @@ this.addJwtauthentication = function(jwtauthentication) {
  return this;
 };
 
+var oidcauthentication = undefined;
+this.setOidcauthentications = function(oidcauthentication) { 
+    this.oidcauthentication = oidcauthentication;
+    return this;
+};
+this.getOidcauthentications = function() {
+    return this.oidcauthentication;
+};
+this.addOidcauthentication = function(oidcauthentication) { 
+ if(!this.oidcauthentication) this.oidcauthentication = new Array(); 
+  this.oidcauthentication.push(oidcauthentication); 
+ return this;
+};
+
 var conditionalpolicy = undefined;
 this.setConditionalpolicys = function(conditionalpolicy) { 
     this.conditionalpolicy = conditionalpolicy;
@@ -21528,6 +22456,7 @@ this.addUnifiedgroup = function(unifiedgroup) {
 		this.setRoutingpolicys(URI.getResourceArray(json["routingPolicy"],"routingpolicy"));
 		this.setSamlauthentications(URI.getResourceArray(json["sAMLAuthentication"],"samlauthentication"));
 		this.setJwtauthentications(URI.getResourceArray(json["jWTAuthentication"],"jwtauthentication"));
+		this.setOidcauthentications(URI.getResourceArray(json["oIDCAuthentication"],"oidcauthentication"));
 		this.setConditionalpolicys(URI.getResourceArray(json["conditionalPolicy"],"conditionalpolicy"));
 		this.setIpaddresss(URI.getResourceArray(json["ipAddress"],"ipaddress"));
 		this.setUnifiedgroups(URI.getResourceArray(json["unifiedGroup"],"unifiedgroup"));
@@ -21577,6 +22506,7 @@ this.addUnifiedgroup = function(unifiedgroup) {
 		if(this.getRoutingpolicys()) json += '"routingPolicy"' + ":" + URI.toJSONArray(this.getRoutingpolicys())  + ',';
 		if(this.getSamlauthentications()) json += '"sAMLAuthentication"' + ":" + URI.toJSONArray(this.getSamlauthentications())  + ',';
 		if(this.getJwtauthentications()) json += '"jWTAuthentication"' + ":" + URI.toJSONArray(this.getJwtauthentications())  + ',';
+		if(this.getOidcauthentications()) json += '"oIDCAuthentication"' + ":" + URI.toJSONArray(this.getOidcauthentications())  + ',';
 		if(this.getConditionalpolicys()) json += '"conditionalPolicy"' + ":" + URI.toJSONArray(this.getConditionalpolicys())  + ',';
 		if(this.getIpaddresss()) json += '"ipAddress"' + ":" + URI.toJSONArray(this.getIpaddresss())  + ',';
 		if(this.getUnifiedgroups()) json += '"unifiedGroup"' + ":" + URI.toJSONArray(this.getUnifiedgroups())  + ',';
@@ -21637,6 +22567,7 @@ if(this.logo) { this.logo.validate(); }
 if(this.routingpolicy) { for(i=0; i < this.routingpolicy.length; i++ ) { this.routingpolicy[i].validate(); } }
 if(this.samlauthentication) { for(i=0; i < this.samlauthentication.length; i++ ) { this.samlauthentication[i].validate(); } }
 if(this.jwtauthentication) { for(i=0; i < this.jwtauthentication.length; i++ ) { this.jwtauthentication[i].validate(); } }
+if(this.oidcauthentication) { for(i=0; i < this.oidcauthentication.length; i++ ) { this.oidcauthentication[i].validate(); } }
 if(this.conditionalpolicy) { for(i=0; i < this.conditionalpolicy.length; i++ ) { this.conditionalpolicy[i].validate(); } }
 if(this.ipaddress) { for(i=0; i < this.ipaddress.length; i++ ) { this.ipaddress[i].validate(); } }
 if(this.unifiedgroup) { for(i=0; i < this.unifiedgroup.length; i++ ) { this.unifiedgroup[i].validate(); } }
@@ -22975,16 +23906,36 @@ this.setClientZid = function(clientZid) {
 this.getClientZid = function() {
     return this.clientZid;
 };
+var appVersion = "";
+this.setAppVersion = function(appVersion) { 
+    this.appVersion = appVersion;
+    return this;
+};
+this.getAppVersion = function() {
+    return this.appVersion;
+};
+var ssokitVersion = "";
+this.setSsokitVersion = function(ssokitVersion) { 
+    this.ssokitVersion = ssokitVersion;
+    return this;
+};
+this.getSsokitVersion = function() {
+    return this.ssokitVersion;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
 		this.setClientZid(json["client_zid"]);
+		this.setAppVersion(json["app_version"]);
+		this.setSsokitVersion(json["ssokit_version"]);
 
 	return this;
     }
     this.toJSON = function() {
 	var json = "{";
 		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
+		if(this.getAppVersion()) json += '"app_version"' + ":" + '"' + jsonEscape(this.getAppVersion())  + '",';
+		if(this.getSsokitVersion()) json += '"ssokit_version"' + ":" + '"' + jsonEscape(this.getSsokitVersion())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -23004,6 +23955,8 @@ this.getClientZid = function() {
     this.validate = function() {
 	var i = 0;
 	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
+if(this.appVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.appVersion)) { throw new ValidationError(_formprefix + "app_version", ValidationError.PATTERN_FAILED);}
+if(this.ssokitVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.ssokitVersion)) { throw new ValidationError(_formprefix + "ssokit_version", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -23080,6 +24033,46 @@ this.setEnvironment = function(environment) {
 this.getEnvironment = function() {
     return this.environment;
 };
+var verificationCode = "";
+this.setVerificationCode = function(verificationCode) { 
+    this.verificationCode = verificationCode;
+    return this;
+};
+this.getVerificationCode = function() {
+    return this.verificationCode;
+};
+var verificationMode = "";
+this.setVerificationMode = function(verificationMode) { 
+    this.verificationMode = verificationMode;
+    return this;
+};
+this.getVerificationMode = function() {
+    return this.verificationMode;
+};
+var verificationTime = "";
+this.setVerificationTime = function(verificationTime) { 
+    this.verificationTime = verificationTime;
+    return this;
+};
+this.getVerificationTime = function() {
+    return this.verificationTime;
+};
+var expiryTime = "";
+this.setExpiryTime = function(expiryTime) { 
+    this.expiryTime = expiryTime;
+    return this;
+};
+this.getExpiryTime = function() {
+    return this.expiryTime;
+};
+var verifiedBy = "";
+this.setVerifiedBy = function(verifiedBy) { 
+    this.verifiedBy = verifiedBy;
+    return this;
+};
+this.getVerifiedBy = function() {
+    return this.verifiedBy;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
@@ -23091,6 +24084,11 @@ this.getEnvironment = function() {
 		this.setIsVerified(json["is_verified"]);
 		this.setDomainType(json["domain_type"]);
 		this.setEnvironment(json["environment"]);
+		this.setVerificationCode(json["verification_code"]);
+		this.setVerificationMode(json["verification_mode"]);
+		this.setVerificationTime(json["verification_time"]);
+		this.setExpiryTime(json["expiry_time"]);
+		this.setVerifiedBy(json["verified_by"]);
 
 	return this;
     }
@@ -23104,6 +24102,11 @@ this.getEnvironment = function() {
 		if(this.getIsVerified()) json += '"is_verified"' + ":" + '"' + jsonEscape(this.getIsVerified())  + '",';
 		if(this.getDomainType()) json += '"domain_type"' + ":" + '"' + jsonEscape(this.getDomainType())  + '",';
 		if(this.getEnvironment()) json += '"environment"' + ":" + '"' + jsonEscape(this.getEnvironment())  + '",';
+		if(this.getVerificationCode()) json += '"verification_code"' + ":" + '"' + jsonEscape(this.getVerificationCode())  + '",';
+		if(this.getVerificationMode()) json += '"verification_mode"' + ":" + '"' + jsonEscape(this.getVerificationMode())  + '",';
+		if(this.getVerificationTime()) json += '"verification_time"' + ":" + '"' + jsonEscape(this.getVerificationTime())  + '",';
+		if(this.getExpiryTime()) json += '"expiry_time"' + ":" + '"' + jsonEscape(this.getExpiryTime())  + '",';
+		if(this.getVerifiedBy()) json += '"verified_by"' + ":" + '"' + jsonEscape(this.getVerifiedBy())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -23129,6 +24132,11 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.isVerified && !Validator.BOOLEAN.test(this.isVerified)) { throw new ValidationError(_formprefix + "is_verified", ValidationError.PATTERN_FAILED);}
 if(this.environment && !Validator.INTEGER.test(this.environment)) { throw new ValidationError(_formprefix + "environment", ValidationError.PATTERN_FAILED);}
+if(this.verificationCode && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.verificationCode)) { throw new ValidationError(_formprefix + "verification_code", ValidationError.PATTERN_FAILED);}
+if(this.verificationMode && !Validator.INTEGER.test(this.verificationMode)) { throw new ValidationError(_formprefix + "verification_mode", ValidationError.PATTERN_FAILED);}
+if(this.verificationTime && !Validator.INTEGER.test(this.verificationTime)) { throw new ValidationError(_formprefix + "verification_time", ValidationError.PATTERN_FAILED);}
+if(this.expiryTime && !Validator.INTEGER.test(this.expiryTime)) { throw new ValidationError(_formprefix + "expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.verifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.verifiedBy)) { throw new ValidationError(_formprefix + "verified_by", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -23165,6 +24173,22 @@ this.setRefreshToken = function(refreshToken) {
 this.getRefreshToken = function() {
     return this.refreshToken;
 };
+var appVersion = "";
+this.setAppVersion = function(appVersion) { 
+    this.appVersion = appVersion;
+    return this;
+};
+this.getAppVersion = function() {
+    return this.appVersion;
+};
+var ssokitVersion = "";
+this.setSsokitVersion = function(ssokitVersion) { 
+    this.ssokitVersion = ssokitVersion;
+    return this;
+};
+this.getSsokitVersion = function() {
+    return this.ssokitVersion;
+};
 var oauthmobileuserdevicesubclients = undefined;
 this.setOauthmobileuserdevicesubclientss = function(oauthmobileuserdevicesubclients) { 
     this.oauthmobileuserdevicesubclients = oauthmobileuserdevicesubclients;
@@ -23185,6 +24209,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 		this.setClientZid(json["client_zid"]);
 		this.setUserZuid(json["user_zuid"]);
 		this.setRefreshToken(json["refresh_token"]);
+		this.setAppVersion(json["app_version"]);
+		this.setSsokitVersion(json["ssokit_version"]);
 		this.setOauthmobileuserdevicesubclientss(URI.getResourceArray(json["oAuthMobileUserDeviceSubClients"],"oauthmobileuserdevicesubclients"));
 
 	return this;
@@ -23194,6 +24220,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
 		if(this.getUserZuid()) json += '"user_zuid"' + ":" + '"' + jsonEscape(this.getUserZuid())  + '",';
 		if(this.getRefreshToken()) json += '"refresh_token"' + ":" + '"' + jsonEscape(this.getRefreshToken())  + '",';
+		if(this.getAppVersion()) json += '"app_version"' + ":" + '"' + jsonEscape(this.getAppVersion())  + '",';
+		if(this.getSsokitVersion()) json += '"ssokit_version"' + ":" + '"' + jsonEscape(this.getSsokitVersion())  + '",';
 		if(this.getOauthmobileuserdevicesubclientss()) json += '"oAuthMobileUserDeviceSubClients"' + ":" + URI.toJSONArray(this.getOauthmobileuserdevicesubclientss())  + ',';
 
 	json = removeLastComma(json);
@@ -23216,6 +24244,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
 if(this.userZuid && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.userZuid)) { throw new ValidationError(_formprefix + "user_zuid", ValidationError.PATTERN_FAILED);}
 if(this.refreshToken && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.refreshToken)) { throw new ValidationError(_formprefix + "refresh_token", ValidationError.PATTERN_FAILED);}
+if(this.appVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.appVersion)) { throw new ValidationError(_formprefix + "app_version", ValidationError.PATTERN_FAILED);}
+if(this.ssokitVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.ssokitVersion)) { throw new ValidationError(_formprefix + "ssokit_version", ValidationError.PATTERN_FAILED);}
 if(this.oauthmobileuserdevicesubclients) { for(i=0; i < this.oauthmobileuserdevicesubclients.length; i++ ) { this.oauthmobileuserdevicesubclients[i].validate(); } }
 
 	return this;
@@ -25940,6 +26970,131 @@ OAuthRefreshTokenScopes.newBuilder = function() {
     return new OAuthRefreshTokenScopes();
 };
 
+ServiceOrgSubServiceInfo = function() {
+    var _formprefix = "";
+    
+var bundleType = "-1";
+this.setBundleType = function(bundleType) { 
+    this.bundleType = bundleType;
+    return this;
+};
+this.getBundleType = function() {
+    return this.bundleType;
+};
+var productionZid = "";
+this.setProductionZid = function(productionZid) { 
+    this.productionZid = productionZid;
+    return this;
+};
+this.getProductionZid = function() {
+    return this.productionZid;
+};
+var partnerZid = "";
+this.setPartnerZid = function(partnerZid) { 
+    this.partnerZid = partnerZid;
+    return this;
+};
+this.getPartnerZid = function() {
+    return this.partnerZid;
+};
+var accountType = "-1";
+this.setAccountType = function(accountType) { 
+    this.accountType = accountType;
+    return this;
+};
+this.getAccountType = function() {
+    return this.accountType;
+};
+var isPayloadEncrypted = "0";
+this.setIsPayloadEncrypted = function(isPayloadEncrypted) { 
+    this.isPayloadEncrypted = isPayloadEncrypted;
+    return this;
+};
+this.getIsPayloadEncrypted = function() {
+    return this.isPayloadEncrypted;
+};
+var inviteMandate = "false";
+this.setInviteMandate = function(inviteMandate) { 
+    this.inviteMandate = inviteMandate;
+    return this;
+};
+this.getInviteMandate = function() {
+    return this.inviteMandate;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setBundleType(json["bundle_type"]);
+		this.setProductionZid(json["production_zid"]);
+		this.setPartnerZid(json["partner_zid"]);
+		this.setAccountType(json["account_type"]);
+		this.setIsPayloadEncrypted(json["is_payload_encrypted"]);
+		this.setInviteMandate(json["invite_mandate"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getBundleType()) json += '"bundle_type"' + ":" + '"' + jsonEscape(this.getBundleType())  + '",';
+		if(this.getProductionZid()) json += '"production_zid"' + ":" + '"' + jsonEscape(this.getProductionZid())  + '",';
+		if(this.getPartnerZid()) json += '"partner_zid"' + ":" + '"' + jsonEscape(this.getPartnerZid())  + '",';
+		if(this.getAccountType()) json += '"account_type"' + ":" + '"' + jsonEscape(this.getAccountType())  + '",';
+		if(this.getIsPayloadEncrypted()) json += '"is_payload_encrypted"' + ":" + '"' + jsonEscape(this.getIsPayloadEncrypted())  + '",';
+		if(this.getInviteMandate()) json += '"invite_mandate"' + ":" + '"' + jsonEscape(this.getInviteMandate())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(ServiceOrgSubServiceInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.bundleType && !Validator.INTEGER.test(this.bundleType)) { throw new ValidationError(_formprefix + "bundle_type", ValidationError.PATTERN_FAILED);}
+if(this.productionZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.productionZid)) { throw new ValidationError(_formprefix + "production_zid", ValidationError.PATTERN_FAILED);}
+if(this.partnerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.partnerZid)) { throw new ValidationError(_formprefix + "partner_zid", ValidationError.PATTERN_FAILED);}
+if(this.accountType && !Validator.INTEGER.test(this.accountType)) { throw new ValidationError(_formprefix + "account_type", ValidationError.PATTERN_FAILED);}
+if(this.inviteMandate && !Validator.BOOLEAN.test(this.inviteMandate)) { throw new ValidationError(_formprefix + "invite_mandate", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+ServiceOrgSubServiceInfo.path = "serviceorgsubserviceinfo";
+ServiceOrgSubServiceInfo.newBuilder = function() {
+    return new ServiceOrgSubServiceInfo();
+};
+
 TemplateImage = function() {
     var _formprefix = "";
     
@@ -26860,6 +28015,77 @@ SubScopes.newBuilder = function() {
     return new SubScopes();
 };
 
+ServiceOrgMemberInfo = function() {
+    var _formprefix = "";
+    
+var switchZuid = "";
+this.setSwitchZuid = function(switchZuid) { 
+    this.switchZuid = switchZuid;
+    return this;
+};
+this.getSwitchZuid = function() {
+    return this.switchZuid;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setSwitchZuid(json["switch_zuid"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getSwitchZuid()) json += '"switch_zuid"' + ":" + '"' + jsonEscape(this.getSwitchZuid())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(ServiceOrgMemberInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.switchZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.switchZuid)) { throw new ValidationError(_formprefix + "switch_zuid", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+ServiceOrgMemberInfo.path = "serviceorgmemberinfo";
+ServiceOrgMemberInfo.newBuilder = function() {
+    return new ServiceOrgMemberInfo();
+};
+
 OAuthSessionGrant = function() {
     var _formprefix = "";
     
@@ -27385,6 +28611,88 @@ Partner.newBuilder = function() {
     return new Partner();
 };
 
+OAuthProjectProperties = function() {
+    var _formprefix = "";
+    
+var propName = "";
+this.setPropName = function(propName) { 
+    this.propName = propName;
+    return this;
+};
+this.getPropName = function() {
+    return this.propName;
+};
+var propValue = "";
+this.setPropValue = function(propValue) { 
+    this.propValue = propValue;
+    return this;
+};
+this.getPropValue = function() {
+    return this.propValue;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setPropName(json["prop_name"]);
+		this.setPropValue(json["prop_value"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getPropName()) json += '"prop_name"' + ":" + '"' + jsonEscape(this.getPropName())  + '",';
+		if(this.getPropValue()) json += '"prop_value"' + ":" + '"' + jsonEscape(this.getPropValue())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectProperties.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.propName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propName)) { throw new ValidationError(_formprefix + "prop_name", ValidationError.PATTERN_FAILED);}
+if(this.propValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propValue)) { throw new ValidationError(_formprefix + "prop_value", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectProperties.path = "oauthprojectproperties";
+OAuthProjectProperties.newBuilder = function() {
+    return new OAuthProjectProperties();
+};
+
 JWTAuthentication = function() {
     var _formprefix = "";
     
@@ -27560,6 +28868,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -27574,6 +28890,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -27583,6 +28900,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -27605,6 +28923,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -27913,6 +29232,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -27927,6 +29254,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -27936,6 +29264,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -27958,6 +29287,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -28139,6 +29469,14 @@ RoutingPolicy.newBuilder = function() {
 UnifiedGroupSmartFormula = function() {
     var _formprefix = "";
     
+var zgsfid = "";
+this.setZgsfid = function(zgsfid) { 
+    this.zgsfid = zgsfid;
+    return this;
+};
+this.getZgsfid = function() {
+    return this.zgsfid;
+};
 var formulaName = "";
 this.setFormulaName = function(formulaName) { 
     this.formulaName = formulaName;
@@ -28147,7 +29485,7 @@ this.setFormulaName = function(formulaName) {
 this.getFormulaName = function() {
     return this.formulaName;
 };
-var memberRole = "1";
+var memberRole = "";
 this.setMemberRole = function(memberRole) { 
     this.memberRole = memberRole;
     return this;
@@ -28206,6 +29544,7 @@ this.getModifiedTime = function() {
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
+		this.setZgsfid(json["zgsfid"]);
 		this.setFormulaName(json["formula_name"]);
 		this.setMemberRole(json["member_role"]);
 		this.setSmartFormula(json["smart_formula"]);
@@ -28219,6 +29558,7 @@ this.getModifiedTime = function() {
     }
     this.toJSON = function() {
 	var json = "{";
+		if(this.getZgsfid()) json += '"zgsfid"' + ":" + '"' + jsonEscape(this.getZgsfid())  + '",';
 		if(this.getFormulaName()) json += '"formula_name"' + ":" + '"' + jsonEscape(this.getFormulaName())  + '",';
 		if(this.getMemberRole()) json += '"member_role"' + ":" + '"' + jsonEscape(this.getMemberRole())  + '",';
 		if(this.getSmartFormula()) json += '"smart_formula"' + ":" + '"' + jsonEscape(this.getSmartFormula())  + '",';
@@ -28245,7 +29585,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.formulaName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.formulaName)) { throw new ValidationError(_formprefix + "formula_name", ValidationError.PATTERN_FAILED);}
+	if(this.zgsfid && !Validator.INTEGER.test(this.zgsfid)) { throw new ValidationError(_formprefix + "zgsfid", ValidationError.PATTERN_FAILED);}
+if(this.formulaName && !(/xss:throwerror/).test(this.formulaName)) { throw new ValidationError(_formprefix + "formula_name", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -29249,8 +30590,8 @@ this.getModifiedTime = function() {
 	var i = 0;
 	if(this.zuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zuid)) { throw new ValidationError(_formprefix + "zuid", ValidationError.PATTERN_FAILED);}
 if(this.externalZaid && !(/^[a-zA-Z0-9_\-]+$/).test(this.externalZaid)) { throw new ValidationError(_formprefix + "external_zaid", ValidationError.PATTERN_FAILED);}
-if(this.fullName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.fullName)) { throw new ValidationError(_formprefix + "full_name", ValidationError.PATTERN_FAILED);}
-if(this.displayName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.displayName)) { throw new ValidationError(_formprefix + "display_name", ValidationError.PATTERN_FAILED);}
+if(this.fullName && !(/xss:throwerror/).test(this.fullName)) { throw new ValidationError(_formprefix + "full_name", ValidationError.PATTERN_FAILED);}
+if(this.displayName && !(/xss:throwerror/).test(this.displayName)) { throw new ValidationError(_formprefix + "display_name", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -30070,7 +31411,7 @@ this.addUnifiedgrouprealmpolicy = function(unifiedgrouprealmpolicy) {
     this.validate = function() {
 	var i = 0;
 	if(this.zgrid && !Validator.INTEGER.test(this.zgrid)) { throw new ValidationError(_formprefix + "zgrid", ValidationError.PATTERN_FAILED);}
-if(this.groupRealmName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupRealmName)) { throw new ValidationError(_formprefix + "group_realm_name", ValidationError.PATTERN_FAILED);}
+if(this.groupRealmName && !(/xss:throwerror/).test(this.groupRealmName)) { throw new ValidationError(_formprefix + "group_realm_name", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -30254,6 +31595,87 @@ UserSecretKey.newBuilder = function() {
     return new UserSecretKey();
 };
 
+OAuthProjectDcDetails = function() {
+    var _formprefix = "";
+    
+var dcLocation = "";
+this.setDcLocation = function(dcLocation) { 
+    this.dcLocation = dcLocation;
+    return this;
+};
+this.getDcLocation = function() {
+    return this.dcLocation;
+};
+var isEnabled = "true";
+this.setIsEnabled = function(isEnabled) { 
+    this.isEnabled = isEnabled;
+    return this;
+};
+this.getIsEnabled = function() {
+    return this.isEnabled;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setDcLocation(json["dc_location"]);
+		this.setIsEnabled(json["is_enabled"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getDcLocation()) json += '"dc_location"' + ":" + '"' + jsonEscape(this.getDcLocation())  + '",';
+		if(this.getIsEnabled()) json += '"is_enabled"' + ":" + '"' + jsonEscape(this.getIsEnabled())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectDcDetails.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.isEnabled && !Validator.BOOLEAN.test(this.isEnabled)) { throw new ValidationError(_formprefix + "is_enabled", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectDcDetails.path = "oauthprojectdcdetails";
+OAuthProjectDcDetails.newBuilder = function() {
+    return new OAuthProjectDcDetails();
+};
+
 Policy = function() {
     var _formprefix = "";
     
@@ -30405,6 +31827,99 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 ServiceOrgConfiguration.path = "serviceorgconfiguration";
 ServiceOrgConfiguration.newBuilder = function() {
     return new ServiceOrgConfiguration();
+};
+
+OAuthProjectOpenID = function() {
+    var _formprefix = "";
+    
+var openId = "";
+this.setOpenId = function(openId) { 
+    this.openId = openId;
+    return this;
+};
+this.getOpenId = function() {
+    return this.openId;
+};
+var zid = "";
+this.setZid = function(zid) { 
+    this.zid = zid;
+    return this;
+};
+this.getZid = function() {
+    return this.zid;
+};
+var status = "true";
+this.setStatus = function(status) { 
+    this.status = status;
+    return this;
+};
+this.getStatus = function() {
+    return this.status;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setOpenId(json["open_id"]);
+		this.setZid(json["zid"]);
+		this.setStatus(json["status"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getOpenId()) json += '"open_id"' + ":" + '"' + jsonEscape(this.getOpenId())  + '",';
+		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
+		if(this.getStatus()) json += '"status"' + ":" + '"' + jsonEscape(this.getStatus())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectOpenID.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.openId && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.openId)) { throw new ValidationError(_formprefix + "open_id", ValidationError.PATTERN_FAILED);}
+if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
+if(this.status && !Validator.BOOLEAN.test(this.status)) { throw new ValidationError(_formprefix + "status", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectOpenID.path = "oauthprojectopenid";
+OAuthProjectOpenID.newBuilder = function() {
+    return new OAuthProjectOpenID();
 };
 
 ConditionalAccess = function() {
@@ -31444,12 +32959,21 @@ this.setCreatedTime = function(createdTime) {
 this.getCreatedTime = function() {
     return this.createdTime;
 };
+var isProject = "false";
+this.setIsProject = function(isProject) { 
+    this.isProject = isProject;
+    return this;
+};
+this.getIsProject = function() {
+    return this.isProject;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
 		this.setAppClientZid(json["app_client_zid"]);
 		this.setIpAddress(json["ip_address"]);
 		this.setCreatedTime(json["created_time"]);
+		this.setIsProject(json["is_project"]);
 
 	return this;
     }
@@ -31458,6 +32982,7 @@ this.getCreatedTime = function() {
 		if(this.getAppClientZid()) json += '"app_client_zid"' + ":" + '"' + jsonEscape(this.getAppClientZid())  + '",';
 		if(this.getIpAddress()) json += '"ip_address"' + ":" + '"' + jsonEscape(this.getIpAddress())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getIsProject()) json += '"is_project"' + ":" + '"' + jsonEscape(this.getIsProject())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -31479,6 +33004,7 @@ this.getCreatedTime = function() {
 	if(this.appClientZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.appClientZid)) { throw new ValidationError(_formprefix + "app_client_zid", ValidationError.PATTERN_FAILED);}
 if(this.ipAddress && !(/(^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%.+)?\s*$)|(^$)/).test(this.ipAddress)) { throw new ValidationError(_formprefix + "ip_address", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.isProject && !Validator.BOOLEAN.test(this.isProject)) { throw new ValidationError(_formprefix + "is_project", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -33706,6 +35232,14 @@ this.addServiceorgoauthaccessgrant = function(serviceorgoauthaccessgrant) {
  return this;
 };
 
+var serviceorgsubserviceinfo = undefined;
+this.setServiceorgsubserviceinfo = function(serviceorgsubserviceinfo) { 
+    this.serviceorgsubserviceinfo = serviceorgsubserviceinfo;
+    return this;
+};
+this.getServiceorgsubserviceinfo = function() {
+    return this.serviceorgsubserviceinfo;
+};
 var serviceorgmember = undefined;
 this.setServiceorgmembers = function(serviceorgmember) { 
     this.serviceorgmember = serviceorgmember;
@@ -33765,6 +35299,7 @@ this.addServiceorginvitationtemplate = function(serviceorginvitationtemplate) {
 		this.setModifiedTime(json["modified_time"]);
 		this.setServiceorgconfigurations(URI.getResourceArray(json["serviceOrgConfiguration"],"serviceorgconfiguration"));
 		this.setServiceorgoauthaccessgrants(URI.getResourceArray(json["serviceOrgOAuthAccessGrant"],"serviceorgoauthaccessgrant"));
+		this.setServiceorgsubserviceinfo(URI.getResource(json["serviceOrgSubServiceInfo"],"serviceorgsubserviceinfo"));
 		this.setServiceorgmembers(URI.getResourceArray(json["serviceOrgMember"],"serviceorgmember"));
 		this.setServiceorginvitations(URI.getResourceArray(json["serviceOrgInvitation"],"serviceorginvitation"));
 		this.setServiceorginvitationtemplates(URI.getResourceArray(json["serviceOrgInvitationTemplate"],"serviceorginvitationtemplate"));
@@ -33787,6 +35322,7 @@ this.addServiceorginvitationtemplate = function(serviceorginvitationtemplate) {
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getServiceorgconfigurations()) json += '"serviceOrgConfiguration"' + ":" + URI.toJSONArray(this.getServiceorgconfigurations())  + ',';
 		if(this.getServiceorgoauthaccessgrants()) json += '"serviceOrgOAuthAccessGrant"' + ":" + URI.toJSONArray(this.getServiceorgoauthaccessgrants())  + ',';
+		if(this.getServiceorgsubserviceinfo()) json += '"serviceOrgSubServiceInfo"' + ":" + this.getServiceorgsubserviceinfo().toJSON()  + ',';
 		if(this.getServiceorgmembers()) json += '"serviceOrgMember"' + ":" + URI.toJSONArray(this.getServiceorgmembers())  + ',';
 		if(this.getServiceorginvitations()) json += '"serviceOrgInvitation"' + ":" + URI.toJSONArray(this.getServiceorginvitations())  + ',';
 		if(this.getServiceorginvitationtemplates()) json += '"serviceOrgInvitationTemplate"' + ":" + URI.toJSONArray(this.getServiceorginvitationtemplates())  + ',';
@@ -33822,6 +35358,7 @@ if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new Va
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.serviceorgconfiguration) { for(i=0; i < this.serviceorgconfiguration.length; i++ ) { this.serviceorgconfiguration[i].validate(); } }
 if(this.serviceorgoauthaccessgrant) { for(i=0; i < this.serviceorgoauthaccessgrant.length; i++ ) { this.serviceorgoauthaccessgrant[i].validate(); } }
+if(this.serviceorgsubserviceinfo) { this.serviceorgsubserviceinfo.validate(); }
 if(this.serviceorgmember) { for(i=0; i < this.serviceorgmember.length; i++ ) { this.serviceorgmember[i].validate(); } }
 if(this.serviceorginvitation) { for(i=0; i < this.serviceorginvitation.length; i++ ) { this.serviceorginvitation[i].validate(); } }
 if(this.serviceorginvitationtemplate) { for(i=0; i < this.serviceorginvitationtemplate.length; i++ ) { this.serviceorginvitationtemplate[i].validate(); } }
@@ -34636,6 +36173,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -34650,6 +36195,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -34659,6 +36205,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -34681,6 +36228,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -35364,20 +36912,6 @@ this.addUsertpsecretgroup = function(usertpsecretgroup) {
  return this;
 };
 
-var userthirdpartysecretkeys = undefined;
-this.setUserthirdpartysecretkeyss = function(userthirdpartysecretkeys) { 
-    this.userthirdpartysecretkeys = userthirdpartysecretkeys;
-    return this;
-};
-this.getUserthirdpartysecretkeyss = function() {
-    return this.userthirdpartysecretkeys;
-};
-this.addUserthirdpartysecretkeys = function(userthirdpartysecretkeys) { 
- if(!this.userthirdpartysecretkeys) this.userthirdpartysecretkeys = new Array(); 
-  this.userthirdpartysecretkeys.push(userthirdpartysecretkeys); 
- return this;
-};
-
 var openid = undefined;
 this.setOpenids = function(openid) { 
     this.openid = openid;
@@ -35734,7 +37268,6 @@ this.addUseralldomainstoken = function(useralldomainstoken) {
 		this.setUserdevices(URI.getResourceArray(json["userDevice"],"userdevice"));
 		this.setSigninpreference(URI.getResource(json["signinPreference"],"signinpreference"));
 		this.setUsertpsecretgroups(URI.getResourceArray(json["userTPSecretGroup"],"usertpsecretgroup"));
-		this.setUserthirdpartysecretkeyss(URI.getResourceArray(json["userThirdPartySecretKeys"],"userthirdpartysecretkeys"));
 		this.setOpenids(URI.getResourceArray(json["openId"],"openid"));
 		this.setPasswordhistorys(URI.getResourceArray(json["passwordHistory"],"passwordhistory"));
 		this.setUserauthorizedips(URI.getResourceArray(json["userAuthorizedIp"],"userauthorizedip"));
@@ -35804,7 +37337,6 @@ this.addUseralldomainstoken = function(useralldomainstoken) {
 		if(this.getUserdevices()) json += '"userDevice"' + ":" + URI.toJSONArray(this.getUserdevices())  + ',';
 		if(this.getSigninpreference()) json += '"signinPreference"' + ":" + this.getSigninpreference().toJSON()  + ',';
 		if(this.getUsertpsecretgroups()) json += '"userTPSecretGroup"' + ":" + URI.toJSONArray(this.getUsertpsecretgroups())  + ',';
-		if(this.getUserthirdpartysecretkeyss()) json += '"userThirdPartySecretKeys"' + ":" + URI.toJSONArray(this.getUserthirdpartysecretkeyss())  + ',';
 		if(this.getOpenids()) json += '"openId"' + ":" + URI.toJSONArray(this.getOpenids())  + ',';
 		if(this.getPasswordhistorys()) json += '"passwordHistory"' + ":" + URI.toJSONArray(this.getPasswordhistorys())  + ',';
 		if(this.getUserauthorizedips()) json += '"userAuthorizedIp"' + ":" + URI.toJSONArray(this.getUserauthorizedips())  + ',';
@@ -35886,7 +37418,6 @@ if(this.usermobile) { for(i=0; i < this.usermobile.length; i++ ) { this.usermobi
 if(this.userdevice) { for(i=0; i < this.userdevice.length; i++ ) { this.userdevice[i].validate(); } }
 if(this.signinpreference) { this.signinpreference.validate(); }
 if(this.usertpsecretgroup) { for(i=0; i < this.usertpsecretgroup.length; i++ ) { this.usertpsecretgroup[i].validate(); } }
-if(this.userthirdpartysecretkeys) { for(i=0; i < this.userthirdpartysecretkeys.length; i++ ) { this.userthirdpartysecretkeys[i].validate(); } }
 if(this.openid) { for(i=0; i < this.openid.length; i++ ) { this.openid[i].validate(); } }
 if(this.passwordhistory) { for(i=0; i < this.passwordhistory.length; i++ ) { this.passwordhistory[i].validate(); } }
 if(this.userauthorizedip) { for(i=0; i < this.userauthorizedip.length; i++ ) { this.userauthorizedip[i].validate(); } }
@@ -35980,6 +37511,14 @@ this.setModifiedTime = function(modifiedTime) {
 this.getModifiedTime = function() {
     return this.modifiedTime;
 };
+var accountmemberinfo = undefined;
+this.setAccountmemberinfo = function(accountmemberinfo) { 
+    this.accountmemberinfo = accountmemberinfo;
+    return this;
+};
+this.getAccountmemberinfo = function() {
+    return this.accountmemberinfo;
+};
 var accountmemberrole = undefined;
 this.setAccountmemberroles = function(accountmemberrole) { 
     this.accountmemberrole = accountmemberrole;
@@ -36004,6 +37543,7 @@ this.addAccountmemberrole = function(accountmemberrole) {
 		this.setUserType(json["user_type"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
+		this.setAccountmemberinfo(URI.getResource(json["accountMemberInfo"],"accountmemberinfo"));
 		this.setAccountmemberroles(URI.getResourceArray(json["accountMemberRole"],"accountmemberrole"));
 
 	return this;
@@ -36017,6 +37557,7 @@ this.addAccountmemberrole = function(accountmemberrole) {
 		if(this.getUserType()) json += '"user_type"' + ":" + '"' + jsonEscape(this.getUserType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getAccountmemberinfo()) json += '"accountMemberInfo"' + ":" + this.getAccountmemberinfo().toJSON()  + ',';
 		if(this.getAccountmemberroles()) json += '"accountMemberRole"' + ":" + URI.toJSONArray(this.getAccountmemberroles())  + ',';
 
 	json = removeLastComma(json);
@@ -36042,6 +37583,7 @@ if(this.isActive && !Validator.INTEGER.test(this.isActive)) { throw new Validati
 if(this.userType && !Validator.INTEGER.test(this.userType)) { throw new ValidationError(_formprefix + "user_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.accountmemberinfo) { this.accountmemberinfo.validate(); }
 if(this.accountmemberrole) { for(i=0; i < this.accountmemberrole.length; i++ ) { this.accountmemberrole[i].validate(); } }
 
 	return this;
@@ -37968,8 +39510,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.realmPolicyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.realmPolicyName)) { throw new ValidationError(_formprefix + "realm_policy_name", ValidationError.PATTERN_FAILED);}
-if(this.realmPolicyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.realmPolicyValue)) { throw new ValidationError(_formprefix + "realm_policy_value", ValidationError.PATTERN_FAILED);}
+	if(this.realmPolicyName && !(/xss:throwerror/).test(this.realmPolicyName)) { throw new ValidationError(_formprefix + "realm_policy_name", ValidationError.PATTERN_FAILED);}
+if(this.realmPolicyValue && !(/xss:throwerror/).test(this.realmPolicyValue)) { throw new ValidationError(_formprefix + "realm_policy_value", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -38276,6 +39818,20 @@ this.setModifiedTime = function(modifiedTime) {
 this.getModifiedTime = function() {
     return this.modifiedTime;
 };
+var oauthmobileappverificationkeys = undefined;
+this.setOauthmobileappverificationkeyss = function(oauthmobileappverificationkeys) { 
+    this.oauthmobileappverificationkeys = oauthmobileappverificationkeys;
+    return this;
+};
+this.getOauthmobileappverificationkeyss = function() {
+    return this.oauthmobileappverificationkeys;
+};
+this.addOauthmobileappverificationkeys = function(oauthmobileappverificationkeys) { 
+ if(!this.oauthmobileappverificationkeys) this.oauthmobileappverificationkeys = new Array(); 
+  this.oauthmobileappverificationkeys.push(oauthmobileappverificationkeys); 
+ return this;
+};
+
 var oauthmobiledevicesdetails = undefined;
 this.setOauthmobiledevicesdetailss = function(oauthmobiledevicesdetails) { 
     this.oauthmobiledevicesdetails = oauthmobiledevicesdetails;
@@ -38301,6 +39857,7 @@ this.addOauthmobiledevicesdetails = function(oauthmobiledevicesdetails) {
 		this.setSignature(json["signature"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
+		this.setOauthmobileappverificationkeyss(URI.getResourceArray(json["oAuthMobileAppVerificationKeys"],"oauthmobileappverificationkeys"));
 		this.setOauthmobiledevicesdetailss(URI.getResourceArray(json["oAuthMobileDevicesDetails"],"oauthmobiledevicesdetails"));
 
 	return this;
@@ -38315,6 +39872,7 @@ this.addOauthmobiledevicesdetails = function(oauthmobiledevicesdetails) {
 		if(this.getSignature()) json += '"signature"' + ":" + '"' + jsonEscape(this.getSignature())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOauthmobileappverificationkeyss()) json += '"oAuthMobileAppVerificationKeys"' + ":" + URI.toJSONArray(this.getOauthmobileappverificationkeyss())  + ',';
 		if(this.getOauthmobiledevicesdetailss()) json += '"oAuthMobileDevicesDetails"' + ":" + URI.toJSONArray(this.getOauthmobiledevicesdetailss())  + ',';
 
 	json = removeLastComma(json);
@@ -38342,6 +39900,7 @@ if(this.appType && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).tes
 if(this.signature && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.signature)) { throw new ValidationError(_formprefix + "signature", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oauthmobileappverificationkeys) { for(i=0; i < this.oauthmobileappverificationkeys.length; i++ ) { this.oauthmobileappverificationkeys[i].validate(); } }
 if(this.oauthmobiledevicesdetails) { for(i=0; i < this.oauthmobiledevicesdetails.length; i++ ) { this.oauthmobiledevicesdetails[i].validate(); } }
 
 	return this;
@@ -39312,6 +40871,14 @@ this.setExpiryTime = function(expiryTime) {
 this.getExpiryTime = function() {
     return this.expiryTime;
 };
+var deptId = "";
+this.setDeptId = function(deptId) { 
+    this.deptId = deptId;
+    return this;
+};
+this.getDeptId = function() {
+    return this.deptId;
+};
 var modifiedTime = "";
 this.setModifiedTime = function(modifiedTime) { 
     this.modifiedTime = modifiedTime;
@@ -39336,6 +40903,7 @@ this.getCreatedTime = function() {
 		this.setDesignationId(json["designation_id"]);
 		this.setLockedUntil(json["locked_until"]);
 		this.setExpiryTime(json["expiry_time"]);
+		this.setDeptId(json["dept_id"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setCreatedTime(json["created_time"]);
 
@@ -39348,6 +40916,7 @@ this.getCreatedTime = function() {
 		if(this.getDesignationId()) json += '"designation_id"' + ":" + '"' + jsonEscape(this.getDesignationId())  + '",';
 		if(this.getLockedUntil()) json += '"locked_until"' + ":" + '"' + jsonEscape(this.getLockedUntil())  + '",';
 		if(this.getExpiryTime()) json += '"expiry_time"' + ":" + '"' + jsonEscape(this.getExpiryTime())  + '",';
+		if(this.getDeptId()) json += '"dept_id"' + ":" + '"' + jsonEscape(this.getDeptId())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
@@ -39373,6 +40942,7 @@ if(this.employeeId && !(/xss:throwerror/).test(this.employeeId)) { throw new Val
 if(this.designationId && !(/^[a-zA-Z0-9_\-]+$/).test(this.designationId)) { throw new ValidationError(_formprefix + "designation_id", ValidationError.PATTERN_FAILED);}
 if(this.lockedUntil && !Validator.INTEGER.test(this.lockedUntil)) { throw new ValidationError(_formprefix + "locked_until", ValidationError.PATTERN_FAILED);}
 if(this.expiryTime && !Validator.INTEGER.test(this.expiryTime)) { throw new ValidationError(_formprefix + "expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.deptId && !(/^[a-zA-Z0-9_\-]+$/).test(this.deptId)) { throw new ValidationError(_formprefix + "dept_id", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
@@ -42493,6 +44063,159 @@ ConditionalPolicy.newBuilder = function() {
     return new ConditionalPolicy();
 };
 
+AccountMemberInfo = function() {
+    var _formprefix = "";
+    
+var switchZuid = "";
+this.setSwitchZuid = function(switchZuid) { 
+    this.switchZuid = switchZuid;
+    return this;
+};
+this.getSwitchZuid = function() {
+    return this.switchZuid;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setSwitchZuid(json["switch_zuid"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getSwitchZuid()) json += '"switch_zuid"' + ":" + '"' + jsonEscape(this.getSwitchZuid())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(AccountMemberInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.switchZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.switchZuid)) { throw new ValidationError(_formprefix + "switch_zuid", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+AccountMemberInfo.path = "accountmemberinfo";
+AccountMemberInfo.newBuilder = function() {
+    return new AccountMemberInfo();
+};
+
+OAuthMobileAppVerificationKeys = function() {
+    var _formprefix = "";
+    
+var storeId = "";
+this.setStoreId = function(storeId) { 
+    this.storeId = storeId;
+    return this;
+};
+this.getStoreId = function() {
+    return this.storeId;
+};
+var keys = "";
+this.setKeys = function(keys) { 
+    this.keys = keys;
+    return this;
+};
+this.getKeys = function() {
+    return this.keys;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setStoreId(json["store_id"]);
+		this.setKeys(json["keys"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getStoreId()) json += '"store_id"' + ":" + '"' + jsonEscape(this.getStoreId())  + '",';
+		if(this.getKeys()) json += '"keys"' + ":" + '"' + jsonEscape(this.getKeys())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthMobileAppVerificationKeys.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.storeId && !Validator.INTEGER.test(this.storeId)) { throw new ValidationError(_formprefix + "store_id", ValidationError.PATTERN_FAILED);}
+if(this.keys && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.keys)) { throw new ValidationError(_formprefix + "keys", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthMobileAppVerificationKeys.path = "oauthmobileappverificationkeys";
+OAuthMobileAppVerificationKeys.newBuilder = function() {
+    return new OAuthMobileAppVerificationKeys();
+};
+
 TokenPairAuthToken = function() {
     var _formprefix = "";
     
@@ -42896,6 +44619,14 @@ this.setIsNewSamlConfig = function(isNewSamlConfig) {
 this.getIsNewSamlConfig = function() {
     return this.isNewSamlConfig;
 };
+var isDomainless = "false";
+this.setIsDomainless = function(isDomainless) { 
+    this.isDomainless = isDomainless;
+    return this;
+};
+this.getIsDomainless = function() {
+    return this.isDomainless;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -42960,6 +44691,7 @@ this.addSamlattribute = function(samlattribute) {
 		this.setSpPrivateKey(json["sp_private_key"]);
 		this.setSpCertificateExpiryTime(json["sp_certificate_expiry_time"]);
 		this.setIsNewSamlConfig(json["is_new_saml_config"]);
+		this.setIsDomainless(json["is_domainless"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setSamlreqparams(URI.getResourceArray(json["sAMLReqParam"],"samlreqparam"));
@@ -42986,6 +44718,7 @@ this.addSamlattribute = function(samlattribute) {
 		if(this.getSpPrivateKey()) json += '"sp_private_key"' + ":" + '"' + jsonEscape(this.getSpPrivateKey())  + '",';
 		if(this.getSpCertificateExpiryTime()) json += '"sp_certificate_expiry_time"' + ":" + '"' + jsonEscape(this.getSpCertificateExpiryTime())  + '",';
 		if(this.getIsNewSamlConfig()) json += '"is_new_saml_config"' + ":" + '"' + jsonEscape(this.getIsNewSamlConfig())  + '",';
+		if(this.getIsDomainless()) json += '"is_domainless"' + ":" + '"' + jsonEscape(this.getIsDomainless())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getSamlreqparams()) json += '"sAMLReqParam"' + ":" + URI.toJSONArray(this.getSamlreqparams())  + ',';
@@ -43017,6 +44750,7 @@ if(this.isSignEnabled && !Validator.BOOLEAN.test(this.isSignEnabled)) { throw ne
 if(this.spCertificate && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.spCertificate)) { throw new ValidationError(_formprefix + "sp_certificate", ValidationError.PATTERN_FAILED);}
 if(this.spPrivateKey && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.spPrivateKey)) { throw new ValidationError(_formprefix + "sp_private_key", ValidationError.PATTERN_FAILED);}
 if(this.spCertificateExpiryTime && !Validator.INTEGER.test(this.spCertificateExpiryTime)) { throw new ValidationError(_formprefix + "sp_certificate_expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.isDomainless && !Validator.BOOLEAN.test(this.isDomainless)) { throw new ValidationError(_formprefix + "is_domainless", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.samlreqparam) { for(i=0; i < this.samlreqparam.length; i++ ) { this.samlreqparam[i].validate(); } }
@@ -44395,6 +46129,232 @@ OAuthAccessToken.newBuilder = function() {
     return new OAuthAccessToken();
 };
 
+OAuthProject = function() {
+    var _formprefix = "";
+    
+var projectId = "";
+this.setProjectId = function(projectId) { 
+    this.projectId = projectId;
+    return this;
+};
+this.getProjectId = function() {
+    return this.projectId;
+};
+var projectType = "1";
+this.setProjectType = function(projectType) { 
+    this.projectType = projectType;
+    return this;
+};
+this.getProjectType = function() {
+    return this.projectType;
+};
+var projectName = "";
+this.setProjectName = function(projectName) { 
+    this.projectName = projectName;
+    return this;
+};
+this.getProjectName = function() {
+    return this.projectName;
+};
+var ownerZid = "";
+this.setOwnerZid = function(ownerZid) { 
+    this.ownerZid = ownerZid;
+    return this;
+};
+this.getOwnerZid = function() {
+    return this.ownerZid;
+};
+var supportMail = "";
+this.setSupportMail = function(supportMail) { 
+    this.supportMail = supportMail;
+    return this;
+};
+this.getSupportMail = function() {
+    return this.supportMail;
+};
+var isSupportMailVerified = "false";
+this.setIsSupportMailVerified = function(isSupportMailVerified) { 
+    this.isSupportMailVerified = isSupportMailVerified;
+    return this;
+};
+this.getIsSupportMailVerified = function() {
+    return this.isSupportMailVerified;
+};
+var privacyPolicyUrl = "";
+this.setPrivacyPolicyUrl = function(privacyPolicyUrl) { 
+    this.privacyPolicyUrl = privacyPolicyUrl;
+    return this;
+};
+this.getPrivacyPolicyUrl = function() {
+    return this.privacyPolicyUrl;
+};
+var termsOfServiceUrl = "";
+this.setTermsOfServiceUrl = function(termsOfServiceUrl) { 
+    this.termsOfServiceUrl = termsOfServiceUrl;
+    return this;
+};
+this.getTermsOfServiceUrl = function() {
+    return this.termsOfServiceUrl;
+};
+var homePageUrl = "";
+this.setHomePageUrl = function(homePageUrl) { 
+    this.homePageUrl = homePageUrl;
+    return this;
+};
+this.getHomePageUrl = function() {
+    return this.homePageUrl;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var oauthprojectclients = undefined;
+this.setOauthprojectclientss = function(oauthprojectclients) { 
+    this.oauthprojectclients = oauthprojectclients;
+    return this;
+};
+this.getOauthprojectclientss = function() {
+    return this.oauthprojectclients;
+};
+this.addOauthprojectclients = function(oauthprojectclients) { 
+ if(!this.oauthprojectclients) this.oauthprojectclients = new Array(); 
+  this.oauthprojectclients.push(oauthprojectclients); 
+ return this;
+};
+
+var oauthprojectopenid = undefined;
+this.setOauthprojectopenids = function(oauthprojectopenid) { 
+    this.oauthprojectopenid = oauthprojectopenid;
+    return this;
+};
+this.getOauthprojectopenids = function() {
+    return this.oauthprojectopenid;
+};
+this.addOauthprojectopenid = function(oauthprojectopenid) { 
+ if(!this.oauthprojectopenid) this.oauthprojectopenid = new Array(); 
+  this.oauthprojectopenid.push(oauthprojectopenid); 
+ return this;
+};
+
+var oauthprojectproperties = undefined;
+this.setOauthprojectpropertiess = function(oauthprojectproperties) { 
+    this.oauthprojectproperties = oauthprojectproperties;
+    return this;
+};
+this.getOauthprojectpropertiess = function() {
+    return this.oauthprojectproperties;
+};
+this.addOauthprojectproperties = function(oauthprojectproperties) { 
+ if(!this.oauthprojectproperties) this.oauthprojectproperties = new Array(); 
+  this.oauthprojectproperties.push(oauthprojectproperties); 
+ return this;
+};
+
+var oauthprojectdcdetails = undefined;
+this.setOauthprojectdcdetailss = function(oauthprojectdcdetails) { 
+    this.oauthprojectdcdetails = oauthprojectdcdetails;
+    return this;
+};
+this.getOauthprojectdcdetailss = function() {
+    return this.oauthprojectdcdetails;
+};
+this.addOauthprojectdcdetails = function(oauthprojectdcdetails) { 
+ if(!this.oauthprojectdcdetails) this.oauthprojectdcdetails = new Array(); 
+  this.oauthprojectdcdetails.push(oauthprojectdcdetails); 
+ return this;
+};
+
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setProjectId(json["project_id"]);
+		this.setProjectType(json["project_type"]);
+		this.setProjectName(json["project_name"]);
+		this.setOwnerZid(json["owner_zid"]);
+		this.setSupportMail(json["support_mail"]);
+		this.setIsSupportMailVerified(json["is_support_mail_verified"]);
+		this.setPrivacyPolicyUrl(json["privacy_policy_url"]);
+		this.setTermsOfServiceUrl(json["terms_of_service_url"]);
+		this.setHomePageUrl(json["home_page_url"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setOauthprojectclientss(URI.getResourceArray(json["oAuthProjectClients"],"oauthprojectclients"));
+		this.setOauthprojectopenids(URI.getResourceArray(json["oAuthProjectOpenID"],"oauthprojectopenid"));
+		this.setOauthprojectpropertiess(URI.getResourceArray(json["oAuthProjectProperties"],"oauthprojectproperties"));
+		this.setOauthprojectdcdetailss(URI.getResourceArray(json["oAuthProjectDcDetails"],"oauthprojectdcdetails"));
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getProjectId()) json += '"project_id"' + ":" + '"' + jsonEscape(this.getProjectId())  + '",';
+		if(this.getProjectType()) json += '"project_type"' + ":" + '"' + jsonEscape(this.getProjectType())  + '",';
+		if(this.getProjectName()) json += '"project_name"' + ":" + '"' + jsonEscape(this.getProjectName())  + '",';
+		if(this.getOwnerZid()) json += '"owner_zid"' + ":" + '"' + jsonEscape(this.getOwnerZid())  + '",';
+		if(this.getSupportMail()) json += '"support_mail"' + ":" + '"' + jsonEscape(this.getSupportMail())  + '",';
+		if(this.getIsSupportMailVerified()) json += '"is_support_mail_verified"' + ":" + '"' + jsonEscape(this.getIsSupportMailVerified())  + '",';
+		if(this.getPrivacyPolicyUrl()) json += '"privacy_policy_url"' + ":" + '"' + jsonEscape(this.getPrivacyPolicyUrl())  + '",';
+		if(this.getTermsOfServiceUrl()) json += '"terms_of_service_url"' + ":" + '"' + jsonEscape(this.getTermsOfServiceUrl())  + '",';
+		if(this.getHomePageUrl()) json += '"home_page_url"' + ":" + '"' + jsonEscape(this.getHomePageUrl())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOauthprojectclientss()) json += '"oAuthProjectClients"' + ":" + URI.toJSONArray(this.getOauthprojectclientss())  + ',';
+		if(this.getOauthprojectopenids()) json += '"oAuthProjectOpenID"' + ":" + URI.toJSONArray(this.getOauthprojectopenids())  + ',';
+		if(this.getOauthprojectpropertiess()) json += '"oAuthProjectProperties"' + ":" + URI.toJSONArray(this.getOauthprojectpropertiess())  + ',';
+		if(this.getOauthprojectdcdetailss()) json += '"oAuthProjectDcDetails"' + ":" + URI.toJSONArray(this.getOauthprojectdcdetailss())  + ',';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProject.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.projectId && !(/^[a-zA-Z0-9_\-]+$/).test(this.projectId)) { throw new ValidationError(_formprefix + "project_id", ValidationError.PATTERN_FAILED);}
+if(this.projectName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.projectName)) { throw new ValidationError(_formprefix + "project_name", ValidationError.PATTERN_FAILED);}
+if(this.ownerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.ownerZid)) { throw new ValidationError(_formprefix + "owner_zid", ValidationError.PATTERN_FAILED);}
+if(this.supportMail && !(/^[\p{L}\p{M}\p{N}\_]([\p{L}\p{M}\p{N}\_\+\-\.\'&\!]*)@(?=.{4,256}$)(([\p{L}\p{M}\p{N}]+)(([\-\_]*[\p{L}\p{M}\p{N}])*)[\.])+[\p{L}\p{M}]{2,22}$/).test(this.supportMail)) { throw new ValidationError(_formprefix + "support_mail", ValidationError.PATTERN_FAILED);}
+if(this.isSupportMailVerified && !Validator.BOOLEAN.test(this.isSupportMailVerified)) { throw new ValidationError(_formprefix + "is_support_mail_verified", ValidationError.PATTERN_FAILED);}
+if(this.privacyPolicyUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.privacyPolicyUrl)) { throw new ValidationError(_formprefix + "privacy_policy_url", ValidationError.PATTERN_FAILED);}
+if(this.termsOfServiceUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.termsOfServiceUrl)) { throw new ValidationError(_formprefix + "terms_of_service_url", ValidationError.PATTERN_FAILED);}
+if(this.homePageUrl && !(/^([\p{L}\p{M}\p{N}]([\p{L}\p{M}\p{N}\-]{0,61}[\p{L}\p{M}\p{N}])?\.)+[\p{L}\p{M}]{2,6}$/).test(this.homePageUrl)) { throw new ValidationError(_formprefix + "home_page_url", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oauthprojectclients) { for(i=0; i < this.oauthprojectclients.length; i++ ) { this.oauthprojectclients[i].validate(); } }
+if(this.oauthprojectopenid) { for(i=0; i < this.oauthprojectopenid.length; i++ ) { this.oauthprojectopenid[i].validate(); } }
+if(this.oauthprojectproperties) { for(i=0; i < this.oauthprojectproperties.length; i++ ) { this.oauthprojectproperties[i].validate(); } }
+if(this.oauthprojectdcdetails) { for(i=0; i < this.oauthprojectdcdetails.length; i++ ) { this.oauthprojectdcdetails[i].validate(); } }
+
+	return this;
+    }
+}
+OAuthProject.path = "oauthproject";
+OAuthProject.newBuilder = function() {
+    return new OAuthProject();
+};
+
 DeploymentConfig = function() {
     var _formprefix = "";
     
@@ -44615,6 +46575,201 @@ if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new Va
 RebrandL10n.path = "rebrandl10n";
 RebrandL10n.newBuilder = function() {
     return new RebrandL10n();
+};
+
+OIDCAuthentication = function() {
+    var _formprefix = "";
+    
+var oidcId = "";
+this.setOidcId = function(oidcId) { 
+    this.oidcId = oidcId;
+    return this;
+};
+this.getOidcId = function() {
+    return this.oidcId;
+};
+var displayName = "";
+this.setDisplayName = function(displayName) { 
+    this.displayName = displayName;
+    return this;
+};
+this.getDisplayName = function() {
+    return this.displayName;
+};
+var clientId = "";
+this.setClientId = function(clientId) { 
+    this.clientId = clientId;
+    return this;
+};
+this.getClientId = function() {
+    return this.clientId;
+};
+var clientSecret = "";
+this.setClientSecret = function(clientSecret) { 
+    this.clientSecret = clientSecret;
+    return this;
+};
+this.getClientSecret = function() {
+    return this.clientSecret;
+};
+var scopes = "";
+this.setScopes = function(scopes) { 
+    this.scopes = scopes;
+    return this;
+};
+this.getScopes = function() {
+    return this.scopes;
+};
+var authorizationUrl = "";
+this.setAuthorizationUrl = function(authorizationUrl) { 
+    this.authorizationUrl = authorizationUrl;
+    return this;
+};
+this.getAuthorizationUrl = function() {
+    return this.authorizationUrl;
+};
+var tokenUrl = "";
+this.setTokenUrl = function(tokenUrl) { 
+    this.tokenUrl = tokenUrl;
+    return this;
+};
+this.getTokenUrl = function() {
+    return this.tokenUrl;
+};
+var tokenAuthMethod = "0";
+this.setTokenAuthMethod = function(tokenAuthMethod) { 
+    this.tokenAuthMethod = tokenAuthMethod;
+    return this;
+};
+this.getTokenAuthMethod = function() {
+    return this.tokenAuthMethod;
+};
+var userinfoUrl = "";
+this.setUserinfoUrl = function(userinfoUrl) { 
+    this.userinfoUrl = userinfoUrl;
+    return this;
+};
+this.getUserinfoUrl = function() {
+    return this.userinfoUrl;
+};
+var logoutUrl = "";
+this.setLogoutUrl = function(logoutUrl) { 
+    this.logoutUrl = logoutUrl;
+    return this;
+};
+this.getLogoutUrl = function() {
+    return this.logoutUrl;
+};
+var isEnabled = "true";
+this.setIsEnabled = function(isEnabled) { 
+    this.isEnabled = isEnabled;
+    return this;
+};
+this.getIsEnabled = function() {
+    return this.isEnabled;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var oidcattribute = undefined;
+this.setOidcattributes = function(oidcattribute) { 
+    this.oidcattribute = oidcattribute;
+    return this;
+};
+this.getOidcattributes = function() {
+    return this.oidcattribute;
+};
+this.addOidcattribute = function(oidcattribute) { 
+ if(!this.oidcattribute) this.oidcattribute = new Array(); 
+  this.oidcattribute.push(oidcattribute); 
+ return this;
+};
+
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setOidcId(json["oidc_id"]);
+		this.setDisplayName(json["display_name"]);
+		this.setClientId(json["client_id"]);
+		this.setClientSecret(json["client_secret"]);
+		this.setScopes(json["scopes"]);
+		this.setAuthorizationUrl(json["authorization_url"]);
+		this.setTokenUrl(json["token_url"]);
+		this.setTokenAuthMethod(json["token_auth_method"]);
+		this.setUserinfoUrl(json["userinfo_url"]);
+		this.setLogoutUrl(json["logout_url"]);
+		this.setIsEnabled(json["is_enabled"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setOidcattributes(URI.getResourceArray(json["oIDCAttribute"],"oidcattribute"));
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getOidcId()) json += '"oidc_id"' + ":" + '"' + jsonEscape(this.getOidcId())  + '",';
+		if(this.getDisplayName()) json += '"display_name"' + ":" + '"' + jsonEscape(this.getDisplayName())  + '",';
+		if(this.getClientId()) json += '"client_id"' + ":" + '"' + jsonEscape(this.getClientId())  + '",';
+		if(this.getClientSecret()) json += '"client_secret"' + ":" + '"' + jsonEscape(this.getClientSecret())  + '",';
+		if(this.getScopes()) json += '"scopes"' + ":" + '"' + jsonEscape(this.getScopes())  + '",';
+		if(this.getAuthorizationUrl()) json += '"authorization_url"' + ":" + '"' + jsonEscape(this.getAuthorizationUrl())  + '",';
+		if(this.getTokenUrl()) json += '"token_url"' + ":" + '"' + jsonEscape(this.getTokenUrl())  + '",';
+		if(this.getTokenAuthMethod()) json += '"token_auth_method"' + ":" + '"' + jsonEscape(this.getTokenAuthMethod())  + '",';
+		if(this.getUserinfoUrl()) json += '"userinfo_url"' + ":" + '"' + jsonEscape(this.getUserinfoUrl())  + '",';
+		if(this.getLogoutUrl()) json += '"logout_url"' + ":" + '"' + jsonEscape(this.getLogoutUrl())  + '",';
+		if(this.getIsEnabled()) json += '"is_enabled"' + ":" + '"' + jsonEscape(this.getIsEnabled())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOidcattributes()) json += '"oIDCAttribute"' + ":" + URI.toJSONArray(this.getOidcattributes())  + ',';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OIDCAuthentication.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.clientId && !(/^[a-zA-Z0-9_\-]+$/).test(this.clientId)) { throw new ValidationError(_formprefix + "client_id", ValidationError.PATTERN_FAILED);}
+if(this.clientSecret && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.clientSecret)) { throw new ValidationError(_formprefix + "client_secret", ValidationError.PATTERN_FAILED);}
+if(this.scopes && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.scopes)) { throw new ValidationError(_formprefix + "scopes", ValidationError.PATTERN_FAILED);}
+if(this.authorizationUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.authorizationUrl)) { throw new ValidationError(_formprefix + "authorization_url", ValidationError.PATTERN_FAILED);}
+if(this.tokenUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.tokenUrl)) { throw new ValidationError(_formprefix + "token_url", ValidationError.PATTERN_FAILED);}
+if(this.userinfoUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.userinfoUrl)) { throw new ValidationError(_formprefix + "userinfo_url", ValidationError.PATTERN_FAILED);}
+if(this.logoutUrl && !(/^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&%\$#_@]*)?$/).test(this.logoutUrl)) { throw new ValidationError(_formprefix + "logout_url", ValidationError.PATTERN_FAILED);}
+if(this.isEnabled && !Validator.BOOLEAN.test(this.isEnabled)) { throw new ValidationError(_formprefix + "is_enabled", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oidcattribute) { for(i=0; i < this.oidcattribute.length; i++ ) { this.oidcattribute[i].validate(); } }
+
+	return this;
+    }
+}
+OIDCAuthentication.path = "oidcauthentication";
+OIDCAuthentication.newBuilder = function() {
+    return new OIDCAuthentication();
 };
 
 ResourceAction = function() {
@@ -45031,8 +47186,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.policyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.policyName)) { throw new ValidationError(_formprefix + "policy_name", ValidationError.PATTERN_FAILED);}
-if(this.policyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.policyValue)) { throw new ValidationError(_formprefix + "policy_value", ValidationError.PATTERN_FAILED);}
+	if(this.policyName && !(/xss:throwerror/).test(this.policyName)) { throw new ValidationError(_formprefix + "policy_name", ValidationError.PATTERN_FAILED);}
+if(this.policyValue && !(/xss:throwerror/).test(this.policyValue)) { throw new ValidationError(_formprefix + "policy_value", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -46825,8 +48980,8 @@ this.getModifiedTime = function() {
     this.validate = function() {
 	var i = 0;
 	if(this.zgpid && !Validator.INTEGER.test(this.zgpid)) { throw new ValidationError(_formprefix + "zgpid", ValidationError.PATTERN_FAILED);}
-if(this.propertyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propertyName)) { throw new ValidationError(_formprefix + "property_name", ValidationError.PATTERN_FAILED);}
-if(this.propertyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propertyValue)) { throw new ValidationError(_formprefix + "property_value", ValidationError.PATTERN_FAILED);}
+if(this.propertyName && !(/xss:throwerror/).test(this.propertyName)) { throw new ValidationError(_formprefix + "property_name", ValidationError.PATTERN_FAILED);}
+if(this.propertyValue && !(/xss:throwerror/).test(this.propertyValue)) { throw new ValidationError(_formprefix + "property_value", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -48652,6 +50807,120 @@ AppAccountFinancialSettings.newBuilder = function() {
     return new AppAccountFinancialSettings();
 };
 
+AppAccountServiceInfo = function() {
+    var _formprefix = "";
+    
+var bundleType = "-1";
+this.setBundleType = function(bundleType) { 
+    this.bundleType = bundleType;
+    return this;
+};
+this.getBundleType = function() {
+    return this.bundleType;
+};
+var productionZid = "";
+this.setProductionZid = function(productionZid) { 
+    this.productionZid = productionZid;
+    return this;
+};
+this.getProductionZid = function() {
+    return this.productionZid;
+};
+var partnerZid = "";
+this.setPartnerZid = function(partnerZid) { 
+    this.partnerZid = partnerZid;
+    return this;
+};
+this.getPartnerZid = function() {
+    return this.partnerZid;
+};
+var accountType = "-1";
+this.setAccountType = function(accountType) { 
+    this.accountType = accountType;
+    return this;
+};
+this.getAccountType = function() {
+    return this.accountType;
+};
+var isPayloadEncrypted = "0";
+this.setIsPayloadEncrypted = function(isPayloadEncrypted) { 
+    this.isPayloadEncrypted = isPayloadEncrypted;
+    return this;
+};
+this.getIsPayloadEncrypted = function() {
+    return this.isPayloadEncrypted;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setBundleType(json["bundle_type"]);
+		this.setProductionZid(json["production_zid"]);
+		this.setPartnerZid(json["partner_zid"]);
+		this.setAccountType(json["account_type"]);
+		this.setIsPayloadEncrypted(json["is_payload_encrypted"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getBundleType()) json += '"bundle_type"' + ":" + '"' + jsonEscape(this.getBundleType())  + '",';
+		if(this.getProductionZid()) json += '"production_zid"' + ":" + '"' + jsonEscape(this.getProductionZid())  + '",';
+		if(this.getPartnerZid()) json += '"partner_zid"' + ":" + '"' + jsonEscape(this.getPartnerZid())  + '",';
+		if(this.getAccountType()) json += '"account_type"' + ":" + '"' + jsonEscape(this.getAccountType())  + '",';
+		if(this.getIsPayloadEncrypted()) json += '"is_payload_encrypted"' + ":" + '"' + jsonEscape(this.getIsPayloadEncrypted())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(AppAccountServiceInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.bundleType && !Validator.INTEGER.test(this.bundleType)) { throw new ValidationError(_formprefix + "bundle_type", ValidationError.PATTERN_FAILED);}
+if(this.productionZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.productionZid)) { throw new ValidationError(_formprefix + "production_zid", ValidationError.PATTERN_FAILED);}
+if(this.partnerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.partnerZid)) { throw new ValidationError(_formprefix + "partner_zid", ValidationError.PATTERN_FAILED);}
+if(this.accountType && !Validator.INTEGER.test(this.accountType)) { throw new ValidationError(_formprefix + "account_type", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+AppAccountServiceInfo.path = "appaccountserviceinfo";
+AppAccountServiceInfo.newBuilder = function() {
+    return new AppAccountServiceInfo();
+};
+
 Statement = function() {
     var _formprefix = "";
     
@@ -50099,6 +52368,14 @@ this.addAppaccountconfiguration = function(appaccountconfiguration) {
  return this;
 };
 
+var appaccountserviceinfo = undefined;
+this.setAppaccountserviceinfo = function(appaccountserviceinfo) { 
+    this.appaccountserviceinfo = appaccountserviceinfo;
+    return this;
+};
+this.getAppaccountserviceinfo = function() {
+    return this.appaccountserviceinfo;
+};
 var appaccountlicense = undefined;
 this.setAppaccountlicenses = function(appaccountlicense) { 
     this.appaccountlicense = appaccountlicense;
@@ -50161,6 +52438,7 @@ this.addAppaccountinvitationtemplate = function(appaccountinvitationtemplate) {
 		this.setAccountoauthaccessgrants(URI.getResourceArray(json["accountOAuthAccessGrant"],"accountoauthaccessgrant"));
 		this.setAccountmembers(URI.getResourceArray(json["accountMember"],"accountmember"));
 		this.setAppaccountconfigurations(URI.getResourceArray(json["appAccountConfiguration"],"appaccountconfiguration"));
+		this.setAppaccountserviceinfo(URI.getResource(json["appAccountServiceInfo"],"appaccountserviceinfo"));
 		this.setAppaccountlicenses(URI.getResourceArray(json["appAccountLicense"],"appaccountlicense"));
 		this.setPortalaccountmappings(URI.getResourceArray(json["portalAccountMapping"],"portalaccountmapping"));
 		this.setAppaccountinvitationtemplates(URI.getResourceArray(json["appAccountInvitationTemplate"],"appaccountinvitationtemplate"));
@@ -50186,6 +52464,7 @@ this.addAppaccountinvitationtemplate = function(appaccountinvitationtemplate) {
 		if(this.getAccountoauthaccessgrants()) json += '"accountOAuthAccessGrant"' + ":" + URI.toJSONArray(this.getAccountoauthaccessgrants())  + ',';
 		if(this.getAccountmembers()) json += '"accountMember"' + ":" + URI.toJSONArray(this.getAccountmembers())  + ',';
 		if(this.getAppaccountconfigurations()) json += '"appAccountConfiguration"' + ":" + URI.toJSONArray(this.getAppaccountconfigurations())  + ',';
+		if(this.getAppaccountserviceinfo()) json += '"appAccountServiceInfo"' + ":" + this.getAppaccountserviceinfo().toJSON()  + ',';
 		if(this.getAppaccountlicenses()) json += '"appAccountLicense"' + ":" + URI.toJSONArray(this.getAppaccountlicenses())  + ',';
 		if(this.getPortalaccountmappings()) json += '"portalAccountMapping"' + ":" + URI.toJSONArray(this.getPortalaccountmappings())  + ',';
 		if(this.getAppaccountinvitationtemplates()) json += '"appAccountInvitationTemplate"' + ":" + URI.toJSONArray(this.getAppaccountinvitationtemplates())  + ',';
@@ -50224,6 +52503,7 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 if(this.accountoauthaccessgrant) { for(i=0; i < this.accountoauthaccessgrant.length; i++ ) { this.accountoauthaccessgrant[i].validate(); } }
 if(this.accountmember) { for(i=0; i < this.accountmember.length; i++ ) { this.accountmember[i].validate(); } }
 if(this.appaccountconfiguration) { for(i=0; i < this.appaccountconfiguration.length; i++ ) { this.appaccountconfiguration[i].validate(); } }
+if(this.appaccountserviceinfo) { this.appaccountserviceinfo.validate(); }
 if(this.appaccountlicense) { for(i=0; i < this.appaccountlicense.length; i++ ) { this.appaccountlicense[i].validate(); } }
 if(this.portalaccountmapping) { for(i=0; i < this.portalaccountmapping.length; i++ ) { this.portalaccountmapping[i].validate(); } }
 if(this.appaccountinvitationtemplate) { for(i=0; i < this.appaccountinvitationtemplate.length; i++ ) { this.appaccountinvitationtemplate[i].validate(); } }
@@ -51886,6 +54166,96 @@ ClientPortalOrgType.newBuilder = function() {
     return new ClientPortalOrgType();
 };
 
+OIDCAttribute = function() {
+    var _formprefix = "";
+    
+var appId = "";
+this.setAppId = function(appId) { 
+    this.appId = appId;
+    return this;
+};
+this.getAppId = function() {
+    return this.appId;
+};
+var fieldName = "";
+this.setFieldName = function(fieldName) { 
+    this.fieldName = fieldName;
+    return this;
+};
+this.getFieldName = function() {
+    return this.fieldName;
+};
+var attributeName = "";
+this.setAttributeName = function(attributeName) { 
+    this.attributeName = attributeName;
+    return this;
+};
+this.getAttributeName = function() {
+    return this.attributeName;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setAppId(json["app_id"]);
+		this.setFieldName(json["field_name"]);
+		this.setAttributeName(json["attribute_name"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getAppId()) json += '"app_id"' + ":" + '"' + jsonEscape(this.getAppId())  + '",';
+		if(this.getFieldName()) json += '"field_name"' + ":" + '"' + jsonEscape(this.getFieldName())  + '",';
+		if(this.getAttributeName()) json += '"attribute_name"' + ":" + '"' + jsonEscape(this.getAttributeName())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OIDCAttribute.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OIDCAttribute.path = "oidcattribute";
+OIDCAttribute.newBuilder = function() {
+    return new OIDCAttribute();
+};
+
 PortalMapping = function() {
     var _formprefix = "";
     
@@ -52094,6 +54464,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -52108,6 +54486,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -52117,6 +54496,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -52139,6 +54519,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -55176,6 +57557,14 @@ this.setSuperAdminZuid = function(superAdminZuid) {
 this.getSuperAdminZuid = function() {
     return this.superAdminZuid;
 };
+var departmentHead = "";
+this.setDepartmentHead = function(departmentHead) { 
+    this.departmentHead = departmentHead;
+    return this;
+};
+this.getDepartmentHead = function() {
+    return this.departmentHead;
+};
 var groupName = "";
 this.setGroupName = function(groupName) { 
     this.groupName = groupName;
@@ -55368,6 +57757,7 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 		this.setZgid(json["zgid"]);
 		this.setGroupStatus(json["group_status"]);
 		this.setSuperAdminZuid(json["super_admin_zuid"]);
+		this.setDepartmentHead(json["department_head"]);
 		this.setGroupName(json["group_name"]);
 		this.setGroupDescription(json["group_description"]);
 		this.setGroupType(json["group_type"]);
@@ -55394,6 +57784,7 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 		if(this.getZgid()) json += '"zgid"' + ":" + '"' + jsonEscape(this.getZgid())  + '",';
 		if(this.getGroupStatus()) json += '"group_status"' + ":" + '"' + jsonEscape(this.getGroupStatus())  + '",';
 		if(this.getSuperAdminZuid()) json += '"super_admin_zuid"' + ":" + '"' + jsonEscape(this.getSuperAdminZuid())  + '",';
+		if(this.getDepartmentHead()) json += '"department_head"' + ":" + '"' + jsonEscape(this.getDepartmentHead())  + '",';
 		if(this.getGroupName()) json += '"group_name"' + ":" + '"' + jsonEscape(this.getGroupName())  + '",';
 		if(this.getGroupDescription()) json += '"group_description"' + ":" + '"' + jsonEscape(this.getGroupDescription())  + '",';
 		if(this.getGroupType()) json += '"group_type"' + ":" + '"' + jsonEscape(this.getGroupType())  + '",';
@@ -55432,8 +57823,9 @@ this.addUnifiedgroupsmartformula = function(unifiedgroupsmartformula) {
 	var i = 0;
 	if(this.zgid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zgid)) { throw new ValidationError(_formprefix + "zgid", ValidationError.PATTERN_FAILED);}
 if(this.superAdminZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.superAdminZuid)) { throw new ValidationError(_formprefix + "super_admin_zuid", ValidationError.PATTERN_FAILED);}
-if(this.groupName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupName)) { throw new ValidationError(_formprefix + "group_name", ValidationError.PATTERN_FAILED);}
-if(this.groupDescription && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupDescription)) { throw new ValidationError(_formprefix + "group_description", ValidationError.PATTERN_FAILED);}
+if(this.departmentHead && !(/^[a-zA-Z0-9_\-]+$/).test(this.departmentHead)) { throw new ValidationError(_formprefix + "department_head", ValidationError.PATTERN_FAILED);}
+if(this.groupName && !(/xss:throwerror/).test(this.groupName)) { throw new ValidationError(_formprefix + "group_name", ValidationError.PATTERN_FAILED);}
+if(this.groupDescription && !(/xss:throwerror/).test(this.groupDescription)) { throw new ValidationError(_formprefix + "group_description", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -58929,6 +61321,14 @@ this.setCreatedTime = function(createdTime) {
 this.getCreatedTime = function() {
     return this.createdTime;
 };
+var serviceorgmemberinfo = undefined;
+this.setServiceorgmemberinfo = function(serviceorgmemberinfo) { 
+    this.serviceorgmemberinfo = serviceorgmemberinfo;
+    return this;
+};
+this.getServiceorgmemberinfo = function() {
+    return this.serviceorgmemberinfo;
+};
 var serviceorgmemberrole = undefined;
 this.setServiceorgmemberroles = function(serviceorgmemberrole) { 
     this.serviceorgmemberrole = serviceorgmemberrole;
@@ -58952,6 +61352,7 @@ this.addServiceorgmemberrole = function(serviceorgmemberrole) {
 		this.setUserType(json["user_type"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setCreatedTime(json["created_time"]);
+		this.setServiceorgmemberinfo(URI.getResource(json["serviceOrgMemberInfo"],"serviceorgmemberinfo"));
 		this.setServiceorgmemberroles(URI.getResourceArray(json["serviceOrgMemberRole"],"serviceorgmemberrole"));
 
 	return this;
@@ -58964,6 +61365,7 @@ this.addServiceorgmemberrole = function(serviceorgmemberrole) {
 		if(this.getUserType()) json += '"user_type"' + ":" + '"' + jsonEscape(this.getUserType())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getServiceorgmemberinfo()) json += '"serviceOrgMemberInfo"' + ":" + this.getServiceorgmemberinfo().toJSON()  + ',';
 		if(this.getServiceorgmemberroles()) json += '"serviceOrgMemberRole"' + ":" + URI.toJSONArray(this.getServiceorgmemberroles())  + ',';
 
 	json = removeLastComma(json);
@@ -58988,6 +61390,7 @@ if(this.userRole && !Validator.INTEGER.test(this.userRole)) { throw new Validati
 if(this.userType && !Validator.INTEGER.test(this.userType)) { throw new ValidationError(_formprefix + "user_type", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.serviceorgmemberinfo) { this.serviceorgmemberinfo.validate(); }
 if(this.serviceorgmemberrole) { for(i=0; i < this.serviceorgmemberrole.length; i++ ) { this.serviceorgmemberrole[i].validate(); } }
 
 	return this;
@@ -60548,6 +62951,87 @@ AccountAudit.newBuilder = function() {
     return new AccountAudit();
 };
 
+OAuthProjectClients = function() {
+    var _formprefix = "";
+    
+var clientZid = "";
+this.setClientZid = function(clientZid) { 
+    this.clientZid = clientZid;
+    return this;
+};
+this.getClientZid = function() {
+    return this.clientZid;
+};
+var distributionStatus = "1";
+this.setDistributionStatus = function(distributionStatus) { 
+    this.distributionStatus = distributionStatus;
+    return this;
+};
+this.getDistributionStatus = function() {
+    return this.distributionStatus;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setClientZid(json["client_zid"]);
+		this.setDistributionStatus(json["distribution_status"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
+		if(this.getDistributionStatus()) json += '"distribution_status"' + ":" + '"' + jsonEscape(this.getDistributionStatus())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectClients.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectClients.path = "oauthprojectclients";
+OAuthProjectClients.newBuilder = function() {
+    return new OAuthProjectClients();
+};
+
 OAuthMobileAppService = function() {
     var _formprefix = "";
     
@@ -61461,6 +63945,20 @@ this.addJwtauthentication = function(jwtauthentication) {
  return this;
 };
 
+var oidcauthentication = undefined;
+this.setOidcauthentications = function(oidcauthentication) { 
+    this.oidcauthentication = oidcauthentication;
+    return this;
+};
+this.getOidcauthentications = function() {
+    return this.oidcauthentication;
+};
+this.addOidcauthentication = function(oidcauthentication) { 
+ if(!this.oidcauthentication) this.oidcauthentication = new Array(); 
+  this.oidcauthentication.push(oidcauthentication); 
+ return this;
+};
+
 var conditionalpolicy = undefined;
 this.setConditionalpolicys = function(conditionalpolicy) { 
     this.conditionalpolicy = conditionalpolicy;
@@ -61547,6 +64045,7 @@ this.addUnifiedgroup = function(unifiedgroup) {
 		this.setRoutingpolicys(URI.getResourceArray(json["routingPolicy"],"routingpolicy"));
 		this.setSamlauthentications(URI.getResourceArray(json["sAMLAuthentication"],"samlauthentication"));
 		this.setJwtauthentications(URI.getResourceArray(json["jWTAuthentication"],"jwtauthentication"));
+		this.setOidcauthentications(URI.getResourceArray(json["oIDCAuthentication"],"oidcauthentication"));
 		this.setConditionalpolicys(URI.getResourceArray(json["conditionalPolicy"],"conditionalpolicy"));
 		this.setIpaddresss(URI.getResourceArray(json["ipAddress"],"ipaddress"));
 		this.setUnifiedgroups(URI.getResourceArray(json["unifiedGroup"],"unifiedgroup"));
@@ -61596,6 +64095,7 @@ this.addUnifiedgroup = function(unifiedgroup) {
 		if(this.getRoutingpolicys()) json += '"routingPolicy"' + ":" + URI.toJSONArray(this.getRoutingpolicys())  + ',';
 		if(this.getSamlauthentications()) json += '"sAMLAuthentication"' + ":" + URI.toJSONArray(this.getSamlauthentications())  + ',';
 		if(this.getJwtauthentications()) json += '"jWTAuthentication"' + ":" + URI.toJSONArray(this.getJwtauthentications())  + ',';
+		if(this.getOidcauthentications()) json += '"oIDCAuthentication"' + ":" + URI.toJSONArray(this.getOidcauthentications())  + ',';
 		if(this.getConditionalpolicys()) json += '"conditionalPolicy"' + ":" + URI.toJSONArray(this.getConditionalpolicys())  + ',';
 		if(this.getIpaddresss()) json += '"ipAddress"' + ":" + URI.toJSONArray(this.getIpaddresss())  + ',';
 		if(this.getUnifiedgroups()) json += '"unifiedGroup"' + ":" + URI.toJSONArray(this.getUnifiedgroups())  + ',';
@@ -61656,6 +64156,7 @@ if(this.logo) { this.logo.validate(); }
 if(this.routingpolicy) { for(i=0; i < this.routingpolicy.length; i++ ) { this.routingpolicy[i].validate(); } }
 if(this.samlauthentication) { for(i=0; i < this.samlauthentication.length; i++ ) { this.samlauthentication[i].validate(); } }
 if(this.jwtauthentication) { for(i=0; i < this.jwtauthentication.length; i++ ) { this.jwtauthentication[i].validate(); } }
+if(this.oidcauthentication) { for(i=0; i < this.oidcauthentication.length; i++ ) { this.oidcauthentication[i].validate(); } }
 if(this.conditionalpolicy) { for(i=0; i < this.conditionalpolicy.length; i++ ) { this.conditionalpolicy[i].validate(); } }
 if(this.ipaddress) { for(i=0; i < this.ipaddress.length; i++ ) { this.ipaddress[i].validate(); } }
 if(this.unifiedgroup) { for(i=0; i < this.unifiedgroup.length; i++ ) { this.unifiedgroup[i].validate(); } }
@@ -62994,16 +65495,36 @@ this.setClientZid = function(clientZid) {
 this.getClientZid = function() {
     return this.clientZid;
 };
+var appVersion = "";
+this.setAppVersion = function(appVersion) { 
+    this.appVersion = appVersion;
+    return this;
+};
+this.getAppVersion = function() {
+    return this.appVersion;
+};
+var ssokitVersion = "";
+this.setSsokitVersion = function(ssokitVersion) { 
+    this.ssokitVersion = ssokitVersion;
+    return this;
+};
+this.getSsokitVersion = function() {
+    return this.ssokitVersion;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
 		this.setClientZid(json["client_zid"]);
+		this.setAppVersion(json["app_version"]);
+		this.setSsokitVersion(json["ssokit_version"]);
 
 	return this;
     }
     this.toJSON = function() {
 	var json = "{";
 		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
+		if(this.getAppVersion()) json += '"app_version"' + ":" + '"' + jsonEscape(this.getAppVersion())  + '",';
+		if(this.getSsokitVersion()) json += '"ssokit_version"' + ":" + '"' + jsonEscape(this.getSsokitVersion())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -63023,6 +65544,8 @@ this.getClientZid = function() {
     this.validate = function() {
 	var i = 0;
 	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
+if(this.appVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.appVersion)) { throw new ValidationError(_formprefix + "app_version", ValidationError.PATTERN_FAILED);}
+if(this.ssokitVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.ssokitVersion)) { throw new ValidationError(_formprefix + "ssokit_version", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -63099,6 +65622,46 @@ this.setEnvironment = function(environment) {
 this.getEnvironment = function() {
     return this.environment;
 };
+var verificationCode = "";
+this.setVerificationCode = function(verificationCode) { 
+    this.verificationCode = verificationCode;
+    return this;
+};
+this.getVerificationCode = function() {
+    return this.verificationCode;
+};
+var verificationMode = "";
+this.setVerificationMode = function(verificationMode) { 
+    this.verificationMode = verificationMode;
+    return this;
+};
+this.getVerificationMode = function() {
+    return this.verificationMode;
+};
+var verificationTime = "";
+this.setVerificationTime = function(verificationTime) { 
+    this.verificationTime = verificationTime;
+    return this;
+};
+this.getVerificationTime = function() {
+    return this.verificationTime;
+};
+var expiryTime = "";
+this.setExpiryTime = function(expiryTime) { 
+    this.expiryTime = expiryTime;
+    return this;
+};
+this.getExpiryTime = function() {
+    return this.expiryTime;
+};
+var verifiedBy = "";
+this.setVerifiedBy = function(verifiedBy) { 
+    this.verifiedBy = verifiedBy;
+    return this;
+};
+this.getVerifiedBy = function() {
+    return this.verifiedBy;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
@@ -63110,6 +65673,11 @@ this.getEnvironment = function() {
 		this.setIsVerified(json["is_verified"]);
 		this.setDomainType(json["domain_type"]);
 		this.setEnvironment(json["environment"]);
+		this.setVerificationCode(json["verification_code"]);
+		this.setVerificationMode(json["verification_mode"]);
+		this.setVerificationTime(json["verification_time"]);
+		this.setExpiryTime(json["expiry_time"]);
+		this.setVerifiedBy(json["verified_by"]);
 
 	return this;
     }
@@ -63123,6 +65691,11 @@ this.getEnvironment = function() {
 		if(this.getIsVerified()) json += '"is_verified"' + ":" + '"' + jsonEscape(this.getIsVerified())  + '",';
 		if(this.getDomainType()) json += '"domain_type"' + ":" + '"' + jsonEscape(this.getDomainType())  + '",';
 		if(this.getEnvironment()) json += '"environment"' + ":" + '"' + jsonEscape(this.getEnvironment())  + '",';
+		if(this.getVerificationCode()) json += '"verification_code"' + ":" + '"' + jsonEscape(this.getVerificationCode())  + '",';
+		if(this.getVerificationMode()) json += '"verification_mode"' + ":" + '"' + jsonEscape(this.getVerificationMode())  + '",';
+		if(this.getVerificationTime()) json += '"verification_time"' + ":" + '"' + jsonEscape(this.getVerificationTime())  + '",';
+		if(this.getExpiryTime()) json += '"expiry_time"' + ":" + '"' + jsonEscape(this.getExpiryTime())  + '",';
+		if(this.getVerifiedBy()) json += '"verified_by"' + ":" + '"' + jsonEscape(this.getVerifiedBy())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -63148,6 +65721,11 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.isVerified && !Validator.BOOLEAN.test(this.isVerified)) { throw new ValidationError(_formprefix + "is_verified", ValidationError.PATTERN_FAILED);}
 if(this.environment && !Validator.INTEGER.test(this.environment)) { throw new ValidationError(_formprefix + "environment", ValidationError.PATTERN_FAILED);}
+if(this.verificationCode && !(/^([a-zA-Z0-9\._\*\-])+$/).test(this.verificationCode)) { throw new ValidationError(_formprefix + "verification_code", ValidationError.PATTERN_FAILED);}
+if(this.verificationMode && !Validator.INTEGER.test(this.verificationMode)) { throw new ValidationError(_formprefix + "verification_mode", ValidationError.PATTERN_FAILED);}
+if(this.verificationTime && !Validator.INTEGER.test(this.verificationTime)) { throw new ValidationError(_formprefix + "verification_time", ValidationError.PATTERN_FAILED);}
+if(this.expiryTime && !Validator.INTEGER.test(this.expiryTime)) { throw new ValidationError(_formprefix + "expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.verifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.verifiedBy)) { throw new ValidationError(_formprefix + "verified_by", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -63184,6 +65762,22 @@ this.setRefreshToken = function(refreshToken) {
 this.getRefreshToken = function() {
     return this.refreshToken;
 };
+var appVersion = "";
+this.setAppVersion = function(appVersion) { 
+    this.appVersion = appVersion;
+    return this;
+};
+this.getAppVersion = function() {
+    return this.appVersion;
+};
+var ssokitVersion = "";
+this.setSsokitVersion = function(ssokitVersion) { 
+    this.ssokitVersion = ssokitVersion;
+    return this;
+};
+this.getSsokitVersion = function() {
+    return this.ssokitVersion;
+};
 var oauthmobileuserdevicesubclients = undefined;
 this.setOauthmobileuserdevicesubclientss = function(oauthmobileuserdevicesubclients) { 
     this.oauthmobileuserdevicesubclients = oauthmobileuserdevicesubclients;
@@ -63204,6 +65798,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 		this.setClientZid(json["client_zid"]);
 		this.setUserZuid(json["user_zuid"]);
 		this.setRefreshToken(json["refresh_token"]);
+		this.setAppVersion(json["app_version"]);
+		this.setSsokitVersion(json["ssokit_version"]);
 		this.setOauthmobileuserdevicesubclientss(URI.getResourceArray(json["oAuthMobileUserDeviceSubClients"],"oauthmobileuserdevicesubclients"));
 
 	return this;
@@ -63213,6 +65809,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 		if(this.getClientZid()) json += '"client_zid"' + ":" + '"' + jsonEscape(this.getClientZid())  + '",';
 		if(this.getUserZuid()) json += '"user_zuid"' + ":" + '"' + jsonEscape(this.getUserZuid())  + '",';
 		if(this.getRefreshToken()) json += '"refresh_token"' + ":" + '"' + jsonEscape(this.getRefreshToken())  + '",';
+		if(this.getAppVersion()) json += '"app_version"' + ":" + '"' + jsonEscape(this.getAppVersion())  + '",';
+		if(this.getSsokitVersion()) json += '"ssokit_version"' + ":" + '"' + jsonEscape(this.getSsokitVersion())  + '",';
 		if(this.getOauthmobileuserdevicesubclientss()) json += '"oAuthMobileUserDeviceSubClients"' + ":" + URI.toJSONArray(this.getOauthmobileuserdevicesubclientss())  + ',';
 
 	json = removeLastComma(json);
@@ -63235,6 +65833,8 @@ this.addOauthmobileuserdevicesubclients = function(oauthmobileuserdevicesubclien
 	if(this.clientZid && !(/^[0-9]+\.[0-9]+$/).test(this.clientZid)) { throw new ValidationError(_formprefix + "client_zid", ValidationError.PATTERN_FAILED);}
 if(this.userZuid && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.userZuid)) { throw new ValidationError(_formprefix + "user_zuid", ValidationError.PATTERN_FAILED);}
 if(this.refreshToken && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.refreshToken)) { throw new ValidationError(_formprefix + "refresh_token", ValidationError.PATTERN_FAILED);}
+if(this.appVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.appVersion)) { throw new ValidationError(_formprefix + "app_version", ValidationError.PATTERN_FAILED);}
+if(this.ssokitVersion && !(/^([A-Za-z0-9_.\-]+)$/).test(this.ssokitVersion)) { throw new ValidationError(_formprefix + "ssokit_version", ValidationError.PATTERN_FAILED);}
 if(this.oauthmobileuserdevicesubclients) { for(i=0; i < this.oauthmobileuserdevicesubclients.length; i++ ) { this.oauthmobileuserdevicesubclients[i].validate(); } }
 
 	return this;
@@ -65959,6 +68559,131 @@ OAuthRefreshTokenScopes.newBuilder = function() {
     return new OAuthRefreshTokenScopes();
 };
 
+ServiceOrgSubServiceInfo = function() {
+    var _formprefix = "";
+    
+var bundleType = "-1";
+this.setBundleType = function(bundleType) { 
+    this.bundleType = bundleType;
+    return this;
+};
+this.getBundleType = function() {
+    return this.bundleType;
+};
+var productionZid = "";
+this.setProductionZid = function(productionZid) { 
+    this.productionZid = productionZid;
+    return this;
+};
+this.getProductionZid = function() {
+    return this.productionZid;
+};
+var partnerZid = "";
+this.setPartnerZid = function(partnerZid) { 
+    this.partnerZid = partnerZid;
+    return this;
+};
+this.getPartnerZid = function() {
+    return this.partnerZid;
+};
+var accountType = "-1";
+this.setAccountType = function(accountType) { 
+    this.accountType = accountType;
+    return this;
+};
+this.getAccountType = function() {
+    return this.accountType;
+};
+var isPayloadEncrypted = "0";
+this.setIsPayloadEncrypted = function(isPayloadEncrypted) { 
+    this.isPayloadEncrypted = isPayloadEncrypted;
+    return this;
+};
+this.getIsPayloadEncrypted = function() {
+    return this.isPayloadEncrypted;
+};
+var inviteMandate = "false";
+this.setInviteMandate = function(inviteMandate) { 
+    this.inviteMandate = inviteMandate;
+    return this;
+};
+this.getInviteMandate = function() {
+    return this.inviteMandate;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setBundleType(json["bundle_type"]);
+		this.setProductionZid(json["production_zid"]);
+		this.setPartnerZid(json["partner_zid"]);
+		this.setAccountType(json["account_type"]);
+		this.setIsPayloadEncrypted(json["is_payload_encrypted"]);
+		this.setInviteMandate(json["invite_mandate"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getBundleType()) json += '"bundle_type"' + ":" + '"' + jsonEscape(this.getBundleType())  + '",';
+		if(this.getProductionZid()) json += '"production_zid"' + ":" + '"' + jsonEscape(this.getProductionZid())  + '",';
+		if(this.getPartnerZid()) json += '"partner_zid"' + ":" + '"' + jsonEscape(this.getPartnerZid())  + '",';
+		if(this.getAccountType()) json += '"account_type"' + ":" + '"' + jsonEscape(this.getAccountType())  + '",';
+		if(this.getIsPayloadEncrypted()) json += '"is_payload_encrypted"' + ":" + '"' + jsonEscape(this.getIsPayloadEncrypted())  + '",';
+		if(this.getInviteMandate()) json += '"invite_mandate"' + ":" + '"' + jsonEscape(this.getInviteMandate())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(ServiceOrgSubServiceInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.bundleType && !Validator.INTEGER.test(this.bundleType)) { throw new ValidationError(_formprefix + "bundle_type", ValidationError.PATTERN_FAILED);}
+if(this.productionZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.productionZid)) { throw new ValidationError(_formprefix + "production_zid", ValidationError.PATTERN_FAILED);}
+if(this.partnerZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.partnerZid)) { throw new ValidationError(_formprefix + "partner_zid", ValidationError.PATTERN_FAILED);}
+if(this.accountType && !Validator.INTEGER.test(this.accountType)) { throw new ValidationError(_formprefix + "account_type", ValidationError.PATTERN_FAILED);}
+if(this.inviteMandate && !Validator.BOOLEAN.test(this.inviteMandate)) { throw new ValidationError(_formprefix + "invite_mandate", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+ServiceOrgSubServiceInfo.path = "serviceorgsubserviceinfo";
+ServiceOrgSubServiceInfo.newBuilder = function() {
+    return new ServiceOrgSubServiceInfo();
+};
+
 TemplateImage = function() {
     var _formprefix = "";
     
@@ -66879,6 +69604,77 @@ SubScopes.newBuilder = function() {
     return new SubScopes();
 };
 
+ServiceOrgMemberInfo = function() {
+    var _formprefix = "";
+    
+var switchZuid = "";
+this.setSwitchZuid = function(switchZuid) { 
+    this.switchZuid = switchZuid;
+    return this;
+};
+this.getSwitchZuid = function() {
+    return this.switchZuid;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setSwitchZuid(json["switch_zuid"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getSwitchZuid()) json += '"switch_zuid"' + ":" + '"' + jsonEscape(this.getSwitchZuid())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(ServiceOrgMemberInfo.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.switchZuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.switchZuid)) { throw new ValidationError(_formprefix + "switch_zuid", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+ServiceOrgMemberInfo.path = "serviceorgmemberinfo";
+ServiceOrgMemberInfo.newBuilder = function() {
+    return new ServiceOrgMemberInfo();
+};
+
 OAuthSessionGrant = function() {
     var _formprefix = "";
     
@@ -67404,6 +70200,88 @@ Partner.newBuilder = function() {
     return new Partner();
 };
 
+OAuthProjectProperties = function() {
+    var _formprefix = "";
+    
+var propName = "";
+this.setPropName = function(propName) { 
+    this.propName = propName;
+    return this;
+};
+this.getPropName = function() {
+    return this.propName;
+};
+var propValue = "";
+this.setPropValue = function(propValue) { 
+    this.propValue = propValue;
+    return this;
+};
+this.getPropValue = function() {
+    return this.propValue;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setPropName(json["prop_name"]);
+		this.setPropValue(json["prop_value"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getPropName()) json += '"prop_name"' + ":" + '"' + jsonEscape(this.getPropName())  + '",';
+		if(this.getPropValue()) json += '"prop_value"' + ":" + '"' + jsonEscape(this.getPropValue())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectProperties.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.propName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propName)) { throw new ValidationError(_formprefix + "prop_name", ValidationError.PATTERN_FAILED);}
+if(this.propValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.propValue)) { throw new ValidationError(_formprefix + "prop_value", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectProperties.path = "oauthprojectproperties";
+OAuthProjectProperties.newBuilder = function() {
+    return new OAuthProjectProperties();
+};
+
 JWTAuthentication = function() {
     var _formprefix = "";
     
@@ -67579,6 +70457,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -67593,6 +70479,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -67602,6 +70489,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -67624,6 +70512,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -67932,6 +70821,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -67946,6 +70843,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -67955,6 +70853,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -67977,6 +70876,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -68158,6 +71058,14 @@ RoutingPolicy.newBuilder = function() {
 UnifiedGroupSmartFormula = function() {
     var _formprefix = "";
     
+var zgsfid = "";
+this.setZgsfid = function(zgsfid) { 
+    this.zgsfid = zgsfid;
+    return this;
+};
+this.getZgsfid = function() {
+    return this.zgsfid;
+};
 var formulaName = "";
 this.setFormulaName = function(formulaName) { 
     this.formulaName = formulaName;
@@ -68166,7 +71074,7 @@ this.setFormulaName = function(formulaName) {
 this.getFormulaName = function() {
     return this.formulaName;
 };
-var memberRole = "1";
+var memberRole = "";
 this.setMemberRole = function(memberRole) { 
     this.memberRole = memberRole;
     return this;
@@ -68225,6 +71133,7 @@ this.getModifiedTime = function() {
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
+		this.setZgsfid(json["zgsfid"]);
 		this.setFormulaName(json["formula_name"]);
 		this.setMemberRole(json["member_role"]);
 		this.setSmartFormula(json["smart_formula"]);
@@ -68238,6 +71147,7 @@ this.getModifiedTime = function() {
     }
     this.toJSON = function() {
 	var json = "{";
+		if(this.getZgsfid()) json += '"zgsfid"' + ":" + '"' + jsonEscape(this.getZgsfid())  + '",';
 		if(this.getFormulaName()) json += '"formula_name"' + ":" + '"' + jsonEscape(this.getFormulaName())  + '",';
 		if(this.getMemberRole()) json += '"member_role"' + ":" + '"' + jsonEscape(this.getMemberRole())  + '",';
 		if(this.getSmartFormula()) json += '"smart_formula"' + ":" + '"' + jsonEscape(this.getSmartFormula())  + '",';
@@ -68264,7 +71174,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.formulaName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.formulaName)) { throw new ValidationError(_formprefix + "formula_name", ValidationError.PATTERN_FAILED);}
+	if(this.zgsfid && !Validator.INTEGER.test(this.zgsfid)) { throw new ValidationError(_formprefix + "zgsfid", ValidationError.PATTERN_FAILED);}
+if(this.formulaName && !(/xss:throwerror/).test(this.formulaName)) { throw new ValidationError(_formprefix + "formula_name", ValidationError.PATTERN_FAILED);}
 if(this.sourceService && !Validator.INTEGER.test(this.sourceService)) { throw new ValidationError(_formprefix + "source_service", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
@@ -69268,8 +72179,8 @@ this.getModifiedTime = function() {
 	var i = 0;
 	if(this.zuid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zuid)) { throw new ValidationError(_formprefix + "zuid", ValidationError.PATTERN_FAILED);}
 if(this.externalZaid && !(/^[a-zA-Z0-9_\-]+$/).test(this.externalZaid)) { throw new ValidationError(_formprefix + "external_zaid", ValidationError.PATTERN_FAILED);}
-if(this.fullName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.fullName)) { throw new ValidationError(_formprefix + "full_name", ValidationError.PATTERN_FAILED);}
-if(this.displayName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.displayName)) { throw new ValidationError(_formprefix + "display_name", ValidationError.PATTERN_FAILED);}
+if(this.fullName && !(/xss:throwerror/).test(this.fullName)) { throw new ValidationError(_formprefix + "full_name", ValidationError.PATTERN_FAILED);}
+if(this.displayName && !(/xss:throwerror/).test(this.displayName)) { throw new ValidationError(_formprefix + "display_name", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -70089,7 +73000,7 @@ this.addUnifiedgrouprealmpolicy = function(unifiedgrouprealmpolicy) {
     this.validate = function() {
 	var i = 0;
 	if(this.zgrid && !Validator.INTEGER.test(this.zgrid)) { throw new ValidationError(_formprefix + "zgrid", ValidationError.PATTERN_FAILED);}
-if(this.groupRealmName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.groupRealmName)) { throw new ValidationError(_formprefix + "group_realm_name", ValidationError.PATTERN_FAILED);}
+if(this.groupRealmName && !(/xss:throwerror/).test(this.groupRealmName)) { throw new ValidationError(_formprefix + "group_realm_name", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -70273,6 +73184,87 @@ UserSecretKey.newBuilder = function() {
     return new UserSecretKey();
 };
 
+OAuthProjectDcDetails = function() {
+    var _formprefix = "";
+    
+var dcLocation = "";
+this.setDcLocation = function(dcLocation) { 
+    this.dcLocation = dcLocation;
+    return this;
+};
+this.getDcLocation = function() {
+    return this.dcLocation;
+};
+var isEnabled = "true";
+this.setIsEnabled = function(isEnabled) { 
+    this.isEnabled = isEnabled;
+    return this;
+};
+this.getIsEnabled = function() {
+    return this.isEnabled;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setDcLocation(json["dc_location"]);
+		this.setIsEnabled(json["is_enabled"]);
+		this.setModifiedTime(json["modified_time"]);
+		this.setCreatedTime(json["created_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getDcLocation()) json += '"dc_location"' + ":" + '"' + jsonEscape(this.getDcLocation())  + '",';
+		if(this.getIsEnabled()) json += '"is_enabled"' + ":" + '"' + jsonEscape(this.getIsEnabled())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectDcDetails.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.isEnabled && !Validator.BOOLEAN.test(this.isEnabled)) { throw new ValidationError(_formprefix + "is_enabled", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectDcDetails.path = "oauthprojectdcdetails";
+OAuthProjectDcDetails.newBuilder = function() {
+    return new OAuthProjectDcDetails();
+};
+
 Policy = function() {
     var _formprefix = "";
     
@@ -70424,6 +73416,99 @@ if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new 
 ServiceOrgConfiguration.path = "serviceorgconfiguration";
 ServiceOrgConfiguration.newBuilder = function() {
     return new ServiceOrgConfiguration();
+};
+
+OAuthProjectOpenID = function() {
+    var _formprefix = "";
+    
+var openId = "";
+this.setOpenId = function(openId) { 
+    this.openId = openId;
+    return this;
+};
+this.getOpenId = function() {
+    return this.openId;
+};
+var zid = "";
+this.setZid = function(zid) { 
+    this.zid = zid;
+    return this;
+};
+this.getZid = function() {
+    return this.zid;
+};
+var status = "true";
+this.setStatus = function(status) { 
+    this.status = status;
+    return this;
+};
+this.getStatus = function() {
+    return this.status;
+};
+var createdTime = "";
+this.setCreatedTime = function(createdTime) { 
+    this.createdTime = createdTime;
+    return this;
+};
+this.getCreatedTime = function() {
+    return this.createdTime;
+};
+var modifiedTime = "";
+this.setModifiedTime = function(modifiedTime) { 
+    this.modifiedTime = modifiedTime;
+    return this;
+};
+this.getModifiedTime = function() {
+    return this.modifiedTime;
+};
+    this.json = undefined;
+    this.initFromJson = function(json) {
+	this.json = json;
+		this.setOpenId(json["open_id"]);
+		this.setZid(json["zid"]);
+		this.setStatus(json["status"]);
+		this.setCreatedTime(json["created_time"]);
+		this.setModifiedTime(json["modified_time"]);
+
+	return this;
+    }
+    this.toJSON = function() {
+	var json = "{";
+		if(this.getOpenId()) json += '"open_id"' + ":" + '"' + jsonEscape(this.getOpenId())  + '",';
+		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
+		if(this.getStatus()) json += '"status"' + ":" + '"' + jsonEscape(this.getStatus())  + '",';
+		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+
+	json = removeLastComma(json);
+	json += "}";
+	return json;
+    }
+    this.initFromForm = function(form, index) {
+	_formprefix = URI._formPrefix(OAuthProjectOpenID.path, index);
+	URI._initFromForm(form, this, _formprefix);
+	return this;
+    }
+    this.getReferences = function() {
+	if(this.json) {
+	    return this.json["reference"];
+	}
+	return this.json; //undefined
+    }
+    this.validate = function() {
+	var i = 0;
+	if(this.openId && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.openId)) { throw new ValidationError(_formprefix + "open_id", ValidationError.PATTERN_FAILED);}
+if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
+if(this.status && !Validator.BOOLEAN.test(this.status)) { throw new ValidationError(_formprefix + "status", ValidationError.PATTERN_FAILED);}
+if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+
+	return this;
+    }
+}
+OAuthProjectOpenID.path = "oauthprojectopenid";
+OAuthProjectOpenID.newBuilder = function() {
+    return new OAuthProjectOpenID();
 };
 
 ConditionalAccess = function() {
@@ -71463,12 +74548,21 @@ this.setCreatedTime = function(createdTime) {
 this.getCreatedTime = function() {
     return this.createdTime;
 };
+var isProject = "false";
+this.setIsProject = function(isProject) { 
+    this.isProject = isProject;
+    return this;
+};
+this.getIsProject = function() {
+    return this.isProject;
+};
     this.json = undefined;
     this.initFromJson = function(json) {
 	this.json = json;
 		this.setAppClientZid(json["app_client_zid"]);
 		this.setIpAddress(json["ip_address"]);
 		this.setCreatedTime(json["created_time"]);
+		this.setIsProject(json["is_project"]);
 
 	return this;
     }
@@ -71477,6 +74571,7 @@ this.getCreatedTime = function() {
 		if(this.getAppClientZid()) json += '"app_client_zid"' + ":" + '"' + jsonEscape(this.getAppClientZid())  + '",';
 		if(this.getIpAddress()) json += '"ip_address"' + ":" + '"' + jsonEscape(this.getIpAddress())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
+		if(this.getIsProject()) json += '"is_project"' + ":" + '"' + jsonEscape(this.getIsProject())  + '",';
 
 	json = removeLastComma(json);
 	json += "}";
@@ -71498,6 +74593,7 @@ this.getCreatedTime = function() {
 	if(this.appClientZid && !(/^[a-zA-Z0-9_\-]+$/).test(this.appClientZid)) { throw new ValidationError(_formprefix + "app_client_zid", ValidationError.PATTERN_FAILED);}
 if(this.ipAddress && !(/(^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%.+)?\s*$)|(^$)/).test(this.ipAddress)) { throw new ValidationError(_formprefix + "ip_address", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
+if(this.isProject && !Validator.BOOLEAN.test(this.isProject)) { throw new ValidationError(_formprefix + "is_project", ValidationError.PATTERN_FAILED);}
 
 	return this;
     }
@@ -73725,6 +76821,14 @@ this.addServiceorgoauthaccessgrant = function(serviceorgoauthaccessgrant) {
  return this;
 };
 
+var serviceorgsubserviceinfo = undefined;
+this.setServiceorgsubserviceinfo = function(serviceorgsubserviceinfo) { 
+    this.serviceorgsubserviceinfo = serviceorgsubserviceinfo;
+    return this;
+};
+this.getServiceorgsubserviceinfo = function() {
+    return this.serviceorgsubserviceinfo;
+};
 var serviceorgmember = undefined;
 this.setServiceorgmembers = function(serviceorgmember) { 
     this.serviceorgmember = serviceorgmember;
@@ -73784,6 +76888,7 @@ this.addServiceorginvitationtemplate = function(serviceorginvitationtemplate) {
 		this.setModifiedTime(json["modified_time"]);
 		this.setServiceorgconfigurations(URI.getResourceArray(json["serviceOrgConfiguration"],"serviceorgconfiguration"));
 		this.setServiceorgoauthaccessgrants(URI.getResourceArray(json["serviceOrgOAuthAccessGrant"],"serviceorgoauthaccessgrant"));
+		this.setServiceorgsubserviceinfo(URI.getResource(json["serviceOrgSubServiceInfo"],"serviceorgsubserviceinfo"));
 		this.setServiceorgmembers(URI.getResourceArray(json["serviceOrgMember"],"serviceorgmember"));
 		this.setServiceorginvitations(URI.getResourceArray(json["serviceOrgInvitation"],"serviceorginvitation"));
 		this.setServiceorginvitationtemplates(URI.getResourceArray(json["serviceOrgInvitationTemplate"],"serviceorginvitationtemplate"));
@@ -73806,6 +76911,7 @@ this.addServiceorginvitationtemplate = function(serviceorginvitationtemplate) {
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getServiceorgconfigurations()) json += '"serviceOrgConfiguration"' + ":" + URI.toJSONArray(this.getServiceorgconfigurations())  + ',';
 		if(this.getServiceorgoauthaccessgrants()) json += '"serviceOrgOAuthAccessGrant"' + ":" + URI.toJSONArray(this.getServiceorgoauthaccessgrants())  + ',';
+		if(this.getServiceorgsubserviceinfo()) json += '"serviceOrgSubServiceInfo"' + ":" + this.getServiceorgsubserviceinfo().toJSON()  + ',';
 		if(this.getServiceorgmembers()) json += '"serviceOrgMember"' + ":" + URI.toJSONArray(this.getServiceorgmembers())  + ',';
 		if(this.getServiceorginvitations()) json += '"serviceOrgInvitation"' + ":" + URI.toJSONArray(this.getServiceorginvitations())  + ',';
 		if(this.getServiceorginvitationtemplates()) json += '"serviceOrgInvitationTemplate"' + ":" + URI.toJSONArray(this.getServiceorginvitationtemplates())  + ',';
@@ -73841,6 +76947,7 @@ if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new Va
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.serviceorgconfiguration) { for(i=0; i < this.serviceorgconfiguration.length; i++ ) { this.serviceorgconfiguration[i].validate(); } }
 if(this.serviceorgoauthaccessgrant) { for(i=0; i < this.serviceorgoauthaccessgrant.length; i++ ) { this.serviceorgoauthaccessgrant[i].validate(); } }
+if(this.serviceorgsubserviceinfo) { this.serviceorgsubserviceinfo.validate(); }
 if(this.serviceorgmember) { for(i=0; i < this.serviceorgmember.length; i++ ) { this.serviceorgmember[i].validate(); } }
 if(this.serviceorginvitation) { for(i=0; i < this.serviceorginvitation.length; i++ ) { this.serviceorginvitation[i].validate(); } }
 if(this.serviceorginvitationtemplate) { for(i=0; i < this.serviceorginvitationtemplate.length; i++ ) { this.serviceorginvitationtemplate[i].validate(); } }
@@ -74655,6 +77762,14 @@ this.setServiceName = function(serviceName) {
 this.getServiceName = function() {
     return this.serviceName;
 };
+var orgType = "-1";
+this.setOrgType = function(orgType) { 
+    this.orgType = orgType;
+    return this;
+};
+this.getOrgType = function() {
+    return this.orgType;
+};
 var createdTime = "";
 this.setCreatedTime = function(createdTime) { 
     this.createdTime = createdTime;
@@ -74669,6 +77784,7 @@ this.getCreatedTime = function() {
 		this.setZid(json["zid"]);
 		this.setZidtype(json["zidtype"]);
 		this.setServiceName(json["service_name"]);
+		this.setOrgType(json["org_type"]);
 		this.setCreatedTime(json["created_time"]);
 
 	return this;
@@ -74678,6 +77794,7 @@ this.getCreatedTime = function() {
 		if(this.getZid()) json += '"zid"' + ":" + '"' + jsonEscape(this.getZid())  + '",';
 		if(this.getZidtype()) json += '"zidtype"' + ":" + '"' + jsonEscape(this.getZidtype())  + '",';
 		if(this.getServiceName()) json += '"service_name"' + ":" + '"' + jsonEscape(this.getServiceName())  + '",';
+		if(this.getOrgType()) json += '"org_type"' + ":" + '"' + jsonEscape(this.getOrgType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
 	json = removeLastComma(json);
@@ -74700,6 +77817,7 @@ this.getCreatedTime = function() {
 	if(this.zid && !(/^[a-zA-Z0-9_\-]+$/).test(this.zid)) { throw new ValidationError(_formprefix + "zid", ValidationError.PATTERN_FAILED);}
 if(this.zidtype && !Validator.INTEGER.test(this.zidtype)) { throw new ValidationError(_formprefix + "zidtype", ValidationError.PATTERN_FAILED);}
 if(this.serviceName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.serviceName)) { throw new ValidationError(_formprefix + "service_name", ValidationError.PATTERN_FAILED);}
+if(this.orgType && !Validator.INTEGER.test(this.orgType)) { throw new ValidationError(_formprefix + "org_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
 	return this;
@@ -75383,20 +78501,6 @@ this.addUsertpsecretgroup = function(usertpsecretgroup) {
  return this;
 };
 
-var userthirdpartysecretkeys = undefined;
-this.setUserthirdpartysecretkeyss = function(userthirdpartysecretkeys) { 
-    this.userthirdpartysecretkeys = userthirdpartysecretkeys;
-    return this;
-};
-this.getUserthirdpartysecretkeyss = function() {
-    return this.userthirdpartysecretkeys;
-};
-this.addUserthirdpartysecretkeys = function(userthirdpartysecretkeys) { 
- if(!this.userthirdpartysecretkeys) this.userthirdpartysecretkeys = new Array(); 
-  this.userthirdpartysecretkeys.push(userthirdpartysecretkeys); 
- return this;
-};
-
 var openid = undefined;
 this.setOpenids = function(openid) { 
     this.openid = openid;
@@ -75753,7 +78857,6 @@ this.addUseralldomainstoken = function(useralldomainstoken) {
 		this.setUserdevices(URI.getResourceArray(json["userDevice"],"userdevice"));
 		this.setSigninpreference(URI.getResource(json["signinPreference"],"signinpreference"));
 		this.setUsertpsecretgroups(URI.getResourceArray(json["userTPSecretGroup"],"usertpsecretgroup"));
-		this.setUserthirdpartysecretkeyss(URI.getResourceArray(json["userThirdPartySecretKeys"],"userthirdpartysecretkeys"));
 		this.setOpenids(URI.getResourceArray(json["openId"],"openid"));
 		this.setPasswordhistorys(URI.getResourceArray(json["passwordHistory"],"passwordhistory"));
 		this.setUserauthorizedips(URI.getResourceArray(json["userAuthorizedIp"],"userauthorizedip"));
@@ -75823,7 +78926,6 @@ this.addUseralldomainstoken = function(useralldomainstoken) {
 		if(this.getUserdevices()) json += '"userDevice"' + ":" + URI.toJSONArray(this.getUserdevices())  + ',';
 		if(this.getSigninpreference()) json += '"signinPreference"' + ":" + this.getSigninpreference().toJSON()  + ',';
 		if(this.getUsertpsecretgroups()) json += '"userTPSecretGroup"' + ":" + URI.toJSONArray(this.getUsertpsecretgroups())  + ',';
-		if(this.getUserthirdpartysecretkeyss()) json += '"userThirdPartySecretKeys"' + ":" + URI.toJSONArray(this.getUserthirdpartysecretkeyss())  + ',';
 		if(this.getOpenids()) json += '"openId"' + ":" + URI.toJSONArray(this.getOpenids())  + ',';
 		if(this.getPasswordhistorys()) json += '"passwordHistory"' + ":" + URI.toJSONArray(this.getPasswordhistorys())  + ',';
 		if(this.getUserauthorizedips()) json += '"userAuthorizedIp"' + ":" + URI.toJSONArray(this.getUserauthorizedips())  + ',';
@@ -75905,7 +79007,6 @@ if(this.usermobile) { for(i=0; i < this.usermobile.length; i++ ) { this.usermobi
 if(this.userdevice) { for(i=0; i < this.userdevice.length; i++ ) { this.userdevice[i].validate(); } }
 if(this.signinpreference) { this.signinpreference.validate(); }
 if(this.usertpsecretgroup) { for(i=0; i < this.usertpsecretgroup.length; i++ ) { this.usertpsecretgroup[i].validate(); } }
-if(this.userthirdpartysecretkeys) { for(i=0; i < this.userthirdpartysecretkeys.length; i++ ) { this.userthirdpartysecretkeys[i].validate(); } }
 if(this.openid) { for(i=0; i < this.openid.length; i++ ) { this.openid[i].validate(); } }
 if(this.passwordhistory) { for(i=0; i < this.passwordhistory.length; i++ ) { this.passwordhistory[i].validate(); } }
 if(this.userauthorizedip) { for(i=0; i < this.userauthorizedip.length; i++ ) { this.userauthorizedip[i].validate(); } }
@@ -75999,6 +79100,14 @@ this.setModifiedTime = function(modifiedTime) {
 this.getModifiedTime = function() {
     return this.modifiedTime;
 };
+var accountmemberinfo = undefined;
+this.setAccountmemberinfo = function(accountmemberinfo) { 
+    this.accountmemberinfo = accountmemberinfo;
+    return this;
+};
+this.getAccountmemberinfo = function() {
+    return this.accountmemberinfo;
+};
 var accountmemberrole = undefined;
 this.setAccountmemberroles = function(accountmemberrole) { 
     this.accountmemberrole = accountmemberrole;
@@ -76023,6 +79132,7 @@ this.addAccountmemberrole = function(accountmemberrole) {
 		this.setUserType(json["user_type"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
+		this.setAccountmemberinfo(URI.getResource(json["accountMemberInfo"],"accountmemberinfo"));
 		this.setAccountmemberroles(URI.getResourceArray(json["accountMemberRole"],"accountmemberrole"));
 
 	return this;
@@ -76036,6 +79146,7 @@ this.addAccountmemberrole = function(accountmemberrole) {
 		if(this.getUserType()) json += '"user_type"' + ":" + '"' + jsonEscape(this.getUserType())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getAccountmemberinfo()) json += '"accountMemberInfo"' + ":" + this.getAccountmemberinfo().toJSON()  + ',';
 		if(this.getAccountmemberroles()) json += '"accountMemberRole"' + ":" + URI.toJSONArray(this.getAccountmemberroles())  + ',';
 
 	json = removeLastComma(json);
@@ -76061,6 +79172,7 @@ if(this.isActive && !Validator.INTEGER.test(this.isActive)) { throw new Validati
 if(this.userType && !Validator.INTEGER.test(this.userType)) { throw new ValidationError(_formprefix + "user_type", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.accountmemberinfo) { this.accountmemberinfo.validate(); }
 if(this.accountmemberrole) { for(i=0; i < this.accountmemberrole.length; i++ ) { this.accountmemberrole[i].validate(); } }
 
 	return this;
@@ -77987,8 +81099,8 @@ this.getModifiedTime = function() {
     }
     this.validate = function() {
 	var i = 0;
-	if(this.realmPolicyName && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.realmPolicyName)) { throw new ValidationError(_formprefix + "realm_policy_name", ValidationError.PATTERN_FAILED);}
-if(this.realmPolicyValue && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.realmPolicyValue)) { throw new ValidationError(_formprefix + "realm_policy_value", ValidationError.PATTERN_FAILED);}
+	if(this.realmPolicyName && !(/xss:throwerror/).test(this.realmPolicyName)) { throw new ValidationError(_formprefix + "realm_policy_name", ValidationError.PATTERN_FAILED);}
+if(this.realmPolicyValue && !(/xss:throwerror/).test(this.realmPolicyValue)) { throw new ValidationError(_formprefix + "realm_policy_value", ValidationError.PATTERN_FAILED);}
 if(this.addedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.addedBy)) { throw new ValidationError(_formprefix + "added_by", ValidationError.PATTERN_FAILED);}
 if(this.modifiedBy && !(/^[a-zA-Z0-9_\-]+$/).test(this.modifiedBy)) { throw new ValidationError(_formprefix + "modified_by", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
@@ -78295,6 +81407,20 @@ this.setModifiedTime = function(modifiedTime) {
 this.getModifiedTime = function() {
     return this.modifiedTime;
 };
+var oauthmobileappverificationkeys = undefined;
+this.setOauthmobileappverificationkeyss = function(oauthmobileappverificationkeys) { 
+    this.oauthmobileappverificationkeys = oauthmobileappverificationkeys;
+    return this;
+};
+this.getOauthmobileappverificationkeyss = function() {
+    return this.oauthmobileappverificationkeys;
+};
+this.addOauthmobileappverificationkeys = function(oauthmobileappverificationkeys) { 
+ if(!this.oauthmobileappverificationkeys) this.oauthmobileappverificationkeys = new Array(); 
+  this.oauthmobileappverificationkeys.push(oauthmobileappverificationkeys); 
+ return this;
+};
+
 var oauthmobiledevicesdetails = undefined;
 this.setOauthmobiledevicesdetailss = function(oauthmobiledevicesdetails) { 
     this.oauthmobiledevicesdetails = oauthmobiledevicesdetails;
@@ -78320,6 +81446,7 @@ this.addOauthmobiledevicesdetails = function(oauthmobiledevicesdetails) {
 		this.setSignature(json["signature"]);
 		this.setCreatedTime(json["created_time"]);
 		this.setModifiedTime(json["modified_time"]);
+		this.setOauthmobileappverificationkeyss(URI.getResourceArray(json["oAuthMobileAppVerificationKeys"],"oauthmobileappverificationkeys"));
 		this.setOauthmobiledevicesdetailss(URI.getResourceArray(json["oAuthMobileDevicesDetails"],"oauthmobiledevicesdetails"));
 
 	return this;
@@ -78334,6 +81461,7 @@ this.addOauthmobiledevicesdetails = function(oauthmobiledevicesdetails) {
 		if(this.getSignature()) json += '"signature"' + ":" + '"' + jsonEscape(this.getSignature())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
+		if(this.getOauthmobileappverificationkeyss()) json += '"oAuthMobileAppVerificationKeys"' + ":" + URI.toJSONArray(this.getOauthmobileappverificationkeyss())  + ',';
 		if(this.getOauthmobiledevicesdetailss()) json += '"oAuthMobileDevicesDetails"' + ":" + URI.toJSONArray(this.getOauthmobiledevicesdetailss())  + ',';
 
 	json = removeLastComma(json);
@@ -78361,6 +81489,7 @@ if(this.appType && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).tes
 if(this.signature && !(/^[0-9a-zA-Z_\-\.\$@\?\,\:\'\/\!\P{InBasicLatin}\s]+$/).test(this.signature)) { throw new ValidationError(_formprefix + "signature", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
+if(this.oauthmobileappverificationkeys) { for(i=0; i < this.oauthmobileappverificationkeys.length; i++ ) { this.oauthmobileappverificationkeys[i].validate(); } }
 if(this.oauthmobiledevicesdetails) { for(i=0; i < this.oauthmobiledevicesdetails.length; i++ ) { this.oauthmobiledevicesdetails[i].validate(); } }
 
 	return this;
@@ -79331,6 +82460,14 @@ this.setExpiryTime = function(expiryTime) {
 this.getExpiryTime = function() {
     return this.expiryTime;
 };
+var deptId = "";
+this.setDeptId = function(deptId) { 
+    this.deptId = deptId;
+    return this;
+};
+this.getDeptId = function() {
+    return this.deptId;
+};
 var modifiedTime = "";
 this.setModifiedTime = function(modifiedTime) { 
     this.modifiedTime = modifiedTime;
@@ -79355,6 +82492,7 @@ this.getCreatedTime = function() {
 		this.setDesignationId(json["designation_id"]);
 		this.setLockedUntil(json["locked_until"]);
 		this.setExpiryTime(json["expiry_time"]);
+		this.setDeptId(json["dept_id"]);
 		this.setModifiedTime(json["modified_time"]);
 		this.setCreatedTime(json["created_time"]);
 
@@ -79367,6 +82505,7 @@ this.getCreatedTime = function() {
 		if(this.getDesignationId()) json += '"designation_id"' + ":" + '"' + jsonEscape(this.getDesignationId())  + '",';
 		if(this.getLockedUntil()) json += '"locked_until"' + ":" + '"' + jsonEscape(this.getLockedUntil())  + '",';
 		if(this.getExpiryTime()) json += '"expiry_time"' + ":" + '"' + jsonEscape(this.getExpiryTime())  + '",';
+		if(this.getDeptId()) json += '"dept_id"' + ":" + '"' + jsonEscape(this.getDeptId())  + '",';
 		if(this.getModifiedTime()) json += '"modified_time"' + ":" + '"' + jsonEscape(this.getModifiedTime())  + '",';
 		if(this.getCreatedTime()) json += '"created_time"' + ":" + '"' + jsonEscape(this.getCreatedTime())  + '",';
 
@@ -79392,6 +82531,7 @@ if(this.employeeId && !(/xss:throwerror/).test(this.employeeId)) { throw new Val
 if(this.designationId && !(/^[a-zA-Z0-9_\-]+$/).test(this.designationId)) { throw new ValidationError(_formprefix + "designation_id", ValidationError.PATTERN_FAILED);}
 if(this.lockedUntil && !Validator.INTEGER.test(this.lockedUntil)) { throw new ValidationError(_formprefix + "locked_until", ValidationError.PATTERN_FAILED);}
 if(this.expiryTime && !Validator.INTEGER.test(this.expiryTime)) { throw new ValidationError(_formprefix + "expiry_time", ValidationError.PATTERN_FAILED);}
+if(this.deptId && !(/^[a-zA-Z0-9_\-]+$/).test(this.deptId)) { throw new ValidationError(_formprefix + "dept_id", ValidationError.PATTERN_FAILED);}
 if(this.modifiedTime && !Validator.INTEGER.test(this.modifiedTime)) { throw new ValidationError(_formprefix + "modified_time", ValidationError.PATTERN_FAILED);}
 if(this.createdTime && !Validator.INTEGER.test(this.createdTime)) { throw new ValidationError(_formprefix + "created_time", ValidationError.PATTERN_FAILED);}
 
@@ -80051,6 +83191,8 @@ case 'openid' : return OpenId.newBuilder();
 case 'oauthaudit' : return OAuthAudit.newBuilder(); 
 case 'resourceaudit' : return ResourceAudit.newBuilder(); 
 case 'conditionalpolicy' : return ConditionalPolicy.newBuilder(); 
+case 'accountmemberinfo' : return AccountMemberInfo.newBuilder(); 
+case 'oauthmobileappverificationkeys' : return OAuthMobileAppVerificationKeys.newBuilder(); 
 case 'tokenpairauthtoken' : return TokenPairAuthToken.newBuilder(); 
 case 'oauthgranttoken' : return OAuthGrantToken.newBuilder(); 
 case 'samlauthentication' : return SAMLAuthentication.newBuilder(); 
@@ -80065,9 +83207,11 @@ case 'oauthaccessgrant' : return OAuthAccessGrant.newBuilder();
 case 'secretkey' : return SecretKey.newBuilder(); 
 case 'inviteduserdetails' : return InvitedUserDetails.newBuilder(); 
 case 'oauthaccesstoken' : return OAuthAccessToken.newBuilder(); 
+case 'oauthproject' : return OAuthProject.newBuilder(); 
 case 'deploymentconfig' : return DeploymentConfig.newBuilder(); 
 case 'accountoauthaccessgrantscopes' : return AccountOAuthAccessGrantScopes.newBuilder(); 
 case 'rebrandl10n' : return RebrandL10n.newBuilder(); 
+case 'oidcauthentication' : return OIDCAuthentication.newBuilder(); 
 case 'resourceaction' : return ResourceAction.newBuilder(); 
 case 'isdcode' : return ISDCode.newBuilder(); 
 case 'appaccountpolicy' : return AppAccountPolicy.newBuilder(); 
@@ -80103,6 +83247,7 @@ case 'ace' : return ACE.newBuilder();
 case 'recoverycode' : return RecoveryCode.newBuilder(); 
 case 'userappkeystore' : return UserAppKeyStore.newBuilder(); 
 case 'appaccountfinancialsettings' : return AppAccountFinancialSettings.newBuilder(); 
+case 'appaccountserviceinfo' : return AppAccountServiceInfo.newBuilder(); 
 case 'statement' : return Statement.newBuilder(); 
 case 'designations' : return Designations.newBuilder(); 
 case 'authtooauth' : return AuthtoOAuth.newBuilder(); 
@@ -80129,6 +83274,7 @@ case 'tfaaudit' : return TFAAudit.newBuilder();
 case 'email' : return Email.newBuilder(); 
 case 'signinfailedaudit' : return SignInFailedAudit.newBuilder(); 
 case 'clientportalorgtype' : return ClientPortalOrgType.newBuilder(); 
+case 'oidcattribute' : return OIDCAttribute.newBuilder(); 
 case 'portalmapping' : return PortalMapping.newBuilder(); 
 case 'oauthdcdigest' : return OAuthDCDigest.newBuilder(); 
 case 'oauthdevicetokenorginfo' : return OAuthDeviceTokenOrgInfo.newBuilder(); 
@@ -80200,6 +83346,7 @@ case 'zaidsmsaudit' : return ZAIDSMSAudit.newBuilder();
 case 'authtoken' : return AuthToken.newBuilder(); 
 case 'oauthmobileappname' : return OAuthMobileAppName.newBuilder(); 
 case 'accountaudit' : return AccountAudit.newBuilder(); 
+case 'oauthprojectclients' : return OAuthProjectClients.newBuilder(); 
 case 'oauthmobileappservice' : return OAuthMobileAppService.newBuilder(); 
 case 'location' : return Location.newBuilder(); 
 case 'account' : return Account.newBuilder(); 
@@ -80244,6 +83391,7 @@ case 'applicense' : return AppLicense.newBuilder();
 case 'oauthopenid' : return OAuthOpenId.newBuilder(); 
 case 'registrationaudittemplate' : return RegistrationAuditTemplate.newBuilder(); 
 case 'oauthrefreshtokenscopes' : return OAuthRefreshTokenScopes.newBuilder(); 
+case 'serviceorgsubserviceinfo' : return ServiceOrgSubServiceInfo.newBuilder(); 
 case 'templateimage' : return TemplateImage.newBuilder(); 
 case 'authdomainpolicy' : return AuthDomainPolicy.newBuilder(); 
 case 'parentgroup' : return ParentGroup.newBuilder(); 
@@ -80254,11 +83402,13 @@ case 'accountoauthaccessgrant' : return AccountOAuthAccessGrant.newBuilder();
 case 'websigninfailedaudit' : return WebSignInFailedAudit.newBuilder(); 
 case 'userdomain' : return UserDomain.newBuilder(); 
 case 'subscopes' : return SubScopes.newBuilder(); 
+case 'serviceorgmemberinfo' : return ServiceOrgMemberInfo.newBuilder(); 
 case 'oauthsessiongrant' : return OAuthSessionGrant.newBuilder(); 
 case 'oauthdevicetoken' : return OAuthDeviceToken.newBuilder(); 
 case 'cachecluster' : return CacheCluster.newBuilder(); 
 case 'oauthdcdetails' : return OAuthDcDetails.newBuilder(); 
 case 'partner' : return Partner.newBuilder(); 
+case 'oauthprojectproperties' : return OAuthProjectProperties.newBuilder(); 
 case 'jwtauthentication' : return JWTAuthentication.newBuilder(); 
 case 'oauthrefreshtokenorginfo' : return OAuthRefreshTokenOrgInfo.newBuilder(); 
 case 'userauthorizedip' : return UserAuthorizedIp.newBuilder(); 
@@ -80280,8 +83430,10 @@ case 'authdomain' : return AuthDomain.newBuilder();
 case 'tag' : return Tag.newBuilder(); 
 case 'unifiedgrouprealm' : return UnifiedGroupRealm.newBuilder(); 
 case 'usersecretkey' : return UserSecretKey.newBuilder(); 
+case 'oauthprojectdcdetails' : return OAuthProjectDcDetails.newBuilder(); 
 case 'policy' : return Policy.newBuilder(); 
 case 'serviceorgconfiguration' : return ServiceOrgConfiguration.newBuilder(); 
+case 'oauthprojectopenid' : return OAuthProjectOpenID.newBuilder(); 
 case 'conditionalaccess' : return ConditionalAccess.newBuilder(); 
 case 'mailtemplateprops' : return MailTemplateProps.newBuilder(); 
 case 'systemopenid' : return SystemOpenId.newBuilder(); 
@@ -80374,6 +83526,8 @@ case 'openid' : return "/account/${account.zaid}/user/${user.zuid}/openid/${open
 case 'oauthaudit' : return "/"; 
 case 'resourceaudit' : return "/"; 
 case 'conditionalpolicy' : return "/account/${account.zaid}/conditionalpolicy/${conditionalpolicy.condition_id}"; 
+case 'accountmemberinfo' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/appaccountservice/${appaccountservice.sub_service_type}/accountmember/${accountmember.zid}/accountmemberinfo"; 
+case 'oauthmobileappverificationkeys' : return "/oauthmobileappservice/${oauthmobileappservice.service_name}/oauthmobileappname/${oauthmobileappname.mobile_app_name}/oauthmobiledevices/${oauthmobiledevices.oauth_client_id}/oauthmobileappverificationkeys/${oauthmobileappverificationkeys.store_id}"; 
 case 'tokenpairauthtoken' : return "/account/${account.zaid}/user/${user.zuid}/useralldomainstoken/${useralldomainstoken.token}/tokenpairauthtoken/${tokenpairauthtoken.auth_token}"; 
 case 'oauthgranttoken' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthgranttoken/${oauthgranttoken.grant_token}"; 
 case 'samlauthentication' : return "/account/${account.zaid}/samlauthentication/${samlauthentication.saml_id}"; 
@@ -80388,9 +83542,11 @@ case 'oauthaccessgrant' : return "/account/${account.zaid}/user/${user.zuid}/oau
 case 'secretkey' : return "/account/${account.zaid}/secretkey/${secretkey.key_label}"; 
 case 'inviteduserdetails' : return "/"; 
 case 'oauthaccesstoken' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthaccesstoken/${oauthaccesstoken.access_token}"; 
+case 'oauthproject' : return "/"; 
 case 'deploymentconfig' : return "/"; 
 case 'accountoauthaccessgrantscopes' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/appaccountservice/${appaccountservice.sub_service_type}/accountoauthaccessgrant/${accountoauthaccessgrant.client_zid}/accountoauthaccessgrantscopes/${accountoauthaccessgrantscopes.scope_id}"; 
 case 'rebrandl10n' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/lang/${lang.language_code}/rebrandl10n/${rebrandl10n.rebrand_attribute_name}"; 
+case 'oidcauthentication' : return "/account/${account.zaid}/oidcauthentication/${oidcauthentication.oidc_id}"; 
 case 'resourceaction' : return "/account/${account.zaid}/automation/${automation.automation_name}/resourceaction/${resourceaction.resource_action_id}"; 
 case 'isdcode' : return "/"; 
 case 'appaccountpolicy' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/appaccountpolicy/${appaccountpolicy.policy_key}"; 
@@ -80426,6 +83582,7 @@ case 'ace' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/acp
 case 'recoverycode' : return "/account/${account.zaid}/user/${user.zuid}/recoverycode/${recoverycode.recovery_code}"; 
 case 'userappkeystore' : return "/account/${account.zaid}/user/${user.zuid}/userappkeystore/${userappkeystore.label}"; 
 case 'appaccountfinancialsettings' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/appaccountfinancialsettings"; 
+case 'appaccountserviceinfo' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/appaccountservice/${appaccountservice.sub_service_type}/appaccountserviceinfo"; 
 case 'statement' : return "/app/${app.app_name}/statement/${statement.statement_id}"; 
 case 'designations' : return "/account/${account.zaid}/designations/${designations.designation_id}"; 
 case 'authtooauth' : return "/"; 
@@ -80452,6 +83609,7 @@ case 'tfaaudit' : return "/";
 case 'email' : return "/zaid/${zaid.zaid}/zuid/${zuid.zuid}/email/${email.email_id}"; 
 case 'signinfailedaudit' : return "/"; 
 case 'clientportalorgtype' : return "/account/${account.zaid}/clientportalorgtype/${clientportalorgtype.org_type}"; 
+case 'oidcattribute' : return "/account/${account.zaid}/oidcauthentication/${oidcauthentication.oidc_id}/oidcattribute/${oidcattribute.app_id}"; 
 case 'portalmapping' : return "/account/${account.zaid}/clientportalorgtype/${clientportalorgtype.org_type}/portalmapping/${portalmapping.mapping_key}"; 
 case 'oauthdcdigest' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthdcdigest/${oauthdcdigest.digest}"; 
 case 'oauthdevicetokenorginfo' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthdevicetoken/${oauthdevicetoken.device_token}/oauthdevicetokenorginfo/${oauthdevicetokenorginfo.zid}"; 
@@ -80523,6 +83681,7 @@ case 'zaidsmsaudit' : return "/";
 case 'authtoken' : return "/account/${account.zaid}/user/${user.zuid}/authtoken/${authtoken.token}"; 
 case 'oauthmobileappname' : return "/oauthmobileappservice/${oauthmobileappservice.service_name}/oauthmobileappname/${oauthmobileappname.mobile_app_name}"; 
 case 'accountaudit' : return "/"; 
+case 'oauthprojectclients' : return "/oauthproject/${oauthproject.project_id}/oauthprojectclients/${oauthprojectclients.client_zid}"; 
 case 'oauthmobileappservice' : return "/"; 
 case 'location' : return "/account/${account.zaid}/location/${location.location_name_apl}"; 
 case 'account' : return "/"; 
@@ -80567,6 +83726,7 @@ case 'applicense' : return "/app/${app.app_name}/applicense/${applicense.license
 case 'oauthopenid' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthopenid/${oauthopenid.zid}"; 
 case 'registrationaudittemplate' : return "/"; 
 case 'oauthrefreshtokenscopes' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthrefreshtoken/${oauthrefreshtoken.refresh_token}/oauthrefreshtokenscopes/${oauthrefreshtokenscopes.scope_id}"; 
+case 'serviceorgsubserviceinfo' : return "/serviceorgtype/${serviceorgtype.org_type}/serviceorg/${serviceorg.zsoid}/serviceorgsubservice/${serviceorgsubservice.sub_org_type}/serviceorgsubserviceinfo"; 
 case 'templateimage' : return "/account/${account.zaid}/appaccount/${appaccount.zaaid}/template/${template.template_name}/templateimage/${templateimage.image_name_apl}"; 
 case 'authdomainpolicy' : return "/account/${account.zaid}/authdomain/${authdomain.domain_name}/authdomainpolicy/${authdomainpolicy.policy_key}"; 
 case 'parentgroup' : return "/account/${account.zaid}/group/${group.zgid}/parentgroup/${parentgroup.parent_zgid}"; 
@@ -80577,18 +83737,20 @@ case 'accountoauthaccessgrant' : return "/account/${account.zaid}/appaccount/${a
 case 'websigninfailedaudit' : return "/"; 
 case 'userdomain' : return "/account/${account.zaid}/authdomain/${authdomain.domain_name}/userdomain/${userdomain.zuid}"; 
 case 'subscopes' : return "/app/${app.app_name}/scope/${scope.scope_id}/subscopes/${subscopes.scope_id}"; 
+case 'serviceorgmemberinfo' : return "/serviceorgtype/${serviceorgtype.org_type}/serviceorg/${serviceorg.zsoid}/serviceorgsubservice/${serviceorgsubservice.sub_org_type}/serviceorgmember/${serviceorgmember.zuid}/serviceorgmemberinfo"; 
 case 'oauthsessiongrant' : return "/account/${account.zaid}/user/${user.zuid}/useralldomainstoken/${useralldomainstoken.token}/oauthsessiongrant/${oauthsessiongrant.client_zid}"; 
 case 'oauthdevicetoken' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthdevicetoken/${oauthdevicetoken.device_token}"; 
 case 'cachecluster' : return "/"; 
 case 'oauthdcdetails' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthdcdetails/${oauthdcdetails.dc_location}"; 
 case 'partner' : return "/"; 
+case 'oauthprojectproperties' : return "/oauthproject/${oauthproject.project_id}/oauthprojectproperties/${oauthprojectproperties.prop_name}"; 
 case 'jwtauthentication' : return "/account/${account.zaid}/jwtauthentication/${jwtauthentication.jwt_id}"; 
 case 'oauthrefreshtokenorginfo' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthrefreshtoken/${oauthrefreshtoken.refresh_token}/oauthrefreshtokenorginfo/${oauthrefreshtokenorginfo.zid}"; 
 case 'userauthorizedip' : return "/account/${account.zaid}/user/${user.zuid}/userauthorizedip/${userauthorizedip.from_ip}"; 
 case 'serviceorginvitationtemplate' : return "/serviceorgtype/${serviceorgtype.org_type}/serviceorg/${serviceorg.zsoid}/serviceorgsubservice/${serviceorgsubservice.sub_org_type}/serviceorginvitationtemplate/${serviceorginvitationtemplate.template_id}"; 
 case 'oauthgranttokenorginfo' : return "/oauthappgroup/${oauthappgroup.oauth_app_group_id}/oauthclient/${oauthclient.client_id}/oauthgranttoken/${oauthgranttoken.grant_token}/oauthgranttokenorginfo/${oauthgranttokenorginfo.zid}"; 
 case 'routingpolicy' : return "/account/${account.zaid}/routingpolicy/${routingpolicy.policy_id}"; 
-case 'unifiedgroupsmartformula' : return "/account/${account.zaid}/unifiedgroup/${unifiedgroup.zgid}/unifiedgroupsmartformula/${unifiedgroupsmartformula.member_role}"; 
+case 'unifiedgroupsmartformula' : return "/account/${account.zaid}/unifiedgroup/${unifiedgroup.zgid}/unifiedgroupsmartformula/${unifiedgroupsmartformula.zgsfid}"; 
 case 'routingpolicymode' : return "/account/${account.zaid}/routingpolicy/${routingpolicy.policy_id}/routingpolicymode/${routingpolicymode.auth_type}"; 
 case 'userdevice' : return "/account/${account.zaid}/user/${user.zuid}/userdevice/${userdevice.device_token_apl}"; 
 case 'samlreqparam' : return "/account/${account.zaid}/samlauthentication/${samlauthentication.saml_id}/samlreqparam/${samlreqparam.param_name}"; 
@@ -80603,8 +83765,10 @@ case 'authdomain' : return "/account/${account.zaid}/authdomain/${authdomain.dom
 case 'tag' : return "/account/${account.zaid}/tag/${tag.tag_name}"; 
 case 'unifiedgrouprealm' : return "/account/${account.zaid}/unifiedgroup/${unifiedgroup.zgid}/unifiedgrouprealm/${unifiedgrouprealm.zgrid}"; 
 case 'usersecretkey' : return "/account/${account.zaid}/user/${user.zuid}/usersecretkey/${usersecretkey.token_id}"; 
+case 'oauthprojectdcdetails' : return "/oauthproject/${oauthproject.project_id}/oauthprojectdcdetails/${oauthprojectdcdetails.dc_location}"; 
 case 'policy' : return "/account/${account.zaid}/policy/${policy.policy_key}"; 
 case 'serviceorgconfiguration' : return "/serviceorgtype/${serviceorgtype.org_type}/serviceorg/${serviceorg.zsoid}/serviceorgsubservice/${serviceorgsubservice.sub_org_type}/serviceorgconfiguration/${serviceorgconfiguration.config_name}"; 
+case 'oauthprojectopenid' : return "/oauthproject/${oauthproject.project_id}/oauthprojectopenid/${oauthprojectopenid.open_id}"; 
 case 'conditionalaccess' : return "/account/${account.zaid}/conditionalpolicy/${conditionalpolicy.condition_id}/conditionalaccess/${conditionalaccess.condition_type}"; 
 case 'mailtemplateprops' : return "/app/${app.app_name}/apptemplate/${apptemplate.template_name}/mailtemplateprops"; 
 case 'systemopenid' : return "/zaid/${zaid.zaid}/zuid/${zuid.zuid}/systemopenid/${systemopenid.open_id_apl}"; 

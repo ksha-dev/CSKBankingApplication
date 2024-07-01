@@ -1,0 +1,7 @@
+ztinyint.advanced.meta = com.zoho.mickey.dt.tinyint.db.persistence.metadata.TinyintDataType
+ztinyint.advanced.dtadapter = com.zoho.mickey.dt.tinyint.db.adapter.TinyintDTAdapter
+ztinyint.advanced.mysql.dtsqlgenerator = com.zoho.mickey.dt.tinyint.db.adapter.mysql.MysqlTinyintDTSQLGenerator
+ztinyint.advanced.postgres.dtsqlgenerator = com.zoho.mickey.dt.tinyint.db.adapter.postgres.PostgresTinyintDTSQLGenerator
+ztinyint.advanced.mssql.dtsqlgenerator = com.zoho.mickey.dt.tinyint.db.adapter.mssql.MssqlTinyintDTSQLGenerator
+ztinyint.advanced.dtresultsetadapter = com.zoho.mickey.dt.tinyint.db.adapter.TinyintDTResultSetAdapter
+ztinyint.advanced.dttransformer = com.zoho.mickey.dt.tinyint.db.adapter.TinyintDTTransformer

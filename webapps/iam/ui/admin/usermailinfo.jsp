@@ -191,8 +191,8 @@ td, th {
 					info.put("MessageID", mailInfo.getString("MessageID")); // No I18N
 					info.put("AppName", mailInfo.getString("AppName")); // No I18N
 					info.put("CurrentUserZuid", "Unauthorized"); // No I18N
-					info.put("IpAddress", mailInfo.getString("IpAddress")); // No I18N
-					info.put("Key", mailInfo.getString("Key")); // No I18N
+					info.put("IpAddress", mailInfo.optString("IpAddress", "-")); // No I18N
+					info.put("Key", String.valueOf(mailInfo.get("Key"))); // No I18N
 					info.put("OriginatedDeployment", mailInfo.getString("OriginatedDeployment")); // No I18N
 
 					if (mailInfo.has("transMailRespose")) {

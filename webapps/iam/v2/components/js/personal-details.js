@@ -72,23 +72,7 @@ function load_userdetails(Policies,userDetails)
 	  
 	  //$("#profile_email_edit").val(userDetails.profile_email);
 	  $("#profile_nickname").val(decodeHTML(userDetails.display_name));
-	  if(userDetails.gender==1)
-	  {
-	    $("#male_gender").prop('selected', true);
-	  }
-	  else if(userDetails.gender==0)
-	  {
-	    $("#female_gender").prop('selected', true);
-	  }
-	  else if(userDetails.gender==3)
-	  {
-	    $("#non_binary_gender").prop('selected', true);
-	  }
-	  else
-	  {
-	    $("#other_gender").prop('selected', true);
-	  }
-	  $("#gender_select").val(userDetails.gender);
+	  $("#gender_select option[value='"+userDetails.gender+"']").length != 0 ? $("#gender_select").val(userDetails.gender) : $("#gender_select").val("");
 	  $("#gdpr_us_state").hide();
 	  $("#localeState").find('option').not(':first').remove();// remove previous countries state details exepct the default one i.e. select state
 	  if(userDetails.country!=""){ 
@@ -145,14 +129,6 @@ function load_userdetails(Policies,userDetails)
 		        $('#timezone_show_type').is(':checked')?$('#timezone_toggle_inside_select').prop("checked", true):$('#timezone_toggle_inside_select').prop("checked", false);
 	    	}
 	    });
-    //}
-	//		$("#localeTz").select2().on("select2:open", function() {//no i18n 
-	//		       $(".select2-search__field").attr("placeholder", "Search...");
-	//		       if(!$(".select2-search").siblings().hasClass("check_contain")){
-	//		         $(".select2-search").append('<div class="checkbox_div check_contain"  id="showall_timediv"><input id="showall_time" type="checkbox" name="keepmesignin" class="realcheckbox"><span class="checkbox_style checkbox_scale check_on"></span><label class="checkbox_text removeFontHeight" for="showall_time">Display all time zones</label></div>');
-	//		       }
-	//		});
-	    	
 	  
 	  //initDefaultTimeZoneOptions();
 	 if(timezoneNotInList){
@@ -165,26 +141,7 @@ function load_userdetails(Policies,userDetails)
 		 }	
 	 }
 	 if(userDetails.is_photo_permission_disabled || isClientPortal){
-		 $(".profile_box #profile_photoview_permi").remove();
-	 }
-	 else{
-		 $(".profile_box #profile_photoview_permi").val(userDetails.photo_permission).uvselect({
-					"dropdown-width": "245px", //No i18N
-					"prevent_mobile_style": true,		//No i18N
-					"onDropdown:select" : function(selected_option){ //No I18N
-			    		$(".profile_photoview_permi #photo_perm_icon").attr("class","icon-"+selected_option.id);
-			    	},
-					"onDropdown:open" : function(dropdown){ //No I18N
-						$(dropdown).find("li:visible").each(function(ind,ele){
-						    $(ele).find("p").before("<i class='photo_perm_list_icon icon-"+$(ele).attr("data-id")+"'></i>");		//No I18N
-						});
-			    	}
-		 });
-		 $(".profile_photoview_permi .selectbox_overlay").after("<i id='photo_perm_icon' class='icon-"+$("#profile_photoview_permi option:selected").attr("id")+"'></i>");
-		 $(".profile_photoview_permi .select_input").hide();
-		 $(".profile_box #profile_photoview_permi").change(function(){
-			 $(".profile_photoview_permi #photo_perm_icon").attr("class","icon-"+$(this).attr("id"));
-		 });
+		 $(".icon-Profilepicturevisibility").parent().remove();
 	 }
 	 
 }
@@ -227,7 +184,6 @@ function editProfile()
 	
 	$("#savebtnid").slideDown(200);
 	$(".textbox_div").removeClass("editmode");
-	$(".field .select2-container .select2-selection--single").css("text-indent","5px");//No I18N
 	
 	
 	$(".profile_mode").addClass("profile_editmode");
@@ -308,13 +264,13 @@ function show_save(){
 	var tim_val = profile_data.timezone == undefined ? "" : profile_data.timezone ;
 	var state_val = profile_data.state == undefined ? "" : profile_data.state ;
 	var show_var = false;
-	if(doc.first_name.value != profile_data.first_name){
+	if(doc.first_name.value.trim() != profile_data.first_name){
 		show_var = true;
 	}
-	else if(doc.last_name.value != profile_data.last_name){
+	else if(doc.last_name.value.trim() != profile_data.last_name){
 		show_var = true;
 	}
-	else if(doc.display_name.value != profile_data.display_name){
+	else if(doc.display_name.value.trim() != profile_data.display_name){
 		show_var = true;
 	}
 	else if(doc.gender.value != gen_val){
@@ -359,7 +315,6 @@ function undochanges()
 		$("#editonmobile").removeClass("hide_btn");		
 	});
 	$(".textbox_div").addClass("editmode");
-	$(".field .select2-container .select2-selection--single").css("text-indent","-7px");//No I18N
 	
     $(".profile_mode").removeClass("profile_editmode");
     $('#displayall_timezone').hide();
@@ -375,10 +330,6 @@ function undochanges()
 //	}
     
     $('.field').removeClass("mob_edit");
-    if(!isMobile)
-	{
-    	$('#locale .select2-selection__arrow b').hide();
-	}
     $(".profile_mode").attr("disabled",true);
     $('.edit_display').hide();
      $(".lable_editmode").slideUp(200);
@@ -416,25 +367,25 @@ function saveProfile(f)
     	{
     		if (profileparams[i]=="display_name")	//display name can be empty and take firstname and last name values
     		{
-    			if(decodeHTML(profile_data[profileparams[i]]) != $(document[f.name][profileparams[i]]).val())
+    			if(decodeHTML(profile_data[profileparams[i]]) != $(document[f.name][profileparams[i]]).val().trim())
     			{
-    				if($(document[f.name][profileparams[i]]).val())
+    				if($(document[f.name][profileparams[i]]).val().trim())
     				{
-    					params[profileparams[i]] = $(document[f.name][profileparams[i]]).val();
+    					params[profileparams[i]] = $(document[f.name][profileparams[i]]).val().trim();
     				}
     				else
     				{
-						var fnameval = $(document[f.name].first_name).val(); 
+						var fnameval = $(document[f.name].first_name).val().trim(); 
     					params[profileparams[i]]= fnameval;
-    					$(document[f.name][profileparams[i]]).val(fnameval)
+    					$(document[f.name][profileparams[i]]).val(fnameval);
     				}
     			}
     		}
-    		if (profileparams[i]=="last_name")	//display name can be empty
+    		if (profileparams[i]=="last_name" || profileparams[i]=="first_name")	//display name can be empty
     		{
-    			if(decodeHTML(profile_data[profileparams[i]]) != $(document[f.name][profileparams[i]]).val())
+    			if(decodeHTML(profile_data[profileparams[i]]) != $(document[f.name][profileparams[i]]).val().trim())
     			{
-    				params[profileparams[i]] = $(document[f.name][profileparams[i]]).val();
+    				params[profileparams[i]] = $(document[f.name][profileparams[i]]).val().trim();
     			}
     		}
     		else if(decodeHTML(profile_data[profileparams[i]]) != $(document[f.name][profileparams[i]]).val() && $(document[f.name][profileparams[i]]).val())
@@ -452,7 +403,13 @@ function saveProfile(f)
     	},
     	function(resp)
     	{
-    		showErrorMessage(getErrorMessage(resp));
+			if(resp.field && $('#'+f.id+' [name='+resp.field+']').parents('.field').is(":visible")){
+				$('#'+f.id+' [name='+resp.field+']').parents('.field').append( '<div class="field_error">'+getErrorMessage(resp)+'</div>' );
+				f[resp.field].focus();
+			}
+			else{
+				showErrorMessage(getErrorMessage(resp));	
+			}
     		removeButtonDisable(f);
     	});
     	
@@ -466,9 +423,9 @@ function saveProfile(f)
 function doneEditing(reloadPage)
 {
 		 $(".nickname_info").hide();
-		 var temp_fname=$("#profile_Fname_edit").val();
-		 var temp_lname=$("#profile_Lname_edit").val();
-		 var temp_dname=$("#profile_nickname").val();
+		 var temp_fname=$("#profile_Fname_edit").val().trim();
+		 var temp_lname=$("#profile_Lname_edit").val().trim();
+		 var temp_dname=$("#profile_nickname").val().trim();
 	     var templang=document.locale.language.value.trim();
 	     var tempitzone=document.locale.timezone.value.trim();
 	     var tempicountry=document.locale.country.value.trim();
@@ -501,10 +458,6 @@ function doneEditing(reloadPage)
     $('#displayall_timezone').hide();
     $(".gender_view").removeClass("gender_edit");
     $('.field').removeClass("mob_edit");
-    if(!isMobile)
-	{
-    	$('.select2-selection__arrow b').hide();
-	}
     $(".profile_mode").attr("disabled",true);
 
 	 
@@ -524,7 +477,6 @@ function doneEditing(reloadPage)
         $("#editonmobile").removeClass("hide_btn");
     });
 	$(".textbox_div").addClass("editmode");
-	$(".field .select2-container .select2-selection--single").css("text-indent","-7px");//No I18N
 	
 	 return false;
 }
@@ -709,6 +661,119 @@ function checkMaxLimit(nameElement)
 			$(nameElement).parents('.field').append( '<div class="field_error">'+max_size_field+'</div>' );
 		  }
 	}
+}
+
+function closePhotoVisiabilityPopup(){
+	$("#visibility_change_apply").addClass("pref_disable_btn");
+	$("#visibility_change_apply").prop("disabled", true);
+	popupBlurHide("#profile_pic_visibility_popup"); //No I18N
+}
+
+function handleProfilePhotoVisibility(){
+	var popUpContainer = $("#profile_pic_visibility_popup");
+	popup_blurHandler('6');
+	popUpContainer.show(0,function(){
+		popUpContainer.addClass("pop_anim");		
+	});
+	closePopup(closePhotoVisiabilityPopup,"profile_pic_visibility_popup"); //No I18N
+	var rebrandText = i18KeysPersonalDetails["IAM.ZOHO.REBRAND"].toLowerCase().replace(/\s/g, ''); //No I18N
+	var iconElement = popUpContainer.find(".zohousers-class .option_icon");
+	if(rebrandText.indexOf("zoho")!= -1) {
+		iconElement.addClass("icon-rebrand-zoho");
+	}else {
+		iconElement.addClass("default-icon-name");
+		iconElement.find(".rebrand-text").text(rebrandText.split("")[0].toUpperCase());
+	}
+	var visibilityOptionBox = popUpContainer.find(".visibility_option_box");
+	visibilityOptionBox.find("input[value='"+profile_data.photo_permission+"']").parent().addClass("visibility_selected").click();
+	visibilityOptionBox.change(function(){
+		visibilityOptionBox.removeClass("visibility_selected");
+		$(this).addClass("visibility_selected");
+		var visibilityChangeApplyBtn = popUpContainer.find("#visibility_change_apply");
+		if(profile_data.photo_permission != parseInt($(this).find("input").val())){
+			visibilityChangeApplyBtn.removeClass("pref_disable_btn");
+			visibilityChangeApplyBtn.prop("disabled", false); //No I18N
+		}
+		else {
+			visibilityChangeApplyBtn.addClass("pref_disable_btn");
+			visibilityChangeApplyBtn.prop("disabled", true); //No I18N
+		}
+	});
+	if(!isMobile){
+		alignPopUpCenterVertically("profile_pic_visibility_popup"); //No I18N
+	}
+	var popUpBody = popUpContainer[0].querySelector(".popup_padding");
+	if(popUpBody.style.overflow === "auto"){
+		popUpBody.scrollTop=0;
+	}	
+}
+
+function applyVisibilityChange(){
+	new_save_photoview_permi($(".visibility_selected").find("input").val());	
+}
+
+function alignPopUpCenterVertically(popUpId){
+    var popUpContainer  = document.getElementById(popUpId);
+    var windowHeight = window.innerHeight;
+    if(popUpContainer.offsetHeight+200 > windowHeight){
+		popUpContainer.style.top = (windowHeight-popUpContainer.offsetHeight)/2+"px";
+	}
+	if(popUpContainer.offsetTop<40 || popUpContainer.offsetHeight+popUpContainer.offsetTop>windowHeight){
+		if(40+popUpContainer.offsetHeight < windowHeight-40){
+			popUpContainer.style.top = "40px";
+		}
+		else{
+			var popUpHeader = popUpContainer.querySelector(".popup_header"); //No I18N
+			var popUpBody = popUpContainer.querySelector(".popup_padding"); //No I18N
+			var popUpFooter = popUpContainer.querySelector(".visibility_popup_footer"); //No I18N
+			popUpContainer.style.top = "40px";
+			popUpBody.style.height = (windowHeight - 100 - popUpHeader.offsetHeight - popUpFooter.offsetHeight) + "px";
+			popUpBody.style.overflow = "auto";
+		}
+	}
+}
+
+function showImage(ele){
+	var imageContainer = ele.parentElement;
+	imageContainer.querySelector(".photo_loader").classList.add("hide"); //No I18N
+	ele.classList.remove("hide"); //No I18N
+	imageContainer.querySelector(".photo_blur_dp2").classList.add("hide"); //No I18N
+}
+
+function handleViewProfilePicture(){
+	popup_blurHandler('6');
+	var imageContainer = document.querySelector(".photo_container"); //No I18N
+	var blurImg1 = imageContainer.querySelector(".photo_blur_dp1"); //No I18N
+	var blurImg2 = imageContainer.querySelector(".photo_blur_dp2"); //No I18N
+	var originalImg = imageContainer.querySelector(".photo_original_dp"); //No I18N
+	var imageUrl = document.querySelector(".dp_pic_blur_bg").style.backgroundImage.slice(4, -1).replace(/"/g, ""); //No I18N
+	blurImg1.style.backgroundImage = "url("+imageUrl+")"; //No I18N
+	blurImg2.src = imageUrl;
+	originalImg.classList.add("hide"); //No I18N
+	imageContainer.classList.add("show_photo_container"); //No I18N
+	imageContainer.querySelector(".photo_loader").classList.remove("hide"); //No I18N
+	imageContainer.querySelector(".photo_blur_dp2").classList.remove("hide"); //No I18N
+	if(imageUrl.indexOf("fs=thumb")!=0){
+		imageUrl = imageUrl.replace("fs=thumb","fs=original");
+	}
+	originalImg.src = imageUrl;
+	if(isMobile){
+		imageContainer.style.height = imageContainer.clientWidth + "px";
+	}
+	imageContainer.focus();
+	closePopup(closeViewProfilePicture,"photo_container"); //No I18N
+}
+
+function closeViewProfilePicture(){
+	$(".photo_container").removeClass("show_photo_container");
+	popupBlurHide();
+	$('body').css({
+	    overflow: 'auto'//No i18N
+	});
+	var blurTimeOut = setInterval(function(){
+		$(".blur").css("z-index","-1");
+		clearTimeout(blurTimeOut);
+	},300);
 }
 
 //function initDefaultTimeZoneOptions() {

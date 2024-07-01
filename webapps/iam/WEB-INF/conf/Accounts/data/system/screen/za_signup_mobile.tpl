@@ -42,7 +42,7 @@
 					</dl>
 					<dl class="za-password-container za-placeholder-icon">
 						<dd>
-							<input type="password" placeholder='<@i18n key="IAM.PASSWORD" />' name="password"> <span class='showpassword' style="display: none;" onclick='showPassword(this)'>Show</span>
+							<input type="password" autocomplete="off" placeholder='<@i18n key="IAM.PASSWORD" />' name="password"> <span class='showpassword' style="display: none;" onclick='showPassword(this)'>Show</span>
 						</dd>
 					</dl>
 				</div>

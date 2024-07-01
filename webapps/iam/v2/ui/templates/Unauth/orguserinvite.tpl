@@ -18,14 +18,15 @@
 			<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
-			<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-			<link href="${SCL.getStaticFilePath("/v2/components/css/accountsInviatation.css")}" rel="stylesheet" type="text/css" />
+			<@resource path="/v2/components/css/${customized_lang_font}" />
+			<@resource path="/v2/components/css/accountsInviatation.css" />
 			<style>
 				body .zohologo{
 					 background : url("${SCL.getStaticFilePath('/v2/components/images/newZoho_logo.svg')}") no-repeat;
 					 background-position : center;
   					 background-size : auto 40px;
 				}
+				.zohologo.Vani{background-image : url("${SCL.getStaticFilePath('/v2/components/images/apps/Vani.svg')}")}
 			</style>
 			<script>
 				function logout_olduser(link)
@@ -52,7 +53,7 @@
 		</head>
 		<body>
 		
-		<div class="zohologo"></div>
+		<div class="zohologo ${service_logo_name}"></div>
 			
 		<div class="result_popup" id="result_popup_error">
 			<div class="error_pop_bg"></div>
@@ -86,7 +87,7 @@
 
 
 	<html>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
 		<script>
 			$( document ).ready(function() {
 			    var parent = window.opener;
@@ -103,7 +104,7 @@
 
 
 	<html>
-			<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
+			<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
 			<script>
 			
 				<#if curr_country?has_content>
@@ -140,20 +141,22 @@
 		    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
 			
-		    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		    <link href="${SCL.getStaticFilePath("/v2/components/css/accountsInviatation.css")}" rel="stylesheet" type="text/css" />
-		    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-			<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script> 
-			<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-			<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-	    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
+		    <@resource path="/v2/components/css/${customized_lang_font}" />
+		    <@resource path="/v2/components/css/accountsInviatation.css" />
+		    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+			<@resource path="/v2/components/js/zresource.js" /> 
+			<@resource path="/v2/components/js/uri.js" /> 
+			<@resource path="/v2/components/js/common_unauth.js" />
+			<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+	    	<@resource path="/v2/components/tp_pkg/select2.full.min.js" />
+	    	<@resource path="/v2/components/css/product-icon.css" />
 			<style>
 				body .zohologo{
 					 background : url("${SCL.getStaticFilePath('/v2/components/images/newZoho_logo.svg')}") no-repeat;
 					 background-position : center;
   					 background-size : auto 40px;
 				}
+				.zohologo.Vani{background-image : url("${SCL.getStaticFilePath('/v2/components/images/apps/Vani.svg')}")}
 			</style>
 	    	<script type="text/javascript">
 
@@ -205,7 +208,7 @@
 				{
 					PasswordPolicy.data = JSON.parse(passwordPolicy);
 				}  
-				
+				var service_name = "${servicename}";
 				var mixed_case,min_spl_chars,min_numeric_chars,min_length;
 				I18N.load
 				({
@@ -239,7 +242,9 @@
 					"IAM.ERROR.FNAME.INVALID.CHARACTERS" : '<@i18n key="IAM.ERROR.FNAME.INVALID.CHARACTERS" />',
 					"IAM.ERROR.LNAME.INVALID.CHARACTERS" : '<@i18n key="IAM.ERROR.LNAME.INVALID.CHARACTERS" />',
 					"IAM.INVITATION.PRECHECK.ERROR.TITLE" : '<@i18n key="IAM.INVITATION.PRECHECK.ERROR.TITLE" />',
-					"IAM.ORG.INVITATION.REDIRECT.MESSAGE" : '<@i18n key="IAM.ORG.INVITATION.REDIRECT.MESSAGE" />'
+					"IAM.ORG.INVITATION.REDIRECT.MESSAGE" : '<@i18n key="IAM.ORG.INVITATION.REDIRECT.MESSAGE" />',
+					"IAM.NEW.SIGNUP.FIRSTNAME.VALID" : '<@i18n key="IAM.NEW.SIGNUP.FIRSTNAME.VALID" />'
+					
 				});
 				
 				var err_try_again = '<@i18n key="IAM.ERROR.GENERAL" />';
@@ -310,26 +315,25 @@
 					$(".org_icon").text("Z");
 				}
 				
+				function handleProPicError(){
+					$(".photo_permission_option,.select2-container--photo_permission_theme").hide();
+				} 
+				
 		    </script>
 		    
-		    <script src="${SCL.getStaticFilePath("/v2/components/js/invitation.js")}"></script>
+		    <@resource path="/v2/components/js/invitation.js" />
+			<script type="text/javascript" src="${za.iam_contextpath}/encryption/script"></script>
+			<@resource path="/v2/components/js/security.js" />
 
 		</head>
 		<body>
 		  	<#assign tos_link><@i18n key="IAM.LINK.TOS" /></#assign> <#assign privacy_link><@i18n key="IAM.LINK.PRIVACY" /></#assign>
 		  
 		  	<div class="blur"></div>
-			<div id="error_space">
-				<div class="top_div">
-					<span class="cross_mark"> 
-					<span class="crossline1"></span>
-					<span class="crossline2"></span>
-					</span>
-					<span class="top_msg"></span>
-				</div>
-			</div>
 			
-			<div class="zohologo"></div>
+			<#include "${location}/Unauth/invitation_errorToast.tpl">
+			
+			<div class="zohologo ${service_logo_name}"></div>
 	
 			<div class="result_popup hide" id="result_popup_accepted">
 				<div class="success_pop_bg"></div>
@@ -351,9 +355,28 @@
 				<button class="button center_btn" ><@i18n key="IAM.CONTINUE"/></button>
 			</div>
 			
-			<div class="container">
+			<div class="container org_inv_container">
 			
 	            <div class="invite_details">
+	            	<#if servicename?? && servicename?has_content>
+	            		<div class="invited_service_info">
+	            			<div style="display:inline-block;">
+	            				<div class="invited_service_logo product-icon-${servicename}">
+	            					<span class="path1"></span>
+	            					<span class="path2"></span>
+	            					<span class="path3"></span>
+	            					<span class="path4"></span>
+	            					<span class="path5"></span>
+	            					<span class="path6"></span>
+	            					<span class="path7"></span>
+	            					<span class="path8"></span>
+	            					<span class="path9"></span>
+	            					<span class="path10"></span>
+	            				</div>
+	            			</div>
+	            			<div class="invited_service_name">${service_display_name}</div>
+	            		</div>
+	            	</#if>
 	                <#if (Org_details.use_appservice_logo ? has_content)>
 	                	<div class="sorg_Displaypicture">
 	                		<div class="sorg_icon"><img onload="setPhotoSize(this)" id="dp_pic" draggable="false" onerror="handlelogo()" style="border-radius: 6%;"></div>
@@ -365,10 +388,10 @@
 	                </#if>
 	                <div class="org_Name">${Org_details.name}</div>
 	        		<#if ((inviter_name)?has_content)>
-	                <div class="Invitedby_Name"><@i18n key="IAM.ORG.INVITED.BY" arg0="${inviter_name}" /></div>
-	       		 	</#if>
+	                <div class="Invitedby_Name"><@i18n key="IAM.ORG.INVITED.BY.WITH.EMAIL" arg0="${inviter_name}" arg1="${contact_email}"/></div>
+	       		 	</#if>	       		 	
 	            </div>
-
+				<div class="dashed_separator"></div>
 	            <div class="content_box" id="basic_info_box">
 	                <div class="content_box_header"><@i18n key="IAM.${type}.INVITATION.TITLE"/></div>
 	                 <#if (idp_account?has_content	&& idp_account=="true")	&&	(signupRequired?has_content	&&	 signupRequired=="true")>
@@ -385,10 +408,10 @@
 					 	<#if restricted_acess?has_content && restricted_acess=="true">
 							<div class="content_box_discription"><@i18n key="IAM.${type2}.RESTRICTEDUSER.SIGNEDIN.SUBTITLE" arg0="${emailId}" arg1="${primary_org_name}" /></div>
 						<#else>
-							<div class="content_box_discription"><@i18n key="IAM.${type2}.SIGNEDIN.SUBTITLE"/></div>
+							<div class="content_box_discription"><@i18n key="IAM.${type2}.SIGNEDIN.SUBTITLE" arg0="${service_display_name}" arg1="${Org_details.name}"/></div>
 						</#if>
 					 <#else>
-						<div class="content_box_discription"><@i18n key="IAM.${type2}.SIGNIN.SUBTITLE" arg0="${emailId}"/></div>
+						<div class="content_box_discription"><@i18n key="IAM.${type2}.SIGNIN.SUBTITLE" arg0="${service_display_name}" arg1="${Org_details.name}" arg2="${emailId}" /></div>
 					 </#if>
 					 
 			<#if restricted_acess?has_content && restricted_acess=="true"	&&	 (user_loggedIn)?has_content && user_loggedIn=="true">
@@ -553,7 +576,7 @@
 					<div class="photo_permission_option">
 						<div class="profile-img" id="profile-pic">
 							<div class="pro_pic_blur"></div>
-							<img id="dp_pic" width="100%" height="100%" title="" alt="" onerror="handleProPicError()"/>
+							<img class="display_pic" width="100%" height="100%" title="" alt="" onerror="handleProPicError()"/>
 						</div>
 						<select id="photo_permission" style="display: none">
 							<option value="3" id="Zohousers" selected><@i18n key="IAM.PHOTO.PERMISSION.ZOHO_USERS" /> </option>
@@ -631,8 +654,12 @@
 </#if>	    
 	</div>
 	<#if (contact_email)?has_content && (!(multi_dc_invite)?has_content) >
-	          
-		<div class="issues_contact"><@i18n key="IAM.ORG.ISSUES.CONATCT" arg0="${contact_email}"/></div>
+
+		<#if (is_contact_mobile) >
+			<div class="issues_contact"><@i18n key="IAM.ORG.ISSUES.MOBILE.CONTACT" arg0="${contact_email}"/></div>
+		<#else>
+			<div class="issues_contact"><@i18n key="IAM.ORG.ISSUES.CONATCT" arg0="${contact_email}"/></div>
+		</#if>
 	
 	</#if>	
 	            

@@ -70,7 +70,14 @@
 								</tr>
 							</table>
 							</td>
-						</tr>	
+						</tr>
+						<#if ztpl.EMAIL_DETACH_URL?has_content>
+		               	<tr>
+                      		<td style="padding: 32px 7% 0px 7%; font-size: 14px; line-height: 24px; font-family: 'Open Sans', 'Trebuchet MS', sans-serif;">
+                        		 <@i18n key="IAM.MAIL.DINT.SIGNUP.LINK" arg0="${ztpl.EMAIL_DETACH_URL}" />
+                      		</td>
+                    	</tr>
+                    	</#if>
 						</#if>	
                     	<tr>
                       		<td style="padding: 32px 7%; font-size: 14px; line-height: 24px; font-family: 'Open Sans', 'Trebuchet MS', sans-serif;">
@@ -79,7 +86,7 @@
                     	</tr>
 						<tr>
 							<td style="padding: 0px 7%; font-size: 14px; line-height: 24px; font-family: 'Open Sans', 'Trebuchet MS', sans-serif;">
-						  		 <@i18n key="IAM.TPL.CHEERS"/><br>
+						  		 <@i18n key="IAM.TPL.THANKS"/>,<br>
 							</td>
 					  	</tr>
 					 	<tr>

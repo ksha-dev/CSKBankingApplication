@@ -113,7 +113,7 @@
 		<regex name="simplestring" value="^([A-Za-z0-9_.\-]+)$" />
 		<regex name="zid" value="^[a-zA-Z0-9_\-]+$" />
 		<regex	name="urlwithdigest" value="^(ht|f)tp(s?)\:\/\/[-.\w]*(\/?)([a-zA-Z0-9\*\-\.\?\,\:\'\/\\\+=&amp;%\$#_@]*)?$"/>
-		<regex	name="iamcleartextpattern" value="[0-9a-zA-Z_\-\+\.\$@\?\,\:\'\/\!\[\]\(\)\|&amp;\P{InBasicLatin}\s]+"/>
+		<regex	name="iamcleartextpattern" value="[0-9a-zA-Z_\-\+\.\$@~\?\,\:\'\/\!\[\]\(\)\|&amp;\P{InBasicLatin}\s]+"/>
 	</regexes>
 
 	<param-groups>
@@ -126,38 +126,6 @@
 			<param name="_hascriteria" type="boolean" />
 			<param name="api-ver" regex="[0-9]\.[0-9]"/>
 		</param-group>
-
-	<param-group name="fsresponseparams">
-		<param name="code" regex="iamcleartextpattern" max-len="2000" />
-		<param name="state" regex="^([a-zA-Z0-9\._\*\-%\/=+])+$" max-len="1000" />
-		<param name="oauth_token" regex="digest" max-len="100" />
-		<param name="oauth_verifier" regex="digest" max-len="100" />
-		<param name="token" regex="iamcleartextpattern" max-len="500" />
-		<param name="uid" regex="digest" max-len="100" />
-		<param name="session_state" regex="plain_str" />
-		<param name="error" regex="iamcleartextpattern" />
-		<param name="error_description" regex="iamcleartextpattern" max-len="500" />
-		<param name="error_code" regex="iamcleartextpattern" />
-		<param name="error_reason" regex="iamcleartextpattern" />
-		<param name="openid.realm" regex="url" />
-		<param name="openid.mode" regex="([a-zA-Z_]+)" />
-		<param name="openid.return_to" regex="urlwithdigest" max-len="300" />
-		<param name="openid.assoc_handle" regex="([A-Za-z0-9_\.\-]+)" max-len="300" />
-		<param name="openid.signed" regex="([a-zA-Z0-9=\.,_]+)" max-len="1000" />
-		<param name="openid.identity" regex="url" />
-		<param name="openid.claimed_id" regex="url" />
-		<param name="openid.pape.auth_level.nist" type="int" />
-		<param name="openid.ns.ax" regex="url" />
-		<param name="openid.ax.mode" regex="([a-z_]+)" />
-		<param name="openid.ax.value.language" regex="([a-zA-Z-]+)" />
-		<param name="openid.ax.value.email" regex="email" />
-		<param name="id_token" xss="antisamyfilter" max-len="10000" />
-		<param name="user" xss="antisamyfilter" max-len="10000" />
-		<param name="denied" regex="iamcleartextpattern" />
-		<param name="authuser" regex="iamcleartextpattern" />
-		<param name="hd" regex="domain" />
-		<param name="prompt" regex="iamcleartextpattern" />
-	</param-group>
 
 	<param-group name="fsrequestparams">
 		<param name="provider" regex="idpProviders" />

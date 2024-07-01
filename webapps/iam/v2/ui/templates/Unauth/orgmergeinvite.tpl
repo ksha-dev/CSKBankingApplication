@@ -6,8 +6,8 @@
 			<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
-			<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-			<link href="${SCL.getStaticFilePath("/v2/components/css/accountsInviatation.css")}" rel="stylesheet" type="text/css" />
+			<@resource path="/v2/components/css/${customized_lang_font}" />
+			<@resource path="/v2/components/css/accountsInviatation.css" />
 		</head>
 		<body>
 		
@@ -38,15 +38,15 @@
 		    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta charset="UTF-8" />
 			
-			<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-			<link href="${SCL.getStaticFilePath("/v2/components/css/accountsInviatation.css")}" rel="stylesheet" type="text/css" />
-		    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>	
-		    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/tippy.all.min.js")}"></script>
-			<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script> 
-			<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script> 
-			<script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}"></script>
-	    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}" type="text/javascript"></script>
-	    	<script src="${SCL.getStaticFilePath("/v2/components/js/invitation.js")}"></script>
+			<@resource path="/v2/components/css/${customized_lang_font}" />
+			<@resource path="/v2/components/css/accountsInviatation.css" />
+		    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />	
+		    <@resource path="/v2/components/tp_pkg/tippy.all.min.js" />
+			<@resource path="/v2/components/js/zresource.js" /> 
+			<@resource path="/v2/components/js/uri.js" /> 
+			<@resource path="/v2/components/js/common_unauth.js" />
+	    	<@resource path="/v2/components/tp_pkg/select2.full.min.js" />
+	    	<@resource path="/v2/components/js/invitation.js" />
 	    	
 	    	<script>
 	    	
@@ -75,15 +75,8 @@
 		<body>
 		
 			<div class="blur"></div>
-			<div id="error_space">
-				<div class="top_div">
-					<span class="cross_mark"> 
-					<span class="crossline1"></span>
-					<span class="crossline2"></span>
-					</span>
-					<span class="top_msg"></span>
-				</div>
-			</div>
+			
+			<#include "${location}/Unauth/invitation_errorToast.tpl">
 	
 			<div class="result_popup hide" id="result_popup_accepted">
 				<div class="success_pop_bg"></div>

@@ -4,4 +4,5 @@
 	<configuration name="DBName" value="mysql" />
 	<configuration name="DSAdapter" value="mysql" />
 	<configuration name="StartDBServer" value="false" />
+	<configuration name="auth.interface" value="com.zoho.authentication.IAMAuth" />
 </extended-configurations>

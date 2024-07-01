@@ -15,22 +15,22 @@
         	<@i18n key="IAM.ADD.RECOVERY.MOBILE.TITLE"/>
         </#if>	
     </title>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
+    <@resource path="/v2/components/css/${customized_lang_font}" />
     
    <#if !(block_add_recovery || block_mob_num_addition)>
-    <script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+	<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+    <@resource path="/v2/components/js/common_unauth.js" />
+    <@resource path="/v2/components/js/splitField.js" />
     <#if (!is_email || is_recovery)>
-    <link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet" type="text/css">
-    <link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet" type="text/css">
+    <@resource path="/v2/components/css/uvselect.css" />
+    <@resource path="/v2/components/css/flagIcons.css" />
 	<script>
 		var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
 	</script>  
-    <script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
+    <@resource path="/v2/components/js/phonePatternData.js" />
+    <@resource path="/v2/components/js/uvselect.js" />
+    <@resource path="/v2/components/js/flagIcons.js" />
     </#if>
     
     </#if>
@@ -129,6 +129,7 @@
         max-width: 578px;
         padding-top: 100px;
         padding-right: 4%;
+        padding-left: 10%;
         display: inline-block;
       }
       .announcement_header {
@@ -137,7 +138,6 @@
         margin-bottom: 20px;
         cursor: default;
       }
-      .otp_sent_desc,
       .configure_desc,
       .captcha_desc {
         font-size: 16px;
@@ -145,8 +145,7 @@
         margin-bottom: 20px;
         cursor: default;
       }
-      .otp_sent_desc,
-      .enter_eml_mob_desc {
+      .otp_sent_desc{
       	line-height: 24px;
         margin-bottom: 30px;
       }
@@ -270,82 +269,6 @@
         padding-top: 120px;
         padding-right: 10%;
       }
-      .unverContainer{
-      	border: 1px solid #d8d8d8;
-      	border-radius: 10px;
-      	max-width: 460px;
-      }
-      .unverHeader{
-      	font-size: 14px;
-      	font-weight: 600;
-      	line-height: 24px;
-      	border-bottom: 1px solid #d8d8d8;
-      	padding: 20px 20px;
-      }
-      .mobile-icon {
-        width: 30px;
-        height: 30px;
-        font-size: 30px;
-        color: #1389e3;
-        position: relative;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-        margin-right: 10px;
-      }
-      .mobile-icon::before {
-      	font-size: 16px;
-      	margin: auto;
-      	height: max-content;
-      	align-self: center;
-      }
-      .mobile-icon::after{
-      	position: absolute;
-      	left: 0;
-      	opacity:0.1;
-      }
-      .numb-details{
-      	font-size: 14px;
-      	line-height: 20px;
-      	cursor: default;
-      }
-      .numb-cont{
-      	display: flex;
-      	padding: 15px 20px;
-      	align-items:center;
-      }
-      .verify-tick{
-      	margin-left: auto;
-      	opacity: 0.5;
-      	display: flex;
-   		align-items: center;
-    	gap: 5px;
-    	font-size: 14px;
-    	padding: 12px;
-    	border-radius: 22px;
-      }
-      .verify-tick:hover{
-      	opacity: 1;
-      	cursor: pointer;
-      	background-color: #eee;
-      }
-      .link-btn{
-      	font-size: 14px;
-      	font-weight: 600;
-      	color: #0093FF;
-      	line-height: 20px;
-      	outline: none;
-      	text-decoration: none;
-      	padding: 0px;
-      	border: none;
-      	background: none;
-      	cursor: pointer;
-      }
-      .add-new{
-      	margin:20px 20px 30px 30px;
-      }
       .back_btn{
       	outline: none;
       	padding: 12px 30px;
@@ -357,12 +280,6 @@
       	font-weight: 600;
       	color: #4E4E4E;
       	margin-left: 20px;
-      }
-      .numb-cont:hover{
-      	background-color: #f8f8f8;
-      }
-      .content_container {
-        padding-left: 10%;
       }
       .otp_input_container {
         position: relative;
@@ -418,16 +335,6 @@
         display: none;
         white-space: normal;
       }
-      
-      .already_added, .add_new_number {
-      	color: #0093ff;
-      	font-weight: 500;
-      	font-size: 14px;
-      	margin-top: 12px;
-      	margin-bottom:20px;
-      	cursor: pointer;
-      	width:max-content;
-	  }
       #mobile_input {
         text-indent: 60px;
         width: 300px;
@@ -447,23 +354,6 @@
       }
       .noindent {
         position: relative;
-      }
-      b {
-        font-weight: 500;
-      }
-      user agent stylesheet b {
-        font-weight: bold;
-      }
-     
-      .cc {
-        float: right;
-      }
-      .cn {
-        margin-left: 10px;
-        float: left;
-        max-width: 170px;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       .phone_code_label
 	  {
@@ -532,13 +422,6 @@
 		    font-weight: 500;
 			text-align: left;
 		    max-width: 304px;
-		}
-		
-		.linechecking{
-			font-size: 14px;
-			line-height: 24px;
-			font-weight: 500;
-			text-align: center;
 		}
 		.error_icon
 		{
@@ -639,85 +522,7 @@
        margin-left: 10px;
        left:-10px;
       }
-	  @keyframes tick {
-        0% {
-          width: 0px;
-        }
-        100% {
-          width: 10px;
-        }
-      }
-      .white{
-		border-bottom-color: #ffffff;
-		border-left-color: #ffffff;
-	  }
-      @media only screen and (min-width: 435px) and (max-width: 980px) {
-        .flex-container {
-          padding: 50px 25px 0px 25px;
-        }
-        .illustration-container {
-          display: none;
-        }
-        .content_container {
-          padding: 0;
-          margin: auto;
-        }
-        .countNameAddDiv,.phone_code_label+select
-		{
-			position:absolute;
-		}
-      }
-      @media only screen and (max-width: 435px) {
-        .flex-container {
-          padding: 50px 20px 0px 20px;
-        }
-        .content_container {
-          width: 100%;
-          padding: 0;
-        }
-        .illustration-container {
-          display: none;
-        }
-        .otp_input_container {
-          width: 100%;
-        }
-        .mobile_input_container {
-          width: 100%;
-        }
-        #mobile_input {
-          width: 100%;
-        }
-        button {
-          width: 100%;
-        }
-        .add-new{
-		  margin: auto;
-		  margin-top: 20px;
-		  margin-bottom: 30px;
-        }
-        .countNameAddDiv,.phone_code_label+select
-		{
-			position:absolute;
-		}
-		
-		#countNameAddDiv{
-			height:42px;
-		}
-		
-		 #select_phonenumber_input{
-		 	text-indent:65px;
-		 }
-		 
-		 body .result_popup{
-		 	width:90%;
-		 	
-		 }
-		 
-		 .selectbox_options_container--open{
-		 	width: calc(100% - 40px) !important;
-		 }
-      }
-      
+	 
       
       
       #select_phonenumber_input{
@@ -1107,27 +912,6 @@
 		padding-top:10%;
 	}
 	
-	@media only screen and (max-width : 500px){
-		body .result_popup{
-		 	width:90%;
-		 }
-		 	 
-		 .email_input_container{
-		 	width:100%;
-		 }
-		 
-		 #email_input{
-		 	width:100%;
-		 }
-		 .flex-container.result_align{
-			padding-top:20%;
-		}
-		body .result_popup .reject_icon,body .result_popup .success_icon,body .result_popup .org_icon, {
-			bottom:10px;
-		}
-			 
-	}
-	
 	.primary_btn_check {
 	    height: 40px;
 	    line-height: 40px;
@@ -1252,7 +1036,7 @@
       
       .close_btn{
         display: inline-block;
-	    border-radius: 50%;
+	    border-radius: 5px;
 	    cursor: pointer;
 	    position: absolute;
 	    right: 0px;
@@ -1310,9 +1094,108 @@
 	.hide{
     	display: none;
 	}
+	
+	 .white{
+		border-bottom-color: #ffffff;
+		border-left-color: #ffffff;
+	  }
 	   
+	   
+	   
+	 @keyframes tick {
+        0% {
+          width: 0px;
+        }
+        100% {
+          width: 10px;
+        }
+      }
+   
+      @media only screen and (min-width: 435px) and (max-width: 980px) {
+        .flex-container {
+          padding: 50px 25px 0px 25px;
+        }
+        .illustration-container {
+          display: none;
+        }
+        .content_container {
+          padding: 0;
+          margin: auto;
+        }
+        .countNameAddDiv,.phone_code_label+select
+		{
+			position:absolute;
+		}
+      }
+      
+      @media only screen and (max-width : 500px){
+		body .result_popup{
+		 	width:90%;
+		 }
+		 	 
+		 .email_input_container{
+		 	width:100%;
+		 }
+		 
+		 #email_input{
+		 	width:100%;
+		 }
+		 .flex-container.result_align{
+			padding-top:20%;
+		}
+		body .result_popup .reject_icon,body .result_popup .success_icon,body .result_popup .org_icon, {
+			bottom:10px;
+		}
+			 
+	}
+     
 
 	@media only screen and (max-width: 435px){
+	
+		 .flex-container {
+          padding: 50px 20px 0px 20px;
+        }
+        .content_container {
+          width: 100%;
+          padding: 0;
+        }
+        .illustration-container {
+          display: none;
+        }
+        .otp_input_container {
+          width: 100%;
+        }
+        .mobile_input_container {
+          width: 100%;
+        }
+        #mobile_input {
+          width: 100%;
+        }
+        button {
+          width: 100%;
+        }
+        .countNameAddDiv,.phone_code_label+select
+		{
+			position:absolute;
+		}
+		
+		#countNameAddDiv{
+			height:42px;
+		}
+		
+		 #select_phonenumber_input{
+		 	text-indent:65px;
+		 }
+		 
+		 body .result_popup{
+		 	width:90%;
+		 	
+		 }
+		 
+		 .selectbox_options_container--open{
+		 	width: calc(100% - 40px) !important;
+		 }
+	
 		body .result_popup .org_icon , body .result_popup .reject_icon , body .result_popup .success_icon
 			 {
 			 	bottom:11%;
@@ -1353,6 +1236,7 @@
 		var resendCount=3;
 		var app_display_name = "${app_display_name}";
 		var otp_length = ${otp_length};
+		var captcha_error_img = "${SCL.getStaticFilePath("/v2/components/images/hiperror.gif")}";
 		<#if redirect_url??>var redirection = "${redirect_url}";</#if>
 		
 		
@@ -1376,7 +1260,8 @@
 	  	"IAM.MOBILE.OTP.MAX.COUNT.REACHED" : '<@i18n key="IAM.MOBILE.OTP.MAX.COUNT.REACHED"/>',
 	  	"IAM.NEW.SIGNIN.RESEND.OTP" : '<@i18n key="IAM.NEW.SIGNIN.RESEND.OTP"/>',
 	  	"IAM.CONFIG.RESEND" : '<@i18n key="IAM.CONFIG.RESEND"/>',
-	  	"IAM.ERROR.MAX.SIZE.FIELD" : '<@i18n key="IAM.ERROR.MAX.SIZE.FIELD"/>'
+	  	"IAM.ERROR.MAX.SIZE.FIELD" : '<@i18n key="IAM.ERROR.MAX.SIZE.FIELD"/>',
+	  	"IAM.SIGNIN.ERROR.CAPTCHA.INVALID" : '<@i18n key="IAM.SIGNIN.ERROR.CAPTCHA.INVALID"/>'
 	  });
 	  
 	  function handleEditOption(mode) {
@@ -1385,17 +1270,9 @@
 	  	$(document.confirm_form).show();
 	  	$(".captcha_desc").hide();
 	  	$(".verify_btn").hide();
-	  	if (mobileScreen) {
-	  		if(!isMobile) {
-	  			$(".otp_input_container, .otp_sent_desc").hide();
-        		$(".mobile_input_container").show();
-        	}		
-    	}
-    	else{
-    		$(".otp_input_container, .otp_sent_desc").hide();
-        	$(".email_input_container").show();
-
-    	}
+	  	$(".otp_input_container, .otp_sent_desc").hide();
+        $(".mobile_input_container").show();
+        $(".email_input_container").show();
 	  	document.querySelector(".send_otp_btn").style.display = "inline-block";
         altered = false
         
@@ -1409,7 +1286,7 @@
        	 document.querySelector("#" + mode + "_input").value = emailormobilevalue;
         }else{
         	if(showMobileNoPlaceholder){
-	       	 	document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobile.toString());
+	       	 	document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobileNumber.toString());
 	       	 }
 	       	 else{
 	       	 	document.querySelector("#" + mode + "_input").value =  mobileNumber;
@@ -1518,7 +1395,7 @@
       	else if(respStr.code == "IN108"){//captcha required
       		$(".captcha_desc").show();
       		loadCircleAnimation(true);
-      		$(document.forms.confirm_form1).attr("onsubmit","verifyCaptcha(document.confirm_form1);return false");
+      		$(document.forms.confirm_form1).attr("onsubmit","return verifyCaptcha(document.confirm_form1)");
       		$(".verify_btn").html("<span></span><@i18n key="IAM.NEXT"/>").show();
       		$(document.confirm_form).hide();
       		showHip(respStr);
@@ -1532,7 +1409,7 @@
 				$("#reload").removeClass("load_captcha_btn");
 			 },500);
      	}
-      	else if(respStr.code == "PH105"){//invalid mobile number
+      	else if(respStr.code == "PH105" || respStr.code == "PH109"){//invalid mobile number  //OTP couldn't be sent. Please try again after some time.
       		//this flow comes from after captcha entered
       	
       		show_error_msg("#mobile_input",respStr.message);
@@ -1543,12 +1420,12 @@
       					$(document.confirm_form1).children(".verify_btn").hide();
       					$(document.confirm_form).show();
       					$(".mobile_input_container").show();
-	      				document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobile.toString());
+	      				document.querySelector("#" + mode + "_input").value = phonePattern.setSeperatedNumber(phonePattern.getCountryObj($("#countNameAddDiv").val()), mobileNumber.toString());
       				});
 	      		},500);	
       		}
       	}
-      	else if(respStr.code == "U138" || respStr.code == "U106"){//mobile number already registered //invalid mobile number
+      	else if(respStr.code == "U138" || respStr.code == "U106" || respStr.code == "AS112"){//mobile number already registered  //marked as spam
       		if(mobileScreen){
       			show_error_msg("#mobile_input",respStr.message);
       		}
@@ -1558,16 +1435,6 @@
       		
       		$(".send_otp_btn").removeAttr("disabled");
       	}
-      	else if(respStr.code == "AS112"){//marked as spam
-      		if(mobileScreen){
-      			show_error_msg("#mobile_input",respStr.message);
-      		}
-      		else{
-      			show_error_msg("#email_input",respStr.message);
-      		}
-      		$(".send_otp_btn").removeAttr("disabled");
-      	}
-    	
       	else{
       		if("message" in respStr){
 	  			if(mobileScreen){
@@ -2014,14 +1881,7 @@
 	  		}
 	  	}, 2000)
 	  }
-	  
-	  
-	  function wordAndLineCount(message){
-	  	var length = message.split(" ").length;
-	  	return ((length/250)*60 + 2)*1000;
-	  }
-	  
-	  
+ 
 	  function showErrMsg(msg)
 	  {
 		document.getElementById("error_space").classList.remove("show_error");
@@ -2098,9 +1958,13 @@
 		clearError("#captcha_container");//no i18N
 		removeCaptchaError();
 		var captchavalue = $("#captcha").val();
-		if(captchavalue == null || captchavalue == "" || captchavalue == "null" || /[^a-zA-Z0-9\-\/]/.test( captchavalue ) || captchavalue.length<6) 
+		if(captchavalue == null || captchavalue == "" || captchavalue == "null") 
 		{		
 			showCaptchaError(I18N.data["IAM.SIGNIN.ERROR.CAPTCHA.REQUIRED"],1);
+			return false;
+		}
+		else if(!(/^[a-zA-Z0-9]*$/.test( captchavalue )) || captchavalue.length<6){
+			showCaptchaError(I18N.data["IAM.SIGNIN.ERROR.CAPTCHA.INVALID"],1);
 			return false;
 		}
 		$(".verify_btn span").html("<div class='loader white'></div>");
@@ -2112,6 +1976,7 @@
         else{
   		 	sendRequestWithCallback("/setup/recoverymobile/otp/send", params, true, handleOtpSent, "POST");
         }
+        return false;
 	}
 	
 	function removeCaptchaError(){
@@ -2301,7 +2166,7 @@
 							<img id="hip" onload="loadCircleAnimation(false)">
 						</div>
 						<span class="reloadcaptcha icon-reload" id="reload" onclick="reloadCaptcha();removeCaptchaError()"></span>
-						<input id="captcha" placeholder="Enter CAPTCHA" type="text" name="captcha" class="textbox" autocapitalize="off" autocomplete="off" autocorrect="off" maxlength="8">
+						<input id="captcha" placeholder="<@i18n key="IAM.NEW.SIGNIN.ENTER.CAPTCHA"/>" type="text" name="captcha" class="textbox" autocapitalize="off" autocomplete="off" autocorrect="off" maxlength="8">
 						<div class="captcha_field_error0"></div>
 					  </div>
 					  <div class="captcha_field_error1"></div>
@@ -2345,7 +2210,7 @@
 	      		if(prefilledEmail != undefined && prefilledEmail != "" && prefilledEmail != null){
 	      			$("#email_input").val(prefilledEmail);
 	      		}
-	      		if(userCountryCode != undefined && userCountryCode != null && userCountryCode!=""){
+	      		if(userCountryCode != undefined && userCountryCode != null && userCountryCode!="" && mobileScreen){
 		      		$("#countNameAddDiv option[value='"+userCountryCode+"']")[0].selected="selected";
 		      	}
 	      		if(mobileScreen){

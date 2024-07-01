@@ -1,12 +1,12 @@
 <html lang="${signin.lang}">
 	<head>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/smartsignin.css")}" type="text/css" rel="stylesheet"/>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/lottie.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/weblogin.js")}" type="text/javascript"></script>
-		<script src="${za.wmsjsurl}" type="text/javascript" defer></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/wmsliteimpl.js")}" type="text/javascript" defer></script>
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/smartsignin.css" />
+		<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		<@resource path="/v2/components/tp_pkg/lottie.min.js" />
+		<@resource path="/v2/components/js/weblogin.js" />
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous" type="text/javascript" defer></script>
+		<@resource path="/v2/components/js/wmsliteimpl.js" attributes="defer" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=2.0" />
     	<meta name="description" content="signin"/>
 		<meta name="robots" content="noindex, nofollow"/>
@@ -20,6 +20,7 @@
 			var signinUrl = getSigninUrl();
 			var smartSignin = true;
 			var isDarkMode = parseInt("${signin.isDarkmode}");
+			var wmsSRIValues = ${za.wmsSRIValues};
 			I18N.load({
 				"IAM.NEW.SIGNIN.RESTRICT.SIGNIN.HEADER" : '<@i18n key="IAM.NEW.SIGNIN.RESTRICT.SIGNIN.HEADER"/>', 
 				"IAM.NEW.SIGNIN.RESTRICT.SIGNIN.DESC" : '<@i18n key="IAM.NEW.SIGNIN.RESTRICT.SIGNIN.DESC"/>', 
@@ -116,7 +117,7 @@
         </script>
 		
 	</head>
-	<body <#if (signin.isDarkmode == 1) > class="darkmode"</#if> >
+	<body <#if (signin.isDarkmode == 1) > class="darkmode"</#if> <#if (signin.rtl == 1) > dir='rtl' </#if>>
 		<div class="bg_one"><div class="greylayer" onclick=closeQRview()></div></div>
 		<div class="Alert"> <span class="tick_icon"></span> <span class="alert_message"></span> </div>
     	<div class="Errormsg"> <span class="error_icon"></span> <span class="error_message"></span> </div>
@@ -144,7 +145,7 @@
 				                        <div class="qr-reload-txt"><@i18n key="IAM.SMART.SIGNIN.RELOAD"/></div>
 				                    </div>
 				                </div>
-								<div class="qrcodecontainer qr_act_view" onclick="expandQRview()">
+								<div class="qrcodecontainer qr_act_view">
 									<div class="qr-container-dom">
 										<img id="qr_container_dom" class="wh100"/>
 										<div class="expand_qr">
@@ -156,7 +157,7 @@
 								<div class="qrcodecontainer container_expand" onclick=closeQRview()>
 									<div class="qr-container-dom" onclick=closeQRview()>
 										<img id="qr_container_dom2" class="wh100"/>
-										<div class="cancel_qr" onclick="closeQRview();">
+										<div class="cancel_qr" onclick="closeQRview();statechange();">
 											<span class="icon-Collapse"></span>
 											<span><@i18n key="IAM.SMART.SIGNIN.CANCEL.CONTENT.UPDATE"/><span>
 										</div>

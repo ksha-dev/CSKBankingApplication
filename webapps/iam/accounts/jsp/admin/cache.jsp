@@ -1,4 +1,9 @@
 <%--$Id$ --%>
+<%@page import="com.zoho.accounts.cache.MemCacheConstants.RedisAuth"%>
+<%@page import="com.adventnet.iam.VOMap"%>
+<%@page import="com.zoho.accounts.AccountsConstants"%>
+<%@page import="com.adventnet.iam.internal.Util"%>
+<%@page import="com.zoho.accounts.internal.DeploymentSpecificConfiguration.SASDeployments"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Set"%>
 <%@page import="com.adventnet.sas.util.DBUtil"%>
@@ -25,7 +30,7 @@
 <%@page import="com.zoho.accounts.AppResourceProto.CacheCluster.ClusterNode"%>
 <%@page import="com.zoho.accounts.AppResourceProto.CacheCluster"%>
 <%@page import="org.json.JSONObject"%>
-<%@page import="com.zoho.jedis.v320.Jedis"%>
+<%@page import="com.zoho.jedis.v390.Jedis"%>
 <%@page import="java.util.Properties"%>
 <%@page import="org.json.JSONArray"%>
 <%!
@@ -54,7 +59,7 @@ private class RedisClusterData {
 		this.category = (String) data.get(6);
 	}
 
-	public JSONObject toJson() {
+	public JSONObject toJson(String deployment) {
 		JSONObject job = new JSONObject();
 		job.put("cluster", clusterIp);//No I18N
 		job.put("master", masterIp);//No I18N
@@ -63,17 +68,21 @@ private class RedisClusterData {
 		job.put("port", port);//No I18N
 		job.put("category", category);//No I18N
 		job.put("clusters", getCacheCluster(clusterIp, port));//No I18N
-		JSONObject stats = getMachineStats(clusterIp, port);
+		JSONObject stats = getMachineStats(clusterIp, port, deployment);
 		stats.put("maxMemory", (maxMem / 1024) + "GB");//No I18N
 		job.put("stats", stats);//No I18N
 		return job;
 	}
 
-	public JSONObject getMachineStats(String ip, int port) {
+	public JSONObject getMachineStats(String ip, int port, String deployment) {
 		Jedis client = null;
 		JSONObject out = new JSONObject();
 		try {
 			client = new Jedis(ip, port);
+			String[] authCred = getRedisAuthCred(deployment.replaceAll("_", ""));
+			if(authCred != null) {
+				client.auth(authCred[0], authCred[1]);
+			}
 			JSONObject keyCount = new JSONObject();
 			String info = client.info();
 			for (String data : info.split("\n")) {// No I18N
@@ -166,9 +175,9 @@ private class RedisClusterData {
 			List<CacheCluster> deploymentPools = new ArrayList<CacheCluster>();
 			for (CacheCluster cluster : clusters) {
 				String clusterName = cluster.getClusterName();
-				if (deployment == "" && clusterName.equals(clusterName.toLowerCase())) {
+				if ("".equals(deployment)) {
 					deploymentPools.add(cluster);
-				} else if (!(deployment.equals("")) && clusterName.toLowerCase().endsWith(deployment.toLowerCase())) {
+				} else if (clusterName.toLowerCase().endsWith(deployment.toLowerCase())) {
 					deploymentPools.add(cluster);
 				}
 			}
@@ -179,10 +188,52 @@ private class RedisClusterData {
 		return null;
 		
 	}
+	
+	public String getServiceName(String clusterName, String deployment) {
+		if(!deployment.equals("")) {
+			int index = clusterName.lastIndexOf('_');
+			clusterName = clusterName.substring(0, index);
+		}
+		String serviceName = AccountsConstants.ACCOUNTS_SERVICE_NAME;
+		switch(clusterName) {
+		case "contacts"://No i18N
+		case "zc_s"://No i18N
+		case "zc_photo"://No i18N
+		case "zc_cache_pool"://No i18N
+			serviceName = AccountsConstants.CONTACTS_SERVICE_NAME;
+			break;
+		case "zohomts_optional_pool"://No i18N
+		case "zohomts_user"://No i18N
+			serviceName = "ZohoMTS";//No i18N
+			break;
+		case "zohoone_agent_pool"://No i18N
+			serviceName = "ZohoOne";//No i18N
+			break;
+		default:
+			break;
+		}
+		return serviceName;
+	}
+	
+	public String[] getRedisAuthCred(String deployment) {
+		if("true".equals(AccountsConfiguration.getConfiguration(RedisAuth.AUTH_ENABLED.getConfigName(), RedisAuth.AUTH_ENABLED.getDefaultValue()))) {
+			String prefix = deployment + "_"; 
+			String userName = AccountsConfiguration.getConfiguration(prefix + RedisAuth.AUTH_USER.getConfigName(), RedisAuth.AUTH_USER.getDefaultValue());
+			String password = AccountsConfiguration.getConfiguration(prefix + RedisAuth.AUTH_PASS.getConfigName(), RedisAuth.AUTH_PASS.getDefaultValue());
+			if(userName == null || password == null) {
+				return null;
+			}
+			return new String[] {userName, password};
+		}
+		return null;
+	}
 }
 %>
 <%
 String deployment = request.getParameter("dep") == null ? DeploymentSpecificConfiguration.getConfiguration("cachepool_suffix", "") : request.getParameter("dep"); // No I18N
+if(deployment.equalsIgnoreCase("_" + SASDeployments.DEV.name())) {
+	deployment = "";
+}
 String statsType = request.getParameter("statstype") == null ? "machine" : request.getParameter("statstype");//No i18N
 if ("cluster".equals(statsType)) {
 %>
@@ -253,6 +304,13 @@ if ("cluster".equals(statsType)) {
 						}
 						HostAndPort hostPort = HostAndPort.fromString(ipPort);
 						Jedis cli = new Jedis(hostPort.getHost(), hostPort.getPort());
+						String serviceName = new RedisClusterData().getServiceName(pool.getClusterName(), deployment);
+						VOMap<String> redisAuthMap = Util.cacheAPI.getRedisAuthMap(serviceName, serviceName, deployment.replaceAll("_", ""));
+						if(redisAuthMap != null && !redisAuthMap.isEmpty()) {
+							String userName = redisAuthMap.get(RedisAuth.AUTH_USER.getConfigName());
+							String pwd = redisAuthMap.get(RedisAuth.AUTH_PASS.getConfigName());
+							cli.auth(userName, pwd);
+						}
 						cli.select(db);
 						String tmp = cli.info("stats");//No I18N
 						for (String line : tmp.split("\n")) {//No I18N
@@ -343,7 +401,7 @@ if ("cluster".equals(statsType)) {
 		if (redisClusters != null) {
 			jsonArray = new JSONArray();
 			for (RedisClusterData data : redisClusters) {
-				JSONObject clusterDataJSON = data.toJson();
+				JSONObject clusterDataJSON = data.toJson(deployment);
 				JSONObject clusterJson = clusterDataJSON.optJSONObject("clusters");//No i18N
 				String stats = "";
 				String className = "";

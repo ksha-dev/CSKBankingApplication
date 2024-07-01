@@ -30,11 +30,6 @@
 	    <param name="usecases" regex="cleartextpattern"/>
 	</url>
 
-	<url path="/internal/mysql.jsp" authentication="required" roles="IAMAdmininistrator,LegalAdmin" trusted="true" https="true" description="Used to make mysql queries to IAM database">
-	    <param name="SELECT_SQL" regex="select_query" max-len="5000"/>
-	    <param name="MYSQL_HOST" regex="mysql_host" secret="true"/>
-	    <param name="Submit" regex="Execute"/>
-	</url>
 	<url path="/internal/clearcache.jsp" scoped-services="AaaServer,DLServer" internal="true" description="Clearing Cache">
 		    <param name="usecases" regex="cleartextpattern"/>
 	</url>
@@ -115,7 +110,6 @@
             <param name="clearconfig" type="boolean"/>
         </url>
        
-        <url path="/internal/clusterstatus.jsp" authentication="required" roles="IAMAdmininistrator,IAMCacheAdmin" trusted="true" description="Shows the current status of the cache"/>
         
         <url path="/internal/refreshKafkaAudit.jsp" authentication="required" roles="IAMAdmininistrator" trusted="true" description="Refresh Kafka Producer for Audit for specified IPs">
 			<param name="ips" regex="cleartextpattern" split="," max-occurrences="50"/>
@@ -175,6 +169,9 @@
 	<url path="/interdc/v1/multidc/import" method="post" internal="true" scoped-services="DLServer" description="To initiate Multi-DC user import">
 		<inputstream type="JSONObject" template="multidc_import_json" max-len="100000"/>
 	</url>
+	<url path="/interdc/v1/multidc/import/${ZID}" method="put" internal="true" scoped-services="DLServer" description="To sync Multi-DC user data">
+		<inputstream type="JSONObject" template="multidc_import_json" max-len="100000"/>
+	</url>
     </urls>
     
     <jsontemplates>
@@ -182,7 +179,7 @@
 	    	<key name="multidcimport" type="JSONObject" template="multidc_import" max-len="100000"/>
         </jsontemplate>
     	<jsontemplate name="multidc_import">
-   			<key name="export_data" type="String" max-len="100000"/>
+   			<key name="export_data|rarn_notification" name-regex="true" type="String" max-len="100000"/>
         </jsontemplate>
     </jsontemplates>
 

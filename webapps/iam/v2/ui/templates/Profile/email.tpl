@@ -16,7 +16,11 @@
 				"IAM.VIEWMORE.EMAIL" : '<@i18n key="IAM.VIEWMORE.EMAIL" />',
 				"IAM.VIEWMORE.EMAILS" : '<@i18n key="IAM.VIEWMORE.EMAILS" />',
 				"IAM.ADD.CONTACT.MOBILE" : '<@i18n key="IAM.ADD.CONTACT.MOBILE" />',
-				"IAM.EMAIL.CONFIRMATION.SEND.EMAIL" : '<@i18n key="IAM.EMAIL.CONFIRMATION.SEND.EMAIL" />'
+				"IAM.EMAIL.CONFIRMATION.SEND.EMAIL" : '<@i18n key="IAM.EMAIL.CONFIRMATION.SEND.EMAIL" />',
+				"IAM.CONFIRM": '<@i18n key="IAM.CONFIRM" />',
+				"IAM.CONTINUE": '<@i18n key="IAM.CONTINUE" />',
+				"IAM.BACK": '<@i18n key="IAM.BACK" />',
+				"IAM.DELETE": '<@i18n key="IAM.DELETE" />'
 
 		};
         
@@ -221,10 +225,10 @@
 					        </button>
 					        <button id="btn_to_mark_recovery" onclick=""><span class="icon-recoveryNum"></span><span><@i18n key="IAM.PROFILE.PHONENUMBER.MARK.AS.RECOVERY" /></span></button>
 					        <button id="btn_to_resend" onclick=""><span class="icon-ccomplete" style="font-size:20px; color: #0091FF"></span><span style="color: #0091FF; line-height:20px;"><@i18n key="IAM.FEDERATED.SIGNUP.VERIFY.OTP.HEADER.EMAIL" /></span></button>
-					        <button id="btn_to_resend_mb" onclick=""><span class="icon-send"></span><span><@i18n key="IAM.PROFILE.PHONENUMBERS.SEND.OTP" /></span></button>
+					        <button id="btn_to_resend_mb" onclick=""><span class="icon-ccomplete" style="font-size:20px; color: #0091FF"></span><span style="color: #0091FF; line-height:20px;"><@i18n key="IAM.FEDERATED.SIGNUP.VERIFY.OTP.HEADER.MOBILE" /></span></button>
 					        <button class id="btn_to_chng_primary" onclick="show_mob_conform('primary','<@i18n key="IAM.PROFILE.PHONENUMBERS.MAKE.PRIMARY.DESCRIPTION" />')"><span class="icon-Primary"></span><span class="set_signinNum_txt"><@i18n key="IAM.PROFILE.EMAIL.SET.PRIMARY" /></span></button>
 					        <button class id="btn_to_chng_primary_mb" onclick="show_mob_conform('primary','<@i18n key="IAM.PROFILE.PHONENUMBERS.MAKE.PRIMARY.DESCRIPTION" />')"><span class="icon-Primary"></span><span class="set_signinNum_txt"><@i18n key="IAM.PROFILE.PHONENUMBER.SET.SIGNIN.NUMBER" /></span></button>
-					        <button id="btn_to_edit"><span class="icon-edit"></span><span>Edit</span></button>
+					        <button id="btn_to_edit"><span class="icon-edit"></span><span><@i18n key="IAM.EDIT" /></span></button>
 					        <button id="btn_to_remove_as_primary"><span class="icon-Primary"></span><span class="set_signinNum_txt"><@i18n key="IAM.PROFILE.PHONENUMBERS.REMOVE.AS.PRIMARY" /></span></button>
 					        <button id="btn_to_delete" onclick="show_mob_conform('delete')"><span class="icon-delete"></span><span><@i18n key="IAM.REMOVE" /></span></button>
 					    </div>
@@ -286,7 +290,7 @@
 						<div class="emailID_prim hide" id="emailID_prim">
 						
 							<!-- PRIMARY EMAIL -->	
-							<div class="field_email primary" id="emailID_num_0" onclick="">
+							<div class="field_email primary" id="emailID_num_0" onclick="for_mobile_specific_email('emailID_num_0')">
 								
 								<span class="email_dp icon-email"></span>							
 								<span class="email_info">

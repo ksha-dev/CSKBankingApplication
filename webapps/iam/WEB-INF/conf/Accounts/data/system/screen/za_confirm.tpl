@@ -44,7 +44,7 @@
 							</div>
 							<div class="label">
 		    				<div class="inlineLabel"><@i18n key="IAM.LABEL.ENTER.ZOHO.PASSWORD"/> </div>
-								<input type="password" name="password" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
+								<input type="password" autocomplete="off" name="password" class="unauthinputText" style="width: 300px;" onkeypress="hideMsg(this);">
 								<a href="${reset_password_link}" class="forgoticon"></a>
 							</div>
 							<div class="label">

@@ -1,4 +1,82 @@
 /*$Id$*/
+
+
+@font-face {
+	/*======Font file Version : AccountsUI-v1.12===============*/
+  font-family: 'AccountsUI';
+  src:  url('../images/fonticon/AccountsUI.eot');
+  src:  url('../images/fonticon/AccountsUI.eot') format('embedded-opentype'),
+    url('../images/fonticon/AccountsUI.ttf') format('truetype'),
+    url('../images/fonticon/AccountsUI.woff') format('woff'),
+    url('../images/fonticon/AccountsUI.woff2') format('woff2'),
+    url('../images/fonticon/AccountsUI.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'AccountsUI' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.zoho_topbar_logo {
+    font-size: 24px;
+    display: inline-flex;
+    margin: 9px 0px;
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+.accounts_heading{
+	background:url("../images/product-logos-22-2x.png") no-repeat;
+    background-size: 688px;
+    background-position: -408px -20px;
+	width:82px;
+	font-size: 18px;
+    margin-left:8px;
+}
+
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) , not all , not all
+		, not all , only screen and (min-resolution: 192dpi) , only screen and
+	(min-resolution: 2dppx) {
+	.accounts_heading {
+		background: url("../images/product-logos-22-2x.png") no-repeat;
+		background-size: 688px;
+    	background-position: -408px -20px;
+	}
+}
+
+.icon-Accounts-whiteBG .path1:before {
+    content: "\e96c";
+    color: rgb(8, 153, 73);
+}
+
+.icon-Accounts-whiteBG .path2:before {
+    content: "\e96d";
+    margin-left: -1em;
+    color: rgb(34, 109, 180);
+}
+
+.icon-Accounts-whiteBG .path3:before {
+    content: "\e96e";
+    margin-left: -1em;
+    color: rgb(34, 109, 180);
+}
+
+
 .defaultlogo{
 	background-image: url("../images/product-icons-48.png");
 	background-position: 0px -2288px;
@@ -2215,12 +2293,10 @@ body {
 }
 
 .logo {
-	background: url("../images/rebrand-logos.png") no-repeat scroll 1px -30px
-		transparent;
+	background: url("../images/newZoho_logo.svg") no-repeat transparent;
 	display: inline-block;
 	height: 40px;
 	width: 110px;
-	background-size: 120px;
 	margin-top: 32px;
 	margin-bottom: 10px;
 }
@@ -2441,13 +2517,14 @@ body {
 @media only screen and (-webkit-min-device-pixel-ratio: 2) , not all , not all
 		, not all , only screen and (min-resolution: 192dpi) , only screen and
 	(min-resolution: 2dppx) {
-	.accountslogo {
-		background: url("../images/product-logos-22-2x.png") no-repeat;
-		background-size: 740px 230px;
-	}
 	.ztb-icon-group {
 	    background: url("../images/topbar-spritex2.png") no-repeat;
 	    background-size: 56px 147px;
+	}
+	.accounts_heading {
+		background: url("../images/product-logos-22-2x.png") no-repeat;
+		background-size: 688px;
+    	background-position: -408px -20px;
 	}
 }
 

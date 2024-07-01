@@ -1,0 +1,18 @@
+/*$Id$*/
+@font-face {
+   font-family:"Noto Sans Ol Chiki";
+   font-weight:400;
+   font-style:normal;
+   src:url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.eot");
+   src:url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.eot?#iefix") format("eot"),
+       url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.woff2") format("woff2"),
+       url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.woff") format("woff"),
+       url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.ttf") format("truetype"),
+       url("//static.zohocdn.com/webfonts/notosansolchikiregular/font.svg#NotoSansOlChiki-Regular") format("svg");
+}
+
+
+body {
+	font-family: 'Noto Sans Ol Chiki', Georgia;
+	font-weight:400;
+}

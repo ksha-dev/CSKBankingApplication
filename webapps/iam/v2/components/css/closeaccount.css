@@ -1261,7 +1261,7 @@ span.select2-dropdown.select2-dropdown--above{
 {
 	background:transparent;
     margin-right: 0px;
-    display: inline-block !important;
+    justify-content:center;
     min-width: 50px;
     font-size: 25px;
 }
@@ -1511,6 +1511,7 @@ span.select2-dropdown.select2-dropdown--above{
     line-height: 16px;
     display: inline-block;
     float: left;
+    max-width: 100px;
 }
 .close_port_action{
 	position: absolute;
@@ -1530,6 +1531,7 @@ span.select2-dropdown.select2-dropdown--above{
     position: relative;
     margin-left: 5px;
     color:#0000004d;
+    float:right;
 }
 .user_close_msg{
 	display:none;
@@ -1546,6 +1548,7 @@ span.select2-dropdown.select2-dropdown--above{
     top: 24px;
     right: -5px;
     width: 160px;
+    cursor:default;
 }
 .user_close_msg:before {
     width: 10px;
@@ -1558,6 +1561,15 @@ span.select2-dropdown.select2-dropdown--above{
     top: -4px;
     right: 8px;
     transform: rotate(45deg);
+}
+.user_close_msg:after {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    width: 32px;
+    height: 40px;
+    top: -28px;
+    right: -4px;
 }
 .close_portal_info:hover .user_close_msg{
 	display:block;

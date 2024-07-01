@@ -29,7 +29,7 @@ td,th {
 }
 </style>
 <body>
-<#assign userData = ztpl.user_details ? eval>
+<#assign userData = ztpl.user_details>
 <#assign orgMapping = {} />
 <#assign paymentsMapping = {} />
 <#assign count = 1 />
@@ -52,7 +52,7 @@ td,th {
 			<td><b>CURRENT PRIMARY EMAIL ADDRESS</b></td>
 			<td class="info"> ${userinfo.primary_email_address} </td>
 		</tr>
-		<#if (userinfo["secondary_email_address"] ??)>
+		<#if userinfo.secondary_email_address??>
 			<tr>
 				<td><b>SECONDARY EMAIL ADDRESS</b></td>
 				<td class="info"> ${userinfo.secondary_email_address} </td>
@@ -142,7 +142,7 @@ td,th {
 			</table>
 			</br>
 		
-		    <#if (org_info.org_domain_details ??)>
+		    <#if (org_info.isOrgDomainExists)>
 				<#assign domaininfo = org_info.org_domain_details>
 				<h4> Org Domain Details </h4>
 				<table>
@@ -151,7 +151,8 @@ td,th {
 						<th> DOMAIN STATUS </th>
 						<th> CREATED TIME </th>
 					</tr>
-					<#list domaininfo as domain>
+					<#list 0 ..< domaininfo.length() as i>
+					<#assign domain = domaininfo.get(i)>
 		    			<tr>
 							<td class="legal_template"> ${domain.domain_name} </td>
 							<td class="legal_template"> ${domain.domain_status} </td>
@@ -167,9 +168,9 @@ td,th {
 				
 				<h4> Org Users </h4>
 				<table>
-					<#list usersinfo as userEmail>
+					<#list 0 ..< usersinfo.length() as i>
 		    			<tr>
-							<td class="legal_template"> ${userEmail} </td>
+							<td class="legal_template"> ${usersinfo.get(i)} </td>
 						</tr>
 					</#list>
 				</table>
@@ -182,7 +183,8 @@ td,th {
 	<#if (userinfo.payment_info ??)>
 		<#assign payment_info = userinfo.payment_info>
 		<h4> Payment Details </h4>		
-		<#list payment_info as payment>
+		<#list 0 ..< payment_info.length() as i>
+		<#assign payment = payment_info.get(i)>
 			<#assign id = payment.profile_id>
 			<#if (paymentsMapping[id]??) >
 				<div class="info" style="padding: 2px;width: auto;">
@@ -216,7 +218,7 @@ td,th {
 						<td><b>PAYMENT MODE</b></td>
 						<td class="info"> ${payment.payment_mode} </td>
 					</tr>
-					<#if (payment.last_four_digits ??)>
+					<#if (payment.isFourDigitExists)>
 						<tr>
 							<td><b>LAST FOUR DIGITS</b></td>
 							<td class="info"> ${payment.last_four_digits} </td>
@@ -234,11 +236,12 @@ td,th {
 			<h4> SignIn / SignOut History </h4>
 		</#if>
 		<#assign iteration = 0 />
-		<#assign no_of_month = audit_info ? size />
-		<#list audit_info as audit>
-			<#list audit ? keys as month>
+		<#assign no_of_month = audit_info.length() />
+		<#list 0 ..< audit_info.length() as i>
+		<#assign audit = audit_info.get(i)>
+			<#list audit.keys() as month>
 				<#assign login_history = audit[month]>
-				<#if (login_history ? has_content)>
+				<#if (login_history.length() != 0)>
 					<p> ${month} </p>
 					<table>
 						<tr>
@@ -254,7 +257,8 @@ td,th {
 							<th>CREATED_TIME</th>
 						</tr>
 						
-	  					<#list login_history as audit_json>
+						<#list 0 ..< login_history.length() as i>
+						<#assign audit_json = login_history.get(i)>
 							<tr>
 								<td class="legal_template"> ${audit_json.SERVICE_NAME} </td>
 								<td class="legal_template">
@@ -285,7 +289,7 @@ td,th {
 		<#if (iteration == no_of_month)>
 			<p>&emsp; SignIn/SignOut History not available for this user</p></br>
 		</#if>
-	<#else>
+	<#elseif !(userinfo.export_only_user_info)>
 		<h4> SignIn / SignOut History </h4><p>&emsp; SignIn/SignOut History not available for this user </p></br>
 	</#if>
 	

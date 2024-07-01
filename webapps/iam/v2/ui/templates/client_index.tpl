@@ -6,11 +6,11 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     	<meta name="viewport"content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     	
-    	<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/u2f-api.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/select2.full.min.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/tippy.all.min.js")}"></script>
-		<script src="${za.wmsjsurl}"></script>
+    	<@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+		<@resource path="/v2/components/tp_pkg/u2f-api.js" />
+		<@resource path="/v2/components/tp_pkg/select2.full.min.js" />
+		<@resource path="/v2/components/tp_pkg/tippy.all.min.js" />
+		<script src="${za.wmsjsurl}" integrity="${za.wmsjsintegrity}" crossorigin="anonymous"></script>
 		
 		
 		<script>
@@ -38,44 +38,50 @@
 			var photoPermission= '${clientUserPicPref}';
 			var hide_pref_option;
 			var otp_length = ${otp_length};
+			var totp_size = ${totp_size};
 			//var is_reauth_required=false;
 			var mandate_reauth=true;
 			var isClientPortal = Boolean("<#if isClientPortalAccount>true</#if>");
 			var showMobileNoPlaceholder = Boolean("<#if show_mobile_placeholder>true</#if>");
 			var show_geofenching = false;
+			var show_allowedIPPanel = false;
+			var accountCurrentDC = <#if ((DC_location)?has_content)>"${DC_location}"<#else>''</#if>;
 		</script>
-		<script src="${SCL.getStaticFilePath("/v2/components/tp_pkg/xregexp-all.js")}"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/zresource.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uri.js")}" type="text/javascript"></script>
+		<@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+		<@resource path="/v2/components/js/zresource.js" />
+		<@resource path="/v2/components/js/uri.js" />
 		<script>
 	    	var newPhoneData = <#if ((newPhoneData)?has_content)>${newPhoneData}<#else>''</#if>;
     	</script>  
-		<script src="${SCL.getStaticFilePath("/v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/common_profile.js")}" type="text/javascript"></script>  
-		<script src="${SCL.getStaticFilePath("/v2/components/js/init.js")}" type="text/javascript"></script>   
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/personal-details.js")}" type="text/javascript"></script>   
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/email.js")}" type="text/javascript"></script>	 
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/user-preference.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/user-sessions.js")}" type="text/javascript"></script>
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/password.js")}" type="text/javascript"></script>  
-    	<script src="${SCL.getStaticFilePath("/v2/components/js/mfa.js")}" type="text/javascript"></script> 
-     	<script src="${SCL.getJSStatgetStaticFilePathicURL("/v2/components/js/wmsliteimpl.js")}" type="text/javascript"></script>
-		<script src="${SCL.getStaticFilePath("/v2/components/js/splitField.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/zohoPuvi.css")}" rel="stylesheet"type="text/css">
-		<link href="${SCL.getStaticFilePath("/v2/components/css/accountsstyle.css")}" rel="stylesheet"type="text/css">
+		<@resource path="/v2/components/js/phonePatternData.js" />
+    	<@resource path="/v2/components/js/common_profile.js" />  
+		<@resource path="/v2/components/js/init.js" />   
+    	<@resource path="/v2/components/js/personal-details.js" />   
+    	<@resource path="/v2/components/js/email.js" />	 
+    	<@resource path="/v2/components/js/user-preference.js" />  
+    	<@resource path="/v2/components/js/user-sessions.js" />
+    	<@resource path="/v2/components/js/password.js" />  
+    	<@resource path="/v2/components/js/mfa.js" /> 
+     	<@resource path="/v2/components/js/wmsliteimpl.js" />
+		<@resource path="/v2/components/js/splitField.js" />
+		<@resource path="/v2/components/css/${customized_lang_font}" />
+		<@resource path="/v2/components/css/accountsstyle.css" />
 		
 		<script src="${cp_contextpath}/accounts-msgs?v=1&${errorMessage}" type="text/javascript"></script> 
-		<script src="${SCL.getStaticFilePath("/v2/components/js/uvselect.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/uvselect.css")}" rel="stylesheet"type="text/css">
-		<script src="${SCL.getStaticFilePath("/v2/components/js/flagIcons.js")}" type="text/javascript"></script>
-		<link href="${SCL.getStaticFilePath("/v2/components/css/flagIcons.css")}" rel="stylesheet"type="text/css">
+		<@resource path="/v2/components/js/uvselect.js" />
+		<@resource path="/v2/components/css/uvselect.css" />
+		<@resource path="/v2/components/js/flagIcons.js" />
+		<@resource path="/v2/components/css/flagIcons.css" />
+		
+		<script type="text/javascript" src="${cp_contextpath}/encryption/script"></script>
+    	<script src="${SCL.getStaticFilePath("/v2/components/js/security.js")}"></script>
 		
 		
 	<!--	<link rel="stylesheet" type="text/css" href="<%=cssURL%>/new_ui_servicelogo.css"></link> -->
 	
 	</head>
 	
-	<body>
+	<body class="portal_content">
 	
 		<!-- notfication push notification for web -->
 		
@@ -120,13 +126,7 @@
 						<div class="info_thumb_pic_blur_bg" style="background-image:url('${photoID}')"></div>
 						<img id="info_thumb_pic" onload="setPhotoSize(this)" onerror='handleDpOption(this)' class="pp_expand_pic" src="${photoID}"/>
 					</div>
-					<div class="profile_option_parent hide">
-						<div class="profile_pic_option">
-				   			<div id="upload_option" onclick="openUploadPhoto('user','0')"><@i18n key="IAM.UPLOAD.NEW"/></div>
-				   			<!-- <div id="edit_option" onclick="editProPicture()"><@i18n key="IAM.EDIT"/></div> -->
-				   			<div id="remove_option" onclick="removePicture('<@i18n key="IAM.PHOTO.DELETE.POPUP.HEADER"/>','<@i18n key="IAM.PHOTO.DELETE.POPUP.DESCRIPTION"/>')" style="color:#FF5F5F"><@i18n key="IAM.REMOVE"/></div>
-				   		</div>
-				   	</div>
+					
 					<div class="pp_expand_username"> ${userFullName} </div>
 					<div class="pp_expand_email" id="logoutid" > ${userPrimaryEmail_HTML} </div>
 					<div class="pp_expand_userid"> <@i18n key="IAM.USER.ID"/> : ${zuId}</div>
@@ -138,9 +138,22 @@
 					</#if>
 					<div class="pp_expand_signout" onclick="go_to_link('${LogoutURL}',false)"> <@i18n key="IAM.SIGN.OUT"/> </div>
 				</div>
+				<div class="profile_option_parent hide" style="left: 30px; top: 60px;">
+					<div class="profile_pic_option">
+					   <div class="profile_pic_option-item" onclick="openUploadPhoto('user','0')">
+							<span class="icon-Upload-new"></span>
+							<div id="upload_option"><@i18n key="IAM.UPLOAD.NEW"/></div>
+						</div>
+						<div class="profile_pic_option-item" onclick="removePicture('<@i18n key="IAM.PHOTO.DELETE.POPUP.HEADER.MSG"/>','<@i18n key="IAM.PHOTO.DELETE.POPUP.DESC"/>','<@i18n key="IAM.REMOVE"/>')" style="color: #FF2626;">
+							<span class="icon-Remove"></span>
+							<div id="remove_option"><@i18n key="IAM.REMOVE"/></div>
+						</div>
+			   			<!--<div id="edit_option" onclick="editProPicture()"><@i18n key="IAM.EDIT"/></div> -->
+					</div>
+				</div>
 			</div>
 		</#if>
-        <div class="navbar" id="mainmenupanel">
+        <div class="navbar" id="mainmenupanel" <#if !(((show_header)?has_content) && show_header)>style="top:0px"; </#if>>
         
         	<!-- loading gif for index page -->
         	
@@ -232,6 +245,7 @@
 					<div id="pop_action"></div>
 				</div>
 			</div>
+			<div class="full_view_side_info hide" id="sideview" tabindex="1" <#if !(((show_header)?has_content) && show_header)>style="top:0px" </#if>  ></div>
 		
 			<div class="hide" id="exception_tab">
 				<div class="no_data exception_tab"></div>
@@ -247,7 +261,7 @@
 				</div>
 			</div>
 
-    		<div class="content_div"  id="zcontiner" style="display:none"></div>
+    		<div class="content_div"  id="zcontiner" style="display:none;<#if !(((show_header)?has_content) && show_header)>;margin-top:0px;padding-top:20px" </#if>"></div>
     	</div>
     	
     	<div class="content" style="display:block">
@@ -314,6 +328,7 @@
 				return $(this);
 			}
 			try {
+				WmsLite.setClientSRIValues(${za.wmsSRIValues});
 				WmsLite.setNoDomainChange();
 				WmsLite.setConfig(64);//64 is value of WMSSessionConfig.CROSS_PRD
 	    		WmsLite.registerZuid('AC',"${zuId}","${userLoginName}", true);
@@ -388,7 +403,7 @@
     		setHeightForCover();
     	};
 
-    	window.setInterval("watchHash()", 1000);
+    	window.setInterval(watchHash, 1000);
      	function setHeightForCover(id){
      		//showNavpop();
     		var win_height = window.innerHeight-54;

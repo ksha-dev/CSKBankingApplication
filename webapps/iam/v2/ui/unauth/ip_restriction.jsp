@@ -3,6 +3,7 @@
 <%@page import="com.adventnet.iam.IAMStatusCode.StatusCode"%>
 <%@page import="com.zoho.accounts.internal.util.I18NUtil"%>
 <%@page import="com.zoho.accounts.internal.util.StaticContentLoader"%>
+<%@page import="com.zoho.accounts.templateengine.util.HtmlResourceIncluder"%>
 <%@page import="com.adventnet.iam.internal.Util"%>
 <%@page import="com.adventnet.iam.IAMUtil"%>
 <%@page import="com.adventnet.iam.xss.IAMEncoder"%>
@@ -14,23 +15,24 @@
 	String description = null;
 	String refresh = null;
 	String resetIPUrl =null;
+	String serverUrl = null;
 	StatusCode code = (StatusCode) request.getAttribute("statuscode");//No I18N
 	if (code == StatusCode.USER_NOT_ALLOWED_IP) {
 		heading = Util.getI18NMsg(request, "IAM.ERRORJSP.IP.NOT.ALLOWED.TITLE");
 		description = Util.getI18NMsg(request, "IAM.ERRORJSP.IP.NOT.ALLOWED.ERROR.DESC",IAMUtil.getRemoteUserIPAddress(request));
 		refresh = Util.getI18NMsg(request, "IAM.ERRORJSP.IP.NOT.ALLOWED.ERROR.REFRESH");
 		
+		String requestURI = request.getRequestURI().toString();
+		if (requestURI.equals("/")) {
+			serverUrl = request.getRequestURL().toString();
+			serverUrl = serverUrl.substring(0, serverUrl.length() - 1); // removing last char
+		} else {
+			serverUrl = request.getRequestURL().toString().replace(requestURI, "");// No I18N
+		}
+		serverUrl = serverUrl.concat(request.getContextPath());
+		
 		if("true".equals(AccountsConfiguration.getConfiguration("enable.reset.ip.recovery", "true")))
 		{
-			String requestURI = request.getRequestURI().toString();
-			String serverUrl = null;
-			if (requestURI.equals("/")) {
-				serverUrl = request.getRequestURL().toString();
-				serverUrl = serverUrl.substring(0, serverUrl.length() - 1); // removing last char
-			} else {
-				serverUrl = request.getRequestURL().toString().replace(requestURI, "");// No I18N
-			}
-			serverUrl = serverUrl.concat(request.getContextPath());
 			resetIPUrl = new StringBuilder(serverUrl).append(Util.AccountsUIURLs.RESET_IP.getURI()).toString();
 		}
 		
@@ -44,7 +46,7 @@
 	<head>
 		<title><%= Util.getI18NMsg(request,"IAM.ZOHO.ACCOUNTS")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="<%=StaticContentLoader.getStaticFilePath("/v2/components/css/zohoPuvi.css")%>" rel="stylesheet"type="text/css">
+		<%= HtmlResourceIncluder.addResource("/v2/components/css/zohoPuvi.css") %>
 	</head>
 	<style>
 	body {
@@ -388,9 +390,12 @@
 			<div class="discrption">
 				<%= description %>
 				<p><%= refresh %></p>
-				<button class="refresh_btn" onclick="location.reload();"><%= Util.getI18NMsg(request,"IAM.REFRESH_NOW")%></button>
+				<% if(serverUrl !=null){%>
+					<button id="sigin_button" class="refresh_btn" onclick="switchto('<%=serverUrl%>');" style="display:none;"><%= Util.getI18NMsg(request,"IAM.GO.TO.SIGN.IN")%></button>
+				<% }%>
+				<button id="refresh_button" class="refresh_btn" onclick="location.reload();"><%= Util.getI18NMsg(request,"IAM.REFRESH_NOW")%></button>
 				<% if(resetIPUrl !=null){%>
-				<button class="whit_btn" onclick="switchto('<%=resetIPUrl%>');"><%= Util.getI18NMsg(request,"IAM.IP.RESET.ADDRESS")%></button>
+				<button class="whit_btn" onclick="gotoResetIP('<%=resetIPUrl%>');"><%= Util.getI18NMsg(request,"IAM.IP.RESET.ADDRESS")%></button>
 				<% }%>
 			</div>
 		</div>
@@ -399,7 +404,12 @@
 		</footer> <%--No I18N--%>
 	</body>
 	<script>
-	
+	document.addEventListener('DOMContentLoaded', function() {
+		if(location.href.includes('/oauthcallback')){
+	    	 document.getElementById("sigin_button").style.display = 'inline-block';
+	    	 document.getElementById("refresh_button").style.display = 'none';
+	     }
+    });
 	var LOGIN_ID=undefined;
 	
 	function switchto(url)
@@ -437,7 +447,11 @@
 		}
 		window.location.href = url;
 	}
-	
+	function gotoResetIP(url){
+		var surl = window.location.href;
+		var redirectUrl = url + "?serviceurl=" + encodeURIComponent(surl); //no i18n
+		switchto(redirectUrl);
+	}
 	function isValid(instr) {
 		return instr != null && instr != "" && instr != "null";
 	}

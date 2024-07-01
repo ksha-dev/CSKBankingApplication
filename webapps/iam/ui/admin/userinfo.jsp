@@ -1,9 +1,10 @@
 <%-- $Id$ --%>
+<%@page import="com.adventnet.iam.AccountMember"%>
+<%@page import="com.adventnet.iam.AppAccount"%>
 <%@page import="com.zoho.accounts.AccountsConstants.OrgType"%>
 <%@page import="com.zoho.accounts.internal.util.AccountsInternalConst.OrgTypeDetail"%>
 <%@page import="com.zoho.accounts.AccountsConstants.MFAPreference"%>
 <%@page import="com.adventnet.iam.internal.audit.ARMAccountCloseAudit"%>
-<%@page import="com.zoho.accounts.AccountsProto.Account.AppAccount.AppAccountService.AccountMember"%>
 <%@page import="com.adventnet.iam.IAMUtil.ZIDType"%>
 <%@page import="com.zoho.iam2.rest.AuthDomainAPIRestProtoImpl"%>
 <%@page import="com.zoho.accounts.Accounts.RESOURCE.USERDOMAIN"%>
@@ -15,8 +16,6 @@
 <%@page import="com.zoho.iam2.rest.ProtoUtil"%>
 <%@page import="com.zoho.accounts.SystemResourceProto.DCLocation"%>
 <%@page import="com.zoho.accounts.handler.GeoDCHandler"%>
-<%@page import="com.zoho.accounts.AccountsProto.Account.AppAccount.AppAccountService"%>
-<%@page import="com.zoho.accounts.AccountsProto.Account.AppAccount"%>
 <%@page import="com.zoho.iam2.rest.ServiceOrgUtil"%>
 <%@page import="com.zoho.accounts.AuditResource"%>
 <%@page import="com.zoho.accounts.AccountsConstants.UserStatus"%>
@@ -51,7 +50,7 @@
 	    <div class="labelkey" >
 	    	<select id='mode' class="inputSelect chosen-select unauthinputSelect-tfa" style="background-color: white;width: 231px;background-position-x: 153px;" >
 	    		<option value='email' <%if("email".equals(type)){ %>selected<%} %>>EmailId / MobileNo / UserName </option><%--No I18N--%>
-	    		<option value='zid' <%if("zid".equals(type)){ %>selected<%} %>>ZUID / ZOID </option><%--No I18N--%>
+	    		<option value='zid' <%if("zid".equals(type)){ %>selected<%} %>>ZUID / ZOID / ZAAID</option><%--No I18N--%>
 	    	</select>
 	    </div>
 	    <div class="searchfielddiv">
@@ -78,13 +77,19 @@ if(Util.isValid(qry) && Util.isValid(type)) {
     		if(u == null) {
     			org = Util.ORGAPI.getOrg(zidl);
     		}
+    		if(org == null) {
+    			String zaid = RestProtoUtil.getZAIDFromZAAID(zidl);
+    			if(Util.isValid(zaid)) {
+    				org = Util.ORGAPI.getOrg(Long.parseLong(zaid));
+    			}
+    		}
    	    }
    	    catch(Exception e) {
    	    	u = Util.USERAPI.getUser(qry);
    	    }
     }
 	User currentUser = IAMUtil.getCurrentUser();
-	String[] roles = {"IAMAdmininistrator","IAMSupportAdmin","IAMPrivilegeView"};//No I18N
+	String[] roles = {"IAMAdmininistrator","IAMSupportAdmin"};//No I18N
 	if(Util.isUserinIAMRole(currentUser, roles))  {
     	request.setAttribute("userInfoAdmin", "true");
 	}
@@ -233,8 +238,10 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 				out.println("User"); //No I18N
 			    } else if(u.getUserRole() == 0 && u.getZOID() != -1) {
 				out.println("Org User"); //No I18N
-			    } else if((u.getUserRole() == 1 || u.getUserRole() == 2) && u.getZOID() != -1) {
+			    } else if((u.getUserRole() == 1) && u.getZOID() != -1) {
 				out.println("Org Admin"); //No I18N
+				} else if((u.getUserRole() == 2) && u.getZOID() != -1) {
+					out.println("Super Admin"); //No I18N
 				} else if(u.getUserRole()==3 && u.getZOID() != -1) {
 					out.println("Partner Admin"); //No I18N
 				}
@@ -361,7 +368,7 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 			<%if(u.getProperty(User.USER_MIGRATED_FROM) != null) {%>
 			<tr>
 			  	 <td class="usrinfotdlt">USER MIGRTAED FROM</td> <%--No I18N--%>
-			   	 <td class="usrinfotdrt"><%= IAMEncoder.encodeHTML(u.getProperty(User.USER_MIGRATED_FROM) + " DC") %></td>
+			   	 <td class="usrinfotdrt"><%= IAMEncoder.encodeHTML(u.getUserProperty(User.USER_MIGRATED_FROM) + " DC") %></td>
 			</tr>
 			<%} %>
 			
@@ -420,7 +427,7 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 
     <div id="serviceorg" style="display:none;">
 <%
-        if(u != null) {
+        if(u != null && !u.isClientPortalUser()) {
         	List<ServiceOrg> serviceOrgs = ServiceOrgUtil.getUserServiceOrgs(u.getZUID());
             if(serviceOrgs != null && !serviceOrgs.isEmpty()) {
 %>
@@ -480,97 +487,113 @@ if(Util.isValid(qry) && Util.isValid(type)) {
     <div id="appaccount" style="display:none;">
 <%
         if(u != null && org != null && org.getZOID() != -1) {
-        	List<AppAccount> appAccs = Util.appAccountAPI.getAppAccounts(u.getZUID());
+            String zaid = null;
+			if(u.isClientPortalUser()) {
+				zaid = u.getZaid();
+            }
+			List<AppAccount> appAccs = IAMProxy._getIAMInstance().getAppAccountVOAPI(zaid).getAppAccounts(u.getZuid());
             if(appAccs != null && !appAccs.isEmpty()) {
+            List<AppAccount> migratedAppAccs = null;
 %>
         <table class="appaccount_details" cellpadding="4">
             <tr>
 		<td class="usrinfoheader">Service Name</td> <%--No I18N--%>
 		<td class="usrinfoheader">ZAAID </td><%--No I18N--%>
 		<td class="usrinfoheader" width="30%"> Screen Name (Display Name) / Description</td><%--No I18N--%>
-		<td class="usrinfoheader" width="25%" style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;" title="Status / Migrated / Parent Org Type - ZAAID/ Directory ZAAID">AppAccountService Status /AppAccount Status <br />/ Parent Org Type -  Parent  ZAAID/ Directory ZAAID</td><%--No I18N--%>
-		<td class="usrinfoheader">Created By <br /> Created Time</td><%--No I18N--%>
+		<td class="usrinfoheader" width="25%" style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;" title="Status / Migrated / Parent Org Type - ZAAID/ Directory ZAAID">AppAccountService Status/<br />Parent Org Type -  Parent  ZAAID/ Directory ZAAID</td><%--No I18N--%>
+		<td class="usrinfoheader">Owner <br /> Created Time</td><%--No I18N--%>
 	    </tr>
-            <% for(AppAccount app : appAccs) { 
-            	if(app.getAppAccountServiceCount() >0 && app.getAppAccountServiceList() != null) {
-            		  for(AppAccountService appservice : app.getAppAccountServiceList()) {
-					%>
-					
+            <% for(AppAccount app : appAccs) {
+               if(!user.isClientPortalUser() && (Util.isMigrateToOrgSupported(app.getOrgType()) || Util.isConvertToOrgSupported(app.getOrgType()))) {
+				   if(migratedAppAccs == null) {
+						migratedAppAccs = new ArrayList<AppAccount>();
+				   }
+				   migratedAppAccs.add(app);
+                   continue;
+               }
+            %>
 					<tr>
-		<td class="usremailtd"><%=appservice.getAppName()%></td> <%-- NO OUTPUTENCODING --%>
+		<td class="usremailtd"><%=app.getAppName()!=null ? app.getAppName() : ServiceOrgUtil.getServiceNameFromOrgType(app.getOrgType(), false)%></td> <%-- NO OUTPUTENCODING --%>
 		<td class="usremailtd" ><%=app.getZaaid()%></td><%-- NO OUTPUTENCODING --%>
 		<td class="usremailtd">
-			<%=IAMEncoder.encodeHTML(app.getScreenName() + " -  ( " + app.getDisplayName() + " )") %><br>
+			<%=IAMEncoder.encodeHTML((IAMUtil.isValid(app.getScreenName())&&IAMUtil.isValid(app.getOrgName())) ? app.getOrgName() + " ( " + app.getScreenName() + " )" : IAMUtil.isValid(app.getScreenName()) ? app.getScreenName() : app.getOrgName())%><br>
 		<% if(app.getDescription() != null) { %>
 		<span style="color:#777;font-size: 11px;"><%=IAMEncoder.encodeHTML(app.getDescription())%></span>
 		<% } %>
 		<br>
 		<% 
-		String roleName =" - ";
+		String roleNames = null;
 		int status = -1;
 		long createdTime = -1l;
 		String userType = "Normal"; //No I18N
-		if(appservice.getAccountMemberCount() > 0 && appservice.getAccountMemberList() != null) {
-			String zarid = null;
-			AccountMember member = appservice.getAccountMemberList().get(0);
-			if (member.getAccountMemberRoleCount() > 0) {
-				zarid = member.getAccountMemberRoleList().get(0).getZarid();
-			} else {
-				zarid = member.getZarid(); //Backward compatability, for the account member stored in Cache
-			}
-			 roleName =  zarid != null ? ProtoUtil.getRoleName(appservice.getAppName(), zarid) + "(" + zarid + ")" : "-";
-			 status = appservice.getAccountMemberList().get(0).getIsActive();
-			 createdTime = appservice.getAccountMemberList().get(0).getCreatedTime();
-			 int userTypeInt = appservice.getAccountMemberList().get(0).getUserType();
-			 if(userTypeInt == AccountsConstants.AccountMemberUserType.FREE_USER) {
-				 userType = "Free";//No I18N 
-			 } else if(userTypeInt == AccountsConstants.AccountMemberUserType.NORMAL) {
-				 userType = "Normal";//No I18N
-			 } else if(userTypeInt == AccountsConstants.AccountMemberUserType.EXTERNAL_USER) {
-				 userType = "External";//No I18N
-			 } else if(userTypeInt == AccountsConstants.AccountMemberUserType.PARTNER) {
-				 userType = "Partner";//No I18N
-			 } else if(userTypeInt == AccountsConstants.AccountMemberUserType.PENDING) {
-				 userType = "Pending";//No I18N
-			 } else if(!appservice.getAccountMemberList().get(0).hasUserType()) {
-				 userType = "Normal - None";//No I18N
-			 }
+		AccountMember member = IAMProxy._getIAMInstance().getAppAccountVOAPI(zaid).getMember(app.getOrgType(), app.getZAAID(), IAMUtil.getLong(u.getZuid()));
+		if(member != null) {
+			List<String> zarids = member.getZarids();
+			roleNames  = getRoleNames(app.getOrgType(), zarids);
+			status = member.getUserStatus();
+			createdTime = member.getCreatedTime();
+			int userTypeInt = member.getUserType();
+			userType = getUserType(userTypeInt);
 		}
 		%>
 		
-		<div><span style="color: #999;">Member Info:</span><br> <span style="color: #999;">Role</span>: <%= roleName %>, <span style="color: #999;">Status</span> : <%=status == 1 ? "Enabled" : status == 0 ? "DISABLED" : status ==2 ? "closed" : "unknown" %>, <span style="color: #999;">Created On</span> : <%=new Date(createdTime)%> <span style="color: #999;">User Type </span> : <%=userType%></div> <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
+		<div><span style="color: #999;">Member Info:</span><br> <span style="color: #999;">Role's</span> : <%= (roleNames!=null) ? roleNames : " - " %><br><span style="color: #999;">Status</span> : <%=status == 1 ? "Active" : status == 0 ? "InActive" : status ==2 ? "closed" : "unknown" %>, <span style="color: #999;">Created On</span> : <%=new Date(createdTime)%><br><span style="color: #999;">User Type </span> : <%=userType%></div> <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
 
 		</td>
-		<td class="usremailtd"><%=(appservice.getAccountStatus() == 1 ? "Active" : appservice.getAccountStatus() == 0 ? "Inactive" : "Closed") + " / " + (app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "Inactive" : "Closed") %><br><%=appservice.hasParentZaaid() && !"-1".equals(appservice.getParentZaaid()) ? "<br>" + appservice.getParentOrgType() + " - " +  appservice.getParentZaaid() : ""%><br><%=appservice.hasDirectoryZaaid() ? "<br>" +  appservice.getDirectoryZaaid() +"(D)" : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%><%--No I18N--%>
-		<td class="usremailtd"><%=(appservice.hasZuid() ? appservice.getZuid()  : "-") %><br><br><%=appservice.getCreatedTime() != -1 ? new Date(appservice.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
+		<td class="usremailtd"><%=(app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "InActive" : "Closed") %><br><%=app.getParentZaaid() != -1l ? "<br>" + app.getParentOrgType() + " - " +  app.getParentZaaid() : ""%><br><%=app.getDirectoryZaaid() != -1l ? "<br>" +  app.getDirectoryZaaid() +"(D)" : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%><%--No I18N--%>
+		<td class="usremailtd"><%=(app.getOwner() != -1 ? app.getOwner()  : "-") %><br><br><%=app.getCreatedTime() != -1 ? new Date(app.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
 	    </tr>
 	    
-					<%}            		
-            	} else { 
-            %>
-            			<tr>
-		<td class="usremailtd" width="15"><%=app.getAppName()%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%>
-		<td class="usremailtd" width="10"><%=app.getZaaid()%></td><%-- NO OUTPUTENCODING --%>
-		<td class="usremailtd" width="40%"> <%=IAMEncoder.encodeHTML(app.getScreenName() + "/" + app.getDisplayName()) %><br>
-		<% if(app.getDescription() != null) { %>
-		<span style="color:#777;font-size: 11px;"><%=IAMEncoder.encodeHTML(app.getDescription())%></span>
-		<% } %>
-		<br>
-		<% 
-		String roleName =" - ";
-		int status = -1;
-		long createdTime = -1l;
-		%>
-		
-		<div><span style="color: #999;">Member Info:</span><br> <span style="color: #999;">Role</span>: <%= roleName %>, <span style="color: #999;">Status</span> : <%=status == 1 ? "Enabled" : status == 0 ? "DISABLED" : status ==2 ? "closed" : "unknown" %>, <span style="color: #999;">Created On</span> : <%=new Date(createdTime)%></div> <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
- </td>
-		<td class="usremailtd"><%=( app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "Inactive" : "Closed") %><br><%=app.hasParentZaaid() ? "<br>" +  app.getParentZaaid() : ""%><br><%=app.hasDirectoryZaaid() ? "<br>" +  app.getDirectoryZaaid() : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%>
-		<td class="usremailtd" width="25%"><%=app.getCreatedTime() != -1 ? new Date(app.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
-	    </tr>
-            <% }
-            }%>
+					<%}%>
         </table>
-            <% } else { %>
+
+        <% if(IAMUtil.isValidCollection(migratedAppAccs)) { %>
+            <div class="nosuchusr">
+            <p align="center"style="font-weight: bold; color: #999;"> Org Migrated ServiceOrgs</p> <%--No I18N--%>
+			</div>
+		    <table class="appaccount_details" cellpadding="4">
+		           <tr>
+			<td class="usrinfoheader">Service Name</td> <%--No I18N--%>
+			<td class="usrinfoheader">ZAAID </td><%--No I18N--%>
+			<td class="usrinfoheader" width="30%"> Screen Name (Display Name) / Description</td><%--No I18N--%>
+			<td class="usrinfoheader" width="25%" style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;" title="Status / Migrated / Parent Org Type - ZAAID/ Directory ZAAID">AppAccountService Status/<br />Parent Org Type -  Parent  ZAAID/ Directory ZAAID</td><%--No I18N--%>
+			<td class="usrinfoheader">Owner <br /> Created Time</td><%--No I18N--%>
+		    </tr>
+		           <% for(AppAccount app : migratedAppAccs) { %>
+						<tr>
+			<td class="usremailtd"><%=app.getAppName()!=null ? app.getAppName() : ServiceOrgUtil.getServiceNameFromOrgType(app.getOrgType(), false)%></td> <%-- NO OUTPUTENCODING --%>
+			<td class="usremailtd" ><%=app.getZaaid()%></td><%-- NO OUTPUTENCODING --%>
+			<td class="usremailtd">
+				<%=IAMEncoder.encodeHTML((IAMUtil.isValid(app.getScreenName())&&IAMUtil.isValid(app.getOrgName())) ? app.getOrgName() + " ( " + app.getScreenName() + " )" : IAMUtil.isValid(app.getScreenName()) ? app.getScreenName() : app.getOrgName())%><br>
+			<% if(app.getDescription() != null) { %>
+			<span style="color:#777;font-size: 11px;"><%=IAMEncoder.encodeHTML(app.getDescription())%></span>
+			<% } %>
+			<br>
+			<%
+			String roleNames = null;
+			int status = -1;
+			long createdTime = -1l;
+			String userType = "Normal"; //No I18N
+            ServiceOrgMember member = Util.serviceOrgAPI.getMember(app.getOrgType(), app.getZAAID(),  IAMUtil.getLong(u.getZuid()));
+			if(member != null) {
+				// List<String> zarids = member.getZarids();
+				// roleNames  = getRoleNames(app.getOrgType(), zarids);
+				status = member.getUserStatus();
+				createdTime = member.getCreatedTime();
+				int userTypeInt = member.getUserType();
+				userType = getUserType(userTypeInt);
+			}
+			%>
+
+			<div><span style="color: #999;">Member Info:</span><br> <span style="color: #999;">Role's</span> : <%= (roleNames!=null) ? roleNames : " - " %><br><span style="color: #999;">Status</span> : <%=status == 1 ? "Active" : status == 0 ? "InActive" : status ==2 ? "closed" : "unknown" %>, <span style="color: #999;">Created On</span> : <%=new Date(createdTime)%><br><span style="color: #999;">User Type </span> : <%=userType%></div> <%-- NO OUTPUTENCODING --%> <%-- No I18N --%>
+			</td>
+			<td class="usremailtd"><%=(app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "InActive" : "Closed") %><br><%=app.getParentZaaid() != -1l ? "<br>" + app.getParentOrgType() + " - " +  app.getParentZaaid() : ""%><br><%=app.getDirectoryZaaid() != -1l ? "<br>" +  app.getDirectoryZaaid() +"(D)" : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%><%--No I18N--%>
+			<td class="usremailtd"><%=(app.getOwner() != -1 ? app.getOwner()  : "-") %><br><br><%=app.getCreatedTime() != -1 ? new Date(app.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
+		    </tr>
+						<%}%>
+		       </table>
+        <% }
+        } else { %>
         <div class="nosuchusr">
             <p align="center">No AppAccount for the user</p> <%--No I18N--%>
 	</div>
@@ -585,8 +608,8 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 		<td class="usrinfoheader">Service Name</td> <%--No I18N--%>
 		<td class="usrinfoheader">ZAAID </td><%--No I18N--%>
 		<td class="usrinfoheader" width="30%"> Screen Name (Display Name) / Description</td><%--No I18N--%>
-		<td class="usrinfoheader" width="25%" style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;" title="Status / Migrated / Parent Org Type - ZAAID/ Directory ZAAID">AppAccountService Status/ <br />Parent Org Type -  Parent  ZAAID/ Directory ZAAID</td><%--No I18N--%>
-		<td class="usrinfoheader">Created By <br /> Created Time</td><%--No I18N--%>
+		<td class="usrinfoheader" width="25%" style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;" title="Status / Migrated / Parent Org Type - ZAAID/ Directory ZAAID">AppAccountService Status/ Parent Org Type -  Parent  ZAAID <br />/ Directory ZAAID</td><%--No I18N--%>
+		<td class="usrinfoheader">Owner <br /> Created Time</td><%--No I18N--%>
 	    </tr>
 				    <% for(com.adventnet.iam.AppAccount app : appAccs) {%>
 		<tr>
@@ -597,7 +620,6 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 				<% if(app.getDescription() != null) { %>
 		<span style="color:#777;font-size: 11px;"><%=IAMEncoder.encodeHTML(app.getDescription())%></span>
 				<% } %>
-		<br>
 		<%
 		if(app.getAccountStatus() == AccountsConstants.AppAccountStatus.ACTIVE) {
 			List<Integer> statusList = new ArrayList<>();
@@ -635,7 +657,6 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 				}
 			}
 		%>
-
 		<% if(internalCount.length > 0) {
 				if(internalCount[0] != null) {
 					if(internalCount[0] > 0) {%>
@@ -656,8 +677,8 @@ if(Util.isValid(qry) && Util.isValid(type)) {
 			}
 		}%>
 		</td>
-		<td class="usremailtd"><%=( app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "InActive" : "Closed") %><br><%=app.getParentZaaid() != -1l ? "<br>" + app.getParentOrgType() + " - " +  app.getParentZaaid() : ""%><br><%=app.getDirectoryZaaid() != -1l ? "<br>" +  app.getDirectoryZaaid() +"(D)" : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%><%--No I18N--%>
-		<td class="usremailtd"><%=(app.getCreatedBy() != -1 ? app.getCreatedBy()  : "-") %><br><br><%=app.getCreatedTime() != -1 ? new Date(app.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
+		<td class="usremailtd"><%=(app.getAccountStatus() == 1 ? "Active" : app.getAccountStatus() == 0 ? "InActive" : "Closed") %><br><%=app.getParentZaaid() != -1l ? "<br>" + app.getParentOrgType() + " - " +  app.getParentZaaid() : ""%><br><%=app.getDirectoryZaaid() != -1l ? "<br>" +  app.getDirectoryZaaid() +"(D)" : ""%></td> <%--No I18N--%><%-- NO OUTPUTENCODING --%><%--No I18N--%>
+		<td class="usremailtd"><%=(app.getOwner() != -1 ? app.getOwner()  : "-") %><br><br><%=app.getCreatedTime() != -1 ? new Date(app.getCreatedTime()) : ""%></td><%-- NO OUTPUTENCODING --%>
 		</tr>
 	       <% }%>
 		</table>
@@ -1298,5 +1319,50 @@ private boolean isOrgPolicyExists(String ZAID) {
 }
 private String getAllowedUsersForOrgPolicy(int policyValue) {
 	return policyValue == 0 ? "All Members" : policyValue == 1 ? "Moderators" : policyValue == 2 ? "Super Administrator" : "Nobody"; //No I18N
+}
+
+private String getRoleNames(int orgType, List<String> zarids){
+	String roleNames = null;
+	if(IAMUtil.isValidCollection(zarids)) {
+		try {
+			for(String zarid : zarids) {
+				if(IAMUtil.isValid(zarid) && !zarid.equals("0") && !zarid.equals("1") && !zarid.equals("2")) {
+					String appName = ProtoUtil.getServiceNameByType(orgType);
+					if(IAMUtil.isValid(appName)) {
+						String roleName = ProtoUtil.getRoleName(appName, zarid);
+						if(IAMUtil.isValid(roleName)) {
+							String roleVal = roleName + "(" + zarid + ")";
+							if(roleNames != null) {
+								roleNames += "," + roleVal;
+							} else {
+								roleNames = roleVal;
+							}
+						}
+					}
+				}
+			}
+		} catch(IAMException e) {
+			LOGGER.log(Level.WARNING, "Exception occured while getting service rolenames " + orgType, e);
+		}
+	}
+	return roleNames;
+}
+
+private String getUserType(int userTypeInt) {
+	String userType = "Normal"; //No I18N
+	if(userTypeInt == AccountsConstants.AccountMemberUserType.FREE_USER) {
+		userType = "Free";//No I18N
+	} else if(userTypeInt == AccountsConstants.AccountMemberUserType.NORMAL) {
+		userType = "Normal";//No I18N
+	} else if(userTypeInt == AccountsConstants.AccountMemberUserType.EXTERNAL_USER) {
+		userType = "External";//No I18N
+	} else if(userTypeInt == AccountsConstants.AccountMemberUserType.PARTNER) {
+		userType = "Partner";//No I18N
+	} else if(userTypeInt == AccountsConstants.AccountMemberUserType.PENDING) {
+		userType = "Pending";//No I18N
+	} else if(userTypeInt == -1) {
+		userType = "Normal - None";//No I18N
+	}
+	return userType;
 }
 %>

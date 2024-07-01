@@ -197,7 +197,6 @@
 		    							<option value=''>Select Status</option> <%--No I18N--%>
 		    							<option value='1'>Active</option> <%--No I18N--%>
 		    							<option value='0'>InActive</option> <%--No I18N--%>
-		    							<option value='2'>Closed</option> <%--No I18N--%>
 		    						</select>
 		    					</div>
 		    					<textarea class='textarea' name='zuids' placeholder="Use ',' for multiple zuids"></textarea>

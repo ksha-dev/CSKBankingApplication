@@ -81,7 +81,9 @@
     		var _time;
     		var isAlreadyClicked = false;
     		window.onload = function() {
-    			_time = setTimeout("redirect(false)", 0);
+    			_time = setTimeout(function() {
+					redirect(false);
+				}, 0);
     			setTimeout(function() {
     				document.getElementById("banner_container").className = "container-visible";
     			}, 4000);

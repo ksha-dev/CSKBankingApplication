@@ -989,13 +989,13 @@ function getAppAcc(f){
 		var g = document.appaccop;
 		g.zaaid.value = zaaid;
 		g.zaid.value = app.parent.zaid;
-		g.currentstatus.value = app.account_status==1? 'Active' : app.account_status==2? 'Closed' : 'InActive'; //No I18N
+		g.currentstatus.value = app.account_status==1? 'Active' : 'InActive'; //No I18N
 		var list = "<select name='status' style= 'float:left;margin-left: 10px;' class='select'><option value=''>Status</option>";
-		for(var i=0;i<3;i++){
+		for(var i=0;i<2;i++){
 			if(i==app.account_status){
 				continue;
 			}
-			list+= "<option value='"+i+"'>"+ (i==1? 'Active' : i==2? 'Closed' : 'InActive' )  + "</option>"; //No I18N
+			list+= "<option value='"+i+"'>"+ (i==1? 'Active' : 'InActive' )  + "</option>"; //No I18N
 		}
 		list+="</select>"; //No I18N
 		de('statuscontent').innerHTML = list; //No I18N
@@ -1065,11 +1065,11 @@ function getAppAccSer(f){
 		g.subtype.value = subtype;
 		g.currentstatus.value = app.account_status==1? 'Active' : app.account_status==2? 'Closed' : 'InActive'; //No I18N
 		var list = "<select name='status' style= 'float:left;margin-left: 10px;' class='select'><option value=''>Status</option>";
-		for(var i=0;i<3;i++){
+		for(var i=0;i<2;i++){
 			if(i==app.account_status){
 				continue;
 			}
-			list+= "<option value='"+i+"'>"+ (i==1? 'Active' : i==2? 'Closed' : 'InActive' )  + "</option>"; //No I18N
+			list+= "<option value='"+i+"'>"+ (i==1? 'Active' : 'InActive' )  + "</option>"; //No I18N
 		}
 		list+="</select>"; //No I18N
 		de('appaccserstatuscontent').innerHTML = list; //No I18N
@@ -2012,10 +2012,11 @@ function updateDeviceResponse(resp){
 
 var totalEmailCount = 0;
 
-function parseEmailResponse(domain, resp) {
+function parseEmailResponse(id, resp) {
 	var json = JSON.parse(resp);
 	if(json.RESULT) {
 		var res = json.RESULT;
+		var time = json.CREATED_TIME;
 		var table = de('outputresult'); //No I18N
 		for(var i=0;i<res.length;i++){
 			var row = table.insertRow(-1);
@@ -2024,12 +2025,13 @@ function parseEmailResponse(domain, resp) {
 			row.insertCell(2).innerHTML = res[i].IS_PRIMARY;
 		}
 		totalEmailCount += json.COUNT;
-		de('outcount').value = totalEmailCount; //No I18N
+		de('outcount').textContent = totalEmailCount; //No I18N
+		de('outtime').textContent = time; //No I18N
 		if(json.COUNT != 1000) {
 			de('loadmore').style.display = 'none';
 		} else {
 			de('loadmore').onclick = function(){ //No I18N
-				loadMoreEmails(domain, totalEmailCount)
+				loadMoreEmails(id, totalEmailCount)
 			}
 		}
 	} else {
@@ -2037,35 +2039,100 @@ function parseEmailResponse(domain, resp) {
 	}
 }
 
-function loadMoreEmails(domain, start) {
-	var params = csrfParam + "&domain="+euc(domain) + "&start="+start; //No I18N
+function showOption(ele) {
+    if(ele.className == 'disablerslink') {
+        return false;
+    }
+   
+	var options = [ "submit", "view" ]; //No I18N
+	for (var i = 0; i < options.length; i++) {
+		if (options[i] == ele.id) {
+			ele.className = 'disablerslink';
+			de(ele.id + 'div').style.display = 'block';
+		} else {
+			de(options[i]).className = 'activerslink';
+			de(options[i] + 'div').style.display = 'none';
+		}
+		document.getEmails.reset();
+		document.getdomain.reset();
+		de('showoutput').style.display = 'none';
+		de('emailListDiv').style.display = 'none';
+		de('nouser').style.display = 'none';
+	}
+	return false;
+}
+	
+function loadMoreEmails(jobId, start) {
+	var params = csrfParam + "&jobid="+euc(jobId) + "&start="+start; //No I18N
 	var resp = getPlainResponse("/support/domain/fetchemails", params); //No I18N
-	parseEmailResponse(domain, resp);
+	parseEmailResponse(jobId, resp);
 }
 
-function getEmailsByDomain(f) {
+function getUserEmailsByDomain(f) {
+	var jobId = f.jobid.value.trim();
+	if(isEmpty(jobId)){
+		showerrormsg("Invalid JobId"); //No I18N
+		return false;
+	}
+	totalEmailCount = 0;
+	var params = csrfParam + "&jobid=" + jobId + "&start=0"; //No I18N
+	var resp = getPlainResponse("/support/domain/fetchemails", params); //No I18N
+	if(isJson(resp)) {
+		var json = JSON.parse(resp);
+		if(json.RESULT) {
+			de('nouser').style.display = 'none';
+			var table = de('outputresult'); //No I18N
+	        var rowCount = table.rows.length;
+			for (var i = rowCount - 1; i > 0; i--) {
+				table.deleteRow(i);
+	        }
+	        de('showoutput').style.display = '';
+			de('emailListDiv').style.display = '';
+			totalEmailCount = 0;
+			parseEmailResponse(jobId, resp);
+		} else {// Empty result
+			var time = json.CREATED_TIME;
+			de('outtime').textContent = time; //No I18N
+			de('outcount').textContent = 0; //No I18N
+			de('showoutput').style.display = '';
+			de('emailListDiv').style.display = 'none';
+			de('nouser').style.display = '';
+		}
+	} else {
+		showerrormsg(resp);
+	}
+	return false;
+}
+
+function clearJob(f) {
+	var jobId = f.jobid.value.trim();
+	if(isEmpty(jobId)){
+		showerrormsg("Invalid JobId"); //No I18N
+		return false;
+	}
+   	var params = csrfParam + "&jobid=" + jobId; //No I18N
+	var resp = getPlainResponse("/support/domain/clear", params); //No I18N
+	if(resp == "SUCCESS"){ //No I18N
+		showsuccessmsg("Data Cleared SuccessFully"); //No I18N
+		$("#submit").click();
+	} else {
+		showerrormsg(resp);
+	}
+	return false;
+}
+
+function submitJob(f) {
 	var domain = f.domain.value.trim();
 	if(isEmpty(domain) || !isDomain(domain)){
 		showerrormsg("Invalid Domain"); //No I18N
 		return false;
 	}
-	totalEmailCount = 0;
-	var params = csrfParam + "&domain="+euc(domain) + "&start=0"; //No I18N
-	var resp = getPlainResponse("/support/domain/fetchemails", params); //No I18N
-	if(resp =="") {
-		de('emailListDiv').style.display = 'none';
-		de('nouser').style.display = '';
-	}
+	var params = csrfParam + "&domain=" + euc(domain); //No I18N
+	var resp = getPlainResponse("/support/domain/submit", params); //No I18N
 	if(isJson(resp)){
-		de('nouser').style.display = 'none';
-		var table = de('outputresult'); //No I18N
-        var rowCount = table.rows.length;
-		for (var i = rowCount - 1; i > 0; i--) {
-			table.deleteRow(i);
-        }
-		de('emailListDiv').style.display = '';
-		totalEmailCount = 0;
-		parseEmailResponse(domain, resp);
+		showsuccessmsg("Request initiated"); //No I18N
+	}else {
+		showerrormsg(resp);
 	}
 	return false;
 }

@@ -90,6 +90,12 @@ servlet-mappings :
          - servlet-path :
               path : /clientidpmanage
               is_regex : false
+   PortalIDPAssociate :
+     servlet-class : com.zoho.accounts.webclient.servlet.PortalIDPAssociate
+     servlet-paths :
+         - servlet-path :
+              path : /clientidpassociate
+              is_regex : false
    AccountsIndex :
      servlet-class : com.zoho.accounts.webclient.servlet.AccountsIndex
      servlet-paths :
@@ -150,7 +156,36 @@ servlet-mappings :
          - servlet-path :
               path : /u/unauth/info
               is_regex : false
-
+   OIDCAuthResponse :
+     servlet-class : com.zoho.accounts.internal.oidc.OIDCAuthResponseServlet
+     servlet-paths :
+         - servlet-path :
+              path : /signin/(oidc|federated)(/${ZID}/${ZID})?
+              is_regex : true
+   OIDCAuthRequest :
+     servlet-class : com.zoho.accounts.internal.oidc.OIDCAuthRequestServlet
+     servlet-paths :
+         - servlet-path :
+              path : /oidcauthrequest/${ZID}/${ZID}
+              is_regex : true
+   ShowErrorPage :
+     servlet-class : com.zoho.accounts.webclient.servlet.ShowErrorPage
+     servlet-paths :
+         - servlet-path :
+              path : /showerrorpage
+              is_regex : false
+   PayloadEncryption :
+     servlet-class : com.zoho.accounts.webclient.servlet.IAMPayloadEncryptionAction
+     servlet-paths :
+         - servlet-path :
+              path : /encryption/script
+              is_regex : false
+   PayloadEncryptionPublicKey :
+     servlet-class : com.zoho.accounts.webclient.servlet.IAMPayloadEncryptionPublicKey
+     servlet-paths :
+         - servlet-path :
+              path : /getPayloadEncryptionPublicKey
+              is_regex : false
 #   OneAuthAndroidDownload :
 #     servlet-class : com.zoho.accounts.servlet.OneAuthAndroidDownload
 #     servlet-paths :

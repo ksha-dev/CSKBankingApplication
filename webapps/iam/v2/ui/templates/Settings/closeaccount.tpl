@@ -82,9 +82,10 @@
 							
 							<div class="field full" >
 		                  		<label class="textbox_label"><@i18n key="IAM.CLOSE.ACCOUNT.FEEDBACK" /></label>
-
-								<textarea class="deleteacc_cmnd" tabindex="0" data-limit="250" data-validate="zform_field" name="comments" placeholder="<@i18n key="IAM.FEEDBACK" />"></textarea>
-
+								<span class="deleteacc_cmnd_parent" >
+									<textarea id="deleteacc_cmnd" class="deleteacc_cmnd" tabindex="0" maxlength="1000" data-validate="zform_field" oninput="showLength(this)" name="comments" placeholder="<@i18n key="IAM.FEEDBACK" />"></textarea>
+									<label for="deleteacc_cmnd" id="feedback_length" class="feedback_length"></label>
+								</span>
 							</div>
 							
 							<button class="primary_btn_check red_btn" tabindex="0" id="confirm_close_account" onclick="CLOSE_ACCOUNT();" ><span><@i18n key="IAM.CLOSE.ACCOUNT" /></span></button>

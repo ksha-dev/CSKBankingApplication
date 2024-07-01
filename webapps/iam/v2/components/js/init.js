@@ -160,10 +160,6 @@
 	  resourceName: "ActiveSessions",//No I18N
 	  parent : User
   });
-  var ActiveAuthtokensObj = ZResource.extendClass({
-	  resourceName: "ActiveAuthtokens",//No I18N
-	  parent : User
-  });
   
   var ConnectedAppsOBJ= ZResource.extendClass({
 	  resourceName: "ConnectedApps",//No I18N
@@ -203,7 +199,11 @@
 	  resourceName: "LinkedAccounts",//No I18N
 	  parent : User
   });
-  
+  var PFAObj = ZResource.extendClass({ 
+	  resourceName: "PFA",//No I18N
+	  identifier: "mode",	//No I18N
+	  parent : User
+  });
   
   var MfaFetchOBJ = ZResource.extendClass({ 
 	  resourceName: "MFA",//No I18N
@@ -257,17 +257,24 @@
 	  parent : TfaBackupCodes
 });
   
-  var OtpObj=  ZResource.extendClass({ 
-	  resourceName: "mfaotp",//No I18N
+  var pfaOTPObj = ZResource.extendClass({ 
+	  resourceName: "totp",//No I18N
 	  attrs : ["code"], // No i18N
-	  path : 'otp',// No i18N
+	  path : 'totp',// No i18N
+	  parent : PFAObj
+  });
+  
+  var OtpObj=  ZResource.extendClass({ 
+	  resourceName: "totp",//No I18N
+	  attrs : ["code"], // No i18N
+	  path : 'totp',// No i18N
 	  parent : MfaFetchOBJ
   });
   
   
   var TFA_mobileOBJ = ZResource.extendClass({ 
 	  resourceName: "MFAMobile",//No I18N
-	  attrs : ["mobile","countrycode","code"], // No i18N
+	  attrs : ["mobile","countrycode","code", "cdigest", "captcha"], // No i18N
 	  path : 'mobile',// No i18N
 	  identifier: "number",	//No I18N 
 	  parent : MfaFetchOBJ
@@ -344,7 +351,19 @@
 	  resourceName: "removeloginnumber",//No I18N
 	  parent : Phone
   });
-
+  
+  var HDSObj = ZResource.extendClass({
+	  resourceName : "HDS",//no i18n
+	  parent : Account,
+	  attrs : ["fn","em","cn","ca","str","zcode","state","country","city"] //no i18n
+  })
+  
+  var HDSSendEmail = ZResource.extendClass({
+	  resourceName : "HDSSendEmail",//no i18n
+	  parent : Account,
+	  attrs : ["rid"]
+  })
+  
   var USER="User";//No I18N 
   var POLICY="Policies";//No I18N 
 //  var POLICY="Policy";//No I18N 
@@ -357,7 +376,6 @@
   var AppPasswords = "AppPasswords";//No I18N
   var Device_logins="DeviceLogins";//No I18N
   var ActiveSessions="ActiveSessions"//No I18N
-  var ActiveAuthtokens="ActiveAuthtokens"//No I18N
   var LoginHistory="LoginHistory";//No I18N
   var Connected_apps="ConnectedApps";//No I18N
   var App_logins="AppLogins";//No I18N
@@ -374,7 +392,7 @@
   var GroupPendingInvitations="PendingInvitations";//No I18N	
   var TFA="TFA"//No I18N
   var certificates="Certificates";//NO I18N 
-
+  var HDS="HDS";	//NO I18N
 	  
   var color_classes = ["dp_green", "dp_green_lt", "dp_red", "dp_blue", "dp_blue_lt","dp_yellow","dp_violet","dp_pink","dp_orange_lt","dp_orange"];    //No I18N
   var locale,profile_html, security_html, sessions_html,settings_html,groups_html,tfa_html,mfa_html,privacy_html,compliance_html,org_html;
@@ -402,27 +420,7 @@ $profile =
 				},
 				function(resp)
 				{
-					 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 $('#zcontiner').html($("#exception_page").html());
-					 de('zcontiner').style.display='block';
-					 removeGif();
-					 if(resp.status_code==0)//no internet
-					 {
-						 $('#zcontiner #exception_page_img').removeClass("no_data_exception");
-						 $('#zcontiner #exception_page_img').addClass("no_internet_exception");
-					 }
-					 else //some exception occured
-					 {
-						 $('#zcontiner #exception_page_img').addClass("no_data_exception");
-						 $('#zcontiner #exception_page_img').removeClass("no_internet_exception");
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					  handleErrorSituation(resp);
 				});
 				
 			}
@@ -444,20 +442,7 @@ $profile =
 				    },
 					function(resp)
 					{
-						 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+						 handleErrorSituation(resp);
 					});
 					
 			}
@@ -488,20 +473,7 @@ $security =
 				},
 				function(resp)
 				{
-					 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					 handleErrorSituation(resp);
 				});
 				
 				
@@ -522,20 +494,8 @@ $security =
 				    },
 					function(resp)
 					{
-						 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+						handleErrorSituation(resp);
+						 
 					});
 					
 			}	
@@ -566,20 +526,7 @@ $MFA =
 						},
 						function(resp)
 						{
-							 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-							 {
-								 var serviceurl = window.location.href;
-								 var redirecturl = resp.redirect_url;
-			     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-			     	             return false;
-							 }
-							 else
-							 {
-								 $('#zcontiner').html($("#exception_page").html());
-								 de('zcontiner').style.display='block';
-								 removeGif();
-								 $('#zcontiner #exception_page_txt').html(resp.message)
-							 }
+							  handleErrorSituation(resp);
 						});
 						
 			}
@@ -601,20 +548,7 @@ $MFA =
 			    },
 				function(resp)
 				{
-					 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					  handleErrorSituation(resp);
 				});
 				
 			}
@@ -641,20 +575,7 @@ $settings =
 				},
 				function(resp)
 				{
-					 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					 handleErrorSituation(resp);
 				});
 				
 			}
@@ -673,20 +594,7 @@ $settings =
 				    },
 					function(resp)
 					{
-						 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+						 handleErrorSituation(resp);
 					});
 			}	
 		}
@@ -699,7 +607,7 @@ $sessions =
 			$(window).unbind("scroll");
 			if(sessions_html)
 			{
-				return new URI(User,"self","self").include(ActiveSessions).include(ActiveAuthtokens).include(Connected_apps).include(App_logins).include(POLICY).GET().then(function(resp)	//No I18N
+				return new URI(User,"self","self").include(ActiveSessions).include(Connected_apps).include(App_logins).include(POLICY).GET().then(function(resp)	//No I18N
 				{
 					sessions_data=resp.User;
 					de('zcontiner').style.display='none';
@@ -711,20 +619,7 @@ $sessions =
 				},
 				function(resp)
 				{
-					 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message);
-					 }
+					  handleErrorSituation(resp);
 				});
 				
 				
@@ -732,7 +627,7 @@ $sessions =
 			else
 			{	
 				// Template.create({screenname: 'profile'}).getURI('profile').GET()
-				return $.when( Template.GET("sessions"), new URI(User,"self","self").include(ActiveSessions).include(ActiveAuthtokens).include(Connected_apps).include(App_logins).include(POLICY).GET())//No I18N
+				return $.when( Template.GET("sessions"), new URI(User,"self","self").include(ActiveSessions).include(Connected_apps).include(App_logins).include(POLICY).GET())//No I18N
 				    .then(function(template,detail) 
 				    {
 				    	sessions_html=template.content;
@@ -745,20 +640,7 @@ $sessions =
 				    },
 					function(resp)
 					{
-						 if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+						 handleErrorSituation(resp);
 					});
 					
 			}	
@@ -785,10 +667,7 @@ $groups =
 				},
 				function(resp)
 				{
-					 $('#zcontiner').html($("#exception_page").html());
-					 de('zcontiner').style.display='block';
-					 removeGif();
-					 $('#zcontiner #exception_page_txt').html(resp.message)
+					 handleErrorSituation(resp);
 				});
 				
 			}
@@ -808,10 +687,7 @@ $groups =
 				    },
 					function(resp)
 					{
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
+						 handleErrorSituation(resp);
 					});
 			}	
 		}
@@ -833,21 +709,8 @@ $privacy =
 					load_privacy(panel_id,kyc_id);
 				},
 				function(resp)
-				{
-					if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+				{ 
+					handleErrorSituation(resp);
 				});
 				
 			}
@@ -865,20 +728,7 @@ $privacy =
 				    },
 					function(resp)
 					{
-				    	if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+				    	 handleErrorSituation(resp);
 					});
 			}	
 		}
@@ -891,37 +741,29 @@ $compliance =
 			$(window).unbind("scroll");
 			if(compliance_html)
 			{
-				new URI(User,"self","self").include(certificates).GET().then(function(resp)	//No I18N
+				new URI(User,"self","self").include(certificates).include(HDS).GET().then(function(resp)	//No I18N
 				{
 					compliance_data=resp.User;
 					de('zcontiner').style.display="none";
 					$('#zcontiner').html(compliance_html);//No I18N
 					load_compliance();
-					removeGif();
-					de('zcontiner').style.display='block';
+					show_submenu("compliance","certifications",'',100); //no i18n
+					highlight_tab("certifications"); //no i18n
+					setTimeout(function(){
+						removeGif();
+						de('zcontiner').style.display='block';
+					},100);
+
 				},
 				function(resp)
 				{
-					if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					 handleErrorSituation(resp);
 				});
 				
 			}
 			else
 			{	
-				$.when( Template.GET("compliance"), new URI(User,"self","self").include(certificates).GET())//No I18N
+				$.when( Template.GET("compliance"), new URI(User,"self","self").include(certificates).include(HDS).GET())//No I18N
 				    .then(function(template,detail) 
 				    {
 				    	compliance_html=template.content;
@@ -929,25 +771,17 @@ $compliance =
 				    	$('#zcontiner').html(compliance_html);//No I18N
 				    	compliance_data=detail.User;
 						load_compliance();
-						removeGif();
-						de('zcontiner').style.display='block';
+						show_submenu("compliance","certifications","",100); //no i18n
+						highlight_tab("certifications"); //no i18n
+						setTimeout(function(){
+							removeGif();
+							de('zcontiner').style.display='block';
+						},100);
+
 				    },
 					function(resp)
 					{
-				    	if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+				    	 handleErrorSituation(resp);
 					});
 			}	
 		}
@@ -962,6 +796,7 @@ $org =
 			{
 				new URI(Org,"self").include(Domain).include(SAML).GET().then(function(resp)	//No I18N
 				{
+					de('zcontiner').style.display="none";
 					org_data = resp;
 					$('#zcontiner').html(org_html);
 					removeGif();
@@ -971,20 +806,7 @@ $org =
 				},
 				function(resp)
 				{
-					if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-					 {
-						 var serviceurl = window.location.href;
-						 var redirecturl = resp.redirect_url;
-	     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-	     	             return false;
-					 }
-					 else
-					 {
-						 $('#zcontiner').html($("#exception_page").html());
-						 de('zcontiner').style.display='block';
-						 removeGif();
-						 $('#zcontiner #exception_page_txt').html(resp.message)
-					 }
+					 handleErrorSituation(resp);
 				});
 				
 			}
@@ -995,6 +817,7 @@ $org =
 				    .then(function(template,detail) 
 				    {
 				    	org_html=template.content;
+				    	de('zcontiner').style.display="none";
 				    	org_data = detail;
 				    	$('#zcontiner').html(org_html);
 				    	removeGif();
@@ -1003,20 +826,7 @@ $org =
 				    },
 					function(resp)
 					{
-				    	if(resp.cause && resp.cause.trim() === "invalid_password_token") 
-						 {
-							 var serviceurl = window.location.href;
-							 var redirecturl = resp.redirect_url;
-		     	             window.location.href =contextpath + redirecturl +'?serviceurl='+euc(serviceurl)//No I18N
-		     	             return false;
-						 }
-						 else
-						 {
-							 $('#zcontiner').html($("#exception_page").html());
-							 de('zcontiner').style.display='block';
-							 removeGif();
-							 $('#zcontiner #exception_page_txt').html(resp.message)
-						 }
+				    	 handleErrorSituation(resp);
 					});
 			}
 		}
@@ -1106,14 +916,6 @@ function reload_exception(tab,id)
 					sessions_data.activesessions=resp.User.activesessions;
 					load_Sessionsdetails(Policies,sessions_data.activesessions);
 				}
-				else if(tab=="ActiveAuthtokens")
-				{
-					sessions_data.authtokens=resp.User.authtokens;
-					if(sessions_data.authtokens!=undefined)
-					{
-						load_Authtokensdetails(Policies,sessions_data.authtokens);
-					}
-				}
 				else if(tab=="ConnectedApps")
 				{
 					sessions_data.connectedapps=resp.User.connectedapps.response;
@@ -1127,6 +929,10 @@ function reload_exception(tab,id)
 				else if(tab == "GeoLocation"){
 					security_data.GeoLocations = resp.User.GeoLocations;
 					load_geofencing_data(security_data.GeoLocations);
+				}
+				else if(tab == "HDS"){
+					compliance_data.HDS = resp.User.HDS;
+					load_HDS(compliance_data.HDS);
 				}
 				$("#"+id+" .box_blur").hide();
 				$("#"+id+" .loader").hide();
@@ -1249,7 +1055,9 @@ function load_security()
 		}
 		load_geofencing_data(security_data.GeoLocations);
 	}
-	load_IPdetails(Policies,AllowedIPs);
+	if(show_allowedIPPanel){
+		load_IPdetails(Policies,AllowedIPs);
+	}
 	load_AppPasswords(Policies,AppPasswords);
 	load_DeviceLogins(Policies,DeviceLogins);
 }
@@ -1258,17 +1066,12 @@ function load_sessions()
 {
 	var Policies =sessions_data.Policies;
 	var Active_Sessions = sessions_data.activesessions;
-	var Auth_tokens = sessions_data.authtokens;
 	sessions_data.connectedapps=sessions_data.connectedapps.response
 
 	var connected_apps_details = sessions_data.connectedapps;
 	var App_Logins_details = sessions_data.applogins;
 
 	load_Sessionsdetails(Policies,Active_Sessions);
-	if(Auth_tokens!=undefined)
-	{
-		load_Authtokensdetails(Policies,Auth_tokens);
-	}
 	if(history_data)
 	{
 		load_History();
@@ -1422,10 +1225,24 @@ function load_privacy(panel_id,kyc_id)
 		});		
 	}
 }
-
+function handleErrorSituation(resp)
+{	 
+	 if(resp.cause && resp.cause.trim() === "invalid_password_token") {
+		 window.location.href =contextpath + resp.redirect_url +'?serviceurl='+euc(window.location.href)//No I18N
+	} else if(resp.code && resp.code=="T102") {//No I18N
+		 window.location.reload();
+	} else {
+		 $('#zcontiner').html($("#exception_page").html());
+		 de('zcontiner').style.display='block';
+		 removeGif();
+		 $('#zcontiner #exception_page_txt').html(resp.localized_message ||resp.message );
+	}
+}
 function load_compliance()
 {
-	var certificate_data = compliance_data.Certificates;
+	var certificate_data = compliance_data.Certificates; 
+	var HDSData=compliance_data.HDS;
 	load_CERTIFICATEdetails(certificate_data);
+	load_HDS(HDSData);
 }
 

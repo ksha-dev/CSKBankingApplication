@@ -8,17 +8,17 @@
     <title>
         <#if !(mobile_only??)><@i18n key="IAM.ADD.RECOVERY.OPTION" /><#else><@i18n key="IAM.ADD.RECOVERY.MOBILE.TITLE" /></#if> | <@i18n key="IAM.ZOHO.ACCOUNTS" />
     </title>
-    <script src="${SCL.getStaticFilePath(" /v2/components/tp_pkg/jquery-3.6.0.min.js")}"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/tp_pkg/xregexp-all.js")}"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/zresource.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/uri.js")}" async type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/splitField.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/common_unauth.js")}" type="text/javascript"></script>
-    <link href="${SCL.getStaticFilePath(" /v2/components/css/zohoPuvi.css")}" rel="stylesheet" type="text/css">
-    <link href="${SCL.getStaticFilePath(" /v2/components/css/uvselect.css")}" rel="stylesheet" type="text/css">
-    <link href="${SCL.getStaticFilePath(" /v2/components/css/flagIcons.css")}" rel="stylesheet" type="text/css">
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/uvselect.js")}" type="text/javascript"></script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/flagIcons.js")}" type="text/javascript"></script>
+    <@resource path="/v2/components/tp_pkg/jquery-3.6.0.min.js" />
+    <@resource path="/v2/components/tp_pkg/xregexp-all.js" />
+    <@resource path="/v2/components/js/zresource.js" />
+    <@resource path="/v2/components/js/uri.js" />
+    <@resource path="/v2/components/js/splitField.js" />
+    <@resource path="/v2/components/js/common_unauth.js" />
+    <@resource path="/v2/components/css/${customized_lang_font}" />
+    <@resource path="/v2/components/css/uvselect.css" />
+    <@resource path="/v2/components/css/flagIcons.css" />
+    <@resource path="/v2/components/js/uvselect.js" />
+    <@resource path="/v2/components/js/flagIcons.js" />
     <style>
         @font-face {
             font-family: 'Announcement';
@@ -66,7 +66,7 @@
         .rebrand_partner_logo {
             height: 40px;
             margin-bottom: 20px;
-            background: url("${SCL.getStaticFilePath(" /v2/components/images/newZoho_logo.svg")}") no-repeat;
+            background: url("${SCL.getStaticFilePath("/v2/components/images/newZoho_logo.svg")}") no-repeat;
             background-size: auto 40px;
         }
         .announcement_header {
@@ -82,8 +82,7 @@
             cursor: default;
         }
         .otp_sent_desc,
-        .enter_eml_mob_desc,
-        .captcha_desc {
+        .enter_eml_mob_desc {
             margin-bottom: 30px;
         }
         .valueemailormobile {
@@ -115,7 +114,7 @@
             color: #0093ff;
             width: max-content;
         }
-        [id*="_input"] {
+        [id*="_input"], #captcha {
             height: 44px;
             padding: 12px 15px 14px 15px;
             line-height: 30px;
@@ -127,7 +126,7 @@
             font-family: "ZohoPuvi";
             transition: 0.2s all ease-in-out;
         }
-        [id*="_input"]:focus-visible {
+        [id*="_input"]:focus-visible, #captcha:focus-visible {
             outline: none;
         }
         input#otp_input {
@@ -172,7 +171,7 @@
             width: 350px;
             height: 350px;
             display: inline-block;
-            background: url("${SCL.getStaticFilePath(" /v2/components/images/ann_blockunconfirmed.svg")}") no-repeat;
+            background: url("${SCL.getStaticFilePath("/v2/components/images/ann_blockunconfirmed.svg")}") no-repeat;
         }
         .flex-container {
             display: flex;
@@ -255,52 +254,6 @@
         #mobile_input {
             text-indent: 60px;
             letter-spacing: 0.5px;
-        }
-        .captcha_input_container {
-            position: relative;
-            border: 1px solid #DDDDDD;
-            width: 250px;
-            padding: 12px;
-            box-sizing: border-box;
-            margin-top: 8px;
-            border-radius: 4px;
-        }
-        #captcha_input {
-            width: 100%;
-            margin-top: 10px;
-        }
-        #reload {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #F7F7F7;
-            cursor: pointer;
-            transition: transform 0.4s ease-in-out;
-        }
-        #reload:hover {
-            transform: rotate(360deg);
-        }
-        .reload_spin {
-            animation: load 0.5s linear infinite;
-        }
-        #reload.icon-reload::before {
-            position: relative;
-            text-align: center;
-            top: 10px;
-            left: 10px;
-            opacity: 0.5;
-        }
-        #hip {
-            height: 50px;
-            max-width: 150px;
-            width: calc(100% - 50px);
-            box-sizing: border-box;
-            margin: 0px;
-        }
-        #captcha_img {
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
         }
         .sm svg {
             transform: scale(0.7);
@@ -528,7 +481,19 @@
             border-bottom-color: #ffffff;
             border-left-color: #ffffff;
         }
-        .succfail-btns {
+        .captcha-wrapper {
+		    position: relative;
+		}
+		.captcha-wrapper .succfail-btns {
+		    position: absolute;
+		    margin: 12px 0px;
+		    right: 0;
+		    bottom: 0;
+		}
+		form.captchaForm .primary_btn_check {
+		    max-width: fit-content;
+		}
+        .succfail-btns, .primary_btn_check {
             display: flex;
             max-width: 500px;
             justify-content: space-between;
@@ -670,7 +635,6 @@
         var showMobileNoPlaceholder = ${mob_plc_holder?c};
         var isMobile = ${ is_mobile?c };
         var reqCountry = "${req_country}";
-        var captcha_error_img = "${SCL.getStaticFilePath(" / v2 / components / images / hiperror.gif")}";
         I18N.load({
             "IAM.GENERAL.OTP.SENDING": '<@i18n key="IAM.GENERAL.OTP.SENDING"/>',
             "IAM.GENERAL.OTP.SUCCESS": '<@i18n key="IAM.GENERAL.OTP.SUCCESS"/>',
@@ -689,7 +653,7 @@
             "IAM.ERROR.GENERAL": '<@i18n key="IAM.ERROR.GENERAL"/>',
             "IAM.PLEASE.CONNECT.INTERNET": '<@i18n key="IAM.PLEASE.CONNECT.INTERNET"/>',
             "IAM.ERROR.SESSION.EXPIRED": '<@i18n key="IAM.ERROR.SESSION.EXPIRED"/>',
-            "IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH": '<@i18n key="IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH"/>',
+            "IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH": '<@i18n key="IAM.USER.EMAIL.EXCEEDS.MAX.LENGTH"/>'
         });
         var cryptData;
         <#if visited_url??>var next = '${Encoder.encodeJavaScript(visited_url)}'</#if>
@@ -715,11 +679,6 @@
             identifier: "phonenum",	//No I18N 
             attrs: ["countrycode", "mobile", "code", "cdigest", "captcha"], // No i18N
             parent: User
-        });
-        var Captcha = ZResource.extendClass({
-            resourceName: "Captcha",//No I18N
-            identifier: "digest",	//No I18N 
-            attrs: ["digest", "usecase"] // No i18N
         });
         function handleEditOption(mode) {
             clearError("#" + mode + "_input");
@@ -764,7 +723,30 @@
                     payload.POST("self", "self").then(function (resp) {
                         handleOtpSent(resp);
                     }, function (resp) {
-                        handleOtpSent(resp);
+                        if(handleCaptcha().isRequired(resp)) {
+                    		handleCaptcha(resp, {
+                    			callbacks: {
+                    				relogin: classifyError,
+                    				beforeInit: function() {
+	       	                   			$(".send_otp_btn").removeAttr("disabled");
+	       	                            $(".send_otp_btn span").removeClass("loader");
+                    					$(".enter_eml_mob_desc, [name=confirm_form] .succfail-btns, ." + mode + "_input_container").slideUp(200, function(){
+                    	                	$(".captcha-wrapper").show();
+                        	                $("#add-rec-mob-captcha, .captcha-wrapper .succfail-btns").slideDown(300);
+                    	                });
+                    				},
+                    				beforeDestroy: function() {
+                    	                $("#add-rec-mob-captcha, .captcha-wrapper .succfail-btns").slideUp(200);
+                    					$(".captcha-wrapper").hide();
+                    				}
+                  				}
+                    		}).init('#add-rec-mob-captcha', payload, ["self", "self"]).then(handleOtpSent, function(err){
+                    			 $(".enter_eml_mob_desc, [name=confirm_form] .succfail-btns, ." + mode + "_input_container").slideDown(300);
+                      			 classifyError(err);
+                    		});
+                    	} else {
+                            handleOtpSent(resp);
+                    	}
                     });
                 } else {
                     show_error_msg("#mobile_input", I18N.get("IAM.PHONE.ENTER.VALID.MOBILE"));
@@ -774,9 +756,6 @@
         function handleOtpSent(resp) {
             if (resp != "" && resp != undefined) {
                 if (resp.status_code >= 200 && resp.status_code <= 299) {
-                    if ($(".captcha_input_container:visible").length) {
-                        hideCaptcha();
-                    }
                     clearError('#otp_split_input');
                     if (isEdit != undefined && isEdit) {
                         document.querySelector(".edit_option").style.display = "inline-block";
@@ -933,80 +912,6 @@
             }
         }
 
-        function loadCaptcha() {
-            if ($(".captcha_input_container:visible").length) {
-                $(".captcha_input_container .load-bg").fadeOut(200);
-                return;
-            }
-            $(".account_verify_desc, .enter_eml_mob_desc").css("opacity", "0.6");
-            var tempLoad = document.querySelector(".load-bg").cloneNode(true);
-            tempLoad.classList.add("sm");
-            $(".captcha_input_container").append(tempLoad);
-            $("." + mode + "_input_container, [name=confirm_form] .succfail-btns").slideUp(200);
-            $(".captcha_desc, .captcha_input_container, [name=confirm_form2] .succfail-btns").slideDown(200);
-        }
-        function showCaptcha(resp) {
-            $("#reload").removeClass("reload_spin");
-            if (resp.cause === "throttles_limit_exceeded") {
-                captcha_digest = "";
-                showCaptchaImg();
-            }
-            if ('cdigest' in resp) {
-                captcha_digest = resp.cdigest;
-            }
-            else if ('digest' in resp) {
-                captcha_digest = resp.digest;
-            }
-            Captcha.GET(captcha_digest).then(showCaptchaImg);
-        }
-        function showCaptchaImg(resp) {
-            if (captcha_digest == '' || resp.cause == "throttles_limit_exceeded" || resp.image_bytes == '') {
-                $("#hip")[0].src = captcha_error_img;
-                return false;
-            } else if (resp.status == "success" && resp.image_bytes != null) {
-                $("#captcha_input").val("");
-                $("#hip")[0].src = resp.image_bytes;
-            } else {
-                classifyError(resp, "#captcha_input");
-            }
-        }
-        function reloadCaptcha() {
-            var params = { "digest": captcha_digest, "usecase": "sms" };//no i18N
-            var payload = Captcha.create(params);
-            $("#reload").addClass("reload_spin");
-            payload.POST().then(showCaptcha);
-        }
-        function verifyCaptcha(e) {
-            clearError("#captcha_input")
-            var captchavalue = $("#captcha_input").val();
-            if (captchavalue == null || captchavalue == "" || /[^a-zA-Z0-9\-\/]/.test(captchavalue)) {
-                show_error_msg("#captcha_input", I18N.get("IAM.ERROR.EMPTY.FIELD"));
-                return false;
-            }
-            if (/[^a-zA-Z0-9\-\/]/.test(captchavalue) || captchavalue.length < 6) {
-                show_error_msg("#captcha_input", "Please enter a valid CAPTCHA");
-                return false;
-            }
-            var parms = {
-                "mobile": (emailormobilevalue.substring(0, emailormobilevalue.length - 2)).split(" ")[1],
-                "countrycode": emailormobilevalue.substring(emailormobilevalue.length - 2),
-                "cdigest": captcha_digest,
-                "captcha": captchavalue
-            };
-            var payload = Phone.create(parms);
-            payload.POST("self", "self").then(function (resp) {
-                handleOtpSent(resp);
-            },
-                function (resp) {
-                    classifyError(resp, "#captcha_input")
-                });
-        }
-        function hideCaptcha() {
-            $(".account_verify_desc, .enter_eml_mob_desc").css("opacity", "1");
-            $(".captcha_desc, .captcha_input_container, [name=confirm_form2] .succfail-btns").slideUp(200);
-            $("#captcha_input").val("");
-        }
-
         function resendOtpChecking() {
             resendtiming = 60;
             clearInterval(resendTimer);
@@ -1132,13 +1037,6 @@
                 showErrMsg(I18N.get("IAM.PLEASE.CONNECT.INTERNET"));
             } else if (resp.code === "Z113") {//No I18N
                 showErrMsg(I18N.get("IAM.ERROR.SESSION.EXPIRED"));
-            } else if (resp.errors && resp.errors[0].code === "IN108") {
-                loadCaptcha();
-                showCaptcha(resp);
-            } else if (resp.errors && resp.errors[0].code === "IN107") {
-                captcha_digest = resp.cdigest;
-                reloadCaptcha();
-                show_error_msg(".captcha_input_container", resp.localized_message)
             } else if (resp.code === "PP112") {
                 showErrMsg(I18N.get("IAM.ERROR.RELOGIN.UPDATE"), resp);
             } else if (resp.code === "Z101") {
@@ -1214,7 +1112,7 @@
             }
         }
     </script>
-    <script src="${SCL.getStaticFilePath(" /v2/components/js/phonePatternData.js")}" type="text/javascript"></script>
+    <@resource path="/v2/components/js/phonePatternData.js" />
 </head>
 
 <body>
@@ -1222,6 +1120,7 @@
         <#include "../zoho_line_loader.tpl">
     </div>
     <#include "../Unauth/announcement-logout.tpl">
+	<#include "../utils/captcha-handler.tpl">
         <div id="error_space">
             <span class="error_icon">&#33;</span>
             <span class="top_msg"></span>
@@ -1268,9 +1167,6 @@
                         <#else>
                             <@i18n key="IAM.MOBILE.SEND.OTP.VERIFY" />
                     </#if>
-                </div>
-                <div class="captcha_desc" style="display: none">
-                    <@i18n key="IAM.CONFIG.CAPTCHA.DESC" />
                 </div>
                 <div class="form_container">
                     <form name="confirm_form" onsubmit="return false">
@@ -1340,26 +1236,15 @@
                             </button>
                         </div>
                     </form>
-                    <form name="confirm_form2" onsubmit="return false;" novalidate>
-                        <div class="captcha_input_container" style="display: none">
-                            <div id="captcha_img" name="captcha">
-                                <img id="hip" onload="loadCaptcha()">
-                                <span class="reloadcaptcha icon-reload" id="reload"
-                                    onclick="reloadCaptcha();clearError('#captcha_input',event)"></span>
-                            </div>
-                            <input type="text" id="captcha_input" maxlength="6" autocomplete="off" autocorrect="off"
-                                onkeydown="clearError('#captcha_input', event)" placeholder="<@i18n key="IAM.NEW.SIGNIN.ENTER.CAPTCHA" />"/>
-                        </div>
-                        <div class="succfail-btns" style="display: none">
-                            <button class="captcha_btn" onclick="verifyCaptcha(event)"><span></span>
-                                <@i18n key="IAM.NEXT" />
-                            </button>
-                            <button class="remind_me_later link-btn"
+                    <div class="captcha-wrapper" style="display: none">
+						<div id="add-rec-mob-captcha" style="display: none"></div>
+						<div class="succfail-btns" style="display: none">
+	                        <button class="remind_me_later link-btn"
                                 onclick="(function(e){window.location.href=skipnow; e.target.classList.add('remind_loader')})(event);"><span></span>
                                 <@i18n key="IAM.USER.BANNER.SKIP.FOR.NOW" />
                             </button>
-                        </div>
-                    </form>
+	                    </div>
+	                </div>
                 </div>
             </div>
             <div class="illustration-container">
